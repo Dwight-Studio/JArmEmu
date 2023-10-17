@@ -20,6 +20,7 @@ public class StateContainer {
 
         // Initializing memory
         this.memory = new Byte[MEMORY_SIZE];
+        clearMemory();
     }
 
     public void clearRegisters() {
