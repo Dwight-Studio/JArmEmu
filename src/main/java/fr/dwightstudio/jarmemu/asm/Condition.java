@@ -8,20 +8,21 @@ public enum Condition {
 
     AL((state) -> true),
     EQ((state) -> state.cpsr.getZ()),
-    NE((state) -> true),
-    CS((state) -> true),
-    CC((state) -> true),
-    MI((state) -> true),
-    PL((state) -> true),
-    VS((state) -> true),
-    VC((state) -> true),
-    HS((state) -> true),
-    LO((state) -> true),
-    HI((state) -> true),
-    LS((state) -> true),
-    GE((state) -> true),
-    LT((state) -> true),
-    GT((state) -> true);
+    NE((state) -> !state.cpsr.getZ()),
+    CS((state) -> state.cpsr.getC()),
+    CC((state) -> !state.cpsr.getC()),
+    MI((state) -> state.cpsr.getN()),
+    PL((state) -> !state.cpsr.getN()),
+    VS((state) -> state.cpsr.getV()),
+    VC((state) -> !state.cpsr.getV()),
+    HS((state) -> state.cpsr.getC()),
+    LO((state) -> !state.cpsr.getC()),
+    HI((state) -> state.cpsr.getC() && !state.cpsr.getZ()),
+    LS((state) -> !state.cpsr.getC() || state.cpsr.getZ()),
+    GE((state) -> state.cpsr.getN() == state.cpsr.getV()),
+    LT((state) -> state.cpsr.getN() != state.cpsr.getV()),
+    GT((state) -> !state.cpsr.getZ() && (state.cpsr.getN() == state.cpsr.getV())),
+    LE((state) -> state.cpsr.getZ() || (state.cpsr.getN() != state.cpsr.getV()));
 
     private final Function<StateContainer, Boolean> tester;
 

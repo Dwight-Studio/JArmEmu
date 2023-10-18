@@ -1,1 +1,3 @@
-SUB R0, R2
+LDR R1, [R2]
+LDRCC R1, [R2]
+LDREQB R1, [R2]

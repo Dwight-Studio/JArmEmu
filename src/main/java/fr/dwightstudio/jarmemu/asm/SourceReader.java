@@ -14,8 +14,8 @@ public class SourceReader {
     private final Logger logger = Logger.getLogger(getClass().getName());
     protected Instruction instruction;
     protected boolean updateFlags;
-    protected boolean isHalfWord;
-    protected boolean isByte;
+
+    protected DataMode dataMode;
     protected UpdateMode updateMode;
     protected Condition conditionExec;
     protected String currentLine;
@@ -31,8 +31,7 @@ public class SourceReader {
         this.scanner = new Scanner(file);
         this.instruction = null;
         this.updateFlags = false;
-        this.isHalfWord = false;
-        this.isByte = false;
+        this.dataMode = null;
         this.updateMode = null;
         this.conditionExec = null;
         this.currentLine = "";
@@ -67,10 +66,10 @@ public class SourceReader {
             updateFlags = true;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.endsWith("H")) {
-            isHalfWord = true;
+            dataMode = DataMode.HALF_WORD;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.endsWith("B")) {
-            isByte = true;
+            dataMode = DataMode.BYTE;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.length()==7 || instructionString.length()==5) {
             UpdateMode[] updateModes = UpdateMode.values();
@@ -111,15 +110,13 @@ public class SourceReader {
     }
 
     /**
-     * Copie de la méthode principale pour une seule ligne
-     * @return Renvoie la ligne modifiée
+     * Lecture d'une ligne et envoie des instructions
      */
-    public void readOneLine(){
+    public void readOneLine() throws IllegalStateException {
             this.instruction = null;
             this.updateFlags = false;
-            this.isHalfWord = false;
-            this.isByte = false;
             this.updateMode = null;
+            this.dataMode = null;
             this.conditionExec = null;
 
             currentLine = this.scanner.nextLine();
@@ -136,7 +133,7 @@ public class SourceReader {
                 if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
             }
 
-            if (this.instruction == null) throw new IllegalStateException("Unknown instruction : " + instructionString);
+            if (this.instruction == null) throw new IllegalStateException("Unknown instruction: " + instructionString);
     }
 
 }

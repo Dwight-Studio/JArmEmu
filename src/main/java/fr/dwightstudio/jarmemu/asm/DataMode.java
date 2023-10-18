@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.asm;
 
-public enum DataType {
-    WORD,
+public enum DataMode {
     HALF_WORD,
     BYTE;
 }
