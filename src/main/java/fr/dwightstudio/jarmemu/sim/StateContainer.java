@@ -5,6 +5,8 @@ public class StateContainer {
     // Registers
     public static final int REGISTER_NUMBER = 16;
     public final Register[] registers;
+    public final PSR cpsr;
+    public final PSR spsr;
 
     // Memory
     public static final int MEMORY_CHUNK_NUMBER = 256;
@@ -17,6 +19,9 @@ public class StateContainer {
         // Initializing registers
         this.registers = new Register[REGISTER_NUMBER];
         clearRegisters();
+
+        cpsr = new PSR();
+        spsr = new PSR();
 
         // Initializing memory
         this.memory = new Byte[MEMORY_SIZE];

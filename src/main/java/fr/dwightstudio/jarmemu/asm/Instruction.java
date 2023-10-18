@@ -12,14 +12,25 @@ import static fr.dwightstudio.jarmemu.asm.inst.InstructionExecutors.*;
 
 public enum Instruction {
 
+    // Arithmetic
+
+    // Bitwise logic
+
+    // Comparison
+
+    // Data movement
+
+    // Memory access
     LDR(LDR_EXECUTOR, REGISTER, ADRRESS, NULL, NULL);
+
+    // Branching
 
     private final ArgumentParser[] args;
     private final InstructionExecutor executor;
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     /**
-     * Création d'une entrée d'instruction
+     * Crée d'une entrée d'instruction
      * @param executor L'exécuteur de l'instruction
      * @param arg1 L'analyseur pour le premier argument
      * @param arg2 L'analyseur pour le deuxième argument

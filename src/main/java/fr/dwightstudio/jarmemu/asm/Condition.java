@@ -7,7 +7,7 @@ import java.util.function.Function;
 public enum Condition {
 
     AL((state) -> true),
-    EQ((state) -> true),
+    EQ((state) -> state.cpsr.getZ()),
     NE((state) -> true),
     CS((state) -> true),
     CC((state) -> true),
