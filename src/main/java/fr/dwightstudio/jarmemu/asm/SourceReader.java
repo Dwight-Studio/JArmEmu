@@ -34,8 +34,6 @@ public class SourceReader {
         this.scanner = new Scanner(file);
         this.instruction = null;
         this.updateFlags = false;
-        this.isHalfWord = false;
-        this.isByte = false;
         this.updateMode = null;
         this.conditionExec = null;
         this.currentLine = "";
