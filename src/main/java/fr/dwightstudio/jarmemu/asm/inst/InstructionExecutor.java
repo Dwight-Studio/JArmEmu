@@ -1,6 +1,8 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.asm.Condition;
+import fr.dwightstudio.jarmemu.asm.DataType;
+import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 
 public interface InstructionExecutor {
@@ -10,6 +12,8 @@ public interface InstructionExecutor {
      * @param stateContainer Le conteneur d'état sur lequel effectuer l'exécution
      * @param condition La condition à verifier
      * @param updateFlags Doit-on mettre à jour les flags
+     * @param dataType Type de donnée (Byte, HalfWord, Word) si applicable
+     * @param mode Mode de mise à jour
      * @param arg1 Le premier argument
      * @param arg2 Le deuxième argument
      * @param arg3 Le troisième argument
@@ -18,8 +22,8 @@ public interface InstructionExecutor {
     static void conditionalExecute(StateContainer stateContainer,
                                    Condition condition,
                                    boolean updateFlags,
-                                   boolean useByte,
-                                   boolean useHalfWord,
+                                   DataType dataType,
+                                   UpdateMode mode,
                                    int arg1, int arg2, int arg3, int arg4) {
 
 
@@ -37,8 +41,8 @@ public interface InstructionExecutor {
      */
     public void execute(StateContainer stateContainer,
                         boolean updateFlags,
-                        boolean useByte,
-                        boolean useHalfWord,
+                        DataType dataType,
+                        UpdateMode mode,
                         int arg1, int arg2, int arg3, int arg4);
 
 }
