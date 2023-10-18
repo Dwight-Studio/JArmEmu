@@ -16,7 +16,7 @@ public interface InstructionExecutor {
      * @param arg4 Le quatrième argument
      */
     static void conditionalExecute(StateContainer stateContainer,
-                                   Condition condition
+                                   Condition condition,
                                    boolean updateFlags,
                                    boolean useByte,
                                    boolean useHalfWord,
