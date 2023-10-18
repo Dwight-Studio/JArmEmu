@@ -116,12 +116,12 @@ public class SourceReader {
      * Lecture d'une ligne et envoie des instructions
      */
     public void readOneLine() throws IllegalStateException {
-            this.instruction = null;
-            this.updateFlags = false;
-            this.updateMode = null;
-            this.dataMode = null;
-            this.conditionExec = null;
-            this.arguments.clear();
+        this.instruction = null;
+        this.updateFlags = false;
+        this.updateMode = null;
+        this.dataMode = null;
+        this.conditionExec = null;
+        this.arguments.clear();
 
         currentLine = this.scanner.nextLine();
         currentLine = this.removeComments(currentLine);
