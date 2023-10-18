@@ -95,8 +95,8 @@ public class SourceReader {
                 if (instructionString.endsWith("MLAL")) continue;
                 if (instructionString.endsWith("TEQ")) continue;
 
-                conditionExec = condition;
-                instructionString = instructionString.substring(instructionString.length()-2);
+                this.conditionExec = condition;
+                instructionString = instructionString.substring(0, instructionString.length()-2);
             }
         }
         return instructionString;
