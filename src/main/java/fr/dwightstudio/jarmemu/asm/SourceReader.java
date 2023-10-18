@@ -5,6 +5,8 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -20,6 +22,7 @@ public class SourceReader {
     protected Condition conditionExec;
     protected String currentLine;
     protected String instructionString;
+    protected ArrayList<String> arguments;
 
     /**
      * Création du lecteur du fichier *.s
@@ -37,6 +40,7 @@ public class SourceReader {
         this.conditionExec = null;
         this.currentLine = "";
         this.instructionString = "";
+        this.arguments = new ArrayList<>();
     }
 
     /**
@@ -112,31 +116,35 @@ public class SourceReader {
 
     /**
      * Copie de la méthode principale pour une seule ligne
-     * @return Renvoie la ligne modifiée
      */
     public void readOneLine(){
-            this.instruction = null;
-            this.updateFlags = false;
-            this.isHalfWord = false;
-            this.isByte = false;
-            this.updateMode = null;
-            this.conditionExec = null;
+        this.instruction = null;
+        this.updateFlags = false;
+        this.isHalfWord = false;
+        this.isByte = false;
+        this.updateMode = null;
+        this.conditionExec = null;
+        this.arguments.clear();
 
-            currentLine = this.scanner.nextLine();
-            currentLine = this.removeComments(currentLine);
-            currentLine = this.removeBlanks(currentLine);
-            currentLine = currentLine.toUpperCase();
+        currentLine = this.scanner.nextLine();
+        currentLine = this.removeComments(currentLine);
+        currentLine = this.removeBlanks(currentLine);
+        currentLine = currentLine.toUpperCase();
 
-            instructionString = currentLine.split(" ")[0];
-            instructionString = this.removeFlags(instructionString);
-            instructionString = this.removeCondition(instructionString);
+        instructionString = currentLine.split(" ")[0];
+        int instructionLength = instructionString.length();
+        instructionString = this.removeFlags(instructionString);
+        instructionString = this.removeCondition(instructionString);
 
-            Instruction[] instructions = Instruction.values();
-            for (Instruction instruction:instructions) {
-                if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
-            }
+        Instruction[] instructions = Instruction.values();
+        for (Instruction instruction:instructions) {
+            if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
+        }
 
-            if (this.instruction == null) throw new IllegalStateException("Unknown instruction : " + instructionString);
+        if (this.instruction == null) throw new IllegalStateException("Unknown instruction : " + instructionString);
+
+        this.arguments.addAll(Arrays.asList(currentLine.substring(0, instructionLength).split(",")));
+        this.arguments.replaceAll(String::strip);
     }
 
 }
