@@ -12,12 +12,14 @@ public class SourceReader {
 
     private final Scanner scanner;
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private Instruction instruction;
-    private boolean updateFlags;
-    private boolean isHalfWord;
-    private boolean isByte;
-    private UpdateMode updateMode;
-    private Condition conditionExec;
+    protected Instruction instruction;
+    protected boolean updateFlags;
+    protected boolean isHalfWord;
+    protected boolean isByte;
+    protected UpdateMode updateMode;
+    protected Condition conditionExec;
+    protected String currentLine;
+    protected String instructionString;
 
     /**
      * Création du lecteur du fichier *.s
@@ -33,6 +35,8 @@ public class SourceReader {
         this.isByte = false;
         this.updateMode = null;
         this.conditionExec = null;
+        this.currentLine = "";
+        this.instructionString = "";
     }
 
     /**
@@ -101,10 +105,16 @@ public class SourceReader {
      * Lecture du fichier et envoie des instructions
      */
     public void read(){
-        String line;
-        String instructionString;
-
         while (this.scanner.hasNextLine()){
+            readOneLine();
+        }
+    }
+
+    /**
+     * Copie de la méthode principale pour une seule ligne
+     * @return Renvoie la ligne modifiée
+     */
+    public void readOneLine(){
             this.instruction = null;
             this.updateFlags = false;
             this.isHalfWord = false;
@@ -112,12 +122,12 @@ public class SourceReader {
             this.updateMode = null;
             this.conditionExec = null;
 
-            line = this.scanner.nextLine();
-            line = this.removeComments(line);
-            line = this.removeBlanks(line);
-            line = line.toUpperCase();
+            currentLine = this.scanner.nextLine();
+            currentLine = this.removeComments(currentLine);
+            currentLine = this.removeBlanks(currentLine);
+            currentLine = currentLine.toUpperCase();
 
-            instructionString = line.split(" ")[0];
+            instructionString = currentLine.split(" ")[0];
             instructionString = this.removeFlags(instructionString);
             instructionString = this.removeCondition(instructionString);
 
@@ -127,20 +137,6 @@ public class SourceReader {
             }
 
             if (this.instruction == null) throw new IllegalStateException("Unknown instruction : " + instructionString);
-
-        }
-    }
-
-    /**
-     * Copie de la méthode principale pour une seule ligne
-     * @return Renvoie la ligne modifiée
-     */
-    public String readOneLine(){
-        String line;
-        line = this.scanner.nextLine();
-        line = this.removeComments(line);
-        line = this.removeBlanks(line);
-        return line;
     }
 
 }
