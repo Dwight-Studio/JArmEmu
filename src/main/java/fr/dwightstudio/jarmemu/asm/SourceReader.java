@@ -107,6 +107,13 @@ public class SourceReader {
         String instructionString;
 
         while (this.scanner.hasNextLine()){
+            this.instruction = null;
+            this.updateFlags = false;
+            this.isHalfWord = false;
+            this.isByte = false;
+            this.updateMode = null;
+            this.conditionExec = null;
+
             line = this.scanner.nextLine();
             line = this.removeComments(line);
             line = this.removeBlanks(line);
@@ -121,7 +128,7 @@ public class SourceReader {
                 if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
             }
 
-            if (this.instruction == null) throw new IllegalStateException();
+            if (this.instruction == null) throw new IllegalStateException("Unknown instruction : " + instructionString);
 
         }
     }
