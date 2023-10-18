@@ -5,8 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -60,7 +58,7 @@ public class SourceReader {
      * @param instructionString La ligne à modifier
      * @return La ligne modifiée ou non
      */
-    public String removeFlags(String instructionString){
+    public String removeFlags(@NotNull String instructionString){
         if (instructionString.endsWith("S") && (instructionString.length()%2==0)){
             updateFlags = true;
             instructionString = instructionString.substring(0, instructionString.length()-1);
