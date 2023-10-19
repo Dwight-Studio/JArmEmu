@@ -140,7 +140,7 @@ public class SourceReader {
 
         if (this.instruction == null) throw new IllegalStateException("Unknown instruction: " + instructionString);
 
-        this.arguments.addAll(Arrays.asList(currentLine.substring(0, instructionLength).split(",")));
+        this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
         this.arguments.replaceAll(String::strip);
     }
 

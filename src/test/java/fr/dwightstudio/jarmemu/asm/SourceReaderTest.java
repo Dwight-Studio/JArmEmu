@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,6 +45,7 @@ public class SourceReaderTest {
         URI fileURI = Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI();
 
         SourceReader reader = new SourceReader(fileURI);
+        ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
         reader.readOneLine();
         assertEquals(Instruction.LDR, reader.instruction);
@@ -50,6 +53,7 @@ public class SourceReaderTest {
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
 
         reader.readOneLine();
         assertEquals(Instruction.LDR, reader.instruction);
@@ -57,6 +61,7 @@ public class SourceReaderTest {
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
 
         reader.readOneLine();
         assertEquals(Instruction.LDR, reader.instruction);
@@ -64,6 +69,7 @@ public class SourceReaderTest {
         assertEquals(DataMode.BYTE, reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
 
     }
 
