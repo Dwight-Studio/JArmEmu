@@ -3,7 +3,7 @@ package fr.dwightstudio.jarmemu.gui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class JAREmuController {
     @FXML
     private Label welcomeText;
 
