@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="20.0" styleClass="panel-primary" stylesheets="@/org/kordamp/bootstrapfx/bootstrapfx.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.dwightstudio.jarmemu.gui.JAREmuController">
+<VBox alignment="CENTER" prefHeight="224.0" prefWidth="342.0" spacing="20.0" styleClass="panel-primary" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fr.dwightstudio.jarmemu.gui.JAREmuController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
