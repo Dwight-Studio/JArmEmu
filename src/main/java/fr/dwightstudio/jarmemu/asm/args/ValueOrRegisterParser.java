@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.sim.Register;
 
+// Correspond à "arg"
 public class ValueOrRegisterParser implements ArgumentParser<ValueOrRegisterParser.ValueView> {
     @Override
     public ValueOrRegisterParser.ValueView parse(String string) {
