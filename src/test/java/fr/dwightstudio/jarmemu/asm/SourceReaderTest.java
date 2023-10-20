@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -67,6 +68,87 @@ public class SourceReaderTest {
         assertEquals(Instruction.LDR, reader.instruction);
         assertEquals(Condition.EQ, reader.conditionExec);
         assertEquals(DataMode.BYTE, reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+    }
+
+    @Test
+    public void TestReadInstructionComplexer() throws URISyntaxException, FileNotFoundException {
+        URI fileURI = Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI();
+        ArrayList<String> arguments;
+
+        SourceReader reader = new SourceReader(fileURI);
+
+        arguments = new ArrayList<>(Arrays.asList("R0", "R9", "#2"));
+        reader.readOneLine();
+        assertEquals(Instruction.ADD, reader.instruction);
+        assertEquals(Condition.CC, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertTrue(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(Arrays.asList("R0", "R0", "R1", "R2"));
+        reader.readOneLine();
+        assertEquals(Instruction.MLA, reader.instruction);
+        assertEquals(Condition.EQ, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(Arrays.asList("R4", "R5", "R6", "R7"));
+        reader.readOneLine();
+        assertEquals(Instruction.SMLAL, reader.instruction);
+        assertEquals(Condition.AL, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertTrue(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(Arrays.asList("R5", "R6", "#5"));
+        reader.readOneLine();
+        assertEquals(Instruction.BIC, reader.instruction);
+        assertEquals(Condition.LO, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(Arrays.asList("R0", "=X"));
+        reader.readOneLine();
+        assertEquals(Instruction.LDR, reader.instruction);
+        assertNull(reader.conditionExec);
+        assertEquals(DataMode.BYTE, reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(Arrays.asList("SP!", "{R0,R1}"));
+        reader.readOneLine();
+        assertEquals(Instruction.STM, reader.instruction);
+        assertNull(reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertEquals(UpdateMode.FD, reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(List.of("ETIQUETTE"));
+        reader.readOneLine();
+        assertEquals(Instruction.B, reader.instruction);
+        assertEquals(Condition.AL, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(List.of("CECIESTUNEETIQUETTE:"));
+        reader.readOneLine();
+        assertNull(reader.instruction);
+        assertNull(reader.conditionExec);
+        assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
