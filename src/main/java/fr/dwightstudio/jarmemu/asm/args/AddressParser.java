@@ -1,10 +1,8 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import java.util.function.Supplier;
-
-public class AddressParser implements ArgumentParser {
+public class AddressParser implements ArgumentParser<Integer> {
     @Override
-    public int parse(String string) {
+    public Integer parse(String string) {
         return 0; // Nombre sur 8 bits
     }
 }
