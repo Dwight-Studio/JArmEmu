@@ -1,23 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.TextFlow?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
@@ -46,53 +36,180 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.2433184855233853, 0.7577951002227171" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.2594654788418708, 0.799554565701559" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <items>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+            <SplitPane dividerPositions="0.6631762652705061" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
               <items>
                   <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                       <Tab text="Registries">
                            <content>
-                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                              <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="223.0" prefViewportWidth="220.0" vbarPolicy="NEVER">
+                                 <content>
+                                    <VBox>
                                        <children>
-                                          <Label text="R0" />
-                                          <Label text="R1" />
-                                          <Label text="R2" />
-                                          <Label text="R3" />
-                                          <Label text="R4" />
-                                          <Label text="R5" />
-                                          <Label layoutX="10.0" layoutY="10.0" text="R6" />
-                                          <Label layoutX="10.0" layoutY="28.0" text="R7" />
-                                          <Label layoutX="10.0" layoutY="46.0" text="R8" />
-                                          <Label layoutX="10.0" layoutY="64.0" text="R9" />
-                                          <Label layoutX="10.0" layoutY="82.0" text="SL" />
-                                          <Label layoutX="10.0" layoutY="100.0" text="FP" />
-                                          <Label layoutX="10.0" layoutY="154.0" text="IP" />
-                                          <Label layoutX="10.0" layoutY="172.0" text="SP" />
-                                          <Label layoutX="10.0" layoutY="190.0" text="LR" />
-                                          <Label layoutX="10.0" layoutY="208.0" text="PC" />
-                                          <Label layoutX="10.0" layoutY="280.0" text="PC" />
+                                          <GridPane hgap="10.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                              <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="10.0" top="5.0" />
+                                             </VBox.margin>
+                                             <children>
+                                                <Label text="Register" />
+                                                <Label text="Value" GridPane.columnIndex="1" />
+                                                <Label text="Flags" GridPane.columnIndex="2" />
+                                             </children>
+                                          </GridPane>
+                                          <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                            <content>
+                                              <AnchorPane>
+                                                   <children>
+                                                      <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                        <columnConstraints>
+                                                          <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                        </columnConstraints>
+                                                        <rowConstraints>
+                                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                        </rowConstraints>
+                                                         <children>
+                                                            <Label text="R0" />
+                                                            <Label text="R1" GridPane.rowIndex="1" />
+                                                            <Label text="R2" GridPane.rowIndex="2" />
+                                                            <Label text="R3" GridPane.rowIndex="3" />
+                                                            <Label text="R4" GridPane.rowIndex="4" />
+                                                            <Label text="R5" GridPane.rowIndex="5" />
+                                                            <Label text="R6" GridPane.rowIndex="6" />
+                                                            <Label text="R7" GridPane.rowIndex="7" />
+                                                            <Label text="R8" GridPane.rowIndex="8" />
+                                                            <Label text="R9" GridPane.rowIndex="9" />
+                                                            <Label text="R10" GridPane.rowIndex="10" />
+                                                            <Label text="R11" GridPane.rowIndex="11" />
+                                                            <Label text="R12" GridPane.rowIndex="12" />
+                                                            <Label text="(SP) R13" GridPane.rowIndex="13" />
+                                                            <Label text="(LR) R14" GridPane.rowIndex="14" />
+                                                            <Label text="(PC) R15" GridPane.rowIndex="15" />
+                                                            <Label text="CPSR" GridPane.rowIndex="16" />
+                                                            <Label text="SPSR" GridPane.rowIndex="17" />
+                                                            <Label fx:id="R0" text="00000000" GridPane.columnIndex="1" />
+                                                            <Label fx:id="R1" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Label fx:id="R2" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Label fx:id="R3" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <Label fx:id="R5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                            <Label fx:id="R6" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                            <Label fx:id="R4" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <Label fx:id="R7" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                            <Label fx:id="R8" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                            <Label fx:id="R9" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                            <Label fx:id="R10" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                            <Label fx:id="R11" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                            <Label fx:id="R12" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                            <Label fx:id="R13" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                            <Label fx:id="R15" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                            <Label fx:id="R14" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                            <Label fx:id="CPSR" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                            <Label fx:id="SPSR" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                            <Label fx:id="CPSRT" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                            <Label fx:id="SPSRT" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                                                         </children>
+                                                      </GridPane>
+                                                   </children>
+                                                </AnchorPane>
+                                            </content>
+                                          </ScrollPane>
                                        </children>
                                     </VBox>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" />
-                                 </children>
-                              </HBox>
+                                 </content>
+                              </ScrollPane>
                            </content></Tab>
                     </tabs>
                   </TabPane>
                   <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
-                        <Tab text="Stack">
+                        <Tab text="Memory">
                            <content>
-                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
-                                 <children>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" />
-                                    <VBox prefHeight="200.0" prefWidth="100.0" />
-                                 </children>
-                              </HBox>
+                              <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
+                                 <content>
+                                    <VBox>
+                                       <children>
+                                          <GridPane hgap="10.0">
+                                             <children>
+                                                <Label text="Adress" />
+                                                <Label text="Byte 0" GridPane.columnIndex="1" />
+                                                <Label text="Byte 1" GridPane.columnIndex="2" />
+                                                <Label text="Byte 2" GridPane.columnIndex="3" />
+                                                <Label text="Byte 3" GridPane.columnIndex="4" />
+                                             </children>
+                                             <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="10.0" top="5.0" />
+                                             </VBox.margin>
+                                          </GridPane>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                         <children>
+                                                            <Label text="00000000" />
+                                                            <Label text="00000000" GridPane.columnIndex="1" />
+                                                            <Label text="00000000" GridPane.columnIndex="2" />
+                                                            <Label text="00000000" GridPane.columnIndex="3" />
+                                                            <Label text="00000000" GridPane.columnIndex="4" />
+                                                         </children>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                      </GridPane>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </ScrollPane>
+                                       </children>
+                                    </VBox>
+                                 </content>
+                              </ScrollPane>
                            </content>
                         </Tab>
                      </tabs>
@@ -103,7 +220,7 @@
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <ToolBar prefHeight="40.0" prefWidth="32.0" styleClass="btn-group-horizontal">
+                        <ToolBar prefHeight="32.0" prefWidth="32.0" styleClass="btn-group-horizontal">
                            <VBox.margin>
                               <Insets />
                            </VBox.margin>
@@ -174,11 +291,67 @@
             </StackPane>
             <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Memory">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
-                  </content>
-                </Tab>
+                  <Tab text="Memory">
+                     <content>
+                        <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
+                           <content>
+                              <VBox>
+                                 <children>
+                                    <GridPane hgap="10.0">
+                                       <children>
+                                          <Label text="Adress" />
+                                          <Label text="Byte 0" GridPane.columnIndex="1" />
+                                          <Label text="Byte 1" GridPane.columnIndex="2" />
+                                          <Label text="Byte 2" GridPane.columnIndex="3" />
+                                          <Label text="Byte 3" GridPane.columnIndex="4" />
+                                       </children>
+                                       <columnConstraints>
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="10.0" top="5.0" />
+                                       </VBox.margin>
+                                    </GridPane>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                       <content>
+                                          <AnchorPane>
+                                             <children>
+                                                <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                   <children>
+                                                      <Label text="00000000" />
+                                                      <Label text="00000000" GridPane.columnIndex="1" />
+                                                      <Label text="00000000" GridPane.columnIndex="2" />
+                                                      <Label text="00000000" GridPane.columnIndex="3" />
+                                                      <Label text="00000000" GridPane.columnIndex="4" />
+                                                   </children>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                </GridPane>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </ScrollPane>
+                                 </children>
+                              </VBox>
+                           </content>
+                        </ScrollPane>
+                     </content>
+                  </Tab>
                 <Tab text="Settings">
                         <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
