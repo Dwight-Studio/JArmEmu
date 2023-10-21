@@ -151,7 +151,7 @@
                   </TabPane>
                   <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
-                        <Tab text="Memory">
+                        <Tab text="Stack">
                            <content>
                               <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
                                  <content>
