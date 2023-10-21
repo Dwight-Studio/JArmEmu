@@ -1,12 +1,13 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.sim.Register;
+import fr.dwightstudio.jarmemu.sim.StateContainer;
 
 // Correspond à "arg"
 public class ValueOrRegisterParser implements ArgumentParser<ValueOrRegisterParser.ValueView> {
     @Override
-    public ValueOrRegisterParser.ValueView parse(String string) {
-        return null; // Penser à prendre en compte shifts
+    public ValueOrRegisterParser.ValueView parse(StateContainer stateContainer, String string) {
+        return null;
     }
 
     public static final class ValueView {

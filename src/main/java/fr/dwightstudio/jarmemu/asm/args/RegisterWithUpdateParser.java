@@ -1,11 +1,13 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.sim.Register;
+import fr.dwightstudio.jarmemu.sim.StateContainer;
 
-// Correspond à "reg!"
+// Correspond à "reg!", à utiliser avec ShiftParser
 public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.RegisterWithUpdate> {
     @Override
-    public RegisterWithUpdateParser.RegisterWithUpdate parse(String string) {
+    public RegisterWithUpdateParser.RegisterWithUpdate parse(StateContainer stateContainer, String string) {
+
         return null;
     }
 
