@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -77,7 +78,10 @@ public class SourceReader {
         } else if (instructionString.length()==7 || instructionString.length()==5) {
             UpdateMode[] updateModes = UpdateMode.values();
             for (UpdateMode updatemode:updateModes) {
-                if (instructionString.endsWith(updatemode.toString().toUpperCase())) updateMode = updatemode;
+                if (instructionString.endsWith(updatemode.toString().toUpperCase())) {
+                    updateMode = updatemode;
+                    instructionString = instructionString.substring(0, instructionString.length()-2);
+                }
             }
         }
         return instructionString;
@@ -140,8 +144,14 @@ public class SourceReader {
 
         if (this.instruction == null) throw new IllegalStateException("Unknown instruction: " + instructionString);
 
-        this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
-        this.arguments.replaceAll(String::strip);
+        if (currentLine.contains("{")){
+            this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",", 2)));
+            this.arguments.replaceAll(String::strip);
+        } else {
+            this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
+            this.arguments.replaceAll(String::strip);
+        }
+
     }
 
 }
