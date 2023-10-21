@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
@@ -36,20 +48,57 @@
       </MenuBar>
       <SplitPane dividerPositions="0.2433184855233853, 0.7577951002227171" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <items>
-            <TabPane styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE" tabMinHeight="32.0">
-              <tabs>
-                <Tab styleClass="btn-default" text="Registries">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
-                     </content>
-                </Tab>
-                <Tab styleClass="btn-default" text="Call Stack">
-                  <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+              <items>
+                  <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Registries">
+                           <content>
+                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0">
+                                       <children>
+                                          <Label text="R0" />
+                                          <Label text="R1" />
+                                          <Label text="R2" />
+                                          <Label text="R3" />
+                                          <Label text="R4" />
+                                          <Label text="R5" />
+                                          <Label layoutX="10.0" layoutY="10.0" text="R6" />
+                                          <Label layoutX="10.0" layoutY="28.0" text="R7" />
+                                          <Label layoutX="10.0" layoutY="46.0" text="R8" />
+                                          <Label layoutX="10.0" layoutY="64.0" text="R9" />
+                                          <Label layoutX="10.0" layoutY="82.0" text="SL" />
+                                          <Label layoutX="10.0" layoutY="100.0" text="FP" />
+                                          <Label layoutX="10.0" layoutY="154.0" text="IP" />
+                                          <Label layoutX="10.0" layoutY="172.0" text="SP" />
+                                          <Label layoutX="10.0" layoutY="190.0" text="LR" />
+                                          <Label layoutX="10.0" layoutY="208.0" text="PC" />
+                                          <Label layoutX="10.0" layoutY="280.0" text="PC" />
+                                       </children>
+                                    </VBox>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" />
+                                 </children>
+                              </HBox>
+                           </content></Tab>
+                    </tabs>
+                  </TabPane>
+                  <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                     <tabs>
+                        <Tab text="Stack">
+                           <content>
+                              <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <VBox prefHeight="200.0" prefWidth="100.0" />
+                                    <VBox prefHeight="200.0" prefWidth="100.0" />
+                                 </children>
+                              </HBox>
+                           </content>
+                        </Tab>
+                     </tabs>
+                  </TabPane>
+              </items>
+            </SplitPane>
             <StackPane prefHeight="150.0" prefWidth="200.0">
                <children>
                   <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
@@ -66,7 +115,7 @@
                                  <children>
                                     <Button contentDisplay="CENTER" mnemonicParsing="false" styleClass="btn-primary" text="Step Into">
                                        <HBox.margin>
-                                          <Insets left="5.0" />
+                                          <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -75,7 +124,7 @@
                                  <children>
                                     <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-primary" text="Step Over" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
+                                          <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -93,7 +142,7 @@
                                  <children>
                                     <Button contentDisplay="CENTER" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" styleClass="btn-danger" text="Stop">
                                        <HBox.margin>
-                                          <Insets left="5.0" right="10.0" />
+                                          <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -102,7 +151,7 @@
                                  <children>
                                     <Button contentDisplay="CENTER" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-warning" text="Restart" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
-                                          <Insets left="5.0" />
+                                          <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -111,7 +160,7 @@
                                  <children>
                                     <Button contentDisplay="CENTER" layoutX="233.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-warning" text="Reset State" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
-                                          <Insets left="5.0" right="5.0" />
+                                          <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                  </children>
@@ -123,14 +172,14 @@
                   </VBox>
                </children>
             </StackPane>
-            <TabPane styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE" tabMinHeight="32.0">
+            <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab styleClass="btn-default" text="Memory">
+                <Tab text="Memory">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
                   </content>
                 </Tab>
-                <Tab styleClass="btn-default" text="Settings">
+                <Tab text="Settings">
                         <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
                   </content>
