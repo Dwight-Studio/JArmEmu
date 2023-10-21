@@ -23,7 +23,7 @@ public class ShiftParser implements ArgumentParser<Function<byte[],byte[]>> {
             }
 
             String type = string.substring(0, 3);
-            int value = ArgumentParsers.VALUE_OR_REGISTER.parse(stateContainer, string.substring(3););
+            int value = ArgumentParsers.VALUE_OR_REGISTER.parse(stateContainer, string.substring(3));
 
             switch (type) {
                 case "LSL":
