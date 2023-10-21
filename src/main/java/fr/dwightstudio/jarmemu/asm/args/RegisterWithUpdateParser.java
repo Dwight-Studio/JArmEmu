@@ -2,17 +2,26 @@ package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 // Correspond à "reg!", à utiliser avec ShiftParser
 public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.RegisterWithUpdate> {
     @Override
-    public RegisterWithUpdateParser.RegisterWithUpdate parse(StateContainer stateContainer, String string) {
+    public RegisterWithUpdateParser.RegisterWithUpdate parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+        RegisterWithUpdate rtn = new RegisterWithUpdate();
 
-        return null;
+        if (string.endsWith("!")) {
+            rtn.update = true;
+            string = string.substring(0, string.length()-1);
+        }
+
+        rtn.register = ArgumentParsers.REGISTER.parse(stateContainer, string);
+
+        return rtn;
     }
 
     public static final class RegisterWithUpdate {
-        public Register register;
-        public boolean update;
+        public Register register = null;
+        public boolean update = false;
     }
 }

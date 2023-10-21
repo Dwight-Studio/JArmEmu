@@ -8,7 +8,11 @@ public class ArgumentParsers {
     public static final RegisterAddressParser REGISTER_ADDRESS = new RegisterAddressParser();
     public static final RegisterWithUpdateParser REGISTER_WITH_UPDATE = new RegisterWithUpdateParser();
     public static final AddressParser ADDRESS = new AddressParser();
-    public static final ValueParser VALUE = new ValueParser();
+
+    public static final Value8Parser VALUE_8 = new Value8Parser();
+    public static final Value12Parser VALUE_12 = new Value12Parser();
+
+    public static final LabelParser LABEL = new LabelParser();
     public static final ValueOrRegisterParser VALUE_OR_REGISTER = new ValueOrRegisterParser();
     public static final ShiftParser SHIFT = new ShiftParser();
 

@@ -49,10 +49,10 @@ public enum Instruction {
     SWP(SWP_EXECUTOR, REGISTER, REGISTER, REGISTER_ADDRESS, NULL),
 
     // Branching
-    B(B_EXECUTOR, VALUE, NULL, NULL, NULL),
-    BL(BL_EXECUTOR, VALUE, NULL, NULL, NULL),
+    B(B_EXECUTOR, LABEL, NULL, NULL, NULL),
+    BL(BL_EXECUTOR, LABEL, NULL, NULL, NULL),
     BX(BX_EXECUTOR, REGISTER, NULL, NULL, NULL),
-    SWI(SWI_EXECUTOR, VALUE, NULL, NULL, NULL);
+    SWI(SWI_EXECUTOR, LABEL, NULL, NULL, NULL);
 
     private final ArgumentParser[] args;
     private final InstructionExecutor executor;

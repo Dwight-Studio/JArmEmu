@@ -1,12 +1,12 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 // Correspond à "[reg]"
-public class RegisterAddressParser implements ArgumentParser<Register> {
+public class RegisterAddressParser implements ArgumentParser<Integer> {
     @Override
-    public Register parse(StateContainer stateContainer, String string) {
-        return null; // Ne sert que pour SWP
+    public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+        return ArgumentParsers.REGISTER.parse(stateContainer, string).getData();
     }
 }

@@ -2,11 +2,12 @@ package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 // Correspond à "reg"
 public class RegisterParser implements ArgumentParser<Register> {
     @Override
-    public Register parse(StateContainer stateContainer, String string) {
+    public Register parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         return switch (string) {
             case "R0" -> stateContainer.registers[0];
             case "R1" -> stateContainer.registers[1];
