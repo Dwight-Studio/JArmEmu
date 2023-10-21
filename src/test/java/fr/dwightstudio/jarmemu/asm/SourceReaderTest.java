@@ -126,7 +126,7 @@ public class SourceReaderTest {
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 
-        arguments = new ArrayList<>(Arrays.asList("SP!", "{R0,R1}"));
+        arguments = new ArrayList<>(Arrays.asList("SP!","{R0,R1,R2}"));
         reader.readOneLine();
         assertEquals(Instruction.STM, reader.instruction);
         assertNull(reader.conditionExec);

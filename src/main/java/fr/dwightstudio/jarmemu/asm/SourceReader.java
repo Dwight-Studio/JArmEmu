@@ -142,12 +142,27 @@ public class SourceReader {
             if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
         }
 
-        if (this.instruction == null) throw new IllegalStateException("Unknown instruction: " + instructionString);
+        if(currentLine.endsWith(":")){
+            this.arguments.add(currentLine);
+        } else {
+            if (this.instruction == null) throw new IllegalStateException("Unknown instruction: " + instructionString);
+        }
 
         if (currentLine.contains("{")){
-            this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",", 2)));
+            StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
+            argument.deleteCharAt(0);
+            argument.deleteCharAt(argument.length() - 1);
+            ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
+            argumentArray.replaceAll(String::strip);
+            argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
+            for (String arg:argumentArray) {
+                argument.append(arg).append(",");
+            }
+            argument.deleteCharAt(argument.length() - 1);
+            argument.append("}");
+            this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
             this.arguments.replaceAll(String::strip);
-        } else {
+        } else if (!currentLine.endsWith(":")){
             this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
             this.arguments.replaceAll(String::strip);
         }
