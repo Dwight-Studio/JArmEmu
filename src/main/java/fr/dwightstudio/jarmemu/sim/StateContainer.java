@@ -1,6 +1,11 @@
 package fr.dwightstudio.jarmemu.sim;
 
+import java.util.HashMap;
+
 public class StateContainer {
+
+    // ASM
+    public final HashMap<String, Integer> symbols; // HashMap des symbols càd des labels et des variables ASM (du .data)
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -15,6 +20,9 @@ public class StateContainer {
     public final Byte[] memory;
 
     public StateContainer() {
+
+        // ASM
+        symbols = new HashMap<>();
 
         // Initializing registers
         this.registers = new Register[REGISTER_NUMBER];

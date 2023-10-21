@@ -5,35 +5,10 @@ import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "arg"
-public class ValueOrRegisterParser implements ArgumentParser<ValueOrRegisterParser.ValueView> {
+public class ValueOrRegisterParser implements ArgumentParser<Integer> {
     @Override
-    public ValueOrRegisterParser.ValueView parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+    public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         // TODO: Faire le ValueOrRegisterParser
         return null;
-    }
-
-    public static final class ValueView {
-        private Register register;
-        private int shift;
-        private int value;
-
-
-        public ValueView(Register register, int shift) {
-            this.register = register;
-            this.shift = shift;
-        }
-
-        public ValueView(byte value) {
-            this.register = null;
-            this.value = value;
-        }
-
-        int value() {
-            if (this.register == null) {
-                return value;
-            } else {
-                return register.getData();
-            }
-        }
     }
 }
