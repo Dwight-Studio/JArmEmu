@@ -1,7 +1,5 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
-import fr.dwightstudio.jarmemu.asm.args.*;
-
 public class InstructionExecutors {
 
     // Arithmetic
