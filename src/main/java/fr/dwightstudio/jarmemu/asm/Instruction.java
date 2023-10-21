@@ -42,8 +42,8 @@ public enum Instruction {
     MVN(MVN_EXECUTOR, REGISTER, VALUE_OR_REGISTER, SHIFT, NULL),
 
     // Memory access
-    LDR(LDR_EXECUTOR, REGISTER, ADDRESS, NULL, NULL),
-    STR(STR_EXECUTOR, REGISTER, ADDRESS, NULL, NULL),
+    LDR(LDR_EXECUTOR, REGISTER, ADDRESS, VALUE_OR_REGISTER, SHIFT),
+    STR(STR_EXECUTOR, REGISTER, ADDRESS, VALUE_OR_REGISTER, SHIFT),
     LDM(LDM_EXECUTOR, REGISTER_WITH_UPDATE, REGISTER_ARRAY, NULL, NULL),
     STM(STM_EXECUTOR, REGISTER_WITH_UPDATE, REGISTER_ARRAY, NULL, NULL),
     SWP(SWP_EXECUTOR, REGISTER, REGISTER, REGISTER_ADDRESS, NULL),
@@ -54,7 +54,7 @@ public enum Instruction {
     BX(BX_EXECUTOR, REGISTER, NULL, NULL, NULL),
     SWI(SWI_EXECUTOR, LABEL, NULL, NULL, NULL);
 
-    private final ArgumentParser[] args;
+    private final ArgumentParser<?>[] args;
     private final InstructionExecutor executor;
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -66,7 +66,7 @@ public enum Instruction {
      * @param arg3 L'analyseur pour le troisième argument
      * @param arg4 L'analyseur pour le quatrième argument
      */
-    Instruction(InstructionExecutor executor, ArgumentParser arg1, ArgumentParser arg2, ArgumentParser arg3, ArgumentParser arg4) {
+    Instruction(InstructionExecutor executor, ArgumentParser<?> arg1, ArgumentParser<?> arg2, ArgumentParser<?> arg3, ArgumentParser<?> arg4) {
         this.args = new ArgumentParser[] {arg1, arg2, arg3, arg4};
         this.executor = executor;
         logger.log(Level.FINE, "Registering instruction " + this.name()
@@ -76,7 +76,7 @@ public enum Instruction {
                 + ", " + arg4.getClass().getName());
     }
 
-    public ArgumentParser getArgParser(int i) {
+    public ArgumentParser<?> getArgParser(int i) {
         return args[i];
     }
 

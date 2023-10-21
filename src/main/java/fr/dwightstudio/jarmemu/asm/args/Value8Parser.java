@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 public class Value8Parser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+        // TODO: Faire le Value8Parser
         return 0; // Nombre sur 8 bits
     }
 }

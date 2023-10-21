@@ -10,6 +10,7 @@ import java.util.function.Function;
 public class ShiftParser implements ArgumentParser<Function<byte[],byte[]>> {
     @Override
     public Function<byte[],byte[]> parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        return null; // Retourne une fonction qui effectue le shift ou une fonction qui ne fait rien s'il n'y a rien
+        // TODO: Faire le ShiftParser
+        return null; // Retourne une fonction qui effectue le shift
     }
 }

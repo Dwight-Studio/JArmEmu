@@ -144,7 +144,7 @@ public class SourceReader {
         if(currentLine.endsWith(":")){
             this.arguments.add(currentLine);
         } else {
-            if (this.instruction == null) throw new IllegalStateException("Unknown instruction: " + instructionString);
+            if (this.instruction == null) throw new AssemblySyntaxException("Unknown instruction: " + instructionString);
         }
 
         if (currentLine.contains("{")){

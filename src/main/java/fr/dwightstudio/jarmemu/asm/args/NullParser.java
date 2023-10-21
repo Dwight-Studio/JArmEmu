@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
+import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -7,6 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public class NullParser implements ArgumentParser<Object> {
     @Override
     public Object parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        throw new IllegalStateException("Parsing a Null Argument");
+        throw new AssemblySyntaxException("Unexpected argument '" + string + "'");
     }
 }
