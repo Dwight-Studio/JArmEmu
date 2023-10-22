@@ -21,9 +21,7 @@ public class Register {
     public boolean get(int index) throws IllegalArgumentException {
         if (index >= 32) throw new IllegalArgumentException("Invalid index: " + index);
 
-        int value = (data >> index) & 1;
-
-        return value == 1;
+        return ((data >> index) & 1) == 1;
     }
 
     public void set(int index, boolean value) {
