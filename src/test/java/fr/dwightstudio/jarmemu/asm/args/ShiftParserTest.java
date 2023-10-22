@@ -55,6 +55,8 @@ public class ShiftParserTest {
     @Test
     public void ASRTest() {
         int data = 0b10000000000000000000000000000000;
+        stateContainer.registers[0].setData(0b0000000000000000000000000000010);
+        stateContainer.registers[14].setData(0b00000000000000000000000000000100);
         Function<Integer, Integer> f;
 
         f = SHIFT.parse(stateContainer, "ASR#5");
@@ -80,5 +82,46 @@ public class ShiftParserTest {
         assertEquals(0b00000100000000000000000000000000, f.apply(data));
     }
 
-    // TODO: Tester RRX et ROR
+    @Test
+    public void RORTest() {
+        int data = 0b00000000000000000000000000001000;
+        stateContainer.registers[0].setData(0b0000000000000000000000000000010);
+        stateContainer.registers[14].setData(0b00000000000000000000000000000100);
+        Function<Integer, Integer> f;
+
+        f = SHIFT.parse(stateContainer, "ROR#5");
+        assertEquals(0b01000000000000000000000000000000, f.apply(data));
+
+        f = SHIFT.parse(stateContainer, "RORR0");
+        assertEquals(0b00000000000000000000000000000010, f.apply(data));
+
+        f = SHIFT.parse(stateContainer, "RORLR");
+        assertEquals(0b10000000000000000000000000000000, f.apply(data));
+    }
+
+    @Test
+    public void RRXTest() {
+        int data;
+        Function<Integer, Integer> f = SHIFT.parse(stateContainer, "RRX");
+
+        data = 0b00000000000000000000000000001000;
+        stateContainer.cpsr.setC(false);
+        assertEquals(0b00000000000000000000000000000100, f.apply(data));
+        assertFalse(stateContainer.cpsr.getC());
+
+        data = 0b00000000000000000000000000010000;
+        stateContainer.cpsr.setC(true);
+        assertEquals(0b10000000000000000000000000001000, f.apply(data));
+        assertFalse(stateContainer.cpsr.getC());
+
+        data = 0b00000000000000000000000000001001;
+        stateContainer.cpsr.setC(false);
+        assertEquals(0b00000000000000000000000000000100, f.apply(data));
+        assertTrue(stateContainer.cpsr.getC());
+
+        data = 0b00000000000000000000000000010001;
+        stateContainer.cpsr.setC(true);
+        assertEquals(0b10000000000000000000000000001000, f.apply(data));
+        assertTrue(stateContainer.cpsr.getC());
+    }
 }

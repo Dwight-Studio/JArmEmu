@@ -10,4 +10,9 @@ public class NullParser implements ArgumentParser<Object> {
     public Object parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         throw new AssemblySyntaxException("Unexpected argument '" + string + "'");
     }
+
+    @Override
+    public Object none() {
+        return null;
+    }
 }
