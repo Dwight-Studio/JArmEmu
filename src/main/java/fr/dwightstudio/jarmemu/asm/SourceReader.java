@@ -12,10 +12,13 @@ import java.util.logging.Logger;
 
 public class SourceReader {
 
+    private static ArrayList<String> code;
+
     private final Scanner scanner;
     private final Logger logger = Logger.getLogger(getClass().getName());
     protected Instruction instruction;
     protected boolean updateFlags;
+    protected final CodeScanner codeScanner;
 
     protected DataMode dataMode;
     protected UpdateMode updateMode;
@@ -30,8 +33,13 @@ public class SourceReader {
      * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
      */
     public SourceReader(URI fileName) throws FileNotFoundException {
+        SourceReader.code = new ArrayList<>();
+
         File file = new File(fileName);
         this.scanner = new Scanner(file);
+        readAndStoreFile();
+        this.codeScanner = new CodeScanner(SourceReader.code);
+
         this.instruction = null;
         this.updateFlags = false;
         this.updateMode = null;
@@ -39,6 +47,13 @@ public class SourceReader {
         this.currentLine = "";
         this.instructionString = "";
         this.arguments = new ArrayList<>();
+    }
+
+    /**
+     * Crée une ArrayList dans laquelle se trouve le code pour pouvoir y sauter dans le programme
+     */
+    public void readAndStoreFile(){
+        while (this.scanner.hasNextLine()) SourceReader.code.add(this.scanner.nextLine());
     }
 
     /**
@@ -110,7 +125,7 @@ public class SourceReader {
      * Lecture du fichier et envoie des instructions
      */
     public void read(){
-        while (this.scanner.hasNextLine()){
+        while (this.codeScanner.hasNextLine()){
             readOneLine();
         }
     }
@@ -126,7 +141,7 @@ public class SourceReader {
         this.conditionExec = null;
         this.arguments.clear();
 
-        currentLine = this.scanner.nextLine();
+        currentLine = this.codeScanner.nextLine();
         currentLine = this.removeComments(currentLine);
         currentLine = this.removeBlanks(currentLine);
         currentLine = currentLine.toUpperCase();
