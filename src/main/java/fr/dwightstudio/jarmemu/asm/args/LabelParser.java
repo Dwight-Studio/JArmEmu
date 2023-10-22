@@ -9,12 +9,11 @@ public class LabelParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         // TODO: Faire le LabelParser (je pense que c'est bon)
-        Integer value = stateContainer.symbols.get(string.substring(0, string.length()-1));
-        if (value == null) throw new AssemblySyntaxException("Unknown label : " + string.substring(0, string.length()-1));
-        int result = value & 0xFFFFFF;
-        System.out.println(Integer.toBinaryString(result));
+        string = string.substring(0, string.length()-1);
+        Integer value = stateContainer.symbols.get(string);
+        if (value == null) throw new AssemblySyntaxException("Unknown label : " + string);
 
-        return result; // Nombre sur 24 bits
+        return value & 0xFFFFFF; // Nombre sur 24 bits
     }
 
     @Override
