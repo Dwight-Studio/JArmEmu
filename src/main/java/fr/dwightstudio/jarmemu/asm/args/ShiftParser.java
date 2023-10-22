@@ -64,4 +64,9 @@ public class ShiftParser implements ArgumentParser<Function<Integer,Integer>> {
             throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
         }
     }
+
+    @Override
+    public Function<Integer, Integer> none() {
+        return (i -> i);
+    }
 }

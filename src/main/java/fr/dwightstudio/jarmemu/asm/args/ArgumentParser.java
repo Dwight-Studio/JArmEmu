@@ -13,6 +13,11 @@ public interface ArgumentParser<T> {
      * @param string le texte à analyser
      * @return la valeur de l'argument
      */
-    public abstract T parse(@NotNull StateContainer stateContainer, @NotNull String string);
+    public T parse(@NotNull StateContainer stateContainer, @NotNull String string);
+
+    /**
+     * @return la valeur par défaut si l'argument n'est pas présent
+     */
+    public T none();
 
 }

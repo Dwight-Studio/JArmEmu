@@ -14,4 +14,9 @@ public class ValueOrRegisterParser implements ArgumentParser<Integer> {
             return ArgumentParsers.REGISTER.parse(stateContainer, string).getData();
         }
     }
+
+    @Override
+    public Integer none() {
+        return null;
+    }
 }

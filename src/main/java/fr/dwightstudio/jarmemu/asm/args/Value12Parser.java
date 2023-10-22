@@ -52,4 +52,9 @@ public class Value12Parser implements ArgumentParser<Integer> {
             throw new AssemblySyntaxException("Invalid 12 bits value '" + string + "'");
         }
     }
+
+    @Override
+    public Integer none() {
+        return null;
+    }
 }

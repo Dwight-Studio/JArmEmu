@@ -31,4 +31,9 @@ public class RegisterParser implements ArgumentParser<Register> {
             default -> throw new AssemblySyntaxException("Unknown register '" + string + "'");
         };
     }
+
+    @Override
+    public Register none() {
+        return null;
+    }
 }

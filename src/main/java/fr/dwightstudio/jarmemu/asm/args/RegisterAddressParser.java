@@ -9,4 +9,9 @@ public class RegisterAddressParser implements ArgumentParser<Integer> {
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         return ArgumentParsers.REGISTER.parse(stateContainer, string).getData();
     }
+
+    @Override
+    public Integer none() {
+        return null;
+    }
 }

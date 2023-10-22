@@ -12,4 +12,9 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
         // TODO: Faire le RegisterArrayParser
         return null;
     }
+
+    @Override
+    public Register[] none() {
+        return null;
+    }
 }

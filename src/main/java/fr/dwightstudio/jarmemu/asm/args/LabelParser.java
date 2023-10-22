@@ -10,4 +10,9 @@ public class LabelParser implements ArgumentParser<Integer> {
         // TODO: Faire le LabelParser
         return 0; // Nombre sur 24 bits
     }
+
+    @Override
+    public Integer none() {
+        return null;
+    }
 }

@@ -19,4 +19,9 @@ public class Value8Parser implements ArgumentParser<Integer> {
             } else throw exception;
         }
     }
+
+    @Override
+    public Integer none() {
+        return null;
+    }
 }

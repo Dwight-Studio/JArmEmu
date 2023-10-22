@@ -20,6 +20,11 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
         return rtn;
     }
 
+    @Override
+    public RegisterWithUpdate none() {
+        return null;
+    }
+
     public static final class RegisterWithUpdate {
         public Register register = null;
         public boolean update = false;

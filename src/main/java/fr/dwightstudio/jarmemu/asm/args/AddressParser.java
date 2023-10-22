@@ -10,4 +10,9 @@ public class AddressParser implements ArgumentParser<Integer> {
         // TODO: Faire l'AddressParser
         return 0; // Nombre sur 8 bits
     }
+
+    @Override
+    public Integer none() {
+        return null;
+    }
 }
