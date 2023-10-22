@@ -12,7 +12,7 @@ public class ValueOrRegisterParserTest {
     private static final ValueOrRegisterParser VALUE_OR_REGISTER = new ValueOrRegisterParser();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         stateContainer = new StateContainer();
 
         for (int i = 0 ; i < 16 ; i++) {
@@ -24,7 +24,7 @@ public class ValueOrRegisterParserTest {
     }
 
     @Test
-    void valueTest() {
+    public void valueTest() {
         assertEquals(48, VALUE_OR_REGISTER.parse(stateContainer, "#48"));
         assertEquals(-48, VALUE_OR_REGISTER.parse(stateContainer, "#-48"));
         assertEquals(1, VALUE_OR_REGISTER.parse(stateContainer, "#0b01"));
@@ -37,7 +37,7 @@ public class ValueOrRegisterParserTest {
     }
 
     @Test
-    void registerTest() {
+    public void registerTest() {
         for (int i = 0 ; i < 16 ; i++) {
             assertEquals(i, VALUE_OR_REGISTER.parse(stateContainer, "R" + i));
         }

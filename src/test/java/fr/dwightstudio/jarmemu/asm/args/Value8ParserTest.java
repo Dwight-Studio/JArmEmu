@@ -13,12 +13,12 @@ public class Value8ParserTest {
     private static final Value8Parser VALUE8 = new Value8Parser();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         stateContainer = new StateContainer();
     }
 
     @Test
-    void OverflowTest() {
+    public void OverflowTest() {
         assertEquals(127, VALUE8.parse(stateContainer, "#127"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE8.parse(stateContainer, "#-132"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE8.parse(stateContainer, "#128"));

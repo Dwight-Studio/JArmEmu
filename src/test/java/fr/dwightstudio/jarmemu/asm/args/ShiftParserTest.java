@@ -14,7 +14,7 @@ public class ShiftParserTest {
     private static final ShiftParser SHIFT = new ShiftParser();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         stateContainer = new StateContainer();
     }
 
@@ -60,8 +60,6 @@ public class ShiftParserTest {
         Function<Integer, Integer> f;
 
         f = SHIFT.parse(stateContainer, "ASR#5");
-        System.out.println(Integer.toBinaryString(0b10000100000000000000000000000000));
-        System.out.println(Integer.toBinaryString(f.apply(data)));
         assertEquals(0b11111100000000000000000000000000, f.apply(data));
 
         f = SHIFT.parse(stateContainer, "ASRR0");

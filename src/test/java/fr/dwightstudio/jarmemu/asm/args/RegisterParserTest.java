@@ -13,12 +13,12 @@ public class RegisterParserTest {
     private static final RegisterParser REGISTER = new RegisterParser();
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         stateContainer = new StateContainer();
     }
 
     @Test
-    void allRegisterTest() {
+    public void allRegisterTest() {
         for (int i = 0 ; i < 16 ; i++) {
             assertEquals(stateContainer.registers[i], REGISTER.parse(stateContainer, "R" + i));
         }
