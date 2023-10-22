@@ -19,7 +19,7 @@ public class LabelParserTest {
 
     @Test
     public void parseTest(){
-        stateContainer.symbols.put("COUCOU", (byte) 23);
+        stateContainer.symbols.put("COUCOU", 23);
 
         assertEquals(0b000000000000000000010111, LABEL.parse(stateContainer, "COUCOU:"));
         assertThrows(AssemblySyntaxException.class, () -> LABEL.parse(stateContainer, "PASCOUCOU:"));

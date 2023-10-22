@@ -40,7 +40,7 @@ public class Value12Parser implements ArgumentParser<Integer> {
                 }
             } else if (string.startsWith("=")) {
                 String valueString = string.substring(1);
-                Byte value = stateContainer.symbols.get(valueString);
+                Integer value = stateContainer.symbols.get(valueString);
                 if (value == null) {
                     throw new AssemblySyntaxException("Unknown symbol '" + valueString + "'");
                 }
