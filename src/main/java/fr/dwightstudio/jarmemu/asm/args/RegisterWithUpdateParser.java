@@ -17,6 +17,8 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
         rtn.register = ArgumentParsers.REGISTER.parse(stateContainer, string);
 
+        // TODO: Finir le RegisterWithUpdateParser en changer la methode de rendu (sans flag, update fait à l'appel)
+
         return rtn;
     }
 
