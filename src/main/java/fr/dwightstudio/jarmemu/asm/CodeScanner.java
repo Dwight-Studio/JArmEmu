@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class CodeScanner {
 
     private int currentInstructionValue;
-    private ArrayList<String> code;
+    private final ArrayList<String> code;
 
     public CodeScanner(ArrayList<String> code){
         this.code = code;
