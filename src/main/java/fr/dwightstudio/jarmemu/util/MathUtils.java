@@ -8,6 +8,14 @@ public class MathUtils {
         return a > 0 && b > 0 && r < 0;
     }
 
+    public static boolean hasCarryCHATGPT(int num1, int num2) {
+        // Perform the addition
+        int sum = num1 + num2;
+
+        // Check for overflow (carry)
+        return ((num1 & num2) | ((num1 | num2) & ~sum)) < 0;
+    }
+
     public static boolean hasOverflow(int a, int b) {
         int r = a + b;
         // Overflow if both arguments have the opposite sign of the result

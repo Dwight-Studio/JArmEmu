@@ -17,7 +17,7 @@ public class ADDExecutor implements InstructionExecutor<Register, Register, Inte
         if (updateFlags){
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC(MathUtils.hasCarry(arg2.getData(), i1));
+            stateContainer.cpsr.setC(MathUtils.hasCarryCHATGPT(arg2.getData(), i1));
             stateContainer.cpsr.setV(MathUtils.hasOverflow(arg2.getData(), i1));
         }
     }
