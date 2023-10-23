@@ -13,12 +13,12 @@ public class Value12ParserTest {
     private static final Value12Parser VALUE12 = new Value12Parser();
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         stateContainer = new StateContainer();
     }
 
     @Test
-    public void ImmDecTest() {
+    void decTest() {
         assertEquals(87, VALUE12.parse(stateContainer,"#87"));
         assertEquals(397, VALUE12.parse(stateContainer,"#397"));
         assertEquals(-744, VALUE12.parse(stateContainer,"#-744"));
@@ -27,7 +27,7 @@ public class Value12ParserTest {
     }
 
     @Test
-    public void ImmHexTest() {
+    void hexTest() {
         assertEquals(135, VALUE12.parse(stateContainer,"#0x87"));
         assertEquals(2041, VALUE12.parse(stateContainer,"#0x7F9"));
         assertEquals(-69, VALUE12.parse(stateContainer,"#-0x45"));
@@ -37,7 +37,7 @@ public class Value12ParserTest {
     }
 
     @Test
-    public void ImmOctTest() {
+    void octTest() {
         assertEquals(63, VALUE12.parse(stateContainer,"#0077"));
         assertEquals(2041, VALUE12.parse(stateContainer,"#003771"));
         assertEquals(-69, VALUE12.parse(stateContainer,"#-00105"));
@@ -47,7 +47,7 @@ public class Value12ParserTest {
     }
 
     @Test
-    public void ImmBinTest() {
+    void binTest() {
         assertEquals(87, VALUE12.parse(stateContainer,"#0b1010111"));
         assertEquals(2047, VALUE12.parse(stateContainer,"#0b11111111111"));
         assertEquals(-774, VALUE12.parse(stateContainer,"#-0b1100000110"));
@@ -57,7 +57,7 @@ public class Value12ParserTest {
     }
 
     @Test
-    public void InvalidImmTest() {
+    void failTest() {
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#udhad"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0b0xff"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#7440b"));
