@@ -1,13 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.TextFlow?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
@@ -160,12 +174,14 @@
                                           <GridPane hgap="10.0">
                                              <children>
                                                 <Label text="Adress" />
-                                                <Label text="Byte 0" GridPane.columnIndex="1" />
-                                                <Label text="Byte 1" GridPane.columnIndex="2" />
-                                                <Label text="Byte 2" GridPane.columnIndex="3" />
-                                                <Label text="Byte 3" GridPane.columnIndex="4" />
+                                                <Label text="Byte 0" GridPane.columnIndex="2" />
+                                                <Label text="Byte 1" GridPane.columnIndex="3" />
+                                                <Label text="Byte 2" GridPane.columnIndex="4" />
+                                                <Label text="Byte 3" GridPane.columnIndex="5" />
+                                                <Label text="Hex Value" GridPane.columnIndex="1" />
                                              </children>
                                              <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
@@ -186,13 +202,15 @@
                                                       <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                          <children>
                                                             <Label text="00000000" />
-                                                            <Label text="00000000" GridPane.columnIndex="1" />
                                                             <Label text="00000000" GridPane.columnIndex="2" />
                                                             <Label text="00000000" GridPane.columnIndex="3" />
                                                             <Label text="00000000" GridPane.columnIndex="4" />
+                                                            <Label text="00000000" GridPane.columnIndex="5" />
+                                                            <Label text="00000000" GridPane.columnIndex="1" />
                                                          </children>
                                                          <columnConstraints>
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="100.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
@@ -300,13 +318,15 @@
                                     <GridPane hgap="10.0">
                                        <children>
                                           <Label text="Adress" />
-                                          <Label text="Byte 0" GridPane.columnIndex="1" />
-                                          <Label text="Byte 1" GridPane.columnIndex="2" />
-                                          <Label text="Byte 2" GridPane.columnIndex="3" />
-                                          <Label text="Byte 3" GridPane.columnIndex="4" />
+                                          <Label text="Byte 0" GridPane.columnIndex="2" />
+                                          <Label text="Byte 1" GridPane.columnIndex="3" />
+                                          <Label text="Byte 2" GridPane.columnIndex="4" />
+                                          <Label text="Byte 3" GridPane.columnIndex="5" />
+                                          <Label text="Hex Value" GridPane.columnIndex="1" />
                                        </children>
                                        <columnConstraints>
                                           <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="100.0" />
                                           <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                           <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                           <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
@@ -326,13 +346,15 @@
                                                 <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                    <children>
                                                       <Label text="00000000" />
-                                                      <Label text="00000000" GridPane.columnIndex="1" />
                                                       <Label text="00000000" GridPane.columnIndex="2" />
                                                       <Label text="00000000" GridPane.columnIndex="3" />
                                                       <Label text="00000000" GridPane.columnIndex="4" />
+                                                      <Label text="00000000" GridPane.columnIndex="5" />
+                                                      <Label text="00000000" GridPane.columnIndex="1" />
                                                    </children>
                                                    <columnConstraints>
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="100.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
