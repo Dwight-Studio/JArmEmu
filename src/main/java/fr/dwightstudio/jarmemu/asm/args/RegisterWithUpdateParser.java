@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 // Correspond à "reg!", à utiliser avec ShiftParser
 public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.UpdatableRegister> {
+
+    protected static int updateValue = 0;
+
     @Override
     public UpdatableRegister parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         boolean update = false;
@@ -25,7 +28,7 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
     public static final class UpdatableRegister extends Register {
         private final Register register;
-        private final boolean update;
+        private boolean update;
 
         public UpdatableRegister(Register register, boolean update) {
             this.register = register;
@@ -59,11 +62,10 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
         /**
          * Met à jour le registre en fonction du nombre de registres de l'argument RegisterArray
-         *
-         * @param number le nombre de registres de l'argument RegisterArray
          */
-        public void update(int number) {
-            if (update) register.add(number);
+        public void update() {
+            if (update) register.add(RegisterWithUpdateParser.updateValue);
+            update = false;
         }
     }
 }

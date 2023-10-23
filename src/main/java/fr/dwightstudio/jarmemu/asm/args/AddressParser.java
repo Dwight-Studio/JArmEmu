@@ -5,10 +5,18 @@ import org.jetbrains.annotations.NotNull;
 
 // Correspond à "mem", à utiliser avec ValueOrRegisterParser et ShiftParser
 public class AddressParser implements ArgumentParser<Integer> {
+
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         // TODO: Faire l'AddressParser
-        return 0; // Nombre sur 8 bits
+        return 0;
+    }
+
+    public static final class UpdatableInteger {
+
+        private final int integer;
+        private boolean update;
+
     }
 
     @Override

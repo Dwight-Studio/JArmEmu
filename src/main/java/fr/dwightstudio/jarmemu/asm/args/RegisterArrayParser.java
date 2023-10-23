@@ -30,6 +30,8 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
                 }
             }
 
+            RegisterWithUpdateParser.updateValue = rtn.size();
+
             return rtn.toArray(new Register[0]);
         } else {
             throw new AssemblySyntaxException("Unexpected value '" + string + "' (expected a Register Array)");

@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
+import fr.dwightstudio.jarmemu.sim.StateContainer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public enum Instruction {
     BX(BX_EXECUTOR, REGISTER, NULL, NULL, NULL),
     SWI(SWI_EXECUTOR, LABEL, NULL, NULL, NULL);
 
-    private final ArgumentParser<?>[] args;
+    private final ArgumentParser[] args;
     private final InstructionExecutor executor;
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -66,8 +67,8 @@ public enum Instruction {
      * @param arg3 L'analyseur pour le troisième argument
      * @param arg4 L'analyseur pour le quatrième argument
      */
-    Instruction(InstructionExecutor executor, ArgumentParser<?> arg1, ArgumentParser<?> arg2, ArgumentParser<?> arg3, ArgumentParser<?> arg4) {
-        this.args = new ArgumentParser[] {arg1, arg2, arg3, arg4};
+    <A,B,C,D> Instruction(InstructionExecutor<A,B,C,D> executor, ArgumentParser<A> arg1, ArgumentParser<B> arg2, ArgumentParser<C> arg3, ArgumentParser<D> arg4) {
+        this.args = new ArgumentParser<?>[] {arg1, arg2, arg3, arg4};
         this.executor = executor;
         logger.log(Level.FINE, "Registering instruction " + this.name()
                 + " with " + arg1.getClass().getName()
@@ -76,11 +77,25 @@ public enum Instruction {
                 + ", " + arg4.getClass().getName());
     }
 
-    public ArgumentParser<?> getArgParser(int i) {
-        return args[i];
-    }
+    /**
+     * Execution de l'instruction sous condition
+     * @param stateContainer Le conteneur d'état sur lequel effectuer l'exécution
+     * @param condition La condition à verifier
+     * @param updateFlags Doit-on mettre à jour les flags
+     * @param dataMode Type de donnée (Byte, HalfWord, Word) si applicable
+     * @param updateMode Mode de mise à jour
+     * @param arg1 Le premier argument
+     * @param arg2 Le deuxième argument
+     * @param arg3 Le troisième argument
+     * @param arg4 Le quatrième argument
+     */
+    public <A,B,C,D> void  execute(StateContainer stateContainer,
+                                    Condition condition,
+                                    boolean updateFlags,
+                                    DataMode dataMode,
+                                    UpdateMode updateMode,
+                                    A arg1, B arg2, C arg3, D arg4) {
 
-    public InstructionExecutor getExecutor() {
-        return executor;
+        if (condition.eval(stateContainer)) executor.execute(stateContainer, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 }
