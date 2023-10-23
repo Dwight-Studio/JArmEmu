@@ -89,7 +89,7 @@ public enum Instruction {
      * @param arg3 Le troisième argument
      * @param arg4 Le quatrième argument
      */
-    public <A,B,C,D> void  execute(StateContainer stateContainer,
+    public <A,B,C,D> void execute(StateContainer stateContainer,
                                     Condition condition,
                                     boolean updateFlags,
                                     DataMode dataMode,
