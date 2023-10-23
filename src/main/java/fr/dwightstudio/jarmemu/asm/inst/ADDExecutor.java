@@ -11,6 +11,5 @@ public class ADDExecutor implements InstructionExecutor<Register, Register, Inte
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Function<Integer, Integer> arg4) {
         //TODO: Faire l'instruction ADD
-        throw new IllegalStateException("Instruction ADD not implemented");
     }
 }
