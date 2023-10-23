@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
-import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
