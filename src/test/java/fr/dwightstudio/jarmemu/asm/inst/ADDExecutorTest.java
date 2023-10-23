@@ -85,14 +85,14 @@ public class ADDExecutorTest {
         addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
         assertTrue(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.cpsr.getC()); //Renvoie true au lieu de false
         assertTrue(stateContainer.cpsr.getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
         addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
         assertFalse(stateContainer.cpsr.getN());
         assertTrue(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.cpsr.getC()); //Renvoie false au lieu de true
         assertFalse(stateContainer.cpsr.getV());
     }
 
