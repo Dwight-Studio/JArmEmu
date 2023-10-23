@@ -7,13 +7,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Function;
 
 // Correspond à un argument supplémentaire à "arg"
-public class ShiftParser implements ArgumentParser<Function<Integer,Integer>> {
+public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
     @Override
-    public Function<Integer,Integer> parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+    public ShiftParser.ShiftFunction parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         try {
             if (string.length() <= 3) {
                 if (string.equals("RRX")) {
-                    return (i -> {
+                    Function<Integer, Integer> func = (i -> {
                         i = Integer.rotateRight(i, 1);
                         boolean c = ((i >> 31) & 1) == 1;
                         if (stateContainer.cpsr.getC()) {
@@ -26,6 +26,7 @@ public class ShiftParser implements ArgumentParser<Function<Integer,Integer>> {
 
                         return i;
                     });
+                    return new ShiftFunction(stateContainer, func);
                 } else {
                     throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
                 }
@@ -35,7 +36,7 @@ public class ShiftParser implements ArgumentParser<Function<Integer,Integer>> {
             String shift = string.substring(3);
             int value = ArgumentParsers.VALUE_OR_REGISTER.parse(stateContainer, shift);
 
-            return switch (type) {
+            Function<Integer,Integer> func = switch (type) {
                 case "LSL" -> {
                     if (value < 0 || value > 31)
                         throw new AssemblySyntaxException("Invalid shift value '" + shift + "', expected value between 0 and 31 included");
@@ -59,13 +60,32 @@ public class ShiftParser implements ArgumentParser<Function<Integer,Integer>> {
                 default -> throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
             };
 
+            return new ShiftFunction(stateContainer, func);
+
         } catch (IndexOutOfBoundsException exception) {
             throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
         }
     }
 
+    public static class ShiftFunction {
+
+        private final StateContainer stateContainer;
+        private final Function<Integer, Integer> shift;
+
+        public ShiftFunction(StateContainer stateContainer, Function<Integer, Integer> shift) {
+            this.stateContainer = stateContainer;
+            this.shift = shift;
+        }
+
+        public final int apply(int i) {
+            int rtn = this.shift.apply(i);
+            AddressParser.updateValue.put(stateContainer, rtn);
+            return rtn;
+        }
+    }
+
     @Override
-    public Function<Integer, Integer> none() {
-        return (i -> i);
+    public ShiftParser.ShiftFunction none() {
+        return new ShiftFunction(new StateContainer(), (i -> i));
     }
 }

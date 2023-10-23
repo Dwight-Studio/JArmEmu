@@ -30,9 +30,8 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
     public static final class UpdatableRegister extends Register {
         private final Register register;
+        private final StateContainer stateContainer;
         private boolean update;
-
-        private StateContainer stateContainer;
 
         public UpdatableRegister(Register register, boolean update, StateContainer stateContainer) {
             this.register = register;

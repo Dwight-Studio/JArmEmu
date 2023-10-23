@@ -23,7 +23,7 @@ public class ShiftParserTest {
         int data = 0b00000000000000000000000000000001;
         stateContainer.registers[0].setData(0b0000000000000000000000000000010);
         stateContainer.registers[14].setData(0b00000000000000000000000000000100);
-        Function<Integer, Integer> f;
+        ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "LSL#5");
         assertEquals(0b00000000000000000000000000100000, f.apply(data));
@@ -40,7 +40,7 @@ public class ShiftParserTest {
         int data = 0b10000000000000000000000000000000;
         stateContainer.registers[0].setData(0b0000000000000000000000000000010);
         stateContainer.registers[14].setData(0b00000000000000000000000000000100);
-        Function<Integer, Integer> f;
+        ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "LSR#5");
         assertEquals(0b00000100000000000000000000000000, f.apply(data));
@@ -57,7 +57,7 @@ public class ShiftParserTest {
         int data = 0b10000000000000000000000000000000;
         stateContainer.registers[0].setData(0b0000000000000000000000000000010);
         stateContainer.registers[14].setData(0b00000000000000000000000000000100);
-        Function<Integer, Integer> f;
+        ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "ASR#5");
         assertEquals(0b11111100000000000000000000000000, f.apply(data));
@@ -85,7 +85,7 @@ public class ShiftParserTest {
         int data = 0b00000000000000000000000000001000;
         stateContainer.registers[0].setData(0b0000000000000000000000000000010);
         stateContainer.registers[14].setData(0b00000000000000000000000000000100);
-        Function<Integer, Integer> f;
+        ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "ROR#5");
         assertEquals(0b01000000000000000000000000000000, f.apply(data));
@@ -100,7 +100,7 @@ public class ShiftParserTest {
     @Test
     public void RRXTest() {
         int data;
-        Function<Integer, Integer> f = SHIFT.parse(stateContainer, "RRX");
+        ShiftParser.ShiftFunction f = SHIFT.parse(stateContainer, "RRX");
 
         data = 0b00000000000000000000000000001000;
         stateContainer.cpsr.setC(false);
