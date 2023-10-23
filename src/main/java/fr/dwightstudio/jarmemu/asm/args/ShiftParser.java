@@ -71,15 +71,19 @@ public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
 
         private final StateContainer stateContainer;
         private final Function<Integer, Integer> shift;
+        private boolean called;
 
         public ShiftFunction(StateContainer stateContainer, Function<Integer, Integer> shift) {
             this.stateContainer = stateContainer;
             this.shift = shift;
+            this.called = false;
         }
 
         public final int apply(int i) {
+            if (called) throw new IllegalStateException("ShiftFunctions are single-use functions");
             int rtn = this.shift.apply(i);
             AddressParser.updateValue.put(stateContainer, rtn);
+            called = true;
             return rtn;
         }
     }

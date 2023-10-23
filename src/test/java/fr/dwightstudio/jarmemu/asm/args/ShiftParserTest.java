@@ -109,16 +109,19 @@ public class ShiftParserTest {
 
         data = 0b00000000000000000000000000010000;
         stateContainer.cpsr.setC(true);
+        f = SHIFT.parse(stateContainer, "RRX");
         assertEquals(0b10000000000000000000000000001000, f.apply(data));
         assertFalse(stateContainer.cpsr.getC());
 
         data = 0b00000000000000000000000000001001;
         stateContainer.cpsr.setC(false);
+        f = SHIFT.parse(stateContainer, "RRX");
         assertEquals(0b00000000000000000000000000000100, f.apply(data));
         assertTrue(stateContainer.cpsr.getC());
 
         data = 0b00000000000000000000000000010001;
         stateContainer.cpsr.setC(true);
+        f = SHIFT.parse(stateContainer, "RRX");
         assertEquals(0b10000000000000000000000000001000, f.apply(data));
         assertTrue(stateContainer.cpsr.getC());
     }
