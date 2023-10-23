@@ -4,10 +4,12 @@ import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 // Correspond à "reg!", à utiliser avec ShiftParser
 public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.UpdatableRegister> {
 
-    protected static int updateValue = 0;
+    protected static HashMap<StateContainer, Integer> updateValue = new HashMap<>();
 
     @Override
     public UpdatableRegister parse(@NotNull StateContainer stateContainer, @NotNull String string) {
@@ -18,7 +20,7 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
             string = string.substring(0, string.length()-1);
         }
 
-        return new UpdatableRegister(ArgumentParsers.REGISTER.parse(stateContainer, string), update);
+        return new UpdatableRegister(ArgumentParsers.REGISTER.parse(stateContainer, string), update, stateContainer);
     }
 
     @Override
@@ -30,9 +32,12 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
         private final Register register;
         private boolean update;
 
-        public UpdatableRegister(Register register, boolean update) {
+        private StateContainer stateContainer;
+
+        public UpdatableRegister(Register register, boolean update, StateContainer stateContainer) {
             this.register = register;
             this.update = update;
+            this.stateContainer = stateContainer;
         }
 
         @Override
@@ -64,7 +69,7 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
          * Met à jour le registre en fonction du nombre de registres de l'argument RegisterArray
          */
         public void update() {
-            if (update) register.add(RegisterWithUpdateParser.updateValue);
+            if (update) register.add(RegisterWithUpdateParser.updateValue.get(stateContainer));
             update = false;
         }
     }

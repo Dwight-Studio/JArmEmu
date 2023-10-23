@@ -30,7 +30,7 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
                 }
             }
 
-            RegisterWithUpdateParser.updateValue = rtn.size();
+            RegisterWithUpdateParser.updateValue.put(stateContainer, rtn.size());
 
             return rtn.toArray(new Register[0]);
         } else {

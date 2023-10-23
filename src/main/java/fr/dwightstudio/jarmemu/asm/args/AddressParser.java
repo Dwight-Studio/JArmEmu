@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
+import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,8 +16,18 @@ public class AddressParser implements ArgumentParser<Integer> {
     public static final class UpdatableInteger {
 
         private final int integer;
+
+        private final Register register;
         private boolean update;
 
+        private UpdatableInteger(int integer, boolean update, Register register) {
+            this.integer = integer;
+            this.register = register;
+        }
+
+        public int toInt() {
+            return integer;
+        }
     }
 
     @Override

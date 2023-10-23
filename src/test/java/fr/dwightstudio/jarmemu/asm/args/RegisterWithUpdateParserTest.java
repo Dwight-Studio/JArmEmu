@@ -12,6 +12,7 @@ class RegisterWithUpdateParserTest {
 
     private StateContainer stateContainer;
     private static final RegisterWithUpdateParser REGISTER_WITH_UPDATE = new RegisterWithUpdateParser();
+    private static final RegisterArrayParser REGISTER_ARRAY = new RegisterArrayParser();
 
     @BeforeEach
     public void setUp() {
@@ -25,7 +26,8 @@ class RegisterWithUpdateParserTest {
         RegisterWithUpdateParser.UpdatableRegister reg = REGISTER_WITH_UPDATE.parse(stateContainer, "R0");
         assertEquals(stateContainer.registers[0].getData(), reg.getData());
 
-        reg.update(3);
+        REGISTER_ARRAY.parse(stateContainer, "{R0,R1,R2}");
+        reg.update();
 
         assertEquals(7430223, reg.getData());
     }
@@ -37,7 +39,8 @@ class RegisterWithUpdateParserTest {
         RegisterWithUpdateParser.UpdatableRegister reg = REGISTER_WITH_UPDATE.parse(stateContainer, "R0!");
         assertEquals(stateContainer.registers[0].getData(), reg.getData());
 
-        reg.update(3);
+        REGISTER_ARRAY.parse(stateContainer, "{R0,R1,R2}");
+        reg.update();
 
         assertEquals(7430226, reg.getData());
     }
