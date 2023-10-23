@@ -74,13 +74,13 @@ public class ADDExecutorTest {
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(1);
         addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        assertFalse(stateContainer.cpsr.getC()); //Ici ça ne passe pas
+        assertFalse(stateContainer.cpsr.getC()); //Ici ça ne passe pas avec le hasCarry
         assertTrue(stateContainer.cpsr.getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
         addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
         assertTrue(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC()); //Ici ça ne passe pas
+        assertTrue(stateContainer.cpsr.getC()); //Ici ça ne passe pas avec le hasCarry
         assertFalse(stateContainer.cpsr.getV());
     }
 
