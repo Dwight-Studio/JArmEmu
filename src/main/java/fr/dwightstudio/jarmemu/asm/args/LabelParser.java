@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 public class LabelParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        // TODO: Faire le LabelParser (je pense que c'est bon)
         string = string.substring(0, string.length()-1);
         Integer value = stateContainer.symbols.get(string);
         if (value == null) throw new AssemblySyntaxException("Unknown label : " + string);
