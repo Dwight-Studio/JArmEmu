@@ -1,9 +1,13 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
+import fr.dwightstudio.jarmemu.sim.Register;
+
+import java.util.function.Function;
+
 public class InstructionExecutors {
 
     // Arithmetic
-    public static final InstructionExecutor ADD_EXECUTOR = new ADDExecutor();
+    public static final InstructionExecutor<Register, Register, Integer, Function<Integer, Integer>> ADD_EXECUTOR = new ADDExecutor();
     public static final InstructionExecutor SUB_EXECUTOR = new SUBExecutor();
     public static final InstructionExecutor RSB_EXECUTOR = new RSBExecutor();
     public static final InstructionExecutor ADC_EXECUTOR = new ADCExecutor();
