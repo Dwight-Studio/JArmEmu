@@ -2,11 +2,14 @@ package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 
-public class LDRExecutor implements InstructionExecutor {
+import java.util.function.Function;
+
+public class LDRExecutor implements InstructionExecutor<Register, Integer, Integer, Function<Integer, Integer>> {
     @Override
-    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, int arg1, int arg2, int arg3, int arg4) {
+    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Integer arg2, Integer arg3, Function<Integer, Integer> arg4) {
         //TODO: Faire l'instruction LDR
         throw new IllegalStateException("Instruction LDR not implemented");
     }
