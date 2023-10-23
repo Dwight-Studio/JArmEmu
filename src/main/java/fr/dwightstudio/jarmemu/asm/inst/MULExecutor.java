@@ -7,6 +7,7 @@ import fr.dwightstudio.jarmemu.sim.StateContainer;
 public class MULExecutor implements InstructionExecutor {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, int arg1, int arg2, int arg3, int arg4) {
-
+        //TODO: Faire l'instruction MUL
+        throw new IllegalStateException("Instruction MUL not implemented");
     }
 }
