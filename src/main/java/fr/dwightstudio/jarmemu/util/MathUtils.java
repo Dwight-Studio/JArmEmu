@@ -14,4 +14,14 @@ public class MathUtils {
         return a > 0 && b > 0 && r < 0;
     }
 
+    public static boolean hasCarryTest(int a, int b) {
+        try {
+            Math.addExact(a, b);
+        } catch (ArithmeticException e) {
+            return false;
+        }
+        return true;
+    }
+
+
 }

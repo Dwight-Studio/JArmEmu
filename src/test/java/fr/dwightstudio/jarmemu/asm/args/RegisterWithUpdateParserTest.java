@@ -1,12 +1,12 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
-import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RegisterWithUpdateParserTest {
 

@@ -1,7 +1,5 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import org.jetbrains.annotations.NotNull;
-
 public class Register {
 
     private int data;

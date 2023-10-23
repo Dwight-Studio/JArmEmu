@@ -6,8 +6,6 @@ import fr.dwightstudio.jarmemu.asm.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 
-import java.util.function.Function;
-
 public class CMPExecutor implements InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Integer arg2, ShiftParser.ShiftFunction arg3, Object arg4) {

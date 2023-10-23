@@ -5,8 +5,6 @@ import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.asm.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.Register;
 
-import java.util.function.Function;
-
 public class InstructionExecutors {
 
     // Arithmetic

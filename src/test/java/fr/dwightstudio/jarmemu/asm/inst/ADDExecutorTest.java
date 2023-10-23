@@ -6,9 +6,7 @@ import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Function;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ADDExecutorTest {
 
@@ -47,6 +45,43 @@ public class ADDExecutorTest {
         r2.setData(456);
         addExecutor.execute(stateContainerBis, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
         assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+    }
+
+    @Test
+    public void instantValueAddTest() {
+        stateContainer.registers[0].setData(65736);
+        Register r0 = stateContainerBis.registers[0];
+        r0.setData(99);
+        Register r1 = stateContainerBis.registers[1];
+        r1.setData(456);
+        addExecutor.execute(stateContainerBis, false, null, null, r0, r1, 0xFF00, ArgumentParsers.SHIFT.none());
+        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+    }
+
+    @Test
+    public void flagsTest() {
+        Register r0 = stateContainer.registers[0];
+        r0.setData(-55);
+        Register r1 = stateContainer.registers[1];
+        r1.setData(45);
+        Register r2 = stateContainer.registers[2];
+        addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertTrue(stateContainer.cpsr.getN());
+        addExecutor.execute(stateContainer, false, null, null, r2, r2, 10, ArgumentParsers.SHIFT.none());
+        assertFalse(stateContainer.cpsr.getZ());
+        addExecutor.execute(stateContainer, true, null, null, r2, r2, 0, ArgumentParsers.SHIFT.none());
+        assertTrue(stateContainer.cpsr.getZ());
+        r0.setData(0b01111111111111111111111111111111);
+        r1.setData(1);
+        addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertFalse(stateContainer.cpsr.getC()); //Ici ça ne passe pas
+        assertTrue(stateContainer.cpsr.getV());
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(1);
+        addExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertTrue(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC()); //Ici ça ne passe pas
+        assertFalse(stateContainer.cpsr.getV());
     }
 
 }

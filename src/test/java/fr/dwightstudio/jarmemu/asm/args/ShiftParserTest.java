@@ -4,8 +4,6 @@ import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.function.Function;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ShiftParserTest {
