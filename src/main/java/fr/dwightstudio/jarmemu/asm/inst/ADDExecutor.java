@@ -5,6 +5,7 @@ import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.Register;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
+import fr.dwightstudio.jarmemu.util.MathUtils;
 
 public class ADDExecutor implements InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> {
     @Override
@@ -13,6 +14,11 @@ public class ADDExecutor implements InstructionExecutor<Register, Register, Inte
 
         arg1.setData(arg2.getData() + i1); // arg1 = arg2 + (arg4 SHIFT arg3)
 
-        updateFlags(stateContainer, updateFlags, arg1, arg2, i1);
+        if (updateFlags){
+            stateContainer.cpsr.setN(arg1.getData() < 0);
+            stateContainer.cpsr.setZ(arg1.getData() == 0);
+            stateContainer.cpsr.setC(MathUtils.hasCarry(arg2.getData(), i1));
+            stateContainer.cpsr.setV(MathUtils.hasOverflow(arg2.getData(), i1));
+        }
     }
 }

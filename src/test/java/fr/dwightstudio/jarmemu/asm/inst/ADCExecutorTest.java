@@ -71,4 +71,43 @@ public class ADCExecutorTest {
         assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
     }
 
+    @Test
+    public void flagsTest() {
+        Register r0 = stateContainer.registers[0];
+        Register r1 = stateContainer.registers[1];
+        Register r2 = stateContainer.registers[2];
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(1);
+        adcExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertTrue(stateContainer.cpsr.getC());
+        r0.setData(0b01111111111111111111111111111111);
+        r1.setData(0);
+        adcExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        System.out.println("R0 = " + stateContainer.registers[0].getData());
+        System.out.println("R1 = " + stateContainer.registers[1].getData());
+        System.out.println("R2 = " + stateContainer.registers[2].getData());
+        assertTrue(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.cpsr.getV());
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(1);
+        adcExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertFalse(stateContainer.cpsr.getN());
+        assertTrue(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.cpsr.getV());
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(1);
+        adcExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertTrue(stateContainer.cpsr.getC());
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(0);
+        adcExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        assertFalse(stateContainer.cpsr.getN());
+        assertTrue(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.cpsr.getV());
+    }
+
 }

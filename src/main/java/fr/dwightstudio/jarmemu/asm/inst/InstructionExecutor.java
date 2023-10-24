@@ -24,12 +24,4 @@ public interface InstructionExecutor<A,B,C,D> {
                  UpdateMode updateMode,
                  A arg1, B arg2, C arg3, D arg4);
 
-    default void updateFlags(StateContainer stateContainer, boolean updateFlags, Register arg1, Register arg2, int i1){
-        if (updateFlags){
-            stateContainer.cpsr.setN(arg1.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC(MathUtils.hasCarry(arg2.getData(), i1));
-            stateContainer.cpsr.setV(MathUtils.hasOverflow(arg2.getData(), i1));
-        }
-    }
 }
