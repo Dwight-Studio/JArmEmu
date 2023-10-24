@@ -50,4 +50,25 @@ public class ADCExecutorTest {
         assertFalse(stateContainer.cpsr.getV());
     }
 
+    @Test
+    public void shiftRegisterTest() {
+        stateContainer.registers[0].setData(560);
+        Register r0 = stateContainerBis.registers[0];
+        r0.setData(99);
+        Register r1 = stateContainerBis.registers[1];
+        r1.setData(13);
+        Register r2 = stateContainerBis.registers[2];
+        r2.setData(456);
+        adcExecutor.execute(stateContainerBis, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
+        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(1);
+        adcExecutor.execute(stateContainerBis, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        stateContainer.registers[0].setData(561);
+        r1.setData(13);
+        r2.setData(456);
+        adcExecutor.execute(stateContainerBis, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
+        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+    }
+
 }
