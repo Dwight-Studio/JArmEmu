@@ -1,4 +1,4 @@
-module fr.dwightstudio.jarmemu.gui {
+module fr.dwightstudio.jarmemu {
     requires javafx.controls;
     requires javafx.fxml;
 
@@ -8,6 +8,8 @@ module fr.dwightstudio.jarmemu.gui {
     requires java.logging;
     requires org.jetbrains.annotations;
     requires org.apache.commons.lang3;
+    requires org.fxmisc.richtext;
+    requires reactfx;
 
     opens fr.dwightstudio.jarmemu.gui to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui;

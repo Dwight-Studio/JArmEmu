@@ -89,6 +89,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.13.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.fxmisc.richtext</groupId>
+            <artifactId>richtextfx</artifactId>
+            <version>0.11.2</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -129,7 +134,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>fr.dwightstudio.jarmemu.gui.JArmEmuApplication</mainClass>
+                            <mainClass>fr.dwightstudio.jarmemu/fr.dwightstudio.jarmemu.gui.JArmEmuApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>
