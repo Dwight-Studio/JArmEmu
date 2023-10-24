@@ -1,14 +1,26 @@
 package fr.dwightstudio.jarmemu.asm;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class CodeScanner {
 
     private int currentInstructionValue;
     private final ArrayList<String> code;
 
-    public CodeScanner(ArrayList<String> code) {
-        this.code = code;
+    public CodeScanner(File file) throws FileNotFoundException {
+        this.code = new ArrayList<>();
+        Scanner scanner = new Scanner(file);
+        while (scanner.hasNextLine()) code.add(scanner.nextLine());
+        this.currentInstructionValue = -1;
+    }
+
+    public CodeScanner(String code) {
+        this.code = new ArrayList<>(Arrays.stream(code.split("\n")).toList());
         this.currentInstructionValue = -1;
     }
 
@@ -34,4 +46,18 @@ public class CodeScanner {
         return this.currentInstructionValue;
     }
 
+    public String exportCode() {
+        return String.join("\n",code.toArray(String[]::new));
+    }
+
+    public void exportCodeToFile(File savePath) throws FileNotFoundException {
+        PrintWriter printWriter = new PrintWriter(savePath);
+        String last = "";
+        for (String string : code) {
+            printWriter.println(string);
+            last = string;
+        }
+        if (!last.strip().equals("")) printWriter.println("");
+        printWriter.close();
+    }
 }

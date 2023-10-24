@@ -13,4 +13,6 @@ module fr.dwightstudio.jarmemu {
 
     opens fr.dwightstudio.jarmemu.gui to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui;
+    exports fr.dwightstudio.jarmemu.sim;
+    exports fr.dwightstudio.jarmemu.asm;
 }

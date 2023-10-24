@@ -11,15 +11,14 @@
         <menus>
           <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="New File" />
-                  <MenuItem mnemonicParsing="false" text="Open..." />
-                  <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File" />
+                  <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open..." />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Save" />
-                  <MenuItem mnemonicParsing="false" text="Save as..." />
-                  <MenuItem mnemonicParsing="false" text="Reload from disk" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save" />
+                  <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as..." />
+                  <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Exit" />
+                  <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
@@ -230,9 +229,18 @@
                               <Insets />
                            </opaqueInsets>
                            <items>
+                              <HBox layoutX="10.0" layoutY="10.0">
+                                 <children>
+                                    <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="btn-info" text="Simulate">
+                                       <HBox.margin>
+                                          <Insets left="10.0" right="10.0" />
+                                       </HBox.margin>
+                                    </Button>
+                                 </children>
+                              </HBox>
                               <HBox>
                                  <children>
-                                    <Button contentDisplay="CENTER" mnemonicParsing="false" styleClass="btn-primary" text="Step Into">
+                                    <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" styleClass="btn-primary" text="Step Into">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -241,7 +249,7 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-primary" text="Step Over" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onStepOver" styleClass="btn-primary" text="Step Over" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -250,16 +258,25 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button contentDisplay="CENTER" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-success" text="Continue" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="btn-success" text="Continue" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
+                                    <HBox>
+                                       <children>
+                                          <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="btn-warning" text="Pause" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button contentDisplay="CENTER" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" styleClass="btn-danger" text="Stop">
+                                    <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="btn-danger" text="Stop">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -268,7 +285,7 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button contentDisplay="CENTER" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-warning" text="Restart" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="btn-warning" text="Restart" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -277,7 +294,7 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button contentDisplay="CENTER" layoutX="233.0" layoutY="10.0" mnemonicParsing="false" styleClass="btn-warning" text="Reset State" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="reset" contentDisplay="CENTER" disable="true" layoutX="233.0" layoutY="10.0" mnemonicParsing="false" onAction="#onReset" styleClass="btn-warning" text="Reset State" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -286,7 +303,16 @@
                               </HBox>
                            </items>
                         </ToolBar>
-                        <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
+                        <StackPane VBox.vgrow="ALWAYS">
+                           <children>
+                              <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" />
+                              <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
+                                 <StackPane.margin>
+                                    <Insets left="54.0" />
+                                 </StackPane.margin>
+                              </Separator>
+                           </children>
+                        </StackPane>
                      </children>
                   </VBox>
                </children>

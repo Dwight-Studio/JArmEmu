@@ -5,11 +5,11 @@ import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.fxmisc.richtext.CodeArea;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -18,13 +18,10 @@ import java.util.logging.Logger;
 
 public class SourceInterpreter {
 
-    private static ArrayList<String> code;
-
-    private final Scanner scanner;
     private final Logger logger = Logger.getLogger(getClass().getName());
     protected Instruction instruction;
     protected boolean updateFlags;
-    protected final CodeScanner codeScanner;
+    protected CodeScanner codeScanner;
 
     protected DataMode dataMode;
     protected UpdateMode updateMode;
@@ -35,17 +32,31 @@ public class SourceInterpreter {
     protected StateContainer stateContainer;
 
     /**
-     * Création du lecteur du fichier *.s
-     * @param fileName L'adresse où se trouve le fichier
+     * Création du lecteur de code du fichier *.s
+     * @param file Le fichier
      * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
      */
-    public SourceInterpreter(URI fileName) throws FileNotFoundException {
-        SourceInterpreter.code = new ArrayList<>();
+    public SourceInterpreter(File file) throws FileNotFoundException {
 
-        File file = new File(fileName);
-        this.scanner = new Scanner(file);
-        readAndStoreFile();
-        this.codeScanner = new CodeScanner(SourceInterpreter.code);
+        updateFromFile(file);
+
+        this.instruction = null;
+        this.updateFlags = false;
+        this.updateMode = null;
+        this.conditionExec = null;
+        this.currentLine = "";
+        this.instructionString = "";
+        this.arguments = new ArrayList<>();
+        this.stateContainer = new StateContainer();
+    }
+
+    /**
+     * Création du lecteur de code du l'éditeur
+     * @param codeArea L'éditeyr depuis lequel récupérer le code
+     */
+    public SourceInterpreter(CodeArea codeArea) {
+
+        updateFromEditor(codeArea);
 
         this.instruction = null;
         this.updateFlags = false;
@@ -57,10 +68,30 @@ public class SourceInterpreter {
     }
 
     /**
-     * Crée une ArrayList dans laquelle se trouve le code pour pouvoir y sauter dans le programme
+     * Crée le CodeScanner qui lira le code contenu dans l'éditeur
      */
-    public void readAndStoreFile(){
-        while (this.scanner.hasNextLine()) SourceInterpreter.code.add(this.scanner.nextLine());
+    public void updateFromEditor(CodeArea codeArea) {
+        this.codeScanner = new CodeScanner(codeArea.getText());
+    }
+
+
+    public void exportToEditor(CodeArea codeArea) {
+        codeArea.clear();
+        codeArea.insertText(0, codeScanner.exportCode());
+    }
+
+    /**
+     * Crée le CodeScanner qui lira le code contenu dans le fichier
+     */
+    public void updateFromFile(File file) throws FileNotFoundException {
+        this.codeScanner = new CodeScanner(file);
+    }
+
+    /**
+     * Exporter le code dans un fichier
+     */
+    public void exportToFile(File savePath) throws FileNotFoundException {
+        codeScanner.exportCodeToFile(savePath);
     }
 
     /**
@@ -219,5 +250,4 @@ public class SourceInterpreter {
         }
 
     }
-
 }
