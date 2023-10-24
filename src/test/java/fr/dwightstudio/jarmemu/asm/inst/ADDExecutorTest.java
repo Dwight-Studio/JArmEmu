@@ -31,7 +31,7 @@ public class ADDExecutorTest {
         Register r2 = stateContainerBis.registers[2];
         r2.setData(20);
         addExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
-        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+        assertEquals(stateContainer.registers[0].getData(), r0.getData());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class ADDExecutorTest {
         Register r2 = stateContainerBis.registers[2];
         r2.setData(456);
         addExecutor.execute(stateContainerBis, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
-        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+        assertEquals(stateContainer.registers[0].getData(), r0.getData());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ADDExecutorTest {
         Register r1 = stateContainerBis.registers[1];
         r1.setData(456);
         addExecutor.execute(stateContainerBis, false, null, null, r0, r1, 0xFF00, ArgumentParsers.SHIFT.none());
-        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+        assertEquals(stateContainer.registers[0].getData(), r0.getData());
     }
 
     @Test

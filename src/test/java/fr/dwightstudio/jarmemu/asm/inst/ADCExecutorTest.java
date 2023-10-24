@@ -60,7 +60,7 @@ public class ADCExecutorTest {
         Register r2 = stateContainerBis.registers[2];
         r2.setData(456);
         adcExecutor.execute(stateContainerBis, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
-        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+        assertEquals(stateContainer.registers[0].getData(), r0.getData());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
         adcExecutor.execute(stateContainerBis, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
@@ -68,7 +68,7 @@ public class ADCExecutorTest {
         r1.setData(13);
         r2.setData(456);
         adcExecutor.execute(stateContainerBis, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
-        assertEquals(stateContainer.registers[0].getData(), stateContainerBis.registers[0].getData());
+        assertEquals(stateContainer.registers[0].getData(), r0.getData());
     }
 
     @Test
@@ -83,9 +83,6 @@ public class ADCExecutorTest {
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(0);
         adcExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        System.out.println("R0 = " + stateContainer.registers[0].getData());
-        System.out.println("R1 = " + stateContainer.registers[1].getData());
-        System.out.println("R2 = " + stateContainer.registers[2].getData());
         assertTrue(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
         assertFalse(stateContainer.cpsr.getC());
