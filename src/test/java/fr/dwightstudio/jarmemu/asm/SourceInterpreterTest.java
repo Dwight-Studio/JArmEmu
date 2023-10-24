@@ -13,9 +13,9 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SourceReaderTest {
+public class SourceInterpreterTest {
 
-    public SourceReaderTest() throws URISyntaxException {
+    public SourceInterpreterTest() throws URISyntaxException {
     }
 
     @BeforeEach
@@ -27,7 +27,7 @@ public class SourceReaderTest {
     public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
         URI fileURI = Objects.requireNonNull(getClass().getResource("/singleLine.s")).toURI();
 
-        SourceReader reader = new SourceReader(fileURI);
+        SourceInterpreter reader = new SourceInterpreter(fileURI);
 
         try {
             reader.readOneLine();
@@ -45,7 +45,7 @@ public class SourceReaderTest {
     public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
         URI fileURI = Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI();
 
-        SourceReader reader = new SourceReader(fileURI);
+        SourceInterpreter reader = new SourceInterpreter(fileURI);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
         reader.readOneLine();
@@ -79,7 +79,7 @@ public class SourceReaderTest {
         URI fileURI = Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI();
         ArrayList<String> arguments;
 
-        SourceReader reader = new SourceReader(fileURI);
+        SourceInterpreter reader = new SourceInterpreter(fileURI);
 
         arguments = new ArrayList<>(Arrays.asList("R0", "R9", "#2"));
         reader.readOneLine();

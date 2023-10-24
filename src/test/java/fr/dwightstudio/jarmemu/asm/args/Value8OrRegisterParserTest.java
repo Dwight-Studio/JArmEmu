@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ValueOrRegisterParserTest {
+public class Value8OrRegisterParserTest {
     private StateContainer stateContainer;
-    private static final ValueOrRegisterParser VALUE_OR_REGISTER = new ValueOrRegisterParser();
+    private static final Value8OrRegisterParser VALUE_OR_REGISTER = new Value8OrRegisterParser();
 
     @BeforeEach
     public void setUp() {

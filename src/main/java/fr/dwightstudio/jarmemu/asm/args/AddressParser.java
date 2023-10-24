@@ -7,10 +7,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-// Correspond à "mem", à utiliser avec ValueOrRegisterParser et ShiftParser
+// Correspond à "mem", à utiliser avec Value12OrRegisterParser et ShiftParser
 public class AddressParser implements ArgumentParser<AddressParser.UpdatableInteger> {
 
     protected static HashMap<StateContainer, Integer> updateValue = new HashMap<>();
+
+    public static void reset(StateContainer stateContainer) {
+        updateValue.remove(stateContainer);
+    }
 
     @Override
     public UpdatableInteger parse(@NotNull StateContainer stateContainer, @NotNull String string) {
@@ -19,6 +23,8 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
         }
 
         boolean updateNow = string.endsWith("!");
+
+        if (updateNow) string = string.substring(0, string.length() - 1);
 
         if (string.endsWith("]")) {
             String mem = string.substring(1, string.length() - 1);
@@ -29,7 +35,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
             if (mems.length == 1) {
                 return new UpdatableInteger(reg.getData(),
                         stateContainer,
-                        false,
+                        true,
                         updateNow,
                         reg);
 
@@ -90,7 +96,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
         }
 
         public void update() {
-            if (update) register.setData(updateValue.get(stateContainer));
+            if (update && updateValue.containsKey(stateContainer)) register.setData(updateValue.get(stateContainer));
             update = false;
         }
     }

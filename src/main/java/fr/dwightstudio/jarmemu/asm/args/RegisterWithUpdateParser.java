@@ -11,6 +11,10 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
     protected static HashMap<StateContainer, Integer> updateValue = new HashMap<>();
 
+    public static void reset(StateContainer stateContainer) {
+        updateValue.remove(stateContainer);
+    }
+
     @Override
     public UpdatableRegister parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         boolean update = false;

@@ -1,5 +1,10 @@
 package fr.dwightstudio.jarmemu.asm;
 
+import fr.dwightstudio.jarmemu.asm.args.AddressParser;
+import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
+import fr.dwightstudio.jarmemu.sim.StateContainer;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -8,9 +13,10 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SourceReader {
+public class SourceInterpreter {
 
     private static ArrayList<String> code;
 
@@ -26,19 +32,20 @@ public class SourceReader {
     protected String currentLine;
     protected String instructionString;
     protected ArrayList<String> arguments;
+    protected StateContainer stateContainer;
 
     /**
      * Création du lecteur du fichier *.s
      * @param fileName L'adresse où se trouve le fichier
      * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
      */
-    public SourceReader(URI fileName) throws FileNotFoundException {
-        SourceReader.code = new ArrayList<>();
+    public SourceInterpreter(URI fileName) throws FileNotFoundException {
+        SourceInterpreter.code = new ArrayList<>();
 
         File file = new File(fileName);
         this.scanner = new Scanner(file);
         readAndStoreFile();
-        this.codeScanner = new CodeScanner(SourceReader.code);
+        this.codeScanner = new CodeScanner(SourceInterpreter.code);
 
         this.instruction = null;
         this.updateFlags = false;
@@ -53,7 +60,7 @@ public class SourceReader {
      * Crée une ArrayList dans laquelle se trouve le code pour pouvoir y sauter dans le programme
      */
     public void readAndStoreFile(){
-        while (this.scanner.hasNextLine()) SourceReader.code.add(this.scanner.nextLine());
+        while (this.scanner.hasNextLine()) SourceInterpreter.code.add(this.scanner.nextLine());
     }
 
     /**
@@ -127,11 +134,12 @@ public class SourceReader {
     public void read(){
         while (this.codeScanner.hasNextLine()){
             readOneLine();
+            executeCurrentLine();
         }
     }
 
     /**
-     * Lecture d'une ligne et envoie des instructions
+     * Lecture d'une ligne
      */
     public void readOneLine() throws IllegalStateException {
         this.instruction = null;
@@ -145,6 +153,10 @@ public class SourceReader {
         currentLine = this.removeComments(currentLine);
         currentLine = this.removeBlanks(currentLine);
         currentLine = currentLine.toUpperCase();
+
+        // Remise à zéro des drapeaux de ligne des parsers
+        AddressParser.reset(this.stateContainer);
+        RegisterWithUpdateParser.reset(this.stateContainer);
 
         instructionString = currentLine.split(" ")[0];
         int instructionLength = instructionString.length();
@@ -179,6 +191,31 @@ public class SourceReader {
         } else if (!currentLine.endsWith(":")){
             this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
             this.arguments.replaceAll(String::strip);
+        }
+
+    }
+
+    /**
+     * Envoie des instructions se trouvant sur la ligne courante
+     */
+    public void executeCurrentLine() {
+        ArgumentParser[] argParsers = instruction.getArgParsers();
+        Object[] parsedArgs = new Object[4];
+
+        try {
+            for (int i = 0; i < 4; i++) {
+                try {
+                    parsedArgs[i] = argParsers[i].parse(stateContainer, arguments.get(i));
+                } catch (IndexOutOfBoundsException exception) {
+                    parsedArgs[i] = argParsers[i].none();
+                }
+            }
+        } catch (AssemblySyntaxException exception) {
+            logger.log(Level.SEVERE, ExceptionUtils.getStackTrace(exception));
+            // Erreur de syntaxe
+        } catch (Exception exception) {
+            logger.log(Level.SEVERE, ExceptionUtils.getStackTrace(exception));
+            // Erreur fatale
         }
 
     }
