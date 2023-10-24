@@ -14,7 +14,7 @@ public class ADCExecutor implements InstructionExecutor<Register, Register, Inte
         int shiftedValue = arg4.apply(arg3);
         int i1 = shiftedValue + carry;
 
-        arg1.setData(arg2.getData() + i1); // arg1 = arg2 + (arg4 SHIFT arg3)
+        arg1.setData(arg2.getData() + i1); // arg1 = arg2 + (arg4 SHIFT arg3) + carry
 
         if (updateFlags){
             stateContainer.cpsr.setN(arg1.getData() < 0);
