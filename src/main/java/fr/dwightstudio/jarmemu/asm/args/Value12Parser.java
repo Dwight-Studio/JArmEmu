@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
+import net.objecthunter.exp4j.tokenizer.UnknownFunctionOrVariableException;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "imm12"
@@ -34,22 +35,18 @@ public class Value12Parser implements ArgumentParser<Integer> {
                         throw new AssemblySyntaxException("Overflowing 12 bits value '" + string + "'");
                     return value;
                 } else {
-                    int value = Integer.parseInt(sign + valueString, 10);
+                    int value = stateContainer.eval(sign + valueString, stateContainer.consts);
                     if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
                         throw new AssemblySyntaxException("Overflowing 12 bits value '" + string + "'");
                     return value;
                 }
             } else if (string.startsWith("=")) {
                 String valueString = string.substring(1);
-                Integer value = stateContainer.symbols.get(valueString);
-                if (value == null) {
-                    throw new AssemblySyntaxException("Unknown symbol '" + valueString + "'");
-                }
-                return (int) value;
+                return stateContainer.eval(valueString, stateContainer.data);
             } else {
                 throw new AssemblySyntaxException("Invalid 12 bits value '" + string + "'");
             }
-        } catch (NumberFormatException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new AssemblySyntaxException("Invalid 12 bits value '" + string + "'");
         }
     }

@@ -10,6 +10,7 @@ module fr.dwightstudio.jarmemu {
     requires org.apache.commons.lang3;
     requires org.fxmisc.richtext;
     requires reactfx;
+    requires exp4j;
 
     opens fr.dwightstudio.jarmemu.gui to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui;

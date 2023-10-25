@@ -26,7 +26,7 @@ public class SourceInterpreterTest {
 
     @Test
     public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/singleLine.s").toExternalForm());
+        File file = new File(getClass().getResource("/singleLine.s").toURI());
 
         SourceInterpreter reader = new SourceInterpreter(file);
 
@@ -44,7 +44,7 @@ public class SourceInterpreterTest {
 
     @Test
     public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/normalLine.s").toExternalForm());
+        File file = new File(getClass().getResource("/normalLine.s").toURI());
 
         SourceInterpreter reader = new SourceInterpreter(file);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
@@ -77,7 +77,7 @@ public class SourceInterpreterTest {
 
     @Test
     public void TestReadInstructionComplexer() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/multipleLines.s").toExternalForm());
+        File file = new File(getClass().getResource("/multipleLines.s").toURI());
         ArrayList<String> arguments;
 
         SourceInterpreter reader = new SourceInterpreter(file);

@@ -1,11 +1,19 @@
 package fr.dwightstudio.jarmemu.sim;
 
+import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
 import java.util.HashMap;
 
 public class StateContainer {
 
     // ASM
-    public final HashMap<String, Integer> symbols; // HashMap des symbols càd des labels et des variables ASM (du .data)
+    public final HashMap<String, Integer> consts; // HashMap des constantes
+    public final HashMap<String, Integer> data; // HashMap des données
+    public final HashMap<String, Integer> labels; // HashMap des labels
+    private int lastSymbolLocation;
+
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -22,7 +30,10 @@ public class StateContainer {
     public StateContainer() {
 
         // ASM
-        symbols = new HashMap<>();
+        labels = new HashMap<>();
+        consts = new HashMap<>();
+        data = new HashMap<>();
+        lastSymbolLocation = 0;
 
         // Initializing registers
         this.registers = new Register[REGISTER_NUMBER];
@@ -37,14 +48,27 @@ public class StateContainer {
     }
 
     public void clearRegisters() {
-        for (int i = 0 ; i < REGISTER_NUMBER ; i ++) {
+        for (int i = 0; i < REGISTER_NUMBER; i++) {
             registers[i] = new Register();
         }
     }
 
     public void clearMemory() {
-        for (int i = 0 ; i < MEMORY_SIZE ; i ++) {
+        for (int i = 0; i < MEMORY_SIZE; i++) {
             memory[i] = (byte) 0;
         }
     }
+
+    public int eval(String expString, HashMap<String, Integer> map) {
+        try {
+            Expression exp = new ExpressionBuilder(expString).variables(map.keySet()).build();
+            for (String str : map.keySet()) {
+                exp.setVariable(str, (double) map.get(str));
+            }
+            return (int) exp.evaluate();
+        } catch (IllegalArgumentException exception) {
+            throw new AssemblySyntaxException("Malformed math expression '" + expString + "'");
+        }
+    }
+
 }
