@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class Value12Parser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+        // TODO: Ajout du support des symbols et des calculs
         try {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1);
