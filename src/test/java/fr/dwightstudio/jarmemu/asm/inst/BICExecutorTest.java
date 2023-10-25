@@ -9,29 +9,29 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ORRExecutorTest {
+public class BICExecutorTest {
 
     private StateContainer stateContainer;
     private StateContainer stateContainerBis;
-    private ORRExecutor orrExecutor;
+    private BICExecutor bicExecutor;
 
     @BeforeEach
     public void setUp() {
         stateContainer = new StateContainer();
         stateContainerBis = new StateContainer();
-        orrExecutor = new ORRExecutor();
+        bicExecutor = new BICExecutor();
     }
 
     @Test
-    public void simpleOrrTest() {
-        stateContainer.registers[0].setData(0b00000000000000000000000011111111);
+    public void simpleBicTest() {
+        stateContainer.registers[0].setData(0b00000000000000000000000011111100);
         Register r0 = stateContainerBis.registers[0];
         r0.setData(99);
         Register r1 = stateContainerBis.registers[1];
-        r1.setData(0b00000000000000000000000011010111);
+        r1.setData(0b00000000000000000000000011111111);
         Register r2 = stateContainerBis.registers[2];
-        r2.setData(0b00000000000000000000000000101011);
-        orrExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        r2.setData(0b00000000000000000000000000000011);
+        bicExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(stateContainer.registers[0].getData(), r0.getData());
     }
 
@@ -40,15 +40,15 @@ public class ORRExecutorTest {
         Register r0 = stateContainer.registers[0];
         Register r1 = stateContainer.registers[1];
         Register r2 = stateContainer.registers[2];
-        r0.setData(0b00000000000000011111111111111111);
-        r1.setData(0b11111111111111100000000000000000);
-        orrExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        assertEquals(-1, r2.getData());
+        r0.setData(0b11111111111111100000000000000000);
+        r1.setData(0b00000000000000011111111111111111);
+        bicExecutor.execute(stateContainer, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        assertEquals(0b11111111111111100000000000000000, r2.getData());
         assertTrue(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
-        r0.setData(0);
-        r1.setData(0);
-        orrExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        r0.setData(0b11111111111111111111111111111111);
+        r1.setData(0b11111111111111111111111111111111);
+        bicExecutor.execute(stateContainer, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.cpsr.getN());
         assertTrue(stateContainer.cpsr.getZ());

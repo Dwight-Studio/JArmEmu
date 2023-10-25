@@ -22,7 +22,7 @@ public class ADCExecutorTest {
     }
 
     @Test
-    public void simpleAddTest() {
+    public void simpleAdcTest() {
         stateContainer.registers[0].setData(25);
         Register r0 = stateContainerBis.registers[0];
         r0.setData(99);

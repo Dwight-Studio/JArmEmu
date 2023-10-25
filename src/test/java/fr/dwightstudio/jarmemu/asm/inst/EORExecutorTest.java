@@ -23,7 +23,7 @@ public class EORExecutorTest {
     }
 
     @Test
-    public void simpleAndTest() {
+    public void simpleEorTest() {
         stateContainer.registers[0].setData(0b00000000000000000000000010111100);
         Register r0 = stateContainerBis.registers[0];
         r0.setData(99);
