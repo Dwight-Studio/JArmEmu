@@ -1,5 +1,6 @@
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.sim;
 
+import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
@@ -72,6 +73,7 @@ public class SourceInterpreter {
      */
     public void updateFromEditor(CodeArea codeArea) {
         this.codeScanner = new CodeScanner(codeArea.getText());
+        this.stateContainer = new StateContainer();
     }
 
 
@@ -85,6 +87,28 @@ public class SourceInterpreter {
      */
     public void updateFromFile(File file) throws FileNotFoundException {
         this.codeScanner = new CodeScanner(file);
+        this.stateContainer = new StateContainer();
+    }
+
+    /**
+     * Réinitialise l'état actuel du simulateur
+     */
+    public void resetState() {
+        this.stateContainer = new StateContainer();
+    }
+
+    /**
+     * Revient à la première ligne
+     */
+    public void restart() {
+        this.codeScanner.goTo(0);
+    }
+
+    /**
+     * @return la ligne actuellement interprétée
+     */
+    public int getCurrentLine() {
+        return codeScanner.getCurrentInstructionValue();
     }
 
     /**

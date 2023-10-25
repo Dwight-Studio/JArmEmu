@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.gui;
 
-import fr.dwightstudio.jarmemu.asm.SourceInterpreter;
+import fr.dwightstudio.jarmemu.sim.SourceInterpreter;
+import fr.dwightstudio.jarmemu.sim.StateContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +13,6 @@ import org.fxmisc.richtext.CodeArea;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -22,6 +22,10 @@ public class JAREmuController implements Initializable {
     public JArmEmuApplication application;
     public EditorManager editorManager;
     public File savePath = null;
+
+    int tmp = 0;
+
+    public static final String DATA_FORMAT = "%08x";
 
     @FXML
     protected CodeArea codeArea;
@@ -34,6 +38,28 @@ public class JAREmuController implements Initializable {
     @FXML protected Button restart;
     @FXML protected Button reset;
 
+    @FXML protected Label R0;
+    @FXML protected Label R1;
+    @FXML protected Label R2;
+    @FXML protected Label R3;
+    @FXML protected Label R4;
+    @FXML protected Label R5;
+    @FXML protected Label R6;
+    @FXML protected Label R7;
+    @FXML protected Label R8;
+    @FXML protected Label R9;
+    @FXML protected Label R10;
+    @FXML protected Label R11;
+    @FXML protected Label R12;
+    @FXML protected Label R13;
+    @FXML protected Label R14;
+    @FXML protected Label R15;
+    @FXML protected Label CPSR;
+    @FXML protected Label CPSRT;
+    @FXML protected Label SPSR;
+    @FXML protected Label SPSRT;
+
+    protected Label[] registers = new Label[]{R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15};
 
     public void init(JArmEmuApplication application) {
         this.application = application;
@@ -81,7 +107,7 @@ public class JAREmuController implements Initializable {
                     application.setSaved();
                 });
             } catch (IOException exception) {
-                new ExceptionDialog(exception);
+                new ExceptionDialog(exception).show();
             }
         }
     }
@@ -110,7 +136,7 @@ public class JAREmuController implements Initializable {
                     application.setSaved();
                 });
             } catch (FileNotFoundException exception) {
-                new ExceptionDialog(exception);
+                new ExceptionDialog(exception).show();
             }
         }
     }
@@ -122,6 +148,9 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onSimulate() {
+        editorManager.registerLines();
+        application.sourceInterpreter.updateFromEditor(codeArea);
+        application.sourceInterpreter.resetState();
         codeArea.setDisable(true);
         simulate.setDisable(true);
         stepInto.setDisable(false);
@@ -163,6 +192,7 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onStop() {
+        codeArea.deselect();
         codeArea.setDisable(false);
         simulate.setDisable(false);
         stepInto.setDisable(true);
@@ -176,9 +206,20 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onRestart() {
+        application.sourceInterpreter.restart();
     }
 
     @FXML
     public void onReset() {
+        application.sourceInterpreter.resetState();
+    }
+
+    public void updateRegisters(StateContainer stateContainer) {
+        for (int i = 0; i < 16; i++) {
+            registers[i].setText(String.format(DATA_FORMAT, stateContainer.registers[i].getData()));
+        }
+
+        CPSR.setText(String.format(DATA_FORMAT, stateContainer.cpsr.getData()));
+        SPSR.setText(String.format(DATA_FORMAT, stateContainer.spsr.getData()));
     }
 }

@@ -1,16 +1,20 @@
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.sim;
 
+import fr.dwightstudio.jarmemu.asm.Condition;
+import fr.dwightstudio.jarmemu.asm.DataMode;
+import fr.dwightstudio.jarmemu.asm.Instruction;
+import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.sim.SourceInterpreter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,7 +54,7 @@ public class SourceInterpreterTest {
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
         reader.readOneLine();
-        assertEquals(Instruction.LDR, reader.instruction);
+        Assertions.assertEquals(Instruction.LDR, reader.instruction);
         assertNull(reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
@@ -59,7 +63,7 @@ public class SourceInterpreterTest {
 
         reader.readOneLine();
         assertEquals(Instruction.LDR, reader.instruction);
-        assertEquals(Condition.CC, reader.conditionExec);
+        Assertions.assertEquals(Condition.CC, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -68,7 +72,7 @@ public class SourceInterpreterTest {
         reader.readOneLine();
         assertEquals(Instruction.LDR, reader.instruction);
         assertEquals(Condition.EQ, reader.conditionExec);
-        assertEquals(DataMode.BYTE, reader.dataMode);
+        Assertions.assertEquals(DataMode.BYTE, reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
@@ -132,7 +136,7 @@ public class SourceInterpreterTest {
         assertEquals(Instruction.STM, reader.instruction);
         assertNull(reader.conditionExec);
         assertNull(reader.dataMode);
-        assertEquals(UpdateMode.FD, reader.updateMode);
+        Assertions.assertEquals(UpdateMode.FD, reader.updateMode);
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 

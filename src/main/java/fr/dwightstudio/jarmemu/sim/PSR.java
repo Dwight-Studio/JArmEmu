@@ -53,8 +53,19 @@ public class PSR extends Register {
     public void setT(boolean value) {
         this.set(5, value);
     }
+
     public boolean getT() {
         return this.get(5);
     }
 
+    @Override
+    public String toString() {
+        return (getN() ? "N" : "") +
+                (getZ() ? "Z" : "") +
+                (getC() ? "C" : "") +
+                (getV() ? "V" : "") +
+                (getI() ? "I" : "") +
+                (getF() ? "F" : "") +
+                (getT() ? "T" : "");
+    }
 }

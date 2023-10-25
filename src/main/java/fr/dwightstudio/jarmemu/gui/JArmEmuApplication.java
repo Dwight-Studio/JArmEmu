@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.gui;
 
-import fr.dwightstudio.jarmemu.asm.Instruction;
-import fr.dwightstudio.jarmemu.asm.SourceInterpreter;
+import fr.dwightstudio.jarmemu.sim.SourceInterpreter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -10,8 +9,6 @@ import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class JArmEmuApplication extends Application {
 

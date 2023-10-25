@@ -53,6 +53,7 @@ public class EditorManager {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private CodeArea codeArea;
     private JArmEmuApplication application;
+    private int[] lineIndex;
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
         Matcher matcher = PATTERN.matcher(text);
@@ -149,6 +150,22 @@ public class EditorManager {
     public void newFile() {
         codeArea.clear();
         codeArea.replaceText(0, 0, sampleCode);
+    }
+
+    public void registerLines() {
+        String[] lines = codeArea.getText().split("\n");
+        lineIndex = new int[lines.length];
+        int p = 0;
+        for (int i = 0; i < lines.length; i++) {
+            p += lines[i].length();
+            lineIndex[i] = p;
+        }
+    }
+
+    public void markLineAsExecuted(int line) {
+        if (line >= lineIndex.length) return;
+        codeArea.selectRange(lineIndex[line] - 2, lineIndex[line] - 1);
+        codeArea.selectLine();
     }
 
     private Task<StyleSpans<Collection<String>>> computeHighlightingAsync() {
