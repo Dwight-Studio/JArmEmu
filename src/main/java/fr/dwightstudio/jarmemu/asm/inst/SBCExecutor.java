@@ -20,7 +20,7 @@ public class SBCExecutor implements InstructionExecutor<Register, Register, Inte
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
             stateContainer.cpsr.setC(MathUtils.hasCarry(arg2.getData(), -i1) || MathUtils.hasCarry(shiftedValue, carry));
-            stateContainer.cpsr.setV(MathUtils.hasOverflow(arg2.getData(), -i1) || MathUtils.hasCarry(shiftedValue, carry));
+            stateContainer.cpsr.setV(MathUtils.hasOverflow(arg2.getData(), -i1) || MathUtils.hasOverflow(shiftedValue, carry));
         }
     }
 }
