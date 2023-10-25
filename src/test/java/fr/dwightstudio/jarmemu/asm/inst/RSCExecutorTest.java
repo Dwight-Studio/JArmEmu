@@ -22,7 +22,7 @@ public class RSCExecutorTest {
     }
 
     @Test
-    public void simpleSbcTest() {
+    public void simpleRscTest() {
         stateContainer.registers[0].setData(-16);
         Register r0 = stateContainerBis.registers[0];
         r0.setData(99);

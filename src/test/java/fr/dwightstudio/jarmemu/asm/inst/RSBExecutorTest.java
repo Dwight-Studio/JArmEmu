@@ -22,7 +22,7 @@ public class RSBExecutorTest {
     }
 
     @Test
-    public void simpleSubTest() {
+    public void simpleRsbTest() {
         stateContainer.registers[0].setData(-15);
         Register r0 = stateContainerBis.registers[0];
         r0.setData(99);
