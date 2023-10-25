@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.gui;
 
+import fr.dwightstudio.jarmemu.sim.CodeExecutor;
 import fr.dwightstudio.jarmemu.sim.SourceInterpreter;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -17,6 +18,7 @@ public class JArmEmuApplication extends Application {
     public JAREmuController controller;
     public EditorManager editorManager;
     public SourceInterpreter sourceInterpreter;
+    public CodeExecutor codeExecutor;
 
     public Stage stage;
     private boolean unsaved = true;
@@ -32,6 +34,7 @@ public class JArmEmuApplication extends Application {
         controller.init(this);
         editorManager = new EditorManager();
         controller.editorManager = editorManager;
+        codeExecutor = new CodeExecutor(this);
 
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());

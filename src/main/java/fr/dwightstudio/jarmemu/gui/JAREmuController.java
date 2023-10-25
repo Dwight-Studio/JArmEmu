@@ -164,6 +164,7 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onStepInto() {
+        application.codeExecutor.execute(application.codeExecutor.stepInto);
     }
 
     @FXML
