@@ -16,6 +16,7 @@ import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.Subscription;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -128,7 +129,7 @@ public class EditorManager {
         });
 
         Subscription cleanupWhenFinished = codeArea.multiPlainChanges()
-                //.successionEnds(Duration.ofMillis(500))
+                .successionEnds(Duration.ofMillis(50))
                 .retainLatestUntilLater(executor)
                 .supplyTask(this::computeHighlightingAsync)
                 .awaitLatest(codeArea.multiPlainChanges())
