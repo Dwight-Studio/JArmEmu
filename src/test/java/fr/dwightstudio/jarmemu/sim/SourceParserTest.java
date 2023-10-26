@@ -54,7 +54,7 @@ public class SourceParserTest {
 
         reader.readOneLineASM();
         Assertions.assertEquals(Instruction.LDR, reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -62,7 +62,7 @@ public class SourceParserTest {
 
         reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
-        Assertions.assertEquals(Condition.CC, reader.conditionExec);
+        assertEquals(Condition.CC, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -76,6 +76,21 @@ public class SourceParserTest {
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 
+    }
+
+    @Test
+    public void TestReadInstructionSub() throws URISyntaxException, FileNotFoundException {
+        File file = new File(getClass().getResource("/subLine.s").toURI());
+        ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R2", "R0", "R1"));
+
+        SourceParser reader = new SourceParser(file);
+        reader.readOneLineASM();
+        assertEquals(Instruction.SUB, reader.instruction);
+        assertEquals(Condition.AL, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
     }
 
     @Test
@@ -124,7 +139,7 @@ public class SourceParserTest {
         arguments = new ArrayList<>(Arrays.asList("R0", "=X"));
         reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertEquals(DataMode.BYTE, reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -133,7 +148,7 @@ public class SourceParserTest {
         arguments = new ArrayList<>(Arrays.asList("SP!","{R0,R1,R2}"));
         reader.readOneLineASM();
         assertEquals(Instruction.STM, reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
         Assertions.assertEquals(UpdateMode.FD, reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -151,7 +166,7 @@ public class SourceParserTest {
         arguments = new ArrayList<>(List.of("CECIESTUNEETIQUETTE:"));
         reader.readOneLineASM();
         assertNull(reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
