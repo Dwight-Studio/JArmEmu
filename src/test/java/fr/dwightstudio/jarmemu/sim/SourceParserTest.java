@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +48,7 @@ public class SourceParserTest {
 
     @Test
     public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/normalLine.s").toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
 
         SourceParser reader = new SourceParser(file);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
@@ -80,7 +81,7 @@ public class SourceParserTest {
 
     @Test
     public void TestReadInstructionSub() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/subLine.s").toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R2", "R0", "R1"));
 
         SourceParser reader = new SourceParser(file);
@@ -95,7 +96,7 @@ public class SourceParserTest {
 
     @Test
     public void TestReadInstructionComplexer() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/multipleLines.s").toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
         ArrayList<String> arguments;
 
         SourceParser reader = new SourceParser(file);
