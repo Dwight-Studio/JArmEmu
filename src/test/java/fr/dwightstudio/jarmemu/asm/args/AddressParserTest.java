@@ -17,7 +17,6 @@ class AddressParserTest {
     private StateContainer stateContainer;
     private static final AddressParser ADDRESS = new AddressParser();
     private static final ShiftParser SHIFT = new ShiftParser();
-    private static final Value12OrRegisterParser VALUE_12_OR_REGISTER = new Value12OrRegisterParser();
     private boolean testR4 = true;
 
     @BeforeEach

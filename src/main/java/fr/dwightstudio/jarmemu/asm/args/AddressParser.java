@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 // Correspond à "mem", à utiliser avec Value12OrRegisterParser et ShiftParser
 public class AddressParser implements ArgumentParser<AddressParser.UpdatableInteger> {
-
+//TODO: corriger ça
     protected static HashMap<StateContainer, Integer> updateValue = new HashMap<>();
 
     public static void reset(StateContainer stateContainer) {

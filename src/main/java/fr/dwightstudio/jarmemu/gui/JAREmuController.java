@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.richtext.CodeArea;
 
@@ -22,6 +23,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class JAREmuController implements Initializable {
@@ -285,6 +287,7 @@ public class JAREmuController implements Initializable {
 
     public void addError(AssemblyError error) {
         addNotif("[ln " + error.getLine() + "] Syntax Error:", error.getException().getMessage(), "danger");
+        logger.log(Level.FINEST, ExceptionUtils.getStackTrace(error.getException()));
     }
 
     public void clearNotifs() {

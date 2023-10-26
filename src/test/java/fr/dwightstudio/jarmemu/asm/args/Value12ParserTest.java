@@ -20,7 +20,7 @@ public class Value12ParserTest {
 
     @Test
     void decTest() {
-        assertEquals(16, VALUE12.parse(stateContainer,"#0x10"));
+        assertEquals(16, VALUE12.parse(stateContainer,"#0X10"));
         assertEquals(87, VALUE12.parse(stateContainer,"#87"));
         assertEquals(397, VALUE12.parse(stateContainer,"#397"));
         assertEquals(-744, VALUE12.parse(stateContainer,"#-744"));
@@ -61,7 +61,7 @@ public class Value12ParserTest {
     @Test
     void failTest() {
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#udhad"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0b0xff"));
+        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0B0xff"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#7440b"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"# 0b01"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#"));

@@ -33,18 +33,20 @@ public class EditorManager {
     private static final String[] CONDITIONS = getFromEnum(Condition.values(), true);
     private static final String[] DATA_MODES = getFromEnum(DataMode.values(), true);
     private static final String[] UPDATE_MODES = getFromEnum(UpdateMode.values(), true);
+    private static final String[] SHIFTS = new String[]{"LSL", "LSR", "ASR", "ROR", "RRX"};
     private static final String[] UPDATE_FLAG = new String[]{"S", ""};
 
     private static final String INSTRUCTION_PATTERN = "\\b(?i)(" + String.join("|", INSTRUCTIONS) + ")(" + String.join("|", CONDITIONS) + ")((" + String.join("|", DATA_MODES) + ")|(" + String.join("|", UPDATE_FLAG) + ")|(" + String.join("|", UPDATE_MODES) + "))\\b";
     private static final String KEYWORD_PATTERN = "\\.\\b(?i)(" + String.join("|", KEYWORDS) + ")(?-i)\\b";
     private static final String REGISTER_PATTERN = "\\b(?i)(" + String.join("|", REGISTERS) + ")(?-i)\\b";
+    private static final String SHIFT_PATTERN = "\\b(?i)(" + String.join("|", SHIFTS) + ")(?-i)\\b";
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
     private static final String LABEL_PATTERN = "[A-Za-z_0-9]+:";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final String COMMENT_PATTERN = "@[^\n]*";
     private static final String IMM_PATTERN = "=[^\n]*|#[^\n]*";
-    private static final Pattern PATTERN = Pattern.compile("(?<KEYWORD>" + KEYWORD_PATTERN + ")" + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")" + "|(?<REGISTER>" + REGISTER_PATTERN + ")" + "|(?<BRACE>" + BRACE_PATTERN + ")" + "|(?<BRACKET>" + BRACKET_PATTERN + ")" + "|(?<LABEL>" + LABEL_PATTERN + ")" + "|(?<STRING>" + STRING_PATTERN + ")" + "|(?<COMMENT>" + COMMENT_PATTERN + ")" + "|(?<IMM>" + IMM_PATTERN + ")");
+    private static final Pattern PATTERN = Pattern.compile("(?<SHIFT>" + SHIFT_PATTERN + ")" + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")" + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")" + "|(?<REGISTER>" + REGISTER_PATTERN + ")" + "|(?<IMM>" + IMM_PATTERN + ")" + "|(?<BRACE>" + BRACE_PATTERN + ")" + "|(?<BRACKET>" + BRACKET_PATTERN + ")" + "|(?<LABEL>" + LABEL_PATTERN + ")" + "|(?<STRING>" + STRING_PATTERN + ")" + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
     private static final String sampleCode = String.join("\n", new String[]{".text", ".global _start", "_start:", "\t"});
 
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -59,7 +61,7 @@ public class EditorManager {
         int lastKwEnd = 0;
         StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
         while (matcher.find()) {
-            String styleClass = matcher.group("INSTRUCTION") != null ? "instruction" : matcher.group("KEYWORD") != null ? "keyword" : matcher.group("REGISTER") != null ? "register" : matcher.group("BRACE") != null ? "brace" : matcher.group("BRACKET") != null ? "bracket" : matcher.group("LABEL") != null ? "label" : matcher.group("STRING") != null ? "string" : matcher.group("COMMENT") != null ? "comment" :  matcher.group("IMM") != null ? "imm" : null; /* never happens */
+            String styleClass = matcher.group("INSTRUCTION") != null ? "instruction" : matcher.group("KEYWORD") != null ? "keyword" : matcher.group("SHIFT") != null ? "shift" : matcher.group("REGISTER") != null ? "register" : matcher.group("BRACE") != null ? "brace" : matcher.group("BRACKET") != null ? "bracket" : matcher.group("LABEL") != null ? "label" : matcher.group("STRING") != null ? "string" : matcher.group("COMMENT") != null ? "comment" :  matcher.group("IMM") != null ? "imm" : null; /* never happens */
             assert styleClass != null;
             spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
             spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());

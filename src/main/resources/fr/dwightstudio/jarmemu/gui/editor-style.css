@@ -30,6 +30,9 @@
 .imm {
     -fx-fill: #329d61;
 }
+.shift {
+    -fx-fill: #9d3257;
+}
 
 .paragraph-box:has-caret {
     -fx-background-color: #ffffff;
