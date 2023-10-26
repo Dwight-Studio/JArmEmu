@@ -124,7 +124,7 @@ public class SourceParser {
         } else if (instructionString.endsWith("H")) {
             dataMode = DataMode.HALF_WORD;
             instructionString = instructionString.substring(0, instructionString.length()-1);
-        } else if (instructionString.endsWith("B") && ((!instructionString.endsWith("SUB") && !instructionString.endsWith("RSB")))) {
+        } else if (instructionString.endsWith("B") && ((!instructionString.equals("SUB") && !instructionString.equals("RSB")))) {
             dataMode = DataMode.BYTE;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.length()==7 || instructionString.length()==5) {
