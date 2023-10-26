@@ -9,7 +9,10 @@ import fr.dwightstudio.jarmemu.sim.StateContainer;
 public class TEQExecutor implements InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Integer arg2, ShiftParser.ShiftFunction arg3, Object arg4) {
-        //TODO: Faire l'instruction TEQ
-        throw new IllegalStateException("Instruction TEQ not implemented");
+        int i1 = arg3.apply(arg2);
+        int result = arg1.getData() ^ i1; // result = arg1 ^ (arg3 SHIFT arg2)
+
+        stateContainer.cpsr.setN(result < 0);
+        stateContainer.cpsr.setZ(result == 0);
     }
 }

@@ -236,7 +236,7 @@ public class JAREmuController implements Initializable {
         label.getStyleClass().add("alert-danger");
         notif.getChildren().add(label);
 
-        Platform.runLater();
+        //Platform.runLater();
 
         return label;
     }
