@@ -126,4 +126,11 @@ public class CodeInterpreter {
     public boolean isAtTheEnd() {
         return atTheEnd;
     }
+
+    /**
+     * @return le numéro de la ligne courante
+     */
+    public int getCurrentLine() {
+        return currentLine;
+    }
 }
