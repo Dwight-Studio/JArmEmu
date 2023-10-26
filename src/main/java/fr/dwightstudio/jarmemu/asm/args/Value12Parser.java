@@ -16,13 +16,13 @@ public class Value12Parser implements ArgumentParser<Integer> {
                 String sign = valueString.startsWith("-") ? "-" : "";
                 if (valueString.startsWith("-")) valueString = valueString.substring(1);
 
-                if (valueString.startsWith("0b")) {
+                if (valueString.startsWith("0B")) {
                     valueString = valueString.substring(2);
                     int value = Integer.parseInt(sign + valueString, 2);
                     if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
                         throw new AssemblySyntaxException("Overflowing 12 bits value '" + string + "'");
                     return value;
-                } else if (valueString.startsWith("0x")) {
+                } else if (valueString.startsWith("0X")) {
                     valueString = valueString.substring(2);
                     int value = Integer.parseInt(sign + valueString, 16);
                     if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
