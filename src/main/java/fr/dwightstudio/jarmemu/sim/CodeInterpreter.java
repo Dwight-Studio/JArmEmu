@@ -28,10 +28,10 @@ public class CodeInterpreter {
 
     /**
      * Charge des instructions parsés dans l'exécuteur
-     * @param instructions les instructions parsés
+     * @param sourceParser le parseur de source utilisé
      */
-    public void load(HashMap<Integer, ParsedInstruction> instructions) {
-        this.instructions = instructions;
+    public void load(SourceParser sourceParser) {
+        this.instructions = sourceParser.parse(stateContainer);
         currentLine = 0;
         lastLine = getLastLine();
         this.atTheEnd = false;
@@ -50,6 +50,17 @@ public class CodeInterpreter {
         }
 
         return rtn.toArray(AssemblyError[]::new);
+    }
+
+    /**
+     * Enregistre les labels dans le conteur d'états
+     */
+    public void registerLabels() {
+        for (Map.Entry<Integer, ParsedInstruction> inst : instructions.entrySet()) {
+            if (inst.getValue().isLabel()) {
+                inst.getValue().execute(stateContainer);
+            }
+        }
     }
 
     /**
@@ -87,6 +98,7 @@ public class CodeInterpreter {
      */
     public void resetState() {
         this.stateContainer = new StateContainer();
+        registerLabels();
     }
 
     /**

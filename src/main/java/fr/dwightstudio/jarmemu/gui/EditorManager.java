@@ -45,7 +45,7 @@ public class EditorManager {
     private static final String LABEL_PATTERN = "[A-Za-z_0-9]+:";
     private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"";
     private static final String COMMENT_PATTERN = "@[^\n]*";
-    private static final String IMM_PATTERN = "=[^\n]*|#[^\n]*";
+    private static final String IMM_PATTERN = "=[^\n]*|#[^\n\\]]*";
     private static final Pattern PATTERN = Pattern.compile("(?<SHIFT>" + SHIFT_PATTERN + ")" + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")" + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")" + "|(?<REGISTER>" + REGISTER_PATTERN + ")" + "|(?<IMM>" + IMM_PATTERN + ")" + "|(?<BRACE>" + BRACE_PATTERN + ")" + "|(?<BRACKET>" + BRACKET_PATTERN + ")" + "|(?<LABEL>" + LABEL_PATTERN + ")" + "|(?<STRING>" + STRING_PATTERN + ")" + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
     private static final String sampleCode = String.join("\n", new String[]{".text", ".global _start", "_start:", "\t"});
 

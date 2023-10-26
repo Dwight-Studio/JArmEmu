@@ -161,7 +161,7 @@ public class JAREmuController implements Initializable {
     @FXML
     public void onSimulate() {
         application.sourceParser.updateFromEditor(codeArea);
-        application.codeInterpreter.load(application.sourceParser.parse());
+        application.codeInterpreter.load(application.sourceParser);
         application.codeInterpreter.resetState();
         application.codeInterpreter.restart();
 
@@ -287,7 +287,7 @@ public class JAREmuController implements Initializable {
 
     public void addError(AssemblyError error) {
         addNotif("[ln " + error.getLine() + "] Syntax Error:", error.getException().getMessage(), "danger");
-        logger.log(Level.FINEST, ExceptionUtils.getStackTrace(error.getException()));
+        logger.log(Level.INFO, ExceptionUtils.getStackTrace(error.getException()));
     }
 
     public void clearNotifs() {

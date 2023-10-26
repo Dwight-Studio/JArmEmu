@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SourceParser {
 
@@ -161,13 +163,15 @@ public class SourceParser {
     /**
      * Méthode principale
      * Lecture du fichier et renvoie des instructions parsés à verifier
+     *
+     * @param stateContainer conteneur d'état sur lequel parser
      */
-    public HashMap<Integer, ParsedInstruction> parse(){
+    public HashMap<Integer, ParsedInstruction> parse(StateContainer stateContainer){
         HashMap<Integer, ParsedInstruction> rtn = new HashMap<>();
 
         sourceScanner.goTo(-1);
         while (this.sourceScanner.hasNextLine()){
-            ParsedInstruction inst = parseOneLine();
+            ParsedInstruction inst = parseOneLine(stateContainer);
             if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
         }
 
@@ -206,38 +210,57 @@ public class SourceParser {
             if (this.instruction == null) throw new AssemblySyntaxException("Unknown instruction '" + instructionString + "'");
         }
 
-        if (currentLine.contains("{")){
+        if (currentLine.contains("{")) { // On pouvais utiliser des regex
             StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
             argument.deleteCharAt(0);
             argument.deleteCharAt(argument.length() - 1);
             ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
             argumentArray.replaceAll(String::strip);
             argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
-            for (String arg:argumentArray) {
+            for (String arg : argumentArray) {
                 argument.append(arg).append(",");
             }
             argument.deleteCharAt(argument.length() - 1);
             argument.append("}");
             this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
             this.arguments.replaceAll(String::strip);
-        } else if (!currentLine.endsWith(":")){
+        } else if (currentLine.contains("[")) {
+            Pattern addressPattern = Pattern.compile("([^\\[]*)(\\[[^\\]]*\\])([^\\n]*)");
+            logger.info(addressPattern.pattern());
+            logger.info("'" + currentLine + "'");
+            Matcher matcher = addressPattern.matcher(currentLine);
+            String before = matcher.group(0);
+            String address = matcher.group(1);
+            this.arguments.addAll(Arrays.asList(before.split(",")));
+            this.arguments.add(address);
+            if (matcher.groupCount() == 2) {
+                this.arguments.addAll(Arrays.asList(matcher.group(2).split(",")));
+            }
+        } else if (!(currentLine.endsWith(":"))) {
             this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
             this.arguments.replaceAll(String::strip);
         }
+
+        if (arguments.size() > 4) throw new AssemblySyntaxException("Invalid instruction '" + currentLine + "' (too many arguments");
     }
 
     /**
      * Lecture d'une ligne et teste de tous ses arguments
      * @return une ParsedInstruction à verifier.
      */
-    public ParsedInstruction parseOneLine() {
+    public ParsedInstruction parseOneLine(StateContainer stateContainer) {
         try {
             readOneLineASM();
         } catch (AssemblySyntaxException exception) {
             //TODO: Gérer les exceptions après avoir géré les Pseudo-OP
         }
 
-        if (this.instruction == null) return null;
+        if (this.instruction == null) {
+            if (!arguments.isEmpty() && arguments.get(0).endsWith(":")) {
+                String str = arguments.get(0);
+                return ParsedInstruction.ofLabel(str.substring(0, str.length()-1), getCurrentLine());
+            }
+        }
 
         String arg1 = null;
         String arg2 = null;
