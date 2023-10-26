@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.gui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -40,8 +41,10 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
     private static final Paint DEFAULT_TEXT_FILL = Color.web("#858585");
     private static final Font DEFAULT_FONT = Font.font("monospace", FontPosture.REGULAR, 12.0);
     private static final Background DEFAULT_BACKGROUND =  new Background(new BackgroundFill(Color.web("#FFFFFF"), null, null));
+    private static final Background EXECUTED_BACKGROUND =  new Background(new BackgroundFill(Color.web("#a7ff8a"), null, null));
 
-    public static ArrayList<Integer> breakpoints = new ArrayList<>();
+    public ArrayList<Integer> breakpoints = new ArrayList<>();
+    public HashMap<Integer, Consumer<Boolean>> nums = new HashMap<>();
 
     @Override
     public Node apply(int idx) {
@@ -56,6 +59,9 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
         lineNo.setText(String.format("%d", idx));
         lineNo.setMinWidth(32);
         lineNo.setMaxWidth(32);
+        nums.put(idx, (b) -> {
+            if (b) lineNo.setBackground(EXECUTED_BACKGROUND); else lineNo.setBackground(DEFAULT_BACKGROUND);
+        });
 
         Label breakpoint = new Label();
         breakpoint.setFont(DEFAULT_FONT);
@@ -83,6 +89,4 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
         if (breakpoints.contains(id)) breakpoints.remove((Integer) id); else breakpoints.add(id);
         if (breakpoints.contains(id)) label.setText("⬤"); else label.setText("");
     }
-
-    private void none() {}
 }

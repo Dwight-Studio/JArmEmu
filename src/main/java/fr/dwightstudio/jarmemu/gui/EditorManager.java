@@ -54,7 +54,7 @@ public class EditorManager {
     private ExecutorService executor = Executors.newSingleThreadExecutor();
     private CodeArea codeArea;
     private JArmEmuApplication application;
-    private int[] lineIndex;
+    private JARMEmuLineFactory lineFactory;
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
         Matcher matcher = PATTERN.matcher(text);
@@ -89,7 +89,9 @@ public class EditorManager {
         this.codeArea = application.controller.codeArea;
         this.executor = Executors.newSingleThreadExecutor();
 
-        codeArea.setParagraphGraphicFactory(new JARMEmuLineFactory());
+        this.lineFactory = new JARMEmuLineFactory();
+
+        codeArea.setParagraphGraphicFactory(lineFactory);
         codeArea.setContextMenu(new DefaultContextMenu(codeArea));
 
         // auto-indent: insert previous line's indents on enter
@@ -153,20 +155,13 @@ public class EditorManager {
         codeArea.replaceText(0, 0, sampleCode);
     }
 
-    public void registerLines() {
-        String[] lines = codeArea.getText().split("\n");
-        lineIndex = new int[lines.length];
-        int p = 0;
-        for (int i = 0; i < lines.length; i++) {
-            p += lines[i].length();
-            lineIndex[i] = p;
-        }
+    public void markLineAsExecuted(int line) {
+        if (line >= 1 && lineFactory.nums.get(line-1) != null) lineFactory.nums.get(line-1).accept(false);
+        if (line >= 0) lineFactory.nums.get(line).accept(true);
     }
 
-    public void markLineAsExecuted(int line) {
-        if (line >= lineIndex.length) return;
-        codeArea.selectRange(lineIndex[line] - 2, lineIndex[line] - 1);
-        codeArea.selectLine();
+    public void clearExecutedLines() {
+        lineFactory.nums.forEach((k, v) -> v.accept(false));
     }
 
     private Task<StyleSpans<Collection<String>>> computeHighlightingAsync() {

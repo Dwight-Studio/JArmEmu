@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.sim;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,19 +7,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class CodeScanner {
+public class SourceScanner {
 
     private int currentInstructionValue;
     private final ArrayList<String> code;
 
-    public CodeScanner(File file) throws FileNotFoundException {
+    public SourceScanner(File file) throws FileNotFoundException {
         this.code = new ArrayList<>();
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) code.add(scanner.nextLine());
         this.currentInstructionValue = -1;
     }
 
-    public CodeScanner(String code) {
+    public SourceScanner(String code) {
         this.code = new ArrayList<>(Arrays.stream(code.split("\n")).toList());
         this.currentInstructionValue = -1;
     }

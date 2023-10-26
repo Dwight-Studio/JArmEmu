@@ -1,11 +1,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.args.AddressParser;
-import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
-import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
-import fr.dwightstudio.jarmemu.sim.StateContainer;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,16 +8,15 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Scanner;
-import java.util.logging.Level;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
-public class SourceInterpreter {
+public class SourceParser {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     protected Instruction instruction;
     protected boolean updateFlags;
-    protected CodeScanner codeScanner;
+    protected SourceScanner sourceScanner;
 
     protected DataMode dataMode;
     protected UpdateMode updateMode;
@@ -30,14 +24,14 @@ public class SourceInterpreter {
     protected String currentLine;
     protected String instructionString;
     protected ArrayList<String> arguments;
-    protected StateContainer stateContainer;
+    protected boolean hasAsm;
 
     /**
      * Création du lecteur de code du fichier *.s
      * @param file Le fichier
      * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
      */
-    public SourceInterpreter(File file) throws FileNotFoundException {
+    public SourceParser(File file) throws FileNotFoundException {
 
         updateFromFile(file);
 
@@ -48,14 +42,14 @@ public class SourceInterpreter {
         this.currentLine = "";
         this.instructionString = "";
         this.arguments = new ArrayList<>();
-        this.stateContainer = new StateContainer();
+        this.hasAsm = false;
     }
 
     /**
      * Création du lecteur de code du l'éditeur
      * @param codeArea L'éditeyr depuis lequel récupérer le code
      */
-    public SourceInterpreter(CodeArea codeArea) {
+    public SourceParser(CodeArea codeArea) {
 
         updateFromEditor(codeArea);
 
@@ -69,53 +63,37 @@ public class SourceInterpreter {
     }
 
     /**
-     * Crée le CodeScanner qui lira le code contenu dans l'éditeur
+     * Crée le SourceScanner qui lira le code contenu dans l'éditeur
      */
     public void updateFromEditor(CodeArea codeArea) {
-        this.codeScanner = new CodeScanner(codeArea.getText());
-        this.stateContainer = new StateContainer();
+        this.sourceScanner = new SourceScanner(codeArea.getText());
     }
 
 
     public void exportToEditor(CodeArea codeArea) {
         codeArea.clear();
-        codeArea.insertText(0, codeScanner.exportCode());
+        codeArea.insertText(0, sourceScanner.exportCode());
     }
 
     /**
-     * Crée le CodeScanner qui lira le code contenu dans le fichier
+     * Crée le SourceScanner qui lira le code contenu dans le fichier
      */
     public void updateFromFile(File file) throws FileNotFoundException {
-        this.codeScanner = new CodeScanner(file);
-        this.stateContainer = new StateContainer();
-    }
-
-    /**
-     * Réinitialise l'état actuel du simulateur
-     */
-    public void resetState() {
-        this.stateContainer = new StateContainer();
-    }
-
-    /**
-     * Revient à la première ligne
-     */
-    public void restart() {
-        this.codeScanner.goTo(0);
+        this.sourceScanner = new SourceScanner(file);
     }
 
     /**
      * @return la ligne actuellement interprétée
      */
     public int getCurrentLine() {
-        return codeScanner.getCurrentInstructionValue();
+        return sourceScanner.getCurrentInstructionValue();
     }
 
     /**
      * Exporter le code dans un fichier
      */
     public void exportToFile(File savePath) throws FileNotFoundException {
-        codeScanner.exportCodeToFile(savePath);
+        sourceScanner.exportCodeToFile(savePath);
     }
 
     /**
@@ -184,19 +162,24 @@ public class SourceInterpreter {
 
     /**
      * Méthode principale
-     * Lecture du fichier et envoie des instructions
+     * Lecture du fichier et renvoie des instructions parsés à verifier
      */
-    public void read(){
-        while (this.codeScanner.hasNextLine()){
-            readOneLine();
-            executeCurrentLine();
+    public HashMap<Integer, ParsedInstruction> parse(){
+        HashMap<Integer, ParsedInstruction> rtn = new HashMap<>();
+
+        sourceScanner.goTo(-1);
+        while (this.sourceScanner.hasNextLine()){
+            ParsedInstruction inst = parseOneLine();
+            if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
         }
+
+        return rtn;
     }
 
     /**
      * Lecture d'une ligne
      */
-    public void readOneLine() throws IllegalStateException {
+    public void readOneLine() {
         this.instruction = null;
         this.updateFlags = false;
         this.updateMode = null;
@@ -204,14 +187,10 @@ public class SourceInterpreter {
         this.conditionExec = null;
         this.arguments.clear();
 
-        currentLine = this.codeScanner.nextLine();
+        currentLine = this.sourceScanner.nextLine();
         currentLine = this.removeComments(currentLine);
         currentLine = this.removeBlanks(currentLine);
         currentLine = currentLine.toUpperCase();
-
-        // Remise à zéro des drapeaux de ligne des parsers
-        AddressParser.reset(this.stateContainer);
-        RegisterWithUpdateParser.reset(this.stateContainer);
 
         instructionString = currentLine.split(" ")[0];
         int instructionLength = instructionString.length();
@@ -251,27 +230,26 @@ public class SourceInterpreter {
     }
 
     /**
-     * Envoie des instructions se trouvant sur la ligne courante
+     * Lecture d'une ligne et teste de tous ses arguments
+     * @return une ParsedInstruction à verifier.
      */
-    public void executeCurrentLine() {
-        ArgumentParser[] argParsers = instruction.getArgParsers();
-        Object[] parsedArgs = new Object[4];
+    public ParsedInstruction parseOneLine() {
+        readOneLine();
+
+        if (!hasAsm) return null;
+
+        String arg1 = null;
+        String arg2 = null;
+        String arg3 = null;
+        String arg4 = null;
 
         try {
-            for (int i = 0; i < 4; i++) {
-                try {
-                    parsedArgs[i] = argParsers[i].parse(stateContainer, arguments.get(i));
-                } catch (IndexOutOfBoundsException exception) {
-                    parsedArgs[i] = argParsers[i].none();
-                }
-            }
-        } catch (AssemblySyntaxException exception) {
-            logger.log(Level.SEVERE, ExceptionUtils.getStackTrace(exception));
-            // Erreur de syntaxe
-        } catch (Exception exception) {
-            logger.log(Level.SEVERE, ExceptionUtils.getStackTrace(exception));
-            // Erreur fatale
-        }
+            arg1 = arguments.get(0);
+            arg2 = arguments.get(1);
+            arg3 = arguments.get(2);
+            arg4 = arguments.get(3);
+        } catch (IndexOutOfBoundsException ignored) {};
 
+        return new ParsedInstruction(instruction, arg1, arg2, arg3, arg4);
     }
 }

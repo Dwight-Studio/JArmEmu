@@ -1,12 +1,16 @@
 package fr.dwightstudio.jarmemu.gui;
 
-import fr.dwightstudio.jarmemu.sim.SourceInterpreter;
+import fr.dwightstudio.jarmemu.sim.AssemblyError;
+import fr.dwightstudio.jarmemu.sim.SourceParser;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.richtext.CodeArea;
@@ -29,6 +33,8 @@ public class JAREmuController implements Initializable {
 
     @FXML
     protected CodeArea codeArea;
+    @FXML
+    protected VBox notif;
     @FXML protected Button simulate;
     @FXML protected Button stepInto;
     @FXML protected Button stepOver;
@@ -68,13 +74,13 @@ public class JAREmuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         editorManager.init(application);
-        application.sourceInterpreter = new SourceInterpreter(codeArea);
+        application.sourceParser = new SourceParser(codeArea);
     }
 
     @FXML
     public void onNewFile() {
         editorManager.newFile();
-        application.sourceInterpreter.updateFromEditor(codeArea);
+        application.sourceParser.updateFromEditor(codeArea);
         Platform.runLater(() -> {
             application.setTitle("New File");
             application.setUnsaved();
@@ -100,8 +106,8 @@ public class JAREmuController implements Initializable {
             onSaveAs();
         } else {
             try {
-                application.sourceInterpreter.updateFromEditor(codeArea);
-                application.sourceInterpreter.exportToFile(savePath);
+                application.sourceParser.updateFromEditor(codeArea);
+                application.sourceParser.exportToFile(savePath);
                 Platform.runLater(() -> {
                     application.setTitle(savePath.getName());
                     application.setSaved();
@@ -129,8 +135,8 @@ public class JAREmuController implements Initializable {
     public void onReload() {
         if (savePath != null) {
             try {
-                application.sourceInterpreter.updateFromFile(savePath);
-                application.sourceInterpreter.exportToEditor(codeArea);
+                application.sourceParser.updateFromFile(savePath);
+                application.sourceParser.exportToEditor(codeArea);
                 Platform.runLater(() -> {
                     application.setTitle(savePath.getName());
                     application.setSaved();
@@ -148,9 +154,9 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onSimulate() {
-        editorManager.registerLines();
-        application.sourceInterpreter.updateFromEditor(codeArea);
-        application.sourceInterpreter.resetState();
+        application.controller.editorManager.clearExecutedLines();
+        application.sourceParser.updateFromEditor(codeArea);
+        application.codeInterpreter.resetState();
         codeArea.setDisable(true);
         simulate.setDisable(true);
         stepInto.setDisable(false);
@@ -164,7 +170,7 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onStepInto() {
-        application.codeExecutor.execute(application.codeExecutor.stepInto);
+        //application.codeExecutor.execute(application.codeExecutor.stepInto);
     }
 
     @FXML
@@ -207,12 +213,13 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onRestart() {
-        application.sourceInterpreter.restart();
+        application.controller.editorManager.clearExecutedLines();
+        application.codeInterpreter.restart();
     }
 
     @FXML
     public void onReset() {
-        application.sourceInterpreter.resetState();
+        application.codeInterpreter.resetState();
     }
 
     public void updateRegisters(StateContainer stateContainer) {
@@ -222,5 +229,15 @@ public class JAREmuController implements Initializable {
 
         CPSR.setText(String.format(DATA_FORMAT, stateContainer.cpsr.getData()));
         SPSR.setText(String.format(DATA_FORMAT, stateContainer.spsr.getData()));
+    }
+
+    public Label addError(AssemblyError error) {
+        Label label = new Label("Syntax Error: " + error.getException().getMessage());
+        label.getStyleClass().add("alert-danger");
+        notif.getChildren().add(label);
+
+        Platform.runLater();
+
+        return label;
     }
 }

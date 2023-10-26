@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
-import fr.dwightstudio.jarmemu.sim.SourceInterpreter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,9 +17,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SourceInterpreterTest {
+public class SourceParserTest {
 
-    public SourceInterpreterTest() throws URISyntaxException {
+    public SourceParserTest() throws URISyntaxException {
     }
 
     @BeforeEach
@@ -32,7 +31,7 @@ public class SourceInterpreterTest {
     public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
         File file = new File(getClass().getResource("/singleLine.s").toURI());
 
-        SourceInterpreter reader = new SourceInterpreter(file);
+        SourceParser reader = new SourceParser(file);
 
         try {
             reader.readOneLine();
@@ -50,7 +49,7 @@ public class SourceInterpreterTest {
     public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
         File file = new File(getClass().getResource("/normalLine.s").toURI());
 
-        SourceInterpreter reader = new SourceInterpreter(file);
+        SourceParser reader = new SourceParser(file);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
         reader.readOneLine();
@@ -84,7 +83,7 @@ public class SourceInterpreterTest {
         File file = new File(getClass().getResource("/multipleLines.s").toURI());
         ArrayList<String> arguments;
 
-        SourceInterpreter reader = new SourceInterpreter(file);
+        SourceParser reader = new SourceParser(file);
 
         arguments = new ArrayList<>(Arrays.asList("R0", "R9", "#2"));
         reader.readOneLine();

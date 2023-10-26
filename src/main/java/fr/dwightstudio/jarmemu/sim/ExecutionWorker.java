@@ -6,11 +6,11 @@ import org.controlsfx.dialog.ExceptionDialog;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-public class CodeExecutor {
+public class ExecutionWorker {
 
     private static final int WAITING_PERIOD = 250;
 
-    private Thread deamon;
+    private Thread deamon = null;
     private JArmEmuApplication application;
     private final ArrayBlockingQueue<Runnable> queue;
     private boolean doContinue = false;
@@ -18,15 +18,18 @@ public class CodeExecutor {
 
     public final Runnable stepInto = () -> {
         try {
-            synchronized (application.sourceInterpreter) {
-                int line = application.sourceInterpreter.getCurrentLine();
+            synchronized (application.sourceParser) {
+                int line = application.sourceParser.getCurrentLine();
 
-                Platform.runLater(() -> application.controller.editorManager.markLineAsExecuted(line));
+                Platform.runLater(() -> {
+                    application.controller.editorManager.clearExecutedLines();
+                    application.controller.editorManager.markLineAsExecuted(line+1);
+                });
 
-                application.sourceInterpreter.readOneLine();
-                application.sourceInterpreter.executeCurrentLine();
+                application.codeInterpreter.nextLine();
+                application.codeInterpreter.executeCurrentLine();
 
-                Platform.runLater(() -> application.controller.updateRegisters(application.sourceInterpreter.stateContainer));
+                Platform.runLater(() -> application.controller.updateRegisters(application.codeInterpreter.stateContainer));
             }
         } catch (Exception e) {
             Platform.runLater(() -> new ExceptionDialog(e).show());
@@ -37,6 +40,12 @@ public class CodeExecutor {
         doContinue = true;
         while (doContinue) {
             stepInto.run();
+            synchronized (deamon) {
+                try {
+                    deamon.wait(WAITING_PERIOD);
+                } catch (InterruptedException ignored) {
+                }
+            }
         }
     };
 
@@ -47,32 +56,33 @@ public class CodeExecutor {
         }
     };
 
-    public CodeExecutor(JArmEmuApplication application) {
+    public ExecutionWorker(JArmEmuApplication application) {
         this.application = application;
         this.queue = new ArrayBlockingQueue<>(5);
 
-
         this.deamon = new Thread(() -> {
-            while (doRun) {
-                try {
-                    wait();
-                } catch (InterruptedException ignored) {
-                    break;
-                }
-
-                for (Runnable run : queue) {
-                    run.run();
+            synchronized (this.deamon) {
+                while (doRun) {
+                    try {
+                        this.deamon.wait();
+                        for (Runnable run : queue) {
+                            run.run();
+                        }
+                    } catch (InterruptedException ignored) {
+                        break;
+                    }
                 }
             }
         });
 
         deamon.setDaemon(true);
         deamon.setName("CodeExecutorDeamon");
+        deamon.start();
     }
 
     public void execute(Runnable runnable) {
         if (queue.remainingCapacity() > 0) queue.add(runnable);
-        if (this.deamon.isAlive()) this.deamon.notifyAll();
+        if (this.deamon.isAlive()) synchronized (this.deamon) {this.deamon.notifyAll();}
     }
 
     public void pause() {
