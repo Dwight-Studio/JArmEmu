@@ -1,16 +1,18 @@
 package fr.dwightstudio.jarmemu.gui;
 
+import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
 import fr.dwightstudio.jarmemu.sim.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.SourceParser;
 import fr.dwightstudio.jarmemu.sim.StateContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.richtext.CodeArea;
@@ -20,16 +22,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class JAREmuController implements Initializable {
 
     public JArmEmuApplication application;
     public EditorManager editorManager;
     public File savePath = null;
-
-    int tmp = 0;
-
     public static final String DATA_FORMAT = "%08x";
+
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     @FXML
     protected CodeArea codeArea;
@@ -44,28 +46,28 @@ public class JAREmuController implements Initializable {
     @FXML protected Button restart;
     @FXML protected Button reset;
 
-    @FXML protected Label R0;
-    @FXML protected Label R1;
-    @FXML protected Label R2;
-    @FXML protected Label R3;
-    @FXML protected Label R4;
-    @FXML protected Label R5;
-    @FXML protected Label R6;
-    @FXML protected Label R7;
-    @FXML protected Label R8;
-    @FXML protected Label R9;
-    @FXML protected Label R10;
-    @FXML protected Label R11;
-    @FXML protected Label R12;
-    @FXML protected Label R13;
-    @FXML protected Label R14;
-    @FXML protected Label R15;
-    @FXML protected Label CPSR;
-    @FXML protected Label CPSRT;
-    @FXML protected Label SPSR;
-    @FXML protected Label SPSRT;
+    @FXML protected Text R0;
+    @FXML protected Text R1;
+    @FXML protected Text R2;
+    @FXML protected Text R3;
+    @FXML protected Text R4;
+    @FXML protected Text R5;
+    @FXML protected Text R6;
+    @FXML protected Text R7;
+    @FXML protected Text R8;
+    @FXML protected Text R9;
+    @FXML protected Text R10;
+    @FXML protected Text R11;
+    @FXML protected Text R12;
+    @FXML protected Text R13;
+    @FXML protected Text R14;
+    @FXML protected Text R15;
+    @FXML protected Text CPSR;
+    @FXML protected Text CPSRT;
+    @FXML protected Text SPSR;
+    @FXML protected Text SPSRT;
 
-    protected Label[] registers = new Label[]{R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15};
+    protected Text[] registers;
 
     public void init(JArmEmuApplication application) {
         this.application = application;
@@ -73,6 +75,7 @@ public class JAREmuController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        registers = new Text[]{R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15};
         editorManager.init(application);
         application.sourceParser = new SourceParser(codeArea);
     }
@@ -141,6 +144,7 @@ public class JAREmuController implements Initializable {
                     application.setTitle(savePath.getName());
                     application.setSaved();
                 });
+                onStop();
             } catch (FileNotFoundException exception) {
                 new ExceptionDialog(exception).show();
             }
@@ -154,31 +158,48 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onSimulate() {
-        application.controller.editorManager.clearExecutedLines();
         application.sourceParser.updateFromEditor(codeArea);
+        application.codeInterpreter.load(application.sourceParser.parse());
         application.codeInterpreter.resetState();
-        codeArea.setDisable(true);
-        simulate.setDisable(true);
-        stepInto.setDisable(false);
-        stepOver.setDisable(false);
-        conti.setDisable(false);
-        pause.setDisable(true);
-        stop.setDisable(false);
-        restart.setDisable(false);
-        reset.setDisable(false);
+        application.codeInterpreter.restart();
+
+        clearNotifs();
+        AssemblyError[] errors = application.codeInterpreter.verifyAll();
+
+        if (errors.length == 0 && application.codeInterpreter.getLineCount() != 0) {
+            application.executionWorker.revive();
+            application.codeInterpreter.resetState();
+            application.controller.editorManager.clearExecutedLines();
+            codeArea.setDisable(true);
+            simulate.setDisable(true);
+            stepInto.setDisable(false);
+            stepOver.setDisable(false);
+            conti.setDisable(false);
+            pause.setDisable(true);
+            stop.setDisable(false);
+            restart.setDisable(false);
+            reset.setDisable(false);
+        } else {
+            if (application.codeInterpreter.getLineCount() == 0) addError(new AssemblyError(0, new AssemblySyntaxException("No instructions detected")));
+            for (AssemblyError error : errors) {
+                addError(error);
+            }
+        }
     }
 
     @FXML
     public void onStepInto() {
-        //application.codeExecutor.execute(application.codeExecutor.stepInto);
+        application.executionWorker.stepInto();
     }
 
     @FXML
     public void onStepOver() {
+        application.executionWorker.stepOver();
     }
 
     @FXML
     public void onContinue() {
+        application.executionWorker.conti();
         stepInto.setDisable(true);
         stepOver.setDisable(true);
         conti.setDisable(true);
@@ -189,6 +210,7 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onPause() {
+        application.executionWorker.pause();
         stepInto.setDisable(false);
         stepOver.setDisable(false);
         conti.setDisable(false);
@@ -199,6 +221,8 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onStop() {
+        application.controller.clearNotifs();
+        application.executionWorker.pause();
         codeArea.deselect();
         codeArea.setDisable(false);
         simulate.setDisable(false);
@@ -213,31 +237,50 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onRestart() {
+        application.controller.clearNotifs();
         application.controller.editorManager.clearExecutedLines();
         application.codeInterpreter.restart();
     }
 
     @FXML
     public void onReset() {
+        application.controller.clearNotifs();
         application.codeInterpreter.resetState();
     }
 
     public void updateRegisters(StateContainer stateContainer) {
         for (int i = 0; i < 16; i++) {
-            registers[i].setText(String.format(DATA_FORMAT, stateContainer.registers[i].getData()));
+            registers[i].setText(String.format(DATA_FORMAT, stateContainer.registers[i].getData()).toUpperCase());
         }
 
-        CPSR.setText(String.format(DATA_FORMAT, stateContainer.cpsr.getData()));
-        SPSR.setText(String.format(DATA_FORMAT, stateContainer.spsr.getData()));
+        CPSR.setText(String.format(DATA_FORMAT, stateContainer.cpsr.getData()).toUpperCase());
+        SPSR.setText(String.format(DATA_FORMAT, stateContainer.spsr.getData()).toUpperCase());
     }
 
-    public Label addError(AssemblyError error) {
-        Label label = new Label("Syntax Error: " + error.getException().getMessage());
-        label.getStyleClass().add("alert-danger");
-        notif.getChildren().add(label);
+    public void addNotif(String titleString, String contentString, String classString) {
 
-        Platform.runLater();
+        if (notif.getChildren().size() > 5) return;
 
-        return label;
+        TextFlow textFlow = new TextFlow();
+        textFlow.setMinHeight(32);
+        textFlow.getStyleClass().add("alert");
+        textFlow.getStyleClass().add("alert-" + classString);
+
+        Text title = new Text(titleString);
+        title.getStyleClass().add("strong");
+        textFlow.getChildren().add(title);
+
+        Text label = new Text(" " + contentString);
+        textFlow.getChildren().add(label);
+
+        notif.getChildren().add(textFlow);
+    }
+
+    public void addError(AssemblyError error) {
+        addNotif("[ln " + error.getLine() + "] Syntax Error:", error.getException().getMessage(), "danger");
+    }
+
+    public void clearNotifs() {
+        notif.getChildren().clear();
     }
 }

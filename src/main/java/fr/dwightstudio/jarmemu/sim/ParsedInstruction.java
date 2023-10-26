@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
-import fr.dwightstudio.jarmemu.asm.Instruction;
+import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
@@ -16,9 +15,17 @@ public class ParsedInstruction {
 
     private final Instruction instruction;
     private final String[] args;
+    private Condition condition;
+    private boolean updateFlags = false;
+    private DataMode dataMode = null;
+    private UpdateMode updateMode = null;
 
-    public ParsedInstruction(Instruction instruction, String arg1, String arg2, String arg3, String arg4) {
+    public ParsedInstruction(Instruction instruction, Condition conditionExec, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) {
         this.instruction = instruction;
+        this.condition = conditionExec;
+        this.updateFlags = updateFlags;
+        this.dataMode = dataMode;
+        this.updateMode = updateMode;
         this.args = new String[]{arg1, arg2, arg3, arg4};
     }
 
@@ -39,21 +46,14 @@ public class ParsedInstruction {
         ArgumentParser[] argParsers = instruction.getArgParsers();
         Object[] parsedArgs = new Object[4];
 
-        try {
-            for (int i = 0; i < 4; i++) {
-                if (args[i] != null) {
-                    parsedArgs[i] = argParsers[i].parse(stateContainer, args[i]);
-                } else {
-                    parsedArgs[i] = argParsers[i].none();
-                }
+        for (int i = 0; i < 4; i++) {
+            if (args[i] != null) {
+                parsedArgs[i] = argParsers[i].parse(stateContainer, args[i]);
+            } else {
+                parsedArgs[i] = argParsers[i].none();
             }
-        } catch (AssemblySyntaxException exception) {
-            logger.log(Level.SEVERE, ExceptionUtils.getStackTrace(exception));
-            // Erreur de syntaxe
-        } catch (Exception exception) {
-            logger.log(Level.SEVERE, ExceptionUtils.getStackTrace(exception));
-            // Erreur fatale
         }
 
+        instruction.execute(stateContainer, condition, updateFlags, dataMode, updateMode, parsedArgs[0], parsedArgs[1], parsedArgs[2], parsedArgs[3]);
     }
 }

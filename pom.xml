@@ -112,7 +112,7 @@
                         <manifest>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
-                            <mainClass>fr.dwightstudio.jarmemu.gui.JArmEmuApplication</mainClass>
+                            <mainClass>fr.dwightstudio.jarmemu.JArmEmuApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -139,7 +139,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>fr.dwightstudio.jarmemu/fr.dwightstudio.jarmemu.gui.JArmEmuApplication</mainClass>
+                            <mainClass>fr.dwightstudio.jarmemu/fr.dwightstudio.jarmemu.JArmEmuApplication</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

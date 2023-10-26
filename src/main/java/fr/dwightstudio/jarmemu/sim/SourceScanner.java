@@ -30,7 +30,7 @@ public class SourceScanner {
     }
 
     public boolean hasNextLine() {
-        return this.currentInstructionValue == this.code.size() - 1;
+        return this.currentInstructionValue < this.code.size() - 1;
     }
 
     public void goTo(int lineNb) {

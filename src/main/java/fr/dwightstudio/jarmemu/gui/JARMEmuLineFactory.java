@@ -59,9 +59,6 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
         lineNo.setText(String.format("%d", idx));
         lineNo.setMinWidth(32);
         lineNo.setMaxWidth(32);
-        nums.put(idx, (b) -> {
-            if (b) lineNo.setBackground(EXECUTED_BACKGROUND); else lineNo.setBackground(DEFAULT_BACKGROUND);
-        });
 
         Label breakpoint = new Label();
         breakpoint.setFont(DEFAULT_FONT);
@@ -73,8 +70,14 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
         breakpoint.setMinWidth(32);
         breakpoint.setMaxWidth(32);
         breakpoint.setTooltip(new Tooltip("Toggle breakpoint"));
+
         breakpoint.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) toggle(idx, breakpoint);
+        });
+
+        nums.put(idx, (b) -> {
+            if (b) lineNo.setBackground(EXECUTED_BACKGROUND); else lineNo.setBackground(DEFAULT_BACKGROUND);
+            if (b) breakpoint.setBackground(EXECUTED_BACKGROUND); else breakpoint.setBackground(DEFAULT_BACKGROUND);
         });
 
         rtn.getChildren().add(lineNo);

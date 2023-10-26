@@ -1,13 +1,10 @@
 package fr.dwightstudio.jarmemu.gui;
 
+import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.util.RegisterName;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -23,6 +20,7 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -83,6 +81,10 @@ public class EditorManager {
         return rtn.toArray(new String[0]);
     }
 
+    /**
+     * Initialisation du module
+     * @param application l'application à laquelle se rattacher
+     */
     public void init(JArmEmuApplication application) {
         this.application = application;
 
@@ -92,7 +94,7 @@ public class EditorManager {
         this.lineFactory = new JARMEmuLineFactory();
 
         codeArea.setParagraphGraphicFactory(lineFactory);
-        codeArea.setContextMenu(new DefaultContextMenu(codeArea));
+        codeArea.setContextMenu(new EditorContextMenu(codeArea));
 
         // auto-indent: insert previous line's indents on enter
         final Pattern whiteSpace = Pattern.compile( "^\\s+" );
@@ -155,9 +157,21 @@ public class EditorManager {
         codeArea.replaceText(0, 0, sampleCode);
     }
 
+    public boolean hasBreakPoint(int line) {
+        AtomicBoolean flag = new AtomicBoolean(false);
+        lineFactory.breakpoints.forEach(ln -> {
+            if (ln == line) flag.set(true);
+        });
+        return flag.get();
+    }
+
     public void markLineAsExecuted(int line) {
+        if (line >= 0) {
+            codeArea.moveTo(line, 0);
+            codeArea.requestFollowCaret();
+            lineFactory.nums.get(line).accept(true);
+        }
         if (line >= 1 && lineFactory.nums.get(line-1) != null) lineFactory.nums.get(line-1).accept(false);
-        if (line >= 0) lineFactory.nums.get(line).accept(true);
     }
 
     public void clearExecutedLines() {
@@ -183,38 +197,5 @@ public class EditorManager {
 
     public void clean() {
         executor.shutdown();
-    }
-
-    private static class DefaultContextMenu extends ContextMenu {
-        MenuItem cut;
-        MenuItem copy;
-        MenuItem paste;
-
-        public DefaultContextMenu(CodeArea codeArea) {
-            cut = new MenuItem("Cut");
-            copy = new MenuItem("Copy");
-            paste = new MenuItem("Paste");
-
-            cut.setOnAction((actionEvent -> {
-                ClipboardContent content = new ClipboardContent();
-                content.putString(codeArea.getSelectedText());
-                Clipboard.getSystemClipboard().setContent(content);
-                codeArea.replaceSelection("");
-            }));
-
-            copy.setOnAction((actionEvent -> {
-                ClipboardContent content = new ClipboardContent();
-                content.putString(codeArea.getSelectedText());
-                Clipboard.getSystemClipboard().setContent(content);
-            }));
-
-            paste.setOnAction((actionEvent -> {
-                codeArea.replaceSelection(Clipboard.getSystemClipboard().getString());
-            }));
-
-            getItems().add(cut);
-            getItems().add(copy);
-            getItems().add(paste);
-        }
     }
 }

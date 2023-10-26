@@ -3,9 +3,10 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import org.fxmisc.richtext.*?>
 
+<?import javafx.scene.text.Text?>
+<?import org.fxmisc.flowless.VirtualizedScrollPane?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
@@ -114,86 +115,26 @@
                                                             <Label text="(PC) R15" GridPane.rowIndex="15" />
                                                             <Label text="CPSR" GridPane.rowIndex="16" />
                                                             <Label text="SPSR" GridPane.rowIndex="17" />
-                                                            <Label fx:id="R0" text="00000000" GridPane.columnIndex="1">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R1" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R2" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R3" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R6" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R4" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R7" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R8" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R9" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R10" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R11" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R12" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R13" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R15" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="R14" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="CPSR" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="SPSR" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label fx:id="CPSRT" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16">
-                                                               <font>
-                                                                  <Font name="Monospaced Regular" size="12.0" />
-                                                               </font></Label>
-                                                            <Label fx:id="SPSRT" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17">
-                                                               <font>
-                                                                  <Font name="Monospaced Regular" size="12.0" />
-                                                               </font></Label>
+                                                            <Text fx:id="R0" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" />
+                                                            <Text fx:id="R1" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Text fx:id="R2" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Text fx:id="R3" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <Text fx:id="R5" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                            <Text fx:id="R6" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                            <Text fx:id="R4" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <Text fx:id="R7" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                            <Text fx:id="R8" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                            <Text fx:id="R9" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                            <Text fx:id="R10" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                            <Text fx:id="R11" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                            <Text fx:id="R12" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                            <Text fx:id="R13" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                            <Text fx:id="R15" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                            <Text fx:id="R14" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                            <Text fx:id="CPSR" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                            <Text fx:id="SPSR" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                            <Text fx:id="CPSRT" styleClass="code, h5" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                            <Text fx:id="SPSRT" styleClass="code, h5" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -245,30 +186,12 @@
                                                    <children>
                                                       <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                          <children>
-                                                            <Label text="00000000">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label text="00000000" GridPane.columnIndex="2">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label text="00000000" GridPane.columnIndex="3">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label text="00000000" GridPane.columnIndex="4">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label text="00000000" GridPane.columnIndex="5">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
-                                                            <Label text="00000000" GridPane.columnIndex="1">
-                                                                <font>
-                                                                    <Font name="Monospaced Regular" size="12.0" />
-                                                                </font></Label>
+                                                            <Text styleClass="code, h5" text="00000000" />
+                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="2" />
+                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="3" />
+                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="4" />
+                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="5" />
+                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="1" />
                                                          </children>
                                                          <columnConstraints>
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
@@ -310,7 +233,7 @@
                            <items>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="btn-info" text="Simulate">
+                                    <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="btn, btn-info" text="Simulate">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -319,7 +242,7 @@
                               </HBox>
                               <HBox>
                                  <children>
-                                    <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" styleClass="btn-primary" text="Step Into">
+                                    <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" styleClass="btn, btn-primary" text="Step Into">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -328,7 +251,7 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onStepOver" styleClass="btn-primary" text="Step Over" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" styleClass="btn, btn-primary" text="Step Over">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -337,14 +260,14 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="btn-success" text="Continue" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="btn, btn-success" text="Continue" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                     <HBox>
                                        <children>
-                                          <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="btn-warning" text="Pause" HBox.hgrow="ALWAYS">
+                                          <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="btn, btn-warning" text="Pause" HBox.hgrow="ALWAYS">
                                              <HBox.margin>
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
@@ -355,7 +278,7 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="btn-danger" text="Stop">
+                                    <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="btn, btn-danger" text="Stop">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -364,7 +287,7 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="btn-warning" text="Restart" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="btn, btn-warning" text="Restart" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -373,7 +296,7 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button fx:id="reset" contentDisplay="CENTER" disable="true" layoutX="233.0" layoutY="10.0" mnemonicParsing="false" onAction="#onReset" styleClass="btn-warning" text="Reset State" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="reset" contentDisplay="CENTER" disable="true" layoutX="233.0" layoutY="10.0" mnemonicParsing="false" onAction="#onReset" styleClass="btn, btn-warning" text="Reset State" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -384,7 +307,11 @@
                         </ToolBar>
                         <StackPane VBox.vgrow="ALWAYS">
                            <children>
-                              <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" />
+                              <VirtualizedScrollPane>
+                                  <content>
+                                <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" />
+                                  </content>
+                              </VirtualizedScrollPane>
                               <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
                                  <StackPane.margin>
                                     <Insets left="54.0" />
@@ -394,7 +321,7 @@
                         </StackPane>
                      </children>
                   </VBox>
-                  <VBox fx:id="notif" alignment="BOTTOM_CENTER" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
+                  <VBox fx:id="notif" alignment="BOTTOM_CENTER" focusTraversable="true" mouseTransparent="true" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding></VBox>
@@ -438,30 +365,12 @@
                                              <children>
                                                 <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                    <children>
-                                                       <Label text="00000000">
-                                                           <font>
-                                                               <Font name="Monospaced Regular" size="12.0" />
-                                                           </font></Label>
-                                                      <Label text="00000000" GridPane.columnIndex="2">
-                                                          <font>
-                                                              <Font name="Monospaced Regular" size="12.0" />
-                                                          </font></Label>
-                                                      <Label text="00000000" GridPane.columnIndex="3">
-                                                          <font>
-                                                              <Font name="Monospaced Regular" size="12.0" />
-                                                          </font></Label>
-                                                      <Label text="00000000" GridPane.columnIndex="4">
-                                                          <font>
-                                                              <Font name="Monospaced Regular" size="12.0" />
-                                                          </font></Label>
-                                                      <Label text="00000000" GridPane.columnIndex="5">
-                                                          <font>
-                                                              <Font name="Monospaced Regular" size="12.0" />
-                                                          </font></Label>
-                                                      <Label text="00000000" GridPane.columnIndex="1">
-                                                          <font>
-                                                              <Font name="Monospaced Regular" size="12.0" />
-                                                          </font></Label>
+                                                       <Text styleClass="code, h5" text="00000000" />
+                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="2" />
+                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="3" />
+                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="4" />
+                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="5" />
+                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="1" />
                                                    </children>
                                                    <columnConstraints>
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
@@ -487,7 +396,7 @@
                   </Tab>
                 <Tab text="Settings">
                         <content>
-                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" styleClass="panel-default" />
+                    <AnchorPane/>
                   </content>
                 </Tab>
               </tabs>

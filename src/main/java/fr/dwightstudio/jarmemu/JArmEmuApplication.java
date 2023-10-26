@@ -1,6 +1,9 @@
-package fr.dwightstudio.jarmemu.gui;
+package fr.dwightstudio.jarmemu;
 
+import fr.dwightstudio.jarmemu.gui.EditorManager;
+import fr.dwightstudio.jarmemu.gui.JAREmuController;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
+import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.SourceParser;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -10,24 +13,31 @@ import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.io.IOException;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 public class JArmEmuApplication extends Application {
 
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion();
 
+    public final Logger logger = Logger.getLogger(getClass().getName());
+
     public JAREmuController controller;
     public EditorManager editorManager;
     public SourceParser sourceParser;
     public CodeInterpreter codeInterpreter;
+    public ExecutionWorker executionWorker;
 
     public Stage stage;
     private boolean unsaved = true;
 
     @Override
     public void start(Stage stage) throws IOException {
-        this.stage = stage;
+        LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("logging.properties"));
 
-        FXMLLoader fxmlLoader = new FXMLLoader(JArmEmuApplication.class.getResource("main-view.fxml"));
+        logger.info("Starting JARMEmu");
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gui/main-view.fxml"));
 
         fxmlLoader.setController(new JAREmuController());
         controller = fxmlLoader.getController();
@@ -35,6 +45,8 @@ public class JArmEmuApplication extends Application {
         editorManager = new EditorManager();
         controller.editorManager = editorManager;
         codeInterpreter = new CodeInterpreter(this);
+        executionWorker = new ExecutionWorker(this);
+        this.stage = stage;
 
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());

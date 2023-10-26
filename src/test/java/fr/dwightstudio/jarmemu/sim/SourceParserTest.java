@@ -34,12 +34,12 @@ public class SourceParserTest {
         SourceParser reader = new SourceParser(file);
 
         try {
-            reader.readOneLine();
+            reader.readOneLineASM();
         } catch (IllegalStateException ignored) {}
         assertEquals("ADD R1, R0", reader.currentLine);
 
         try {
-            reader.readOneLine();
+            reader.readOneLineASM();
         } catch (IllegalStateException ignored) {}
         assertEquals("ADCBCS R2, R1, R3", reader.currentLine);
 
@@ -52,7 +52,7 @@ public class SourceParserTest {
         SourceParser reader = new SourceParser(file);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
-        reader.readOneLine();
+        reader.readOneLineASM();
         Assertions.assertEquals(Instruction.LDR, reader.instruction);
         assertNull(reader.conditionExec);
         assertNull(reader.dataMode);
@@ -60,7 +60,7 @@ public class SourceParserTest {
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
         Assertions.assertEquals(Condition.CC, reader.conditionExec);
         assertNull(reader.dataMode);
@@ -68,7 +68,7 @@ public class SourceParserTest {
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
         assertEquals(Condition.EQ, reader.conditionExec);
         Assertions.assertEquals(DataMode.BYTE, reader.dataMode);
@@ -86,7 +86,7 @@ public class SourceParserTest {
         SourceParser reader = new SourceParser(file);
 
         arguments = new ArrayList<>(Arrays.asList("R0", "R9", "#2"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.ADD, reader.instruction);
         assertEquals(Condition.CC, reader.conditionExec);
         assertNull(reader.dataMode);
@@ -95,7 +95,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(Arrays.asList("R0", "R0", "R1", "R2"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.MLA, reader.instruction);
         assertEquals(Condition.EQ, reader.conditionExec);
         assertNull(reader.dataMode);
@@ -104,7 +104,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(Arrays.asList("R4", "R5", "R6", "R7"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.SMLAL, reader.instruction);
         assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
@@ -113,7 +113,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(Arrays.asList("R5", "R6", "#5"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.BIC, reader.instruction);
         assertEquals(Condition.LO, reader.conditionExec);
         assertNull(reader.dataMode);
@@ -122,7 +122,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(Arrays.asList("R0", "=X"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
         assertNull(reader.conditionExec);
         assertEquals(DataMode.BYTE, reader.dataMode);
@@ -131,7 +131,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(Arrays.asList("SP!","{R0,R1,R2}"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.STM, reader.instruction);
         assertNull(reader.conditionExec);
         assertNull(reader.dataMode);
@@ -140,7 +140,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(List.of("ETIQUETTE"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertEquals(Instruction.B, reader.instruction);
         assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
@@ -149,7 +149,7 @@ public class SourceParserTest {
         assertEquals(arguments, reader.arguments);
 
         arguments = new ArrayList<>(List.of("CECIESTUNEETIQUETTE:"));
-        reader.readOneLine();
+        reader.readOneLineASM();
         assertNull(reader.instruction);
         assertNull(reader.conditionExec);
         assertNull(reader.dataMode);

@@ -24,7 +24,6 @@ public class SourceParser {
     protected String currentLine;
     protected String instructionString;
     protected ArrayList<String> arguments;
-    protected boolean hasAsm;
 
     /**
      * Création du lecteur de code du fichier *.s
@@ -38,11 +37,10 @@ public class SourceParser {
         this.instruction = null;
         this.updateFlags = false;
         this.updateMode = null;
-        this.conditionExec = null;
+        this.conditionExec = Condition.AL;
         this.currentLine = "";
         this.instructionString = "";
         this.arguments = new ArrayList<>();
-        this.hasAsm = false;
     }
 
     /**
@@ -56,7 +54,7 @@ public class SourceParser {
         this.instruction = null;
         this.updateFlags = false;
         this.updateMode = null;
-        this.conditionExec = null;
+        this.conditionExec = Condition.AL;
         this.currentLine = "";
         this.instructionString = "";
         this.arguments = new ArrayList<>();
@@ -179,12 +177,12 @@ public class SourceParser {
     /**
      * Lecture d'une ligne
      */
-    public void readOneLine() {
+    public void readOneLineASM() {
         this.instruction = null;
         this.updateFlags = false;
         this.updateMode = null;
         this.dataMode = null;
-        this.conditionExec = null;
+        this.conditionExec = Condition.AL;
         this.arguments.clear();
 
         currentLine = this.sourceScanner.nextLine();
@@ -226,7 +224,6 @@ public class SourceParser {
             this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
             this.arguments.replaceAll(String::strip);
         }
-
     }
 
     /**
@@ -234,9 +231,13 @@ public class SourceParser {
      * @return une ParsedInstruction à verifier.
      */
     public ParsedInstruction parseOneLine() {
-        readOneLine();
+        try {
+            readOneLineASM();
+        } catch (AssemblySyntaxException exception) {
+            //TODO: Gérer les exceptions après avoir géré les Pseudo-OP
+        }
 
-        if (!hasAsm) return null;
+        if (this.instruction == null) return null;
 
         String arg1 = null;
         String arg2 = null;
@@ -250,6 +251,6 @@ public class SourceParser {
             arg4 = arguments.get(3);
         } catch (IndexOutOfBoundsException ignored) {};
 
-        return new ParsedInstruction(instruction, arg1, arg2, arg3, arg4);
+        return new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 }
