@@ -164,7 +164,12 @@ public class JAREmuController implements Initializable {
         application.codeInterpreter.restart();
 
         clearNotifs();
-        AssemblyError[] errors = application.codeInterpreter.verifyAll();
+        AssemblyError[] errors = new AssemblyError[0];
+        try {
+            errors = application.codeInterpreter.verifyAll();
+        } catch (Exception e) {
+            new ExceptionDialog(e).show();
+        }
 
         if (errors.length == 0 && application.codeInterpreter.getLineCount() != 0) {
             application.executionWorker.revive();
@@ -254,7 +259,9 @@ public class JAREmuController implements Initializable {
         }
 
         CPSR.setText(String.format(DATA_FORMAT, stateContainer.cpsr.getData()).toUpperCase());
+        CPSRT.setText(stateContainer.cpsr.toString());
         SPSR.setText(String.format(DATA_FORMAT, stateContainer.spsr.getData()).toUpperCase());
+        SPSRT.setText(stateContainer.cpsr.toString());
     }
 
     public void addNotif(String titleString, String contentString, String classString) {
