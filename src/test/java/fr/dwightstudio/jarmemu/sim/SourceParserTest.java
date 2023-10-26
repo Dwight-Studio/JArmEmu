@@ -14,6 +14,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,14 +48,14 @@ public class SourceParserTest {
 
     @Test
     public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/normalLine.s").toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
 
         SourceParser reader = new SourceParser(file);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
         reader.readOneLineASM();
         Assertions.assertEquals(Instruction.LDR, reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -62,7 +63,7 @@ public class SourceParserTest {
 
         reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
-        Assertions.assertEquals(Condition.CC, reader.conditionExec);
+        assertEquals(Condition.CC, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -79,8 +80,23 @@ public class SourceParserTest {
     }
 
     @Test
+    public void TestReadInstructionSub() throws URISyntaxException, FileNotFoundException {
+        File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
+        ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R2", "R0", "R1"));
+
+        SourceParser reader = new SourceParser(file);
+        reader.readOneLineASM();
+        assertEquals(Instruction.SUB, reader.instruction);
+        assertEquals(Condition.AL, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+    }
+
+    @Test
     public void TestReadInstructionComplexer() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/multipleLines.s").toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
         ArrayList<String> arguments;
 
         SourceParser reader = new SourceParser(file);
@@ -124,7 +140,7 @@ public class SourceParserTest {
         arguments = new ArrayList<>(Arrays.asList("R0", "=X"));
         reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertEquals(DataMode.BYTE, reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -133,7 +149,7 @@ public class SourceParserTest {
         arguments = new ArrayList<>(Arrays.asList("SP!","{R0,R1,R2}"));
         reader.readOneLineASM();
         assertEquals(Instruction.STM, reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
         Assertions.assertEquals(UpdateMode.FD, reader.updateMode);
         assertFalse(reader.updateFlags);
@@ -151,7 +167,7 @@ public class SourceParserTest {
         arguments = new ArrayList<>(List.of("CECIESTUNEETIQUETTE:"));
         reader.readOneLineASM();
         assertNull(reader.instruction);
-        assertNull(reader.conditionExec);
+        assertEquals(Condition.AL, reader.conditionExec);
         assertNull(reader.dataMode);
         assertNull(reader.updateMode);
         assertFalse(reader.updateFlags);
