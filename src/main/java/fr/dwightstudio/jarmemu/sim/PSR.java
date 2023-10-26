@@ -60,12 +60,12 @@ public class PSR extends Register {
 
     @Override
     public String toString() {
-        return (getN() ? "N" : "") +
-                (getZ() ? "Z" : "") +
-                (getC() ? "C" : "") +
-                (getV() ? "V" : "") +
-                (getI() ? "I" : "") +
-                (getF() ? "F" : "") +
-                (getT() ? "T" : "");
+        return (getN() ? "N" : " ") +
+                (getZ() ? "Z" : " ") +
+                (getC() ? "C" : " ") +
+                (getV() ? "V" : " ") +
+                (getI() ? "I" : " ") +
+                (getF() ? "F" : " ") +
+                (getT() ? "T" : " ");
     }
 }

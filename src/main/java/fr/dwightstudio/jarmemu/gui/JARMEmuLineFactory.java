@@ -39,6 +39,7 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
 
     private static final Insets DEFAULT_INSETS = new Insets(0.0, 5.0, 0.0, 5.0);
     private static final Paint DEFAULT_TEXT_FILL = Color.web("#858585");
+    private static final Paint BREAKPOINT_TEXT_FILL = Color.web("#ff7e75");
     private static final Font DEFAULT_FONT = Font.font("monospace", FontPosture.REGULAR, 12.0);
     private static final Background DEFAULT_BACKGROUND =  new Background(new BackgroundFill(Color.web("#FFFFFF"), null, null));
     private static final Background EXECUTED_BACKGROUND =  new Background(new BackgroundFill(Color.web("#a7ff8a"), null, null));
@@ -63,7 +64,7 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
         Label breakpoint = new Label();
         breakpoint.setFont(DEFAULT_FONT);
         breakpoint.setBackground(DEFAULT_BACKGROUND);
-        breakpoint.setTextFill(DEFAULT_TEXT_FILL);
+        breakpoint.setTextFill(BREAKPOINT_TEXT_FILL);
         breakpoint.setPadding(DEFAULT_INSETS);
         breakpoint.setAlignment(Pos.CENTER_LEFT);
         if (breakpoints.contains(idx)) breakpoint.setText("⬤"); else breakpoint.setText("");
