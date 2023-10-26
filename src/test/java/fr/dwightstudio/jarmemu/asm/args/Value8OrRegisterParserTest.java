@@ -30,10 +30,10 @@ public class Value8OrRegisterParserTest {
         assertEquals(-48, VALUE_OR_REGISTER.parse(stateContainer, "#-48"));
         assertEquals(1, VALUE_OR_REGISTER.parse(stateContainer, "#0b01"));
         assertEquals(8, VALUE_OR_REGISTER.parse(stateContainer, "#0010"));
-        assertEquals(16, VALUE_OR_REGISTER.parse(stateContainer, "#0x010"));
+        assertEquals(16, VALUE_OR_REGISTER.parse(stateContainer, "#0X010"));
 
         assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#R14"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#0xR14"));
+        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#0XR14"));
         assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#LR"));
     }
 

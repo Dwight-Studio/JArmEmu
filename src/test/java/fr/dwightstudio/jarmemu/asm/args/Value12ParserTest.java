@@ -30,12 +30,12 @@ public class Value12ParserTest {
 
     @Test
     void hexTest() {
-        assertEquals(135, VALUE12.parse(stateContainer,"#0x87"));
-        assertEquals(2041, VALUE12.parse(stateContainer,"#0x7F9"));
-        assertEquals(-69, VALUE12.parse(stateContainer,"#-0x45"));
-        assertEquals(2032, VALUE12.parse(stateContainer,"#0x7f0"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0xFFF"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0xP"));
+        assertEquals(135, VALUE12.parse(stateContainer,"#0X87"));
+        assertEquals(2041, VALUE12.parse(stateContainer,"#0X7F9"));
+        assertEquals(-69, VALUE12.parse(stateContainer,"#-0X45"));
+        assertEquals(2032, VALUE12.parse(stateContainer,"#0X7f0"));
+        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0XFFF"));
+        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0XP"));
     }
 
     @Test
@@ -50,12 +50,12 @@ public class Value12ParserTest {
 
     @Test
     void binTest() {
-        assertEquals(87, VALUE12.parse(stateContainer,"#0b1010111"));
-        assertEquals(2047, VALUE12.parse(stateContainer,"#0b11111111111"));
-        assertEquals(-774, VALUE12.parse(stateContainer,"#-0b1100000110"));
-        assertEquals(2029, VALUE12.parse(stateContainer,"#0b11111101101"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0b1001010010110"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0b475"));
+        assertEquals(87, VALUE12.parse(stateContainer,"#0B1010111"));
+        assertEquals(2047, VALUE12.parse(stateContainer,"#0B11111111111"));
+        assertEquals(-774, VALUE12.parse(stateContainer,"#-0B1100000110"));
+        assertEquals(2029, VALUE12.parse(stateContainer,"#0B11111101101"));
+        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0B1001010010110"));
+        assertThrows(AssemblySyntaxException.class, () -> VALUE12.parse(stateContainer,"#0B475"));
     }
 
     @Test
