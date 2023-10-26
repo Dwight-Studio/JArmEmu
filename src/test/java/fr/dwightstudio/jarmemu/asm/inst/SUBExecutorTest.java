@@ -68,6 +68,14 @@ public class SUBExecutorTest {
         assertFalse(stateContainer.cpsr.getZ());
         assertFalse(stateContainer.cpsr.getC());
         assertTrue(stateContainer.cpsr.getV());
+        r0.setData(5);
+        r1.setData(3);
+        subExecutor.execute(stateContainer, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        assertEquals(2, r2.getData());
+        assertFalse(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.cpsr.getV());
     }
 
 }

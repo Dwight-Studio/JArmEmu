@@ -44,7 +44,7 @@ public class SourceParser {
     }
 
     /**
-     * Création du lecteur de code du l'éditeur
+     * Création du lecteur de code de l'éditeur
      * @param codeArea L'éditeyr depuis lequel récupérer le code
      */
     public SourceParser(CodeArea codeArea) {
