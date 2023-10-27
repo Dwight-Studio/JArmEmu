@@ -230,7 +230,7 @@ public class LegacySourceParser implements SourceParser {
                 }
                 argument.deleteCharAt(argument.length() - 1);
                 argument.append("]");
-                this.arguments.addAll(Arrays.asList(argument.toString().toString().split(",", 2)));
+                this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
                 this.arguments.replaceAll(String::strip);
             }
         } else if (!(currentLine.endsWith(":"))) {
