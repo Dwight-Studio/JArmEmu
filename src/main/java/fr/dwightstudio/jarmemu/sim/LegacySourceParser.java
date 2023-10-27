@@ -215,7 +215,7 @@ public class LegacySourceParser implements SourceParser {
             argument.append("}");
             this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
             this.arguments.replaceAll(String::strip);
-        } else if (currentLine.contains("[")) { // Pas sûr que ça fonctionne
+        } else if (currentLine.contains("[")) {
             StringBuilder argument = new StringBuilder(currentLine.split("\\[")[1]);
             if (argument.toString().split("\\]").length==2){
                 this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
