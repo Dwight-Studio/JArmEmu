@@ -23,7 +23,7 @@ public interface SourceParser {
 
     /**
      * Méthode principale
-     * Lecture du fichier et renvoie des instructions parsés à verifier
+     * Lecture du fichier et renvoie des instructions parsées à verifier
      *
      * @param stateContainer conteneur d'état sur lequel parser
      */

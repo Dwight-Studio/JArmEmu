@@ -30,7 +30,7 @@ public class CodeInterpreter {
     }
 
     /**
-     * Charge des instructions parsés dans l'exécuteur
+     * Charge des instructions parsées dans l'exécuteur
      * @param sourceParser le parseur de source utilisé
      */
     public void load(SourceParser sourceParser) {
@@ -82,7 +82,7 @@ public class CodeInterpreter {
      * Execute le code se trouvant sur la ligne courante
      */
     public synchronized void executeCurrentLine() {
-        // Remise à zéro des drapeaux de ligne des parsers
+        // Remise à zéro des drapeaux de ligne des parseurs
         AddressParser.reset(this.stateContainer);
         RegisterWithUpdateParser.reset(this.stateContainer);
 
