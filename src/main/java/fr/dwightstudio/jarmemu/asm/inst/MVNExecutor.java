@@ -9,7 +9,13 @@ import fr.dwightstudio.jarmemu.sim.StateContainer;
 public class MVNExecutor implements InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Integer arg2, ShiftParser.ShiftFunction arg3, Object arg4) {
-        //TODO: Faire l'instruction MVN
-        throw new IllegalStateException("Instruction MVN not implemented");
+        int i1 = arg3.apply(arg2);
+
+        arg1.setData(~i1);
+
+        if(updateFlags){
+            stateContainer.cpsr.setN(arg1.getData() < 0);
+            stateContainer.cpsr.setZ(arg1.getData() == 0);
+        }
     }
 }

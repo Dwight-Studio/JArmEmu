@@ -162,7 +162,7 @@ public class SourceParser {
 
     /**
      * Méthode principale
-     * Lecture du fichier et renvoie des instructions parsés à verifier
+     * Lecture du fichier et renvoie des instructions parsées à verifier
      *
      * @param stateContainer conteneur d'état sur lequel parser
      */
@@ -210,7 +210,7 @@ public class SourceParser {
             if (this.instruction == null) throw new AssemblySyntaxException("Unknown instruction '" + instructionString + "'");
         }
 
-        if (currentLine.contains("{")) { // On pouvais utiliser des regex
+        if (currentLine.contains("{")) { // On pouvait utiliser des regex
             StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
             argument.deleteCharAt(0);
             argument.deleteCharAt(argument.length() - 1);
