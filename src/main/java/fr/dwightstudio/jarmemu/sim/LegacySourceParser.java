@@ -216,19 +216,23 @@ public class LegacySourceParser implements SourceParser {
             this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
             this.arguments.replaceAll(String::strip);
         } else if (currentLine.contains("[")) { // Pas sûr que ça fonctionne
-            StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
-            argument.deleteCharAt(0);
-            argument.deleteCharAt(argument.length() - 1);
-            ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
-            argumentArray.replaceAll(String::strip);
-            argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "[");
-            for (String arg : argumentArray) {
-                argument.append(arg).append(",");
+            StringBuilder argument = new StringBuilder(currentLine.split("\\[")[1]);
+            if (argument.toString().split("\\]").length==2){
+                this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
+                this.arguments.replaceAll(String::strip);
+            } else {
+                argument = new StringBuilder(argument.toString().split("\\]")[0]);
+                ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
+                argumentArray.replaceAll(String::strip);
+                argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "[");
+                for (String arg : argumentArray) {
+                    argument.append(arg).append(",");
+                }
+                argument.deleteCharAt(argument.length() - 1);
+                argument.append("]");
+                this.arguments.addAll(Arrays.asList(argument.toString().toString().split(",", 2)));
+                this.arguments.replaceAll(String::strip);
             }
-            argument.deleteCharAt(argument.length() - 1);
-            argument.append("]");
-            this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
-            this.arguments.replaceAll(String::strip);
         } else if (!(currentLine.endsWith(":"))) {
             this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
             this.arguments.replaceAll(String::strip);

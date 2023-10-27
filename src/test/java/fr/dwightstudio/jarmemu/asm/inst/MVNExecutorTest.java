@@ -1,12 +1,13 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.asm.args.ArgumentParsers;
-import fr.dwightstudio.jarmemu.sim.Register;
-import fr.dwightstudio.jarmemu.sim.StateContainer;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class MVNExecutorTest {
 
@@ -30,6 +31,23 @@ public class MVNExecutorTest {
         assertEquals(Integer.MIN_VALUE, r1.getData());
         mvnExecutor.execute(stateContainer, false, null, null, r2, 0b10101010101010101010010001000001, ArgumentParsers.SHIFT.none(), null);
         assertEquals(~0b10101010101010101010010001000001, r2.getData());
+    }
+
+    @Test
+    public void flagsTest() {
+        Register r0 = stateContainer.registers[0];
+        Register r1 = stateContainer.registers[1];
+        Register r2 = stateContainer.registers[2];
+        mvnExecutor.execute(stateContainer, true, null, null, r0, 0, ArgumentParsers.SHIFT.none(), null);
+        assertTrue(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        mvnExecutor.execute(stateContainer, true, null, null, r1, -2, ArgumentParsers.SHIFT.none(), null);
+        assertFalse(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        r1.setData(-1);
+        mvnExecutor.execute(stateContainer, true, null, null, r2, r1.getData(), ArgumentParsers.SHIFT.none(), null);
+        assertFalse(stateContainer.cpsr.getN());
+        assertTrue(stateContainer.cpsr.getZ());
     }
 
 }

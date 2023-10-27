@@ -7,3 +7,4 @@ stmfd     sp!   ,   { r0  ,    r1   , r2}
 bal etiquette
 ceciEstUneEtiquette:
 LDR        R1, [R0,R1,LSL#2]
+LDR        R1, [R0],R1,LSL#2

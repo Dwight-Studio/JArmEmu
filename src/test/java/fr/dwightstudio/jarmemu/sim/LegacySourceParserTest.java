@@ -174,7 +174,16 @@ public class LegacySourceParserTest {
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 
-        arguments = new ArrayList<>(Arrays.asList("LDR","R1","[R0,R1,LSL#2]"));
+        arguments = new ArrayList<>(Arrays.asList("R1","[R0,R1,LSL#2]"));
+        reader.readOneLineASM();
+        assertEquals(Instruction.LDR, reader.instruction);
+        assertEquals(Condition.AL, reader.conditionExec);
+        assertNull(reader.dataMode);
+        assertNull(reader.updateMode);
+        assertFalse(reader.updateFlags);
+        assertEquals(arguments, reader.arguments);
+
+        arguments = new ArrayList<>(Arrays.asList("R1", "[R0]", "R1", "LSL#2"));
         reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
         assertEquals(Condition.AL, reader.conditionExec);
