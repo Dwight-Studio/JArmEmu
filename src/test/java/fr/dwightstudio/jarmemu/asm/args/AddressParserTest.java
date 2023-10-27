@@ -1,14 +1,10 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
-import fr.dwightstudio.jarmemu.sim.Register;
-import fr.dwightstudio.jarmemu.sim.StateContainer;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;

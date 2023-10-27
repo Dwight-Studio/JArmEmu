@@ -3,6 +3,9 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.ArrayList;
 import java.util.HashMap;

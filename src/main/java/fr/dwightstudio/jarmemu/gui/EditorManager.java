@@ -26,6 +26,8 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
+
 public class EditorManager {
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
     private static final String[] KEYWORDS = getFromEnum(Keyword.values(), false);
@@ -55,7 +57,6 @@ public class EditorManager {
     private CodeArea codeArea;
     private JArmEmuApplication application;
     private JARMEmuLineFactory lineFactory;
-
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
         Matcher matcher = PATTERN.matcher(text);
         int lastKwEnd = 0;
@@ -69,18 +70,6 @@ public class EditorManager {
         }
         spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
         return spansBuilder.create();
-    }
-
-    private static <T extends Enum<T>> String[] getFromEnum(T[] list, boolean addEmpty) {
-        ArrayList<String> rtn = new ArrayList<>();
-
-        for (T elmt : list) {
-            rtn.add(elmt.toString().toUpperCase());
-        }
-
-        if (addEmpty) rtn.add("");
-
-        return rtn.toArray(new String[0]);
     }
 
     /**

@@ -1,15 +1,14 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
 import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
-import fr.dwightstudio.jarmemu.sim.StateContainer;
-import net.objecthunter.exp4j.tokenizer.UnknownFunctionOrVariableException;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "imm12"
 public class Value12Parser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        // TODO: Ajout du support des symbols et des calculs
+        // TODO: Attention aux 4 bits de shift
         try {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1);

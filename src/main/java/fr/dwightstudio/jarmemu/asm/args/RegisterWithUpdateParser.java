@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.sim.Register;
-import fr.dwightstudio.jarmemu.sim.StateContainer;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

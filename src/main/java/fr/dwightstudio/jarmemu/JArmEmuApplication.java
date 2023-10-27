@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.gui.EditorManager;
 import fr.dwightstudio.jarmemu.gui.JAREmuController;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
+import fr.dwightstudio.jarmemu.sim.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceParser;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -68,6 +69,7 @@ public class JArmEmuApplication extends Application {
         this.stage.setTitle("JArmEmu - " + title + (unsaved && !title.endsWith("*") ? "*" : ""));
     }
 
+    // TODO: Améliorer la gestion de l'enregistrement (avec comparaison)
     public void setUnsaved() {
         String old = this.stage.getTitle();
         if (!unsaved && !old.endsWith("*")) {

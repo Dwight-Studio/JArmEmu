@@ -2,14 +2,14 @@ package fr.dwightstudio.jarmemu.gui;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
-import fr.dwightstudio.jarmemu.sim.AssemblyError;
-import fr.dwightstudio.jarmemu.sim.SourceParser;
-import fr.dwightstudio.jarmemu.sim.StateContainer;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import fr.dwightstudio.jarmemu.sim.LegacySourceParser;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -79,13 +79,14 @@ public class JAREmuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         registers = new Text[]{R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15};
         editorManager.init(application);
-        application.sourceParser = new SourceParser(codeArea);
+        application.sourceParser = new LegacySourceParser(codeArea);
     }
 
     @FXML
     public void onNewFile() {
         editorManager.newFile();
-        application.sourceParser.updateFromEditor(codeArea);
+        codeArea.clear();
+        codeArea.insertText(0, application.sourceParser.getSourceScanner().exportCode());
         Platform.runLater(() -> {
             application.setTitle("New File");
             application.setUnsaved();
@@ -111,8 +112,8 @@ public class JAREmuController implements Initializable {
             onSaveAs();
         } else {
             try {
-                application.sourceParser.updateFromEditor(codeArea);
-                application.sourceParser.exportToFile(savePath);
+                application.sourceParser.setSourceScanner(new SourceScanner(codeArea.getText()));
+                application.sourceParser.getSourceScanner().exportCodeToFile(savePath);
                 Platform.runLater(() -> {
                     application.setTitle(savePath.getName());
                     application.setSaved();
@@ -140,8 +141,9 @@ public class JAREmuController implements Initializable {
     public void onReload() {
         if (savePath != null) {
             try {
-                application.sourceParser.updateFromFile(savePath);
-                application.sourceParser.exportToEditor(codeArea);
+                application.sourceParser.setSourceScanner(new SourceScanner(savePath));
+                codeArea.clear();
+                codeArea.insertText(0, application.sourceParser.getSourceScanner().exportCode());
                 Platform.runLater(() -> {
                     application.setTitle(savePath.getName());
                     application.setSaved();
@@ -160,7 +162,7 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onSimulate() {
-        application.sourceParser.updateFromEditor(codeArea);
+        application.sourceParser.setSourceScanner(new SourceScanner(codeArea.getText()));
         application.codeInterpreter.load(application.sourceParser);
         application.codeInterpreter.resetState();
         application.codeInterpreter.restart();

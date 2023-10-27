@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.sim.StateContainer;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Function;
 

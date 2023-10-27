@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.sim;
+package fr.dwightstudio.jarmemu.sim.obj;
 
 public class Register {
 

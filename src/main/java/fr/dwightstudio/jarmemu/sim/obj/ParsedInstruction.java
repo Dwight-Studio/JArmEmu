@@ -1,12 +1,10 @@
-package fr.dwightstudio.jarmemu.sim;
+package fr.dwightstudio.jarmemu.sim.obj;
 
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ParsedInstruction {

@@ -18,10 +18,10 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SourceParserTest {
+public class LegacySourceParserTest {
 
 
-    public SourceParserTest() throws URISyntaxException {
+    public LegacySourceParserTest() throws URISyntaxException {
     }
 
     @BeforeEach
@@ -33,7 +33,7 @@ public class SourceParserTest {
     public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
         File file = new File(getClass().getResource("/singleLine.s").toURI());
 
-        SourceParser reader = new SourceParser(file);
+        LegacySourceParser reader = new LegacySourceParser(file);
 
         try {
             reader.readOneLineASM();
@@ -51,7 +51,7 @@ public class SourceParserTest {
     public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
 
-        SourceParser reader = new SourceParser(file);
+        LegacySourceParser reader = new LegacySourceParser(file);
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R1", "[R2]"));
 
         reader.readOneLineASM();
@@ -85,7 +85,7 @@ public class SourceParserTest {
         File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
         ArrayList<String> arguments = new ArrayList<>(Arrays.asList("R2", "R0", "R1"));
 
-        SourceParser reader = new SourceParser(file);
+        LegacySourceParser reader = new LegacySourceParser(file);
         reader.readOneLineASM();
         assertEquals(Instruction.SUB, reader.instruction);
         assertEquals(Condition.AL, reader.conditionExec);
@@ -100,7 +100,7 @@ public class SourceParserTest {
         File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
         ArrayList<String> arguments;
 
-        SourceParser reader = new SourceParser(file);
+        LegacySourceParser reader = new LegacySourceParser(file);
 
         arguments = new ArrayList<>(Arrays.asList("R0", "R9", "#2"));
         reader.readOneLineASM();

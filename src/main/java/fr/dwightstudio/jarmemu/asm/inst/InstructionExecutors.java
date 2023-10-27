@@ -3,7 +3,7 @@ package fr.dwightstudio.jarmemu.asm.inst;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.asm.args.ShiftParser;
-import fr.dwightstudio.jarmemu.sim.Register;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 
 public class InstructionExecutors {
 
