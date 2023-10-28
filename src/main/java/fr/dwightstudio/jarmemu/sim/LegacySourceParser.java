@@ -209,6 +209,7 @@ public class LegacySourceParser implements SourceParser {
             argumentArray.replaceAll(String::strip);
             argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
             for (String arg : argumentArray) {
+                arg = this.joinString(arg);
                 argument.append(arg).append(",");
             }
             argument.deleteCharAt(argument.length() - 1);
@@ -220,12 +221,14 @@ public class LegacySourceParser implements SourceParser {
             if (argument.toString().split("\\]").length==2){
                 this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
                 this.arguments.replaceAll(String::strip);
+                this.arguments = this.joinStringArray(this.arguments);
             } else {
                 argument = new StringBuilder(argument.toString().split("\\]")[0]);
                 ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
                 argumentArray.replaceAll(String::strip);
                 argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "[");
                 for (String arg : argumentArray) {
+                    arg = this.joinString(arg);
                     argument.append(arg).append(",");
                 }
                 argument.deleteCharAt(argument.length() - 1);
@@ -236,9 +239,32 @@ public class LegacySourceParser implements SourceParser {
         } else if (!(currentLine.endsWith(":"))) {
             this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
             this.arguments.replaceAll(String::strip);
+            this.arguments = this.joinStringArray(this.arguments);
         }
 
         if (arguments.size() > 4) throw new AssemblySyntaxException("Invalid instruction '" + currentLine + "' (too many arguments");
+    }
+
+    private String joinString(String argument) {
+        StringBuilder newArg = new StringBuilder();
+        ArrayList<String> elements = new ArrayList<>(Arrays.asList(argument.split(" ")));
+        for (String ele:elements) {
+            newArg.append(ele);
+        }
+        return String.valueOf(newArg);
+    }
+
+    private ArrayList<String> joinStringArray(ArrayList<String> arguments) {
+        ArrayList<String> returnString = new ArrayList<>();
+        for (String arg:arguments) {
+            StringBuilder newArg = new StringBuilder();
+            ArrayList<String> elements = new ArrayList<>(Arrays.asList(arg.split(" ")));
+            for (String ele:elements) {
+                newArg.append(ele);
+            }
+            returnString.add(String.valueOf(newArg));
+        }
+        return returnString;
     }
 
     /**
