@@ -15,8 +15,6 @@ public class MULExecutor implements InstructionExecutor<Register, Register, Regi
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC(false);
-            stateContainer.cpsr.setV(MathUtils.hasOverflowMul(arg2.getData(), arg3.getData()));
         }
     }
 }

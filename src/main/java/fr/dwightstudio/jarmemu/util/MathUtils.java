@@ -16,9 +16,4 @@ public class MathUtils {
         return ((a ^ r) & (b ^ r)) < 0;
     }
 
-    public static boolean hasOverflowMul(int a, int b) {
-        long r = (long)a * (long)b;
-        return (int) r != r;
-    }
-
 }
