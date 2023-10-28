@@ -245,6 +245,11 @@ public class LegacySourceParser implements SourceParser {
         if (arguments.size() > 4) throw new AssemblySyntaxException("Invalid instruction '" + currentLine + "' (too many arguments");
     }
 
+    /**
+     * Supprime les espaces composant le String
+     * @param argument Le String
+     * @return Le String avec les espaces en moins
+     */
     private String joinString(String argument) {
         StringBuilder newArg = new StringBuilder();
         ArrayList<String> elements = new ArrayList<>(Arrays.asList(argument.split(" ")));
@@ -254,6 +259,11 @@ public class LegacySourceParser implements SourceParser {
         return String.valueOf(newArg);
     }
 
+    /**
+     * Supprime les espaces des Strings composants une ArrayList<String>
+     * @param arguments Une ArrayList<String>
+     * @return L'ArrayList avec les espaces en moins
+     */
     private ArrayList<String> joinStringArray(ArrayList<String> arguments) {
         ArrayList<String> returnString = new ArrayList<>();
         for (String arg:arguments) {
