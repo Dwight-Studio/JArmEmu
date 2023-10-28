@@ -10,7 +10,8 @@ public class EORExecutor implements InstructionExecutor<Register, Register, Inte
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, ShiftParser.ShiftFunction arg4) {
         int i1 = arg4.apply(arg3);
-        arg1.setData(arg2.getData() ^ i1);
+
+        arg1.setData(arg2.getData() ^ i1); // arg1 = arg2 ^ (arg4 SHIFT arg3)
 
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
