@@ -5,7 +5,7 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-// Correspond à "imm8"
+// Correspond à "imm8" TODO: Ajouter le Barrel Shifting
 public class Value8Parser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
