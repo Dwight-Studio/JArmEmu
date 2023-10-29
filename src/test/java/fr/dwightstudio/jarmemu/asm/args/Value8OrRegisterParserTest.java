@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +32,9 @@ public class Value8OrRegisterParserTest {
         assertEquals(8, VALUE_OR_REGISTER.parse(stateContainer, "#0010"));
         assertEquals(16, VALUE_OR_REGISTER.parse(stateContainer, "#0X010"));
 
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#R14"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#0XR14"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#LR"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#R14"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#0XR14"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "#LR"));
     }
 
     @Test
@@ -50,9 +50,9 @@ public class Value8OrRegisterParserTest {
         assertEquals(16, VALUE_OR_REGISTER.parse(stateContainer, "CPSR"));
         assertEquals(17, VALUE_OR_REGISTER.parse(stateContainer, "SPSR"));
 
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "R16"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "48"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "1R"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "4LR"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "R16"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "48"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "1R"));
+        assertThrows(SyntaxASMException.class, () -> VALUE_OR_REGISTER.parse(stateContainer, "4LR"));
     }
 }

@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,11 +30,11 @@ public class RegisterParserTest {
         assertEquals(stateContainer.cpsr, REGISTER.parse(stateContainer, "CPSR"));
         assertEquals(stateContainer.spsr, REGISTER.parse(stateContainer, "SPSR"));
 
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER.parse(stateContainer, "DAF"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER.parse(stateContainer, "R16"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER.parse(stateContainer, "R-1"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER.parse(stateContainer, "RL"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER.parse(stateContainer, "PCCPSR"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER.parse(stateContainer, "CPSR15"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "DAF"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "R16"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "R-1"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "RL"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "PCCPSR"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "CPSR15"));
     }
 }

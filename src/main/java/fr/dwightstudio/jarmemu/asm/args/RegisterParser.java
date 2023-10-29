@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -28,12 +29,12 @@ public class RegisterParser implements ArgumentParser<Register> {
             case "PC", "R15" -> stateContainer.registers[15];
             case "CPSR" -> stateContainer.cpsr;
             case "SPSR" -> stateContainer.spsr;
-            default -> throw new AssemblySyntaxException("Unknown register '" + string + "'");
+            default -> throw new SyntaxASMException("Unknown register '" + string + "'");
         };
     }
 
     @Override
     public Register none() {
-        return null;
+        throw new BadArgumentsASMException("missing register");
     }
 }

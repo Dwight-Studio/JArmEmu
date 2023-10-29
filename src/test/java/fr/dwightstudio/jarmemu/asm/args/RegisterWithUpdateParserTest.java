@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,9 +47,9 @@ class RegisterWithUpdateParserTest {
 
     @Test
     public void failTest() {
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "!R1"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "R16!"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "R!"));
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "R17"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "!R1"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "R16!"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "R!"));
+        assertThrows(SyntaxASMException.class, () -> REGISTER_WITH_UPDATE.parse(stateContainer, "R17"));
     }
 }

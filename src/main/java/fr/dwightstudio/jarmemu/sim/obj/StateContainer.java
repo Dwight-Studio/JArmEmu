@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -67,7 +67,7 @@ public class StateContainer {
             }
             return (int) exp.evaluate();
         } catch (IllegalArgumentException exception) {
-            throw new AssemblySyntaxException("Malformed math expression '" + expString + "'");
+            throw new SyntaxASMException("Malformed math expression '" + expString + "'");
         }
     }
 

@@ -74,7 +74,7 @@ public class CodeInterpreter {
     public int nextLine() {
         if (!hasNextLine()) return lastLine;
         currentLine++;
-        if (!instructions.containsKey(currentLine)) nextLine();
+        if (!instructions.containsKey(currentLine) || instructions.get(currentLine).isLabel()) nextLine();
         return currentLine;
     }
 
@@ -131,7 +131,7 @@ public class CodeInterpreter {
      */
     public int getLastLine() {
         final int[] line = {0};
-        instructions.keySet().forEach(i -> line[0] = Math.max(i, line[0]));
+        instructions.keySet().forEach(i -> line[0] = Math.max(instructions.get(i).isLabel() ? 0 : i, line[0]));
         return line[0];
     }
 

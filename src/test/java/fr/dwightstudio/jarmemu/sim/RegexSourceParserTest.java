@@ -4,6 +4,8 @@ import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,28 +20,30 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LegacySourceParserTest {
+public class RegexSourceParserTest {
+
+    StateContainer container;
+
     @BeforeEach
     public void setup() {
-
+        container = new StateContainer();
     }
 
     @Test
     public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
         File file = new File(getClass().getResource("/singleLine.s").toURI());
 
-        LegacySourceParser reader = new LegacySourceParser(file);
+        RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file));
 
-        try {
-            reader.readOneLineASM();
-        } catch (IllegalStateException ignored) {}
-        assertEquals("ADD R1, R0", reader.currentLine);
+        assertEquals(
+                new ParsedInstruction(Instruction.ADD, Condition.AL, false, null, null, "R1", "R0", null, null),
+                parser.parseOneLine(container)
+        );
 
-        try {
-            reader.readOneLineASM();
-        } catch (IllegalStateException ignored) {}
-        assertEquals("ADCCCS R2, R1, R3", reader.currentLine);
-
+        assertEquals(
+                new ParsedInstruction(Instruction.ADC, Condition.CC, false, null, null, "R2", "R1", "R3", null),
+                parser.parseOneLine(container)
+        );
     }
 
     @Test
@@ -169,16 +173,7 @@ public class LegacySourceParserTest {
         assertFalse(reader.updateFlags);
         assertEquals(arguments, reader.arguments);
 
-        arguments = new ArrayList<>(Arrays.asList("R1","[R0,R1,LSL#2]"));
-        reader.readOneLineASM();
-        assertEquals(Instruction.LDR, reader.instruction);
-        assertEquals(Condition.AL, reader.conditionExec);
-        assertNull(reader.dataMode);
-        assertNull(reader.updateMode);
-        assertFalse(reader.updateFlags);
-        assertEquals(arguments, reader.arguments);
-
-        arguments = new ArrayList<>(Arrays.asList("R1", "[R0]", "R1", "LSL#2"));
+        arguments = new ArrayList<>(Arrays.asList("LDR","R1","[R0,R1,LSL#2]"));
         reader.readOneLineASM();
         assertEquals(Instruction.LDR, reader.instruction);
         assertEquals(Condition.AL, reader.conditionExec);

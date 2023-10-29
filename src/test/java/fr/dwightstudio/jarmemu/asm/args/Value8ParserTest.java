@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +21,8 @@ public class Value8ParserTest {
     @Test
     public void OverflowTest() {
         assertEquals(127, VALUE8.parse(stateContainer, "#127"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE8.parse(stateContainer, "#-132"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE8.parse(stateContainer, "#128"));
-        assertThrows(AssemblySyntaxException.class, () -> VALUE8.parse(stateContainer, "#256"));
+        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#-132"));
+        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#128"));
+        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#256"));
     }
 }

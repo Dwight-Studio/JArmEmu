@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -34,12 +35,12 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
 
             return rtn.toArray(new Register[0]);
         } else {
-            throw new AssemblySyntaxException("Unexpected value '" + string + "' (expected a Register Array)");
+            throw new SyntaxASMException("Unexpected value '" + string + "' (expected a Register Array)");
         }
     }
 
     @Override
     public Register[] none() {
-        return null;
+        throw new BadArgumentsASMException("missing register array");
     }
 }

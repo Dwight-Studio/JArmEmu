@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,12 +13,12 @@ public class RegisterAddressParser implements ArgumentParser<Integer> {
             string = string.substring(1, string.length()-1);
             return ArgumentParsers.REGISTER.parse(stateContainer, string).getData();
         } else {
-            throw new AssemblySyntaxException("Invalid address (register) '" + string + "'");
+            throw new SyntaxASMException("Invalid address (from register) '" + string + "'");
         }
     }
 
     @Override
     public Integer none() {
-        return null;
+        throw new BadArgumentsASMException("missing address (from register)");
     }
 }

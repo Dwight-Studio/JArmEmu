@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
                     });
                     return new ShiftFunction(stateContainer, func);
                 } else {
-                    throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
+                    throw new SyntaxASMException("Invalid shift expression '" + string + "'");
                 }
             }
 
@@ -39,31 +39,31 @@ public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
             Function<Integer,Integer> func = switch (type) {
                 case "LSL" -> {
                     if (value < 0 || value > 31)
-                        throw new AssemblySyntaxException("Invalid shift value '" + shift + "', expected value between 0 and 31 included");
+                        throw new SyntaxASMException("Invalid shift value '" + shift + "', expected value between 0 and 31 included");
                     yield (i -> i << value);
                 }
                 case "LSR" -> {
                     if (value < 1 || value > 32)
-                        throw new AssemblySyntaxException("Invalid shift value '" + shift + "', expected value between 1 and 32 included");
+                        throw new SyntaxASMException("Invalid shift value '" + shift + "', expected value between 1 and 32 included");
                     yield (i -> i >>> value);
                 }
                 case "ASR" -> {
                     if (value < 1 || value > 32)
-                        throw new AssemblySyntaxException("Invalid shift value '" + shift + "', expected value between 1 and 32 included");
+                        throw new SyntaxASMException("Invalid shift value '" + shift + "', expected value between 1 and 32 included");
                     yield (i -> i >> value);
                 }
                 case "ROR" -> {
                     if (value < 1 || value > 31)
-                        throw new AssemblySyntaxException("Invalid shift value '" + shift + "', expected value between 1 and 31 included");
+                        throw new SyntaxASMException("Invalid shift value '" + shift + "', expected value between 1 and 31 included");
                     yield (i -> Integer.rotateRight(i, value));
                 }
-                default -> throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
+                default -> throw new SyntaxASMException("Invalid shift expression '" + string + "'");
             };
 
             return new ShiftFunction(stateContainer, func);
 
         } catch (IndexOutOfBoundsException exception) {
-            throw new AssemblySyntaxException("Invalid shift expression '" + string + "'");
+            throw new SyntaxASMException("Invalid shift expression '" + string + "'");
         }
     }
 

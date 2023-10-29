@@ -158,7 +158,7 @@
                                        <children>
                                           <GridPane hgap="10.0">
                                              <children>
-                                                <Label text="Adress" />
+                                                <Label text="Address" />
                                                 <Label text="Byte 0" GridPane.columnIndex="2" />
                                                 <Label text="Byte 1" GridPane.columnIndex="3" />
                                                 <Label text="Byte 2" GridPane.columnIndex="4" />
@@ -337,7 +337,7 @@
                                  <children>
                                     <GridPane hgap="10.0">
                                        <children>
-                                          <Label text="Adress" />
+                                          <Label text="Address" />
                                           <Label text="Byte 0" GridPane.columnIndex="2" />
                                           <Label text="Byte 1" GridPane.columnIndex="3" />
                                           <Label text="Byte 2" GridPane.columnIndex="4" />

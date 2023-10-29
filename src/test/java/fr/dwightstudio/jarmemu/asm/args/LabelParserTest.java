@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ public class LabelParserTest {
         stateContainer.labels.put("COUCOU", 23);
 
         assertEquals(0b000000000000000000010111, LABEL.parse(stateContainer, "COUCOU:"));
-        assertThrows(AssemblySyntaxException.class, () -> LABEL.parse(stateContainer, "PASCOUCOU:"));
+        assertThrows(SyntaxASMException.class, () -> LABEL.parse(stateContainer, "PASCOUCOU:"));
     }
 
 }

@@ -1,5 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +31,7 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
     @Override
     public UpdatableRegister none() {
-        return null;
+        throw new BadArgumentsASMException("missing register");
     }
 
     public static final class UpdatableRegister extends Register {

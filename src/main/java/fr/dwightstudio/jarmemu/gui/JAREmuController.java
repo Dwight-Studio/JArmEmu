@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.gui;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.LegacySourceParser;
@@ -189,7 +189,7 @@ public class JAREmuController implements Initializable {
             restart.setDisable(false);
             reset.setDisable(false);
         } else {
-            if (application.codeInterpreter.getLineCount() == 0) addError(new AssemblyError(0, new AssemblySyntaxException("No instructions detected")));
+            if (application.codeInterpreter.getLineCount() == 0) addError(new AssemblyError(0, new SyntaxASMException("No instructions detected")));
             for (AssemblyError error : errors) {
                 addError(error);
             }
@@ -288,7 +288,7 @@ public class JAREmuController implements Initializable {
     }
 
     public void addError(AssemblyError error) {
-        addNotif("[ln " + error.getLine() + "] Syntax Error:", error.getException().getMessage(), "danger");
+        addNotif("[ln " + error.getLine() + "] ", error.getException().getMessage(), "danger");
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(error.getException()));
     }
 

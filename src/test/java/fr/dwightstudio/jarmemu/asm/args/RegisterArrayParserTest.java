@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,6 +67,6 @@ class RegisterArrayParserTest {
 
         stringBuilder.append("}");
 
-        assertThrows(AssemblySyntaxException.class, () -> REGISTER_ARRAY.parse(stateContainer, stringBuilder.toString()));
+        assertThrows(SyntaxASMException.class, () -> REGISTER_ARRAY.parse(stateContainer, stringBuilder.toString()));
     }
 }

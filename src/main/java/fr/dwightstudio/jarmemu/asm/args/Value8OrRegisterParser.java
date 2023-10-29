@@ -1,5 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,6 @@ public class Value8OrRegisterParser implements ArgumentParser<Integer> {
 
     @Override
     public Integer none() {
-        return null;
+        throw new BadArgumentsASMException("missing immediate (8 bits) or register");
     }
 }

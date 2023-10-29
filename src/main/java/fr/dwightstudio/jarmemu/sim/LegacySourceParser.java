@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.fxmisc.richtext.CodeArea;
@@ -198,7 +199,7 @@ public class LegacySourceParser implements SourceParser {
         if(currentLine.endsWith(":")){
             this.arguments.add(currentLine);
         } else {
-            if (this.instruction == null) throw new AssemblySyntaxException("Unknown instruction '" + instructionString + "'");
+            if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + instructionString + "'");
         }
 
         if (currentLine.contains("{")) {
@@ -242,7 +243,7 @@ public class LegacySourceParser implements SourceParser {
             this.arguments = this.joinStringArray(this.arguments);
         }
 
-        if (arguments.size() > 4) throw new AssemblySyntaxException("Invalid instruction '" + currentLine + "' (too many arguments");
+        if (arguments.size() > 4) throw new SyntaxASMException("Invalid instruction '" + currentLine + "' (too many arguments");
     }
 
     /**
@@ -284,7 +285,7 @@ public class LegacySourceParser implements SourceParser {
     public ParsedInstruction parseOneLine(StateContainer stateContainer) {
         try {
             readOneLineASM();
-        } catch (AssemblySyntaxException exception) {
+        } catch (SyntaxASMException exception) {
             //TODO: Gérer les exceptions après avoir géré les Pseudo-OP
         }
 

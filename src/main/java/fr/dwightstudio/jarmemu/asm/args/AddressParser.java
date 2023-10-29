@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
     @Override
     public UpdatableInteger parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         if (!string.startsWith("[")) {
-            throw new AssemblySyntaxException("Invalid address '" + string + "'");
+            throw new SyntaxASMException("Invalid address '" + string + "'");
         }
 
         boolean updateNow = string.endsWith("!");
@@ -62,11 +62,11 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
                         updateNow,
                         reg);
             } else {
-                throw new AssemblySyntaxException("Invalid address '" + string + "'");
+                throw new SyntaxASMException("Invalid address '" + string + "'");
             }
 
         } else {
-            throw new AssemblySyntaxException("Invalid address '" + string + "'");
+            throw new SyntaxASMException("Invalid address '" + string + "'");
         }
     }
 

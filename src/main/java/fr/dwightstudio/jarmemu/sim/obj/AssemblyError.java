@@ -1,13 +1,13 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 
 public class AssemblyError {
 
     private final int line;
-    private final AssemblySyntaxException exception;
+    private final SyntaxASMException exception;
 
-    public AssemblyError(int line, AssemblySyntaxException exception) {
+    public AssemblyError(int line, SyntaxASMException exception) {
         this.line = line;
         this.exception = exception;
     }
@@ -17,7 +17,7 @@ public class AssemblyError {
         return line;
     }
 
-    public AssemblySyntaxException getException() {
+    public SyntaxASMException getException() {
         return exception;
     }
 }

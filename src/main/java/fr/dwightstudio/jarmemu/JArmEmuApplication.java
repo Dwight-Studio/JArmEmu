@@ -2,10 +2,7 @@ package fr.dwightstudio.jarmemu;
 
 import fr.dwightstudio.jarmemu.gui.EditorManager;
 import fr.dwightstudio.jarmemu.gui.JAREmuController;
-import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
-import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
-import fr.dwightstudio.jarmemu.sim.LegacySourceParser;
-import fr.dwightstudio.jarmemu.sim.SourceParser;
+import fr.dwightstudio.jarmemu.sim.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

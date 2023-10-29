@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
-import fr.dwightstudio.jarmemu.asm.AssemblySyntaxException;
+import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,17 +12,17 @@ public class Value8Parser implements ArgumentParser<Integer> {
         try {
             int rtn = ArgumentParsers.VALUE_12.parse(stateContainer, string);
             if (Integer.numberOfLeadingZeros(Math.abs(rtn)) < 25)
-                throw new AssemblySyntaxException("Overflowing 8 bits value '" + string + "'");
+                throw new SyntaxASMException("Overflowing 8 bits value '" + string + "'");
             return rtn;
-        } catch (AssemblySyntaxException exception) {
+        } catch (SyntaxASMException exception) {
             if (exception.getMessage().startsWith("Invalid 12 bits value")) {
-                throw new AssemblySyntaxException("Invalid 8 bits value '" + string + "'");
+                throw new SyntaxASMException("Invalid 8 bits value '" + string + "'");
             } else throw exception;
         }
     }
 
     @Override
     public Integer none() {
-        return null;
+        throw new BadArgumentsASMException("missing immediate (8 bits)");
     }
 }
