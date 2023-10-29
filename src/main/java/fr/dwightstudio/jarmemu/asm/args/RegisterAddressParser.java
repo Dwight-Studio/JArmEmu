@@ -10,7 +10,7 @@ public class RegisterAddressParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         if (string.startsWith("[") && string.endsWith("]")) {
-            string = string.substring(1, string.length()-1);
+            string = string.substring(1, string.length()-1).strip();
             return ArgumentParsers.REGISTER.parse(stateContainer, string).getData();
         } else {
             throw new SyntaxASMException("Invalid address (from register) '" + string + "'");

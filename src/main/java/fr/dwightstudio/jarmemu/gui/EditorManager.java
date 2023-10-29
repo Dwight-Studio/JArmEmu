@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.gui;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.util.RegisterName;
+import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.input.KeyCode;
@@ -14,7 +14,6 @@ import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.Subscription;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
@@ -31,7 +30,7 @@ import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 public class EditorManager {
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
     private static final String[] KEYWORDS = getFromEnum(Keyword.values(), false);
-    private static final String[] REGISTERS = getFromEnum(RegisterName.values(), false);
+    private static final String[] REGISTERS = getFromEnum(RegisterUtils.values(), false);
     private static final String[] CONDITIONS = getFromEnum(Condition.values(), true);
     private static final String[] DATA_MODES = getFromEnum(DataMode.values(), true);
     private static final String[] UPDATE_MODES = getFromEnum(UpdateMode.values(), true);

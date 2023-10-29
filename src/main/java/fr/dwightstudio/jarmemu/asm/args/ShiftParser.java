@@ -33,7 +33,7 @@ public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
             }
 
             String type = string.substring(0, 3);
-            String shift = string.substring(3);
+            String shift = string.substring(3).strip();
             int value = ArgumentParsers.VALUE_8_OR_REGISTER.parse(stateContainer, shift);
 
             Function<Integer,Integer> func = switch (type) {

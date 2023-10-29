@@ -5,6 +5,7 @@ import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 // Correspond à "mem", à utiliser avec Value12OrRegisterParser et ShiftParser
@@ -29,6 +30,8 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
         if (string.endsWith("]")) {
             String mem = string.substring(1, string.length() - 1);
             String[] mems = mem.split(",");
+
+            mems = Arrays.stream(mems).map(String::strip).toArray(String[]::new);
 
             Register reg = ArgumentParsers.REGISTER.parse(stateContainer, mems[0]);
 

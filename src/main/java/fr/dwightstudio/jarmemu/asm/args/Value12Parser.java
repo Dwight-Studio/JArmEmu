@@ -12,24 +12,24 @@ public class Value12Parser implements ArgumentParser<Integer> {
         // TODO: Attention aux 4 bits de shift
         try {
             if (string.startsWith("#")) {
-                String valueString = string.substring(1);
+                String valueString = string.substring(1).strip();
                 String sign = valueString.startsWith("-") ? "-" : "";
                 if (valueString.startsWith("-")) valueString = valueString.substring(1);
 
                 if (valueString.startsWith("0B")) {
-                    valueString = valueString.substring(2);
+                    valueString = valueString.substring(2).strip();
                     int value = Integer.parseInt(sign + valueString, 2);
                     if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
                         throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
                     return value;
                 } else if (valueString.startsWith("0X")) {
-                    valueString = valueString.substring(2);
+                    valueString = valueString.substring(2).strip();
                     int value = Integer.parseInt(sign + valueString, 16);
                     if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
                         throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
                     return value;
                 } else if (valueString.startsWith("00")) {
-                    valueString = valueString.substring(2);
+                    valueString = valueString.substring(2).strip();
                     int value = Integer.parseInt(sign + valueString, 8);
                     if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
                         throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
@@ -41,7 +41,7 @@ public class Value12Parser implements ArgumentParser<Integer> {
                     return value;
                 }
             } else if (string.startsWith("=")) {
-                String valueString = string.substring(1);
+                String valueString = string.substring(1).strip();
                 return stateContainer.eval(valueString, stateContainer.data);
             } else {
                 throw new SyntaxASMException("Invalid 12 bits value '" + string + "'");

@@ -23,7 +23,7 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
             ArrayList<Register> rtn = new ArrayList<>();
 
             for (String regString : arrayString.split(",")) {
-                Register reg = ArgumentParsers.REGISTER.parse(stateContainer, regString);
+                Register reg = ArgumentParsers.REGISTER.parse(stateContainer, regString.strip());
                 if (!rtn.contains(reg)) {
                     rtn.add(reg);
                 } else {

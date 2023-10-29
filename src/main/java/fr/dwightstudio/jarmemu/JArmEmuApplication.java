@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
+import fr.dwightstudio.jarmemu.sim.RegexSourceParser;
 
 import java.io.IOException;
 import java.util.logging.LogManager;
@@ -45,6 +46,8 @@ public class JArmEmuApplication extends Application {
         codeInterpreter = new CodeInterpreter(this);
         executionWorker = new ExecutionWorker(this);
         this.stage = stage;
+
+        new RegexSourceParser(new SourceScanner(""));
 
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());

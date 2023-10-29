@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.jetbrains.annotations.NotNull;
 
@@ -292,7 +293,7 @@ public class LegacySourceParser implements SourceParser {
         if (this.instruction == null) {
             if (!arguments.isEmpty() && arguments.get(0).endsWith(":")) {
                 String str = arguments.get(0);
-                return ParsedInstruction.ofLabel(str.substring(0, str.length()-1), getCurrentLine());
+                return ParsedInstruction.ofLabel(str.substring(0, str.length()-1), RegisterUtils.lineToPC(getCurrentLine()));
             }
         }
 

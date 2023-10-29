@@ -6,12 +6,15 @@ import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.util.RegisterUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static fr.dwightstudio.jarmemu.util.RegisterUtils.lineToPC;
 
 public class CodeInterpreter {
     private static final Logger logger = Logger.getLogger(CodeInterpreter.class.getName());
@@ -75,6 +78,7 @@ public class CodeInterpreter {
         if (!hasNextLine()) return lastLine;
         currentLine++;
         if (!instructions.containsKey(currentLine) || instructions.get(currentLine).isLabel()) nextLine();
+        setCurrentByteToPC();
         return currentLine;
     }
 
@@ -86,12 +90,18 @@ public class CodeInterpreter {
         AddressParser.reset(this.stateContainer);
         RegisterWithUpdateParser.reset(this.stateContainer);
 
+        int oldPC = getCurrentLineFromPC();
+
         if (instructions.containsKey(currentLine)) {
             ParsedInstruction instruction = instructions.get(currentLine);
             instruction.execute(stateContainer);
         } else {
             logger.log(Level.SEVERE, "Executing non-existant instruction of line " + currentLine);
         }
+
+        int newPC = getCurrentLineFromPC();
+
+        if (oldPC != newPC) getCurrentLineFromPC();
 
         this.atTheEnd = !hasNextLine();
     }
@@ -147,5 +157,21 @@ public class CodeInterpreter {
      */
     public int getCurrentLine() {
         return currentLine;
+    }
+
+    public int getCurrentByte() {
+        return RegisterUtils.lineToPC(currentLine);
+    }
+
+    private int getCurrentLineFromPC() {
+        return RegisterUtils.PCToLine(stateContainer.registers[RegisterUtils.PC.getN()].getData());
+    }
+
+    private void setCurrentByteToPC() {
+        stateContainer.registers[RegisterUtils.PC.getN()].setData(getCurrentByte());
+    }
+
+    private void setCurrentLineFromPC() {
+        currentLine = getCurrentLineFromPC();
     }
 }

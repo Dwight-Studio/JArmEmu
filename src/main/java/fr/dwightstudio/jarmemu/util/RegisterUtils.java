@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.util;
 
-public enum RegisterName {
+public enum RegisterUtils {
 
     R0(0),
     R1(1),
@@ -20,9 +20,11 @@ public enum RegisterName {
     R15(15), PC(15),
     CPSR(16), SPSR(17);
 
+    public static final int OFFSET_PC = 0;
+
     int n;
 
-    RegisterName(int n) {
+    RegisterUtils(int n) {
         this.n = n;
     }
 
@@ -32,5 +34,13 @@ public enum RegisterName {
 
     public boolean isSpecial() {
         return (getN() > 15);
+    }
+
+    public static int lineToPC(int line) {
+        return OFFSET_PC + line * 4;
+    }
+
+    public static int PCToLine(int pc) {
+        return (pc - OFFSET_PC)/4;
     }
 }

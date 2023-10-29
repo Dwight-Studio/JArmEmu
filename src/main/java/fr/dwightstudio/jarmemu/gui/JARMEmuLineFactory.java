@@ -58,8 +58,8 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
         lineNo.setPadding(DEFAULT_INSETS);
         lineNo.setAlignment(Pos.CENTER_RIGHT);
         lineNo.setText(String.format("%d", idx));
-        lineNo.setMinWidth(32);
-        lineNo.setMaxWidth(32);
+        lineNo.setMinWidth(40);
+        lineNo.setMaxWidth(40);
 
         Label breakpoint = new Label();
         breakpoint.setFont(DEFAULT_FONT);
