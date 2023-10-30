@@ -1,19 +1,22 @@
-package fr.dwightstudio.jarmemu.sim;
+package fr.dwightstudio.jarmemu.sim.parse.regex;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.Condition;
+import fr.dwightstudio.jarmemu.asm.DataMode;
+import fr.dwightstudio.jarmemu.asm.Instruction;
+import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegexSourceParser implements SourceParser{
+public class RegexASMParser {
 
     private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values(), false);
     private static final String[] CONDITIONS = EnumUtils.getFromEnum(Condition.values(), true);
@@ -31,77 +34,34 @@ public class RegexSourceParser implements SourceParser{
 
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
             "(?i)^[ \t]*"
-            + "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")"
-            + "(?<CONDITION>" + CONDITION_REGEX + ")"
-            + "("
-            + "(?<FLAG>" + FLAG_REGEX + ")"
-            + "|(?<DATA>" + DATA_REGEX + ")"
-            + "|(?<UPDATE>" + UPDATE_REGEX + ")"
-            + "|)"
-            + "[ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*"
-            + "((,[ \t]*(?<ARG2>" + ARG_REGEX + ")[ \t]*)|)"
-            + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
-            + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)"
-            + "[ \t]*$(?-i)"
+                    + "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")"
+                    + "(?<CONDITION>" + CONDITION_REGEX + ")"
+                    + "("
+                    + "(?<FLAG>" + FLAG_REGEX + ")"
+                    + "|(?<DATA>" + DATA_REGEX + ")"
+                    + "|(?<UPDATE>" + UPDATE_REGEX + ")"
+                    + "|)"
+                    + "[ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*"
+                    + "((,[ \t]*(?<ARG2>" + ARG_REGEX + ")[ \t]*)|)"
+                    + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
+                    + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)"
+                    + "[ \t]*$(?-i)"
     );
 
-    private static final String LABEL_REGEX = "[A-Za-z_0-9]+[ \t]*:";
+    private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
 
     private static final Pattern LABEL_PATTERN = Pattern.compile(
-            "(?<LABEL>" + LABEL_REGEX + ")"
+            "(?<LABEL>" + LABEL_REGEX + ")[ \t]*:"
     );
 
-    private SourceScanner sourceScanner;
-
-    public RegexSourceParser(SourceScanner sourceScanner) {
-        this.sourceScanner = sourceScanner;
-    }
-
     /**
-     * @return le CodeScanner utilisé par le parseur
-     */
-    @Override
-    public SourceScanner getSourceScanner() {
-        return sourceScanner;
-    }
-
-    /**
-     * Définie le CodeScanner à utiliser par le parseur
+     * Lecture d'une ligne avec assembler
      *
-     * @param sourceScanner le CodeScanner à utiliser
+     * @param sourceScanner le SourceScanner associé
+     * @param line la ligne à parser
+     * @return un ParsedObject à verifier.
      */
-    @Override
-    public void setSourceScanner(SourceScanner sourceScanner) {
-        this.sourceScanner = sourceScanner;
-    }
-
-    /**
-     * Méthode principale
-     * Lecture du fichier et renvoie des instructions parsées à verifier
-     *
-     * @param stateContainer conteneur d'état sur lequel parser
-     */
-    @Override
-    public HashMap<Integer, ParsedInstruction> parse(StateContainer stateContainer) {
-        HashMap<Integer, ParsedInstruction> rtn = new HashMap<>();
-
-        sourceScanner.goTo(-1);
-        while (this.sourceScanner.hasNextLine()){
-            ParsedInstruction inst = parseOneLine(stateContainer);
-            if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
-        }
-
-        return rtn;
-    }
-
-    /**
-     * Lecture d'une ligne et teste de tous ses arguments
-     *
-     * @param stateContainer
-     * @return une ParsedInstruction à verifier.
-     */
-    @Override
-    public ParsedInstruction parseOneLine(StateContainer stateContainer) {
+    public static ParsedObject parseOneLine(SourceScanner sourceScanner, String line) {
         Instruction instruction;
         boolean updateFlags = false;
         DataMode dataMode = null;
@@ -113,15 +73,10 @@ public class RegexSourceParser implements SourceParser{
         String arg3;
         String arg4;
 
-
-        String line = sourceScanner.nextLine();
-        line = removeComments(line);
-        line = removeBlanks(line);
-
         Matcher matcher = LABEL_PATTERN.matcher(line);
 
         if (matcher.find()) {
-            return ParsedInstruction.ofLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(sourceScanner.getCurrentInstructionValue()));
+            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(sourceScanner.getCurrentInstructionValue()));
         }
 
         matcher = INSTRUCTION_PATTERN.matcher(line);
@@ -141,14 +96,14 @@ public class RegexSourceParser implements SourceParser{
             try {
                 instruction = Instruction.valueOf(instructionString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown instruction '" + instructionString + "'");
+                throw new SyntaxASMException("Unknown instruction '" + instructionString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
 
             try {
                 if (Objects.equals(conditionString, "")) conditionString = null;
                 if (conditionString != null) condition = Condition.valueOf(conditionString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown condition '" + conditionString + "'");
+                throw new SyntaxASMException("Unknown condition '" + conditionString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
 
             if (flagString != null) updateFlags = flagString.equalsIgnoreCase("S");
@@ -157,21 +112,20 @@ public class RegexSourceParser implements SourceParser{
                 if (Objects.equals(dataString, "")) dataString = null;
                 if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase().strip());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown data mode '" + dataString + "'");
+                throw new SyntaxASMException("Unknown data mode '" + dataString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
 
             try {
                 if (Objects.equals(updateString, "")) updateString = null;
                 if (updateString != null) updateMode = UpdateMode.valueOf(updateString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown update mode '" + updateString + "'");
+                throw new SyntaxASMException("Unknown update mode '" + updateString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
 
         } else {
-            // TODO: Faire les Pseudo-OP
-            return null;
+            throw new SyntaxASMException("Unexpected statement '" + line + "', at line " + sourceScanner.getCurrentInstructionValue());
         }
-        
+
         if (arg1 != null) {
             arg1 = arg1.strip().toUpperCase();
             if (arg1.isEmpty()) arg1 = null;
@@ -193,23 +147,5 @@ public class RegexSourceParser implements SourceParser{
         }
 
         return new ParsedInstruction(instruction, condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-    }
-
-    /**
-     * Retire le commentaire de la ligne s'il y en a un
-     * @param line La ligne sur laquelle on veut appliquer la fonction
-     * @return La ligne modifiée ou non
-     */
-    public String removeComments(@NotNull String line){
-        return line.split("@")[0];
-    }
-
-    /**
-     * Retire les espaces blancs avant et après l'instruction
-     * @param line La ligne sur laquelle on veut appliquer la fonction
-     * @return La ligne modifiée ou non
-     */
-    public String removeBlanks(@NotNull String line){
-        return line;
     }
 }

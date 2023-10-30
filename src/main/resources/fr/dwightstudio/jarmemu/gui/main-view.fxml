@@ -314,7 +314,7 @@
                               </VirtualizedScrollPane>
                               <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
                                  <StackPane.margin>
-                                    <Insets left="54.0" />
+                                    <Insets left="70.0" />
                                  </StackPane.margin>
                               </Separator>
                            </children>

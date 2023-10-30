@@ -9,8 +9,8 @@ import org.jetbrains.annotations.NotNull;
 public class LabelParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        string = string.substring(0, string.length()-1);
         Integer value = stateContainer.labels.get(string);
+
         if (value == null) throw new SyntaxASMException("Unknown label '" + string +"'");
 
         return value;

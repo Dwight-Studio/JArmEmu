@@ -1,8 +1,8 @@
-package fr.dwightstudio.jarmemu.sim;
+package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.fxmisc.richtext.CodeArea;
@@ -156,15 +156,13 @@ public class LegacySourceParser implements SourceParser {
     /**
      * Méthode principale
      * Lecture du fichier et renvoie des instructions parsées à verifier
-     *
-     * @param stateContainer conteneur d'état sur lequel parser
      */
-    public HashMap<Integer, ParsedInstruction> parse(StateContainer stateContainer){
-        HashMap<Integer, ParsedInstruction> rtn = new HashMap<>();
+    public HashMap<Integer, ParsedObject> parse(){
+        HashMap<Integer, ParsedObject> rtn = new HashMap<>();
 
         sourceScanner.goTo(-1);
         while (this.sourceScanner.hasNextLine()){
-            ParsedInstruction inst = parseOneLine(stateContainer);
+            ParsedObject inst = parseOneLine();
             if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
         }
 
@@ -281,9 +279,10 @@ public class LegacySourceParser implements SourceParser {
 
     /**
      * Lecture d'une ligne et teste de tous ses arguments
-     * @return une ParsedInstruction à verifier.
+     *
+     * @return un ParsedObject non vérifié
      */
-    public ParsedInstruction parseOneLine(StateContainer stateContainer) {
+    public ParsedObject parseOneLine() {
         try {
             readOneLineASM();
         } catch (SyntaxASMException exception) {
@@ -291,9 +290,9 @@ public class LegacySourceParser implements SourceParser {
         }
 
         if (this.instruction == null) {
-            if (!arguments.isEmpty() && arguments.get(0).endsWith(":")) {
+            if (!arguments.isEmpty() && arguments.get(0).strip().endsWith(":")) {
                 String str = arguments.get(0);
-                return ParsedInstruction.ofLabel(str.substring(0, str.length()-1), RegisterUtils.lineToPC(getCurrentLine()));
+                return new ParsedLabel(str.substring(0, str.length()-1), RegisterUtils.lineToPC(getCurrentLine()));
             }
         }
 

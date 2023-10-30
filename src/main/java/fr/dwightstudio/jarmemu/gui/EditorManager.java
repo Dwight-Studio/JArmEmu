@@ -29,7 +29,7 @@ import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
 public class EditorManager {
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
-    private static final String[] KEYWORDS = getFromEnum(Keyword.values(), false);
+    private static final String[] KEYWORDS = getFromEnum(PseudoInstruction.values(), false);
     private static final String[] REGISTERS = getFromEnum(RegisterUtils.values(), false);
     private static final String[] CONDITIONS = getFromEnum(Condition.values(), true);
     private static final String[] DATA_MODES = getFromEnum(DataMode.values(), true);

@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
-import fr.dwightstudio.jarmemu.sim.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -79,14 +78,13 @@ public class JAREmuController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         registers = new Text[]{R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15};
         editorManager.init(application);
-        application.sourceParser = new LegacySourceParser(codeArea);
+        onNewFile();
     }
 
     @FXML
     public void onNewFile() {
         editorManager.newFile();
-        codeArea.clear();
-        codeArea.insertText(0, application.sourceParser.getSourceScanner().exportCode());
+        application.sourceParser.setSourceScanner(new SourceScanner(codeArea.getText()));
         Platform.runLater(() -> {
             application.setTitle("New File");
             application.setUnsaved();
@@ -162,8 +160,17 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onSimulate() {
+        clearNotifs();
         application.sourceParser.setSourceScanner(new SourceScanner(codeArea.getText()));
-        application.codeInterpreter.load(application.sourceParser);
+
+        try {
+            application.codeInterpreter.load(application.sourceParser);
+        } catch (SyntaxASMException exception) {
+            addNotif("Parsing error: ", exception.getMessage(), "danger");
+            logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+            return;
+        }
+
         application.codeInterpreter.resetState();
         application.codeInterpreter.restart();
 
@@ -175,9 +182,8 @@ public class JAREmuController implements Initializable {
             new ExceptionDialog(e).show();
         }
 
-        if (errors.length == 0 && application.codeInterpreter.getLineCount() != 0) {
+        if (errors.length == 0 && application.codeInterpreter.getInstructionCount() != 0) {
             application.executionWorker.revive();
-            application.codeInterpreter.resetState();
             application.controller.editorManager.clearExecutedLines();
             codeArea.setDisable(true);
             simulate.setDisable(true);
@@ -189,7 +195,9 @@ public class JAREmuController implements Initializable {
             restart.setDisable(false);
             reset.setDisable(false);
         } else {
-            if (application.codeInterpreter.getLineCount() == 0) addError(new AssemblyError(0, new SyntaxASMException("No instructions detected")));
+            if (application.codeInterpreter.getInstructionCount() == 0) {
+                addNotif("Parsing error: ", "No instructions detected", "danger");
+            }
             for (AssemblyError error : errors) {
                 addError(error);
             }
@@ -288,7 +296,7 @@ public class JAREmuController implements Initializable {
     }
 
     public void addError(AssemblyError error) {
-        addNotif("[ln " + error.getLine() + "] ", error.getException().getMessage(), "danger");
+        addNotif("Parsing error:", " " + error.getException().getMessage() + " at line " + error.getLine(), "danger");
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(error.getException()));
     }
 
