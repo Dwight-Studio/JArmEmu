@@ -16,6 +16,7 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> RSC_EXECUTOR = new RSCExecutor();
     public static final InstructionExecutor<Register, Register, Register, Object> MUL_EXECUTOR = new MULExecutor();
     public static final InstructionExecutor<Register, Register, Register, Object> MLA_EXECUTOR = new MLAExecutor();
+    public static final InstructionExecutor<Register, Register, Register, Object> MLS_EXECUTOR = new MLSExecutor();
     public static final InstructionExecutor<Register, Register, Register, Register> UMULL_EXECUTOR = new UMULLExecutor();
     public static final InstructionExecutor<Register, Register, Register, Register> UMLAL_EXECUTOR = new UMLALExecutor();
     public static final InstructionExecutor<Register, Register, Register, Register> SMULL_EXECUTOR = new SMULLExecutor();
