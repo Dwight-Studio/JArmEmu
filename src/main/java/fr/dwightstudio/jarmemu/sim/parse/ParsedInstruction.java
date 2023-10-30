@@ -10,6 +10,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class ParsedInstruction extends ParsedObject {
@@ -30,13 +31,15 @@ public class ParsedInstruction extends ParsedObject {
         this.args = new String[]{arg1, arg2, arg3, arg4};
     }
 
-    public AssemblyError verify(int line) {
+    public AssemblyError verify(int line, Set<String> labels) {
         StateContainer stateContainer = new StateContainer();
+
+        labels.forEach(s -> stateContainer.labels.put(s, 0));
+
         try {
             execute(stateContainer);
             return null;
         } catch (SyntaxASMException exception) {
-            if (exception.getMessage().startsWith("Unknown label")) return null;
             return new AssemblyError(line, exception);
         } finally {
             AddressParser.reset(stateContainer);

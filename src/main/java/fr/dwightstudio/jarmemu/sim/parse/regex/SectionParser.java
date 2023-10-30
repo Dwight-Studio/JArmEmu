@@ -8,7 +8,7 @@ import fr.dwightstudio.jarmemu.util.EnumUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegexSectionParser {
+public class SectionParser {
 
     private static final String[] SECTIONS = EnumUtils.getFromEnum(Section.values(), false);
 
@@ -45,7 +45,7 @@ public class RegexSectionParser {
             return section;
 
         } else {
-            throw new SyntaxASMException("Invalid section declaration '" + line + "'");
+            return null;
         }
     }
 }

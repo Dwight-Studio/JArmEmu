@@ -1,21 +1,14 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.*;
-import fr.dwightstudio.jarmemu.sim.parse.regex.RegexASMParser;
-import fr.dwightstudio.jarmemu.sim.parse.regex.RegexPseudoOpParser;
-import fr.dwightstudio.jarmemu.sim.parse.regex.RegexSectionParser;
-import fr.dwightstudio.jarmemu.util.EnumUtils;
-import fr.dwightstudio.jarmemu.util.RegisterUtils;
+import fr.dwightstudio.jarmemu.sim.parse.regex.ASMParser;
+import fr.dwightstudio.jarmemu.sim.parse.regex.PseudoOpParser;
+import fr.dwightstudio.jarmemu.sim.parse.regex.SectionParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RegexSourceParser implements SourceParser {
 
@@ -77,13 +70,22 @@ public class RegexSourceParser implements SourceParser {
         if (line.isEmpty()) return null;
 
         if (Objects.requireNonNull(currentSection) == Section.NONE) {
-            Section section = RegexSectionParser.parseOneLine(sourceScanner, line);
-            if (section != null) this.currentSection = section;
-            return null;
+            Section section = SectionParser.parseOneLine(sourceScanner, line);
+            if (section != null) {
+                this.currentSection = section;
+                return null;
+            } else {
+                throw new SyntaxASMException("Invalid section declaration '" + line + "'");
+            }
         } else {
-            ParsedObject instruction = RegexPseudoOpParser.parseOneLine(sourceScanner, line);
+            Section section = SectionParser.parseOneLine(sourceScanner, line);
+            if (section != null) {
+                this.currentSection = section;
+                return null;
+            }
+            ParsedObject instruction = PseudoOpParser.parseOneLine(sourceScanner, line);
             if (instruction != null) return instruction;
-            if (currentSection == Section.TEXT) return RegexASMParser.parseOneLine(sourceScanner, line);
+            if (currentSection == Section.TEXT) return ASMParser.parseOneLine(sourceScanner, line);
             return null;
         }
     }

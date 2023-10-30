@@ -3,7 +3,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 
-public class RegexPseudoOpParser {
+public class PseudoOpParser {
 
     /**
      * Lecture d'une ligne avec PseudoOp

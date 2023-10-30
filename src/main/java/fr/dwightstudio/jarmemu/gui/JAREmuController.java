@@ -166,7 +166,7 @@ public class JAREmuController implements Initializable {
         try {
             application.codeInterpreter.load(application.sourceParser);
         } catch (SyntaxASMException exception) {
-            addNotif("Parsing error: ", exception.getMessage(), "danger");
+            addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
             logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
             return;
         }
@@ -296,7 +296,7 @@ public class JAREmuController implements Initializable {
     }
 
     public void addError(AssemblyError error) {
-        addNotif("Parsing error:", " " + error.getException().getMessage() + " at line " + error.getLine(), "danger");
+        addNotif(error.getException().getTitle(), " " + error.getException().getMessage() + " at line " + error.getLine(), "danger");
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(error.getException()));
     }
 

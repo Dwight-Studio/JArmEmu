@@ -16,7 +16,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RegexASMParser {
+public class ASMParser {
 
     private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values(), false);
     private static final String[] CONDITIONS = EnumUtils.getFromEnum(Condition.values(), true);

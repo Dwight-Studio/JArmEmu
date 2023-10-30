@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class ParsedLabel extends ParsedObject {
@@ -25,7 +26,7 @@ public class ParsedLabel extends ParsedObject {
     }
 
     @Override
-    public AssemblyError verify(int line) {
+    public AssemblyError verify(int line, Set<String> labels) {
         return null;
     }
 

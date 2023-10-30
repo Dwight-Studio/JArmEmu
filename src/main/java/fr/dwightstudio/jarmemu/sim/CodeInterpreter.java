@@ -53,7 +53,7 @@ public class CodeInterpreter {
         ArrayList<AssemblyError> rtn = new ArrayList<>();
 
         for (Map.Entry<Integer, ParsedObject> inst : instructions.entrySet()) {
-            AssemblyError e = inst.getValue().verify(inst.getKey());
+            AssemblyError e = inst.getValue().verify(inst.getKey(), stateContainer.labels.keySet());
             if (e != null) rtn.add(e);
         }
 
@@ -67,8 +67,6 @@ public class CodeInterpreter {
         for (Map.Entry<Integer, ParsedObject> inst : instructions.entrySet()) {
             if (inst.getValue() instanceof ParsedLabel label) {
                 label.register(stateContainer);
-                System.out.println(label.getName());
-                System.out.println(stateContainer.labels.keySet());
             }
         }
     }
