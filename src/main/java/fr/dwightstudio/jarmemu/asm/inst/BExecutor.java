@@ -7,7 +7,6 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class BExecutor implements InstructionExecutor<Integer, Object, Object, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Integer arg1, Object arg2, Object arg3, Object arg4) {
-        //TODO: Faire l'instruction B
         stateContainer.registers[15].setData(arg1); // PC = arg1
     }
 }
