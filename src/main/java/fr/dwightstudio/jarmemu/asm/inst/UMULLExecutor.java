@@ -13,6 +13,7 @@ public class UMULLExecutor implements InstructionExecutor<Register, Register, Re
         long result = r3 * r4;  // result = (unsigned) arg3 * (unsigned) arg4
         arg1.setData((int) (result));   // arg1 = result[31..0]
         arg2.setData((int) (result >>> 32)); // arg1 = result[63..32]
+
         if (updateFlags) {
             stateContainer.cpsr.setN(arg2.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0 && arg2.getData() == 0);

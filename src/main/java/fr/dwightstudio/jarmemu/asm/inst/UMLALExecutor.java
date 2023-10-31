@@ -9,6 +9,15 @@ public class UMLALExecutor implements InstructionExecutor<Register, Register, Re
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Register arg3, Register arg4) {
         //TODO: Faire l'instruction UMLAL
-        throw new IllegalStateException("Instruction UMLAL not implemented");
+        long r3 = arg3.getData() & 0xFFFFFFFFL;
+        long r4 = arg4.getData() & 0xFFFFFFFFL;
+        long result = (((long) arg2.getData() << 32) | (arg1.getData() & 0xFFFFFFFFL)) + r3 * r4;   // result = (arg2[63..32]..arg1[31..0]) + (unsigned) arg3 * (unsigned) arg4
+        arg1.setData((int) (result));   // arg1 = result[31..0]
+        arg2.setData((int) (result >>> 32));    // arg1 = result[63..32]
+
+        if (updateFlags) {
+            stateContainer.cpsr.setN(arg2.getData() < 0);
+            stateContainer.cpsr.setZ(arg1.getData() == 0 && arg2.getData() == 0);
+        }
     }
 }
