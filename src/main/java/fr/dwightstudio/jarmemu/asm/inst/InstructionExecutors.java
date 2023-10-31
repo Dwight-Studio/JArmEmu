@@ -28,6 +28,13 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> EOR_EXECUTOR = new EORExecutor();
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> BIC_EXECUTOR = new BICExecutor();
 
+    //Shifter
+    public static final InstructionExecutor<Register, Register, Integer, Object> LSL_EXECUTOR = new LSLExecutor();
+    public static final InstructionExecutor<Register, Register, Integer, Object> LSR_EXECUTOR = new LSRExecutor();
+    public static final InstructionExecutor<Register, Register, Integer, Object> ASR_EXECUTOR = new ASRExecutor();
+    public static final InstructionExecutor<Register, Register, Integer, Object> ROR_EXECUTOR = new RORExecutor();
+    public static final InstructionExecutor<Register, Register, Object, Object> RRX_EXECUTOR = new RRXExecutor();
+
     // Comparison
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> CMP_EXECUTOR = new CMPExecutor();
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> CMN_EXECUTOR = new CMNExecutor();

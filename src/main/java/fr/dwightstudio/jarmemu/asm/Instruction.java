@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
+import fr.dwightstudio.jarmemu.asm.inst.LSLExecutor;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.logging.Level;
@@ -32,6 +33,13 @@ public enum Instruction {
     ORR(ORR_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, SHIFT),
     EOR(EOR_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, SHIFT),
     BIC(BIC_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, SHIFT),
+
+    //Shifter
+    LSL(LSL_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, NULL),
+    LSR(LSR_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, NULL),
+    ASR(ASR_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, NULL),
+    ROR(ROR_EXECUTOR, true, REGISTER, REGISTER, VALUE_8_OR_REGISTER, NULL),
+    RRX(RRX_EXECUTOR, false, REGISTER, REGISTER, NULL, NULL),
 
     // Comparison
     CMP(CMP_EXECUTOR, false, REGISTER, VALUE_8_OR_REGISTER, SHIFT, NULL),
