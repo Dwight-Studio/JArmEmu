@@ -7,7 +7,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class BLExecutor implements InstructionExecutor<Integer, Object, Object, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Integer arg1, Object arg2, Object arg3, Object arg4) {
-        //TODO: Faire l'instruction BL
-        throw new IllegalStateException("Instruction BL not implemented");
+        stateContainer.registers[14].setData(stateContainer.registers[15].getData() + 4); // LR = PC + 4
+        stateContainer.registers[15].setData(arg1); // PC = arg1
     }
 }
