@@ -1,0 +1,9 @@
+.reg-data {
+    -fx-font-family: "Roboto Mono Thin";
+    -fx-font-size: 14px;
+}
+
+.reg-address {
+    -fx-font-family: "Roboto Mono Thin Italic";
+    -fx-font-size: 14px;
+}

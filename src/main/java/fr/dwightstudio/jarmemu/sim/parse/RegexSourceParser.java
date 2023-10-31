@@ -69,25 +69,15 @@ public class RegexSourceParser implements SourceParser {
 
         if (line.isEmpty()) return null;
 
-        if (Objects.requireNonNull(currentSection) == Section.NONE) {
-            Section section = SectionParser.parseOneLine(sourceScanner, line);
-            if (section != null) {
-                this.currentSection = section;
-                return null;
-            } else {
-                throw new SyntaxASMException("Invalid section declaration '" + line + "'");
-            }
-        } else {
-            Section section = SectionParser.parseOneLine(sourceScanner, line);
-            if (section != null) {
-                this.currentSection = section;
-                return null;
-            }
-            ParsedObject instruction = PseudoOpParser.parseOneLine(sourceScanner, line);
-            if (instruction != null) return instruction;
-            if (currentSection == Section.TEXT) return ASMParser.parseOneLine(sourceScanner, line);
+        Section section = SectionParser.parseOneLine(sourceScanner, line);
+        if (section != null) {
+            this.currentSection = section;
             return null;
         }
+        ParsedObject instruction = PseudoOpParser.parseOneLine(sourceScanner, line, section);
+        if (instruction != null) return instruction;
+        if (currentSection == Section.TEXT) return ASMParser.parseOneLine(sourceScanner, line);
+        return null;
     }
 
     /**

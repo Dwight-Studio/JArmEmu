@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
+import fr.dwightstudio.jarmemu.sim.parse.Section;
 
 public class PseudoOpParser {
 
@@ -12,7 +13,7 @@ public class PseudoOpParser {
      * @param line la ligne à parser
      * @return un ParsedObject à verifier.
      */
-    public static ParsedObject parseOneLine(SourceScanner sourceScanner, String line) {
+    public static ParsedObject parseOneLine(SourceScanner sourceScanner, String line, Section section) {
         return null;
     }
 

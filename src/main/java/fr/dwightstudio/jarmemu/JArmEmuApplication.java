@@ -9,6 +9,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
@@ -27,6 +28,7 @@ public class JArmEmuApplication extends Application {
     public SourceParser sourceParser;
     public CodeInterpreter codeInterpreter;
     public ExecutionWorker executionWorker;
+    public Status status;
 
     public Stage stage;
     private boolean unsaved = true;
@@ -35,13 +37,13 @@ public class JArmEmuApplication extends Application {
     public void start(Stage stage) throws IOException {
         LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("logging.properties"));
 
-        logger.info("Starting JARMEmu");
+        logger.info("Starting JArmEmu");
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gui/main-view.fxml"));
 
         fxmlLoader.setController(new JAREmuController());
         controller = fxmlLoader.getController();
-        controller.init(this);
+        controller.attach(this);
         editorManager = new EditorManager();
         controller.editorManager = editorManager;
         codeInterpreter = new CodeInterpreter(this);
@@ -50,7 +52,16 @@ public class JArmEmuApplication extends Application {
         sourceParser = new RegexSourceParser(new SourceScanner(""));
 
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
+
+        Font.loadFont(getClass().getResourceAsStream("gui/roboto/static/RobotoMono-Regular.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("gui/roboto/static/RobotoMono-Thin.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("gui/roboto/static/RobotoMono-ThinItalic.ttf"), 14);
+
+        scene.getStylesheets().add(getClass().getResource("gui/registers-style.css").toExternalForm());
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+
+        status = Status.EDITING;
+
         setTitle("New File");
         stage.setScene(scene);
         stage.show();

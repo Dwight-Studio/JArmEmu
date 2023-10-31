@@ -48,12 +48,12 @@ public class EditorManager {
     private static final String COMMENT_PATTERN = "@[^\n]*";
     private static final String IMM_PATTERN = "=[^\n]*|#[^\n\\]]*";
     private static final Pattern PATTERN = Pattern.compile("(?<SHIFT>" + SHIFT_PATTERN + ")" + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")" + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")" + "|(?<REGISTER>" + REGISTER_PATTERN + ")" + "|(?<IMM>" + IMM_PATTERN + ")" + "|(?<BRACE>" + BRACE_PATTERN + ")" + "|(?<BRACKET>" + BRACKET_PATTERN + ")" + "|(?<LABEL>" + LABEL_PATTERN + ")" + "|(?<STRING>" + STRING_PATTERN + ")" + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
-    private static final String sampleCode = String.join("\n", new String[]{".text", ".global _start", "_start:", "\t"});
+    private static final String sampleCode = String.join("\n", new String[]{".text", "_start:", "\t@ Beginning of the program"});
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private CodeArea codeArea;
+    public CodeArea codeArea;
     private JArmEmuApplication application;
     private JARMEmuLineFactory lineFactory;
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {
@@ -139,6 +139,7 @@ public class EditorManager {
         // call when no longer need it: `cleanupWhenFinished.unsubscribe();`
 
         newFile();
+        codeArea.getStyleClass().add("editor");
         codeArea.getStylesheets().add(EditorManager.class.getResource("editor-style.css").toExternalForm());
     }
 

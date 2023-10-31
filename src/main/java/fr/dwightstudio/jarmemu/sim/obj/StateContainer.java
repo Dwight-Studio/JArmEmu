@@ -12,8 +12,6 @@ public class StateContainer {
     public final HashMap<String, Integer> consts; // HashMap des constantes
     public final HashMap<String, Integer> data; // HashMap des données
     public final HashMap<String, Integer> labels; // HashMap des labels
-    private int lastSymbolLocation;
-
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -22,10 +20,7 @@ public class StateContainer {
     public final PSR spsr;
 
     // Memory
-    public static final int MEMORY_CHUNK_NUMBER = 256;
-    public static final int MEMORY_CHUNK_SIZE = 4;
-    public static final int MEMORY_SIZE = MEMORY_CHUNK_NUMBER * MEMORY_CHUNK_SIZE;
-    public final Byte[] memory;
+    public final MemoryAccessor memory;
 
     public StateContainer() {
 
@@ -33,7 +28,6 @@ public class StateContainer {
         labels = new HashMap<>();
         consts = new HashMap<>();
         data = new HashMap<>();
-        lastSymbolLocation = 0;
 
         // Initializing registers
         this.registers = new Register[REGISTER_NUMBER];
@@ -43,19 +37,12 @@ public class StateContainer {
         spsr = new PSR();
 
         // Initializing memory
-        this.memory = new Byte[MEMORY_SIZE];
-        clearMemory();
+        this.memory = new MemoryAccessor();
     }
 
     public void clearRegisters() {
         for (int i = 0; i < REGISTER_NUMBER; i++) {
             registers[i] = new Register();
-        }
-    }
-
-    public void clearMemory() {
-        for (int i = 0; i < MEMORY_SIZE; i++) {
-            memory[i] = (byte) 0;
         }
     }
 

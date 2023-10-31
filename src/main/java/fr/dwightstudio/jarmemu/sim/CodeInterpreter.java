@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
@@ -11,6 +10,7 @@ import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
+import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,6 +124,12 @@ public class CodeInterpreter {
      */
     public void restart() {
         this.currentLine = -1;
+        if (stateContainer.labels.containsKey("_START")) {
+            stateContainer.registers[RegisterUtils.PC.getN()].setData(stateContainer.labels.get("_START"));
+            this.currentLine = RegisterUtils.PCToLine(stateContainer.labels.get("_START"));
+        }
+
+        application.executionWorker.updateGUI();
     }
 
     /**

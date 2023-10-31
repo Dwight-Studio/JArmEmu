@@ -3,10 +3,10 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.fxmisc.flowless.*?>
 <?import org.fxmisc.richtext.*?>
 
-<?import javafx.scene.text.Text?>
-<?import org.fxmisc.flowless.VirtualizedScrollPane?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
@@ -28,6 +28,11 @@
               <MenuItem mnemonicParsing="false" text="Delete" />
             </items>
           </Menu>
+            <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
+            <items>
+            <MenuItem mnemonicParsing="false" onAction="#clearNotifs" text="Clear notifications" />
+            </items>
+            </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
@@ -115,26 +120,26 @@
                                                             <Label text="(PC) R15" GridPane.rowIndex="15" />
                                                             <Label text="CPSR" GridPane.rowIndex="16" />
                                                             <Label text="SPSR" GridPane.rowIndex="17" />
-                                                            <Text fx:id="R0" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" />
-                                                            <Text fx:id="R1" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <Text fx:id="R2" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                            <Text fx:id="R3" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                            <Text fx:id="R5" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                            <Text fx:id="R6" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                            <Text fx:id="R4" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                            <Text fx:id="R7" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                            <Text fx:id="R8" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                                            <Text fx:id="R9" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                                            <Text fx:id="R10" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                                                            <Text fx:id="R11" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                                                            <Text fx:id="R12" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-                                                            <Text fx:id="R13" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-                                                            <Text fx:id="R15" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-                                                            <Text fx:id="R14" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-                                                            <Text fx:id="CPSR" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
-                                                            <Text fx:id="SPSR" styleClass="code, h5" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
-                                                            <Text fx:id="CPSRT" styleClass="code, h5" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
-                                                            <Text fx:id="SPSRT" styleClass="code, h5" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                                                            <Text fx:id="R0" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" />
+                                                            <Text fx:id="R1" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Text fx:id="R2" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Text fx:id="R3" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <Text fx:id="R5" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                            <Text fx:id="R6" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                            <Text fx:id="R4" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                            <Text fx:id="R7" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                            <Text fx:id="R8" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                            <Text fx:id="R9" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                            <Text fx:id="R10" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                            <Text fx:id="R11" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                            <Text fx:id="R12" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                            <Text fx:id="R13" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                            <Text fx:id="R15" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                            <Text fx:id="R14" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                            <Text fx:id="CPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                            <Text fx:id="SPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                            <Text fx:id="CPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                            <Text fx:id="SPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
                                                          </children>
                                                       </GridPane>
                                                    </children>
@@ -158,18 +163,10 @@
                                        <children>
                                           <GridPane hgap="10.0">
                                              <children>
-                                                <Label text="Address" />
-                                                <Label text="Byte 0" GridPane.columnIndex="2" />
-                                                <Label text="Byte 1" GridPane.columnIndex="3" />
-                                                <Label text="Byte 2" GridPane.columnIndex="4" />
-                                                <Label text="Byte 3" GridPane.columnIndex="5" />
-                                                <Label text="Hex Value" GridPane.columnIndex="1" />
+                                                <Label alignment="CENTER" text="Address" />
+                                                <Label alignment="CENTER" text="Byte" GridPane.columnIndex="1" />
                                              </children>
                                              <columnConstraints>
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                              </columnConstraints>
@@ -186,18 +183,10 @@
                                                    <children>
                                                       <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                          <children>
-                                                            <Text styleClass="code, h5" text="00000000" />
-                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="2" />
-                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="3" />
-                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="4" />
-                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="5" />
-                                                            <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="1" />
+                                                            <Text styleClass="reg-data" text="00000000" />
+                                                            <Text styleClass="reg-data" text="00000000" GridPane.columnIndex="1" />
                                                          </children>
                                                          <columnConstraints>
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="100.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                          </columnConstraints>
@@ -309,7 +298,7 @@
                            <children>
                               <VirtualizedScrollPane>
                                   <content>
-                                <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" />
+                                <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" styleClass="editor" />
                                   </content>
                               </VirtualizedScrollPane>
                               <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
@@ -331,50 +320,28 @@
               <tabs>
                   <Tab text="Memory">
                      <content>
-                        <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
-                           <content>
-                              <VBox>
+                        <VBox>
+                           <children>
+                              <HBox VBox.vgrow="ALWAYS">
                                  <children>
-                                    <GridPane hgap="10.0">
-                                       <children>
-                                          <Label text="Address" />
-                                          <Label text="Byte 0" GridPane.columnIndex="2" />
-                                          <Label text="Byte 1" GridPane.columnIndex="3" />
-                                          <Label text="Byte 2" GridPane.columnIndex="4" />
-                                          <Label text="Byte 3" GridPane.columnIndex="5" />
-                                          <Label text="Hex Value" GridPane.columnIndex="1" />
-                                       </children>
-                                       <columnConstraints>
-                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="100.0" />
-                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                       </columnConstraints>
-                                       <rowConstraints>
-                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                       </rowConstraints>
-                                       <VBox.margin>
-                                          <Insets bottom="5.0" left="10.0" top="5.0" />
-                                       </VBox.margin>
-                                    </GridPane>
-                                    <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
                                        <content>
-                                          <AnchorPane>
+                                          <VBox>
                                              <children>
-                                                <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                <GridPane hgap="10.0">
                                                    <children>
-                                                       <Text styleClass="code, h5" text="00000000" />
-                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="2" />
-                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="3" />
-                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="4" />
-                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="5" />
-                                                      <Text styleClass="code, h5" text="00000000" GridPane.columnIndex="1" />
+                                                      <Label alignment="CENTER" text="Address" />
+                                                      <Label alignment="CENTER" text="Byte 0" GridPane.columnIndex="3" />
+                                                      <Label alignment="CENTER" text="Byte 1" GridPane.columnIndex="4" />
+                                                      <Label alignment="CENTER" text="Byte 2" GridPane.columnIndex="5" />
+                                                      <Label alignment="CENTER" text="Byte 3" GridPane.columnIndex="6" />
+                                                      <Label alignment="CENTER" text="Hex Value" GridPane.columnIndex="1" />
+                                                      <Label text="Dec Value" GridPane.columnIndex="2" />
                                                    </children>
                                                    <columnConstraints>
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="100.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
@@ -383,20 +350,51 @@
                                                    <rowConstraints>
                                                       <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="10.0" top="5.0" />
+                                                   </VBox.margin>
                                                 </GridPane>
+                                                <ScrollPane fx:id="memoryScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                                   <content>
+                                                      <AnchorPane fx:id="memoryPane">
+                                                         <children>
+                                                            <GridPane fx:id="memoryGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </content>
+                                                </ScrollPane>
                                              </children>
-                                          </AnchorPane>
+                                          </VBox>
                                        </content>
                                     </ScrollPane>
+                                    <ScrollBar fx:id="memoryScrollBar" orientation="VERTICAL">
+                                       <HBox.margin>
+                                          <Insets right="1.0" />
+                                       </HBox.margin>
+                                    </ScrollBar>
                                  </children>
-                              </VBox>
-                           </content>
-                        </ScrollPane>
+                              </HBox>
+                              <Pagination fx:id="memoryPage" VBox.vgrow="NEVER" />
+                           </children>
+                        </VBox>
                      </content>
                   </Tab>
                 <Tab text="Settings">
                         <content>
-                    <AnchorPane/>
+                    <AnchorPane />
                   </content>
                 </Tab>
               </tabs>

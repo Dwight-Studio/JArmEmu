@@ -1,18 +1,29 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import javafx.application.Platform;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ExecutionWorker {
 
     private static final int WAITING_PERIOD = 50;
+
+    private static final int ERROR = -1;
     private static final int IDLE = 0;
     private static final int STEP_INTO = 1;
     private static final int STEP_OVER = 2;
     private static final int CONTINUE = 3;
+    private static final int UPDATE_GUI = 4;
+    private static final int PREPARE = 5;
+
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     private ExecutionThead daemon = null;
     private final JArmEmuApplication application;
@@ -27,7 +38,8 @@ public class ExecutionWorker {
      * Execute une instruction
      */
     public void stepInto() {
-        this.daemon.currentTask.set(STEP_INTO);
+        checkTask();
+        this.daemon.nextTask.set(STEP_INTO);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
         }
@@ -37,17 +49,41 @@ public class ExecutionWorker {
      * Execute les instructions jusqu'au prochain saut
      */
     public void stepOver() {
-        this.daemon.currentTask.set(STEP_OVER);
+        checkTask();
+        this.daemon.nextTask.set(STEP_OVER);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
         }
     }
 
     /**
-     * Execute les instructions jusqu'au prochain saut
+     * Execute les instructions jusqu'à la fin du programme
      */
     public void conti() {
-        this.daemon.currentTask.set(CONTINUE);
+        checkTask();
+        this.daemon.nextTask.set(CONTINUE);
+        synchronized (this.daemon) {
+            this.daemon.notifyAll();
+        }
+    }
+
+    /**
+     * Met à jour le GUI
+     */
+    public void updateGUI() {
+        checkTask();
+        this.daemon.nextTask.set(UPDATE_GUI);
+        synchronized (this.daemon) {
+            this.daemon.notifyAll();
+        }
+    }
+
+    /**
+     * Parse le code et prépare l'exécution
+     */
+    public void prepare() {
+        checkTask();
+        this.daemon.nextTask.set(PREPARE);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
         }
@@ -80,10 +116,26 @@ public class ExecutionWorker {
         this.daemon = null;
     }
 
+    public int getTask() {
+        if (this.daemon.isAlive()) {
+            return daemon.nextTask.get();
+        } else {
+            return ERROR;
+        }
+    }
+
+    public void checkTask() {
+        if (!this.daemon.isAlive()) logger.warning("Adding task to a dead Worker");
+        int task = this.daemon.nextTask.get();
+        if (task != IDLE) logger.warning("Overriding next task (Previous: ID" + task + ")");
+    }
+
     private static class ExecutionThead extends Thread {
 
+        private final Logger logger = Logger.getLogger(getClass().getName());
+
         private final JArmEmuApplication application;
-        private final AtomicInteger currentTask = new AtomicInteger();
+        private final AtomicInteger nextTask = new AtomicInteger();
         private boolean doContinue = false;
         private boolean doRun = true;
 
@@ -109,14 +161,15 @@ public class ExecutionWorker {
                         break;
                     }
 
-                    switch (currentTask.get()) {
+                    switch (nextTask.get()) {
                         case STEP_INTO -> stepInto();
-
                         case STEP_OVER -> stepOver();
-
                         case CONTINUE -> conti();
+                        case UPDATE_GUI -> updateGUI();
+                        case PREPARE -> prepare();
 
                         case IDLE -> {}
+                        default -> logger.severe("Unknown task ID" + nextTask.get());
                     }
 
                 }
@@ -150,8 +203,8 @@ public class ExecutionWorker {
                 });
             }
 
-            Platform.runLater(() -> application.controller.updateRegisters(application.codeInterpreter.stateContainer));
-            currentTask.set(IDLE);
+            updateGUI();
+            nextTask.set(IDLE);
         }
 
         private void stepOver() {
@@ -167,7 +220,7 @@ public class ExecutionWorker {
                     break;
                 }
             }
-            currentTask.set(IDLE);
+            nextTask.set(IDLE);
         }
 
         private void conti() {
@@ -183,7 +236,42 @@ public class ExecutionWorker {
                     break;
                 }
             }
-            currentTask.set(IDLE);
+            nextTask.set(IDLE);
+        }
+
+        private void updateGUI() {
+            if (application.codeInterpreter != null && application.codeInterpreter.stateContainer != null) {
+                application.controller.updateGUI(application.codeInterpreter.stateContainer);
+            }
+            nextTask.set(IDLE);
+        }
+
+        private void prepare() {
+            application.sourceParser.setSourceScanner(new SourceScanner(application.editorManager.codeArea.getText()));
+
+            try {
+                application.codeInterpreter.load(application.sourceParser);
+            } catch (SyntaxASMException exception) {
+                Platform.runLater(() -> {
+                application.controller.addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
+                logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+                });
+                return;
+            }
+
+            application.codeInterpreter.resetState();
+            application.codeInterpreter.restart();
+
+            updateGUI();
+
+            try {
+                AssemblyError[] errors = application.codeInterpreter.verifyAll();
+                Platform.runLater(() -> application.controller.launchSimulation(errors));
+            } catch (Exception e) {
+                Platform.runLater(() -> new ExceptionDialog(e).show());
+            }
+
+            nextTask.set(IDLE);
         }
     }
 }
