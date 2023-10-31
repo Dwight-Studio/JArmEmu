@@ -9,5 +9,6 @@ public class RRXExecutor implements InstructionExecutor<Register, Register, Obje
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Object arg3, Object arg4) {
         //TODO: Faire l'instruction RRX
+        throw new IllegalStateException("Instruction RRX not implemented");
     }
 }

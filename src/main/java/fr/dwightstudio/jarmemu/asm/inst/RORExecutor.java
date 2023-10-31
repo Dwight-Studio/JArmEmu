@@ -9,5 +9,6 @@ public class RORExecutor implements InstructionExecutor<Register, Register, Inte
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
         //TODO: Faire l'instruction ROR
+        throw new IllegalStateException("Instruction ROR not implemented");
     }
 }
