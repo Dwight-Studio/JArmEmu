@@ -3,6 +3,7 @@ package fr.dwightstudio.jarmemu.asm.args;
 import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.util.MathUtils;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "imm12" TODO: Ajouter le Barrel Shifting
@@ -37,15 +38,15 @@ public class Value12Parser implements ArgumentParser<Integer> {
         if (valueString.startsWith("0B")) {
             valueString = valueString.substring(2).strip();
 
-            return Integer.parseInt(valueString, 2);
+            return Integer.parseUnsignedInt(valueString, 2);
         } else if (valueString.startsWith("0X")) {
             valueString = valueString.substring(2).strip();
 
-            return Integer.parseInt(valueString, 16);
+            return Integer.parseUnsignedInt(valueString, 16);
         } else if (valueString.startsWith("00")) {
             valueString = valueString.substring(2).strip();
 
-            return Integer.parseInt(valueString, 8);
+            return Integer.parseUnsignedInt(valueString, 8);
         } else {
             return stateContainer.eval(valueString, stateContainer.consts);
         }
