@@ -9,50 +9,65 @@ import org.jetbrains.annotations.NotNull;
 public class Value12Parser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        // TODO: Attention aux 4 bits de shift
         try {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1).strip();
-                String sign = valueString.startsWith("-") ? "-" : "";
-                if (valueString.startsWith("-")) valueString = valueString.substring(1);
+                int value = generalParse(stateContainer, valueString);
+                checkOverflow(value, string);
+                return value;
 
-                if (valueString.startsWith("0B")) {
-                    valueString = valueString.substring(2).strip();
-                    int value = Integer.parseInt(sign + valueString, 2);
-                    if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
-                        throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
-                    return value;
-                } else if (valueString.startsWith("0X")) {
-                    valueString = valueString.substring(2).strip();
-                    int value = Integer.parseInt(sign + valueString, 16);
-                    if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
-                        throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
-                    return value;
-                } else if (valueString.startsWith("00")) {
-                    valueString = valueString.substring(2).strip();
-                    int value = Integer.parseInt(sign + valueString, 8);
-                    if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
-                        throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
-                    return value;
-                } else {
-                    int value = stateContainer.eval(sign + valueString, stateContainer.consts);
-                    if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21)
-                        throw new SyntaxASMException("Overflowing 12 bits value '" + string + "'");
-                    return value;
-                }
             } else if (string.startsWith("=")) {
-                String valueString = string.substring(1).strip();
-                return stateContainer.eval(valueString, stateContainer.data);
+                throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Op");
             } else {
-                throw new SyntaxASMException("Invalid 12 bits value '" + string + "'");
+                throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "'");
             }
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Invalid 12 bits value '" + string + "'");
+            throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "' (" + exception.getMessage() + ")");
         }
+    }
+
+    /**
+     * Analyse une chaine de caractères pour trouver des valeurs immédiates (sans # ou =).
+     *
+     * @param stateContainer le conteneur d'état sur lequel faire l'analyse (pour les constantes)
+     * @param valueString la chaine à analyser
+     * @return la valeur dans un entier
+     */
+    public int generalParse(StateContainer stateContainer, @NotNull String valueString) {
+        if (valueString.startsWith("0B")) {
+            valueString = valueString.substring(2).strip();
+
+            return Integer.parseInt(valueString, 2);
+        } else if (valueString.startsWith("0X")) {
+            valueString = valueString.substring(2).strip();
+
+            return Integer.parseInt(valueString, 16);
+        } else if (valueString.startsWith("00")) {
+            valueString = valueString.substring(2).strip();
+
+            return Integer.parseInt(valueString, 8);
+        } else {
+            return stateContainer.eval(valueString, stateContainer.consts);
+        }
+    }
+
+    private void checkOverflow(int value, String string) {
+        boolean valid = false;
+
+        for (int i = 0 ; i < 32 ; i += 2) {
+            int original = Integer.rotateLeft(value, i);
+
+            if (Integer.numberOfLeadingZeros(original) >= 24) {
+                valid = true;
+                break;
+            }
+        }
+
+        if (!valid) throw new SyntaxASMException("Overflowing 12bits value '" + string + "'");
     }
 
     @Override
     public Integer none() {
-        throw new BadArgumentsASMException("missing immediate (12 bits)");
+        throw new BadArgumentsASMException("missing immediate (12bits)");
     }
 }

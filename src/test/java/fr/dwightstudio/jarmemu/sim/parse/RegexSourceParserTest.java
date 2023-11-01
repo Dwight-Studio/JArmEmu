@@ -129,7 +129,7 @@ public class RegexSourceParserTest {
         );
 
         assertEquals(
-                new ParsedLabel("CECIESTUNEETIQUETTE:", RegisterUtils.lineToPC(parser.getSourceScanner().getCurrentInstructionValue() + 1)),
+                new ParsedLabel("CECIESTUNEETIQUETTE", RegisterUtils.lineToPC(parser.getSourceScanner().getCurrentInstructionValue() + 1)),
                 parser.parseOneLine()
         );
 

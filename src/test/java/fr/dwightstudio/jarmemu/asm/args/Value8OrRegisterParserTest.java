@@ -27,7 +27,6 @@ public class Value8OrRegisterParserTest {
     @Test
     public void valueTest() {
         assertEquals(48, VALUE_OR_REGISTER.parse(stateContainer, "#48"));
-        assertEquals(-48, VALUE_OR_REGISTER.parse(stateContainer, "#-48"));
         assertEquals(1, VALUE_OR_REGISTER.parse(stateContainer, "#0B01"));
         assertEquals(8, VALUE_OR_REGISTER.parse(stateContainer, "#0010"));
         assertEquals(16, VALUE_OR_REGISTER.parse(stateContainer, "#0X010"));

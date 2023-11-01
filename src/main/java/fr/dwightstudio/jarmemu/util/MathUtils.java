@@ -1,5 +1,8 @@
 package fr.dwightstudio.jarmemu.util;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 public class MathUtils {
 
     public static boolean hasCarry(int num1, int num2) {

@@ -5,24 +5,31 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-// Correspond à "imm8" TODO: Ajouter le Barrel Shifting
+// Correspond à "imm8"
 public class Value8Parser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         try {
-            int rtn = ArgumentParsers.VALUE_12.parse(stateContainer, string);
-            if (Integer.numberOfLeadingZeros(Math.abs(rtn)) < 25)
-                throw new SyntaxASMException("Overflowing 8 bits value '" + string + "'");
-            return rtn;
-        } catch (SyntaxASMException exception) {
-            if (exception.getMessage().startsWith("Invalid 12 bits value")) {
-                throw new SyntaxASMException("Invalid 8 bits value '" + string + "'");
-            } else throw exception;
+            if (string.startsWith("#")) {
+                String valueString = string.substring(1).strip();
+
+                int rtn = ArgumentParsers.VALUE_12.generalParse(stateContainer, valueString);
+                if (Integer.numberOfLeadingZeros(rtn) < 24)
+                    throw new SyntaxASMException("Overflowing 8bits value '" + string + "'");
+                return rtn;
+
+            } else if (string.startsWith("=")) {
+                throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Op");
+            } else {
+                throw new SyntaxASMException("Invalid 8bits immediate value '" + string + "'");
+            }
+        } catch (IllegalArgumentException exception) {
+            throw new SyntaxASMException("Invalid 8bits immediate value '" + string + "' (" + exception.getMessage() + ")");
         }
     }
 
     @Override
     public Integer none() {
-        throw new BadArgumentsASMException("missing immediate (8 bits)");
+        throw new BadArgumentsASMException("missing immediate (8bits)");
     }
 }

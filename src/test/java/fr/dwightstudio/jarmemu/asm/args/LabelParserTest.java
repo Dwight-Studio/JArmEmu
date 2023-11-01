@@ -22,7 +22,7 @@ public class LabelParserTest {
     public void parseTest(){
         stateContainer.labels.put("COUCOU", 23);
 
-        assertEquals(0b000000000000000000010111, LABEL.parse(stateContainer, "COUCOU:"));
+        assertEquals(23, LABEL.parse(stateContainer, "COUCOU"));
         assertThrows(SyntaxASMException.class, () -> LABEL.parse(stateContainer, "PASCOUCOU:"));
     }
 

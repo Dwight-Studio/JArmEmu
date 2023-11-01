@@ -5,7 +5,7 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-// Correspond à "imm24" TODO: Prendre en compte les nombres
+// Correspond à "imm24"
 public class LabelParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
@@ -18,7 +18,7 @@ public class LabelParser implements ArgumentParser<Integer> {
 
     @Override
     public Integer none() {
-        throw new BadArgumentsASMException("missing label identifier or constant");
+        throw new BadArgumentsASMException("missing label identifier");
     }
 
 }

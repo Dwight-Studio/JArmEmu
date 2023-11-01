@@ -20,9 +20,9 @@ public class Value8ParserTest {
 
     @Test
     public void OverflowTest() {
-        assertEquals(127, VALUE8.parse(stateContainer, "#127"));
+        assertEquals(255, VALUE8.parse(stateContainer, "#255"));
         assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#-132"));
-        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#128"));
+        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#1023"));
         assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#256"));
     }
 }
