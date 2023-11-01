@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 public class ParsedInstruction extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
+
     private final Instruction instruction;
     private final String[] args;
     private final Condition condition;
@@ -144,5 +145,9 @@ public class ParsedInstruction extends ParsedObject {
             }
         }
         return true;
+    }
+
+    public Instruction getInstruction() {
+        return instruction;
     }
 }

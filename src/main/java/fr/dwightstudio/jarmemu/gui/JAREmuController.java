@@ -41,6 +41,7 @@ public class JAREmuController implements Initializable {
     public static final int ADDRESS_PER_LINE = 4;
     public static final int ADDRESS_PER_PAGE = LINES_PER_PAGE * ADDRESS_PER_LINE;
     public static final int PAGE_NUMBER = (int) (((long) Math.pow(2L, 32L)) / ADDRESS_PER_PAGE);
+    public static final int PAGE_OFFSET = PAGE_NUMBER/2;
     public static final int LINE_HEIGHT = 20;
 
     public JArmEmuApplication application;
@@ -90,7 +91,6 @@ public class JAREmuController implements Initializable {
 
     protected Text[] registers;
     protected Text[][] memory;
-    protected int memoryIndex;
     protected ArrayList<Text> stack;
 
     public void attach(JArmEmuApplication application) {
@@ -102,7 +102,6 @@ public class JAREmuController implements Initializable {
         registers = new Text[]{R0, R1, R2, R3, R4, R5, R6, R7, R8, R9, R10, R11, R12, R13, R14, R15};
 
         memory = new Text[LINES_PER_PAGE][7];
-        memoryIndex = 0;
 
         for (int i = 0; i < LINES_PER_PAGE; i++) {
 
@@ -120,10 +119,12 @@ public class JAREmuController implements Initializable {
         }
 
         memoryPage.setPageCount(PAGE_NUMBER);
-        memoryPage.currentPageIndexProperty().addListener(((obs, oldVal, newVal) -> {
-            memoryIndex = newVal.intValue();
-            if (newVal.intValue() != oldVal.intValue()) application.executionWorker.updateGUI();
-        }));
+        memoryPage.setCurrentPageIndex(PAGE_OFFSET);
+        memoryPage.currentPageIndexProperty().addListener((observableValue, number, t1) -> {
+            if (number.intValue() != t1.intValue()) {
+                application.executionWorker.updateGUI();
+            }
+        });
 
         memoryScrollBar.minProperty().bind(memoryScroll.vminProperty());
         memoryScrollBar.maxProperty().bind(memoryScroll.vmaxProperty());
@@ -135,6 +136,9 @@ public class JAREmuController implements Initializable {
 
         editorManager.init(application);
         onNewFile();
+
+        application.executionWorker.revive();
+        application.executionWorker.updateGUI();
     }
 
     @FXML
@@ -226,7 +230,9 @@ public class JAREmuController implements Initializable {
 
     public void launchSimulation(AssemblyError[] errors) {
         if (errors.length == 0 && application.codeInterpreter.getInstructionCount() != 0) {
-            application.controller.editorManager.clearExecutedLines();
+            application.controller.editorManager.clearLineMarking();
+            application.controller.editorManager.markLine(application.codeInterpreter.getNextLine(), LineStatus.SCHEDULED);
+            memoryPage.setDisable(false);
             codeArea.setDisable(true);
             stepInto.setDisable(false);
             stepOver.setDisable(false);
@@ -249,16 +255,19 @@ public class JAREmuController implements Initializable {
 
     @FXML
     public void onStepInto() {
+        application.controller.clearNotifs();
         application.executionWorker.stepInto();
     }
 
     @FXML
     public void onStepOver() {
+        application.controller.clearNotifs();
         application.executionWorker.stepOver();
     }
 
     @FXML
     public void onContinue() {
+        application.controller.clearNotifs();
         application.executionWorker.conti();
         stepInto.setDisable(true);
         stepOver.setDisable(true);
@@ -266,6 +275,7 @@ public class JAREmuController implements Initializable {
         pause.setDisable(false);
         restart.setDisable(true);
         reset.setDisable(true);
+        memoryPage.setDisable(true);
     }
 
     @FXML
@@ -277,6 +287,7 @@ public class JAREmuController implements Initializable {
         pause.setDisable(true);
         restart.setDisable(false);
         reset.setDisable(false);
+        memoryPage.setDisable(false);
     }
 
     @FXML
@@ -293,20 +304,23 @@ public class JAREmuController implements Initializable {
         stop.setDisable(true);
         restart.setDisable(true);
         reset.setDisable(true);
+        memoryPage.setDisable(true);
         application.status = Status.EDITING;
     }
 
     @FXML
     public void onRestart() {
         application.controller.clearNotifs();
-        application.controller.editorManager.clearExecutedLines();
         application.codeInterpreter.restart();
+        application.controller.editorManager.clearLineMarking();
+        application.controller.editorManager.markLine(application.codeInterpreter.getNextLine(), LineStatus.SCHEDULED);
     }
 
     @FXML
     public void onReset() {
         application.controller.clearNotifs();
         application.codeInterpreter.resetState();
+        application.executionWorker.updateGUI();
     }
 
     /**
@@ -316,35 +330,36 @@ public class JAREmuController implements Initializable {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
-        memoryPage.setDisable(true);
+        if (stateContainer != null) {
+            for (int i = 0; i < 16; i++) {
+                registers[i].setText(String.format(HEX_FORMAT, stateContainer.registers[i].getData()).toUpperCase());
+            }
 
-        for (int i = 0; i < 16; i++) {
-            registers[i].setText(String.format(HEX_FORMAT, stateContainer.registers[i].getData()).toUpperCase());
+            CPSR.setText(String.format(HEX_FORMAT, stateContainer.cpsr.getData()).toUpperCase());
+            CPSRT.setText(stateContainer.cpsr.toString());
+            SPSR.setText(String.format(HEX_FORMAT, stateContainer.spsr.getData()).toUpperCase());
+            SPSRT.setText(stateContainer.spsr.toString());
         }
-
-        CPSR.setText(String.format(HEX_FORMAT, stateContainer.cpsr.getData()).toUpperCase());
-        CPSRT.setText(stateContainer.cpsr.toString());
-        SPSR.setText(String.format(HEX_FORMAT, stateContainer.spsr.getData()).toUpperCase());
-        SPSRT.setText(stateContainer.spsr.toString());
 
         for (int i = 0; i < LINES_PER_PAGE; i++) {
-            int add = (memoryIndex * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
-
-            byte byte0 = stateContainer.memory.get(add);
-            byte byte1 = stateContainer.memory.get(add + 1);
-            byte byte2 = stateContainer.memory.get(add + 2);
-            byte byte3 = stateContainer.memory.get(add + 3);
+            int add = ((memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
 
             memory[i][0].setText(String.format(HEX_FORMAT, add).toUpperCase());
-            memory[i][1].setText(String.format(HEX_FORMAT, MathUtils.toInt(byte0, byte1, byte2, byte3)).toUpperCase());
-            memory[i][2].setText(String.format(DEC_FORMAT, MathUtils.toInt(byte0, byte1, byte2, byte3)));
-            memory[i][3].setText(MathUtils.toBinString(byte0));
-            memory[i][4].setText(MathUtils.toBinString(byte1));
-            memory[i][5].setText(MathUtils.toBinString(byte2));
-            memory[i][6].setText(MathUtils.toBinString(byte3));
-        }
 
-        memoryPage.setDisable(false);
+            if (stateContainer != null) {
+                byte byte3 = stateContainer.memory.get(add);
+                byte byte2 = stateContainer.memory.get(add + 1);
+                byte byte1 = stateContainer.memory.get(add + 2);
+                byte byte0 = stateContainer.memory.get(add + 3);
+
+                memory[i][1].setText(String.format(HEX_FORMAT, MathUtils.toInt(byte3, byte2, byte1, byte0)).toUpperCase());
+                memory[i][2].setText(String.format(DEC_FORMAT, MathUtils.toInt(byte3, byte2, byte1, byte0)));
+                memory[i][3].setText(MathUtils.toBinString(byte3));
+                memory[i][4].setText(MathUtils.toBinString(byte2));
+                memory[i][5].setText(MathUtils.toBinString(byte1));
+                memory[i][6].setText(MathUtils.toBinString(byte0));
+            }
+        }
     }
 
     /**

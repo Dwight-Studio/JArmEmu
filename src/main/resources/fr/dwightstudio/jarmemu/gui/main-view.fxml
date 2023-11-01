@@ -331,10 +331,10 @@
                                                 <GridPane hgap="10.0">
                                                    <children>
                                                       <Label alignment="CENTER" text="Address" />
-                                                      <Label alignment="CENTER" text="Byte 0" GridPane.columnIndex="3" />
-                                                      <Label alignment="CENTER" text="Byte 1" GridPane.columnIndex="4" />
-                                                      <Label alignment="CENTER" text="Byte 2" GridPane.columnIndex="5" />
-                                                      <Label alignment="CENTER" text="Byte 3" GridPane.columnIndex="6" />
+                                                      <Label alignment="CENTER" text="Byte 3" GridPane.columnIndex="3" />
+                                                      <Label alignment="CENTER" text="Byte 2" GridPane.columnIndex="4" />
+                                                      <Label alignment="CENTER" text="Byte 1" GridPane.columnIndex="5" />
+                                                      <Label alignment="CENTER" text="Byte 0" GridPane.columnIndex="6" />
                                                       <Label alignment="CENTER" text="Hex Value" GridPane.columnIndex="1" />
                                                       <Label text="Dec Value" GridPane.columnIndex="2" />
                                                    </children>
@@ -387,7 +387,7 @@
                                     </ScrollBar>
                                  </children>
                               </HBox>
-                              <Pagination fx:id="memoryPage" VBox.vgrow="NEVER" />
+                              <Pagination fx:id="memoryPage" VBox.vgrow="NEVER" disable="true"/>
                            </children>
                         </VBox>
                      </content>

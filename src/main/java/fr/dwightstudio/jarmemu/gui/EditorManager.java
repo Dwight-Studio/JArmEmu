@@ -156,17 +156,16 @@ public class EditorManager {
         return flag.get();
     }
 
-    public void markLineAsExecuted(int line) {
+    public void markLine(int line, LineStatus status) {
         if (line >= 0) {
             codeArea.moveTo(line, 0);
             codeArea.requestFollowCaret();
-            lineFactory.nums.get(line).accept(true);
+            lineFactory.nums.get(line).accept(status);
         }
-        if (line >= 1 && lineFactory.nums.get(line-1) != null) lineFactory.nums.get(line-1).accept(false);
     }
 
-    public void clearExecutedLines() {
-        lineFactory.nums.forEach((k, v) -> v.accept(false));
+    public void clearLineMarking() {
+        lineFactory.nums.forEach((k, v) -> v.accept(LineStatus.NONE));
     }
 
     private Task<StyleSpans<Collection<String>>> computeHighlightingAsync() {

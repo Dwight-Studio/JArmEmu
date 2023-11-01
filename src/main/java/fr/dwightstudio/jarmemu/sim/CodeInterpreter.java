@@ -10,7 +10,6 @@ import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
-import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,11 +26,15 @@ public class CodeInterpreter {
     private int currentLine;
     private int lastLine;
     private boolean atTheEnd;
+    private ParsedInstruction lastExecuted;
+    private int lastExecutedLine;
+    private boolean jumped;
 
     public CodeInterpreter(JArmEmuApplication application) {
         this.application = application;
         this.currentLine = -1;
         this.atTheEnd = false;
+        jumped = false;
     }
 
     /**
@@ -43,6 +46,7 @@ public class CodeInterpreter {
         currentLine = 0;
         lastLine = getLastLine();
         this.atTheEnd = false;
+        lastExecutedLine = -1;
     }
 
     /**
@@ -77,17 +81,40 @@ public class CodeInterpreter {
      * @return la prochaine ligne
      */
     public int nextLine() {
-        if (!hasNextLine()) return lastLine;
-        currentLine++;
-        if (!instructions.containsKey(currentLine) || !(instructions.get(currentLine) instanceof ParsedInstruction)) nextLine();
+        currentLine = getNextLine();
         setCurrentByteToPC();
         return currentLine;
+    }
+
+    /**
+     * Retourne la prochaine ligne sans faire avancer l'exécution
+     *
+     * @return la prochaine ligne
+     */
+    public int getNextLine() {
+        if (!hasNextLine()) {
+            logger.info("Unable to find next line: program marked as having reached the end");
+            atTheEnd = true;
+            return currentLine;
+        }
+        else return getNextLineR(currentLine + 1);
+    }
+
+    private int getNextLineR(int c) {
+        if (!instructions.containsKey(c) || !(instructions.get(c) instanceof ParsedInstruction)) return getNextLineR(c+1);
+        else return c;
+    }
+
+    public int getLastExecutedLine() {
+        return lastExecutedLine;
     }
 
     /**
      * Execute le code se trouvant sur la ligne courante
      */
     public synchronized void executeCurrentLine() {
+        jumped = false;
+
         // Remise à zéro des drapeaux de ligne des parseurs
         AddressParser.reset(this.stateContainer);
         RegisterWithUpdateParser.reset(this.stateContainer);
@@ -99,6 +126,8 @@ public class CodeInterpreter {
 
             if (parsedObject instanceof ParsedInstruction instruction) {
                 instruction.execute(stateContainer);
+                this.lastExecuted = instruction;
+                this.lastExecutedLine = currentLine;
             }
         } else {
             logger.log(Level.SEVERE, "Executing non-existant instruction of line " + currentLine);
@@ -106,7 +135,10 @@ public class CodeInterpreter {
 
         int newPC = getCurrentLineFromPC();
 
-        if (oldPC != newPC) setCurrentLineFromPC();
+        if (oldPC != newPC) {
+            setCurrentLineFromPC();
+            jumped = true;
+        }
 
         this.atTheEnd = !hasNextLine();
     }
@@ -128,8 +160,6 @@ public class CodeInterpreter {
             stateContainer.registers[RegisterUtils.PC.getN()].setData(stateContainer.labels.get("_START"));
             this.currentLine = RegisterUtils.PCToLine(stateContainer.labels.get("_START"));
         }
-
-        application.executionWorker.updateGUI();
     }
 
     /**
@@ -195,5 +225,13 @@ public class CodeInterpreter {
 
     private void setCurrentLineFromPC() {
         currentLine = getCurrentLineFromPC();
+    }
+
+    public ParsedInstruction getLastExecuted() {
+        return lastExecuted;
+    }
+
+    public boolean hasJumped() {
+        return jumped;
     }
 }

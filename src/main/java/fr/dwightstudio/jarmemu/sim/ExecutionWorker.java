@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -13,7 +14,8 @@ import java.util.logging.Logger;
 
 public class ExecutionWorker {
 
-    private static final int WAITING_PERIOD = 50;
+    private static int WAITING_PERIOD = 0;
+    private static final int UPDATE_THRESHOLD = 50;
 
     private static final int ERROR = -1;
     private static final int IDLE = 0;
@@ -38,7 +40,7 @@ public class ExecutionWorker {
      * Execute une instruction
      */
     public void stepInto() {
-        checkTask();
+        checkTask(STEP_INTO);
         this.daemon.nextTask.set(STEP_INTO);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
@@ -49,7 +51,7 @@ public class ExecutionWorker {
      * Execute les instructions jusqu'au prochain saut
      */
     public void stepOver() {
-        checkTask();
+        checkTask(STEP_OVER);
         this.daemon.nextTask.set(STEP_OVER);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
@@ -60,7 +62,7 @@ public class ExecutionWorker {
      * Execute les instructions jusqu'à la fin du programme
      */
     public void conti() {
-        checkTask();
+        checkTask(CONTINUE);
         this.daemon.nextTask.set(CONTINUE);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
@@ -71,7 +73,7 @@ public class ExecutionWorker {
      * Met à jour le GUI
      */
     public void updateGUI() {
-        checkTask();
+        checkTask(UPDATE_GUI);
         this.daemon.nextTask.set(UPDATE_GUI);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
@@ -82,7 +84,7 @@ public class ExecutionWorker {
      * Parse le code et prépare l'exécution
      */
     public void prepare() {
-        checkTask();
+        checkTask(PREPARE);
         this.daemon.nextTask.set(PREPARE);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
@@ -124,10 +126,10 @@ public class ExecutionWorker {
         }
     }
 
-    public void checkTask() {
+    public void checkTask(int id) {
         if (!this.daemon.isAlive()) logger.warning("Adding task to a dead Worker");
         int task = this.daemon.nextTask.get();
-        if (task != IDLE) logger.warning("Overriding next task (Previous: ID" + task + ")");
+        if (task != IDLE) logger.warning("Overriding next task (ID" + task + " with ID" + id + ")");
     }
 
     private static class ExecutionThead extends Thread {
@@ -154,22 +156,25 @@ public class ExecutionWorker {
                 while (doRun) {
                     try {
                         synchronized (this) {
-                            this.wait();
+                            if (nextTask.get() == IDLE) this.wait();
                         }
                     } catch (InterruptedException exception) {
                         doRun = false;
                         break;
                     }
 
-                    switch (nextTask.get()) {
-                        case STEP_INTO -> stepInto();
-                        case STEP_OVER -> stepOver();
-                        case CONTINUE -> conti();
-                        case UPDATE_GUI -> updateGUI();
-                        case PREPARE -> prepare();
+                    int task = nextTask.get();
+                    logger.info("Executing task ID" + task + "...");
+
+                    switch (task) {
+                        case STEP_INTO -> stepIntoTask();
+                        case STEP_OVER -> stepOverTask();
+                        case CONTINUE -> continueTask();
+                        case UPDATE_GUI -> updateGUITask();
+                        case PREPARE -> prepareTask();
 
                         case IDLE -> {}
-                        default -> logger.severe("Unknown task ID" + nextTask.get());
+                        default -> logger.severe("Unknown task: Invalid ID");
                     }
 
                 }
@@ -178,75 +183,110 @@ public class ExecutionWorker {
             }
         }
 
-        private void stepInto() {
+        private void step() {
+            int last = application.codeInterpreter.getLastExecutedLine();
             int line = application.codeInterpreter.nextLine();
-
-            Platform.runLater(() -> {
-                application.controller.editorManager.clearExecutedLines();
-                application.controller.editorManager.markLineAsExecuted(line);
-                application.controller.clearNotifs();
-            });
 
             if (application.editorManager.hasBreakPoint(line)) {
                 Platform.runLater(() -> {
                     application.controller.addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", "success");
                     application.controller.onPause();
                 });
+                doContinue = false;
             }
 
             application.codeInterpreter.executeCurrentLine();
+
+            int next = application.codeInterpreter.getNextLine();
 
             if (application.codeInterpreter.isAtTheEnd()) {
                 Platform.runLater(() -> {
                     application.controller.addNotif("Warning", "The program reached the end of the file.", "warning");
                     application.controller.onPause();
                 });
+                doContinue = false;
             }
+
+            if (shouldUpdateGUI() || !doContinue) {
+                if (!shouldUpdateGUI()) application.controller.editorManager.clearLineMarking();
+                Platform.runLater(() -> {
+                    if (last != -1) application.controller.editorManager.markLine(last, LineStatus.NONE);
+                    application.controller.editorManager.markLine(line, LineStatus.EXECUTED);
+                    application.controller.editorManager.markLine(next, LineStatus.SCHEDULED);
+                });
+            }
+        }
+
+        private void stepIntoTask() {
+            nextTask.set(IDLE);
+
+            step();
+            updateGUI();
+
+            logger.info("Done!");
+        }
+
+        private void stepOverTask() {
+            nextTask.set(IDLE);
+            doContinue = true;
+            while (doContinue) {
+                step();
+                if (shouldUpdateGUI()) updateGUI();
+
+                doContinue = doContinue && !application.codeInterpreter.hasJumped();
+
+                try {
+                    synchronized (this) {
+                        if (WAITING_PERIOD != 0) wait(WAITING_PERIOD);
+                    }
+                } catch (InterruptedException ignored) {
+                    doContinue = false;
+                    break;
+                }
+            }
+
+            if (!shouldUpdateGUI()) updateGUI();
+            logger.info("Done!");
+        }
+
+        private void continueTask() {
+            nextTask.set(IDLE);
+            doContinue = true;
+            while (doContinue) {
+                step();
+                if (shouldUpdateGUI()) updateGUI();
+
+                try {
+                    synchronized (this) {
+                        if (WAITING_PERIOD != 0) wait(WAITING_PERIOD);
+                    }
+                } catch (InterruptedException ignored) {
+                    doContinue = false;
+                    break;
+                }
+            }
+
+            if (!shouldUpdateGUI()) updateGUI();
+            logger.info("Done!");
+        }
+
+        private void updateGUITask() {
+            nextTask.set(IDLE);
 
             updateGUI();
-            nextTask.set(IDLE);
-        }
 
-        private void stepOver() {
-            doContinue = true;
-            while (doContinue) {
-                stepInto();
-                try {
-                    synchronized (this) {
-                        wait(WAITING_PERIOD);
-                    }
-                } catch (InterruptedException ignored) {
-                    doContinue = false;
-                    break;
-                }
-            }
-            nextTask.set(IDLE);
-        }
-
-        private void conti() {
-            doContinue = true;
-            while (doContinue) {
-                stepInto();
-                try {
-                    synchronized (this) {
-                        wait(WAITING_PERIOD);
-                    }
-                } catch (InterruptedException ignored) {
-                    doContinue = false;
-                    break;
-                }
-            }
-            nextTask.set(IDLE);
+            logger.info("Done!");
         }
 
         private void updateGUI() {
-            if (application.codeInterpreter != null && application.codeInterpreter.stateContainer != null) {
+            if (application.codeInterpreter != null) {
+                if (application.codeInterpreter.stateContainer == null) logger.warning("Updating GUI on null StateContainer");
                 application.controller.updateGUI(application.codeInterpreter.stateContainer);
             }
-            nextTask.set(IDLE);
         }
 
-        private void prepare() {
+        private void prepareTask() {
+            nextTask.set(IDLE);
             application.sourceParser.setSourceScanner(new SourceScanner(application.editorManager.codeArea.getText()));
 
             try {
@@ -262,8 +302,6 @@ public class ExecutionWorker {
             application.codeInterpreter.resetState();
             application.codeInterpreter.restart();
 
-            updateGUI();
-
             try {
                 AssemblyError[] errors = application.codeInterpreter.verifyAll();
                 Platform.runLater(() -> application.controller.launchSimulation(errors));
@@ -271,7 +309,11 @@ public class ExecutionWorker {
                 Platform.runLater(() -> new ExceptionDialog(e).show());
             }
 
-            nextTask.set(IDLE);
+            logger.info("Done!");
+        }
+
+        private boolean shouldUpdateGUI() {
+            return WAITING_PERIOD >= UPDATE_THRESHOLD;
         }
     }
 }

@@ -12,6 +12,7 @@ public class MemoryAccessor {
 
     public byte get(int add) {
         return memory.getOrDefault(add, (byte) 0);
+        //return (byte) (((add/4) >> ((3 - (add % 4)) * 8)) & 0xFF); // Retourne le numéro du Word, pour tester
     }
 
     public byte put(int add, byte b) {

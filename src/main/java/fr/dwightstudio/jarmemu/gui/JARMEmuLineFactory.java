@@ -4,36 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import javafx.application.Platform;
+
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.SubScene;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.TextAlignment;
-import org.fxmisc.richtext.GenericStyledArea;
-import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.StyleClassedTextArea;
-import org.reactfx.collection.LiveList;
-import org.reactfx.value.Val;
 
 public class JARMEmuLineFactory implements IntFunction<Node> {
 
@@ -43,9 +27,10 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
     private static final Font DEFAULT_FONT = Font.font("monospace", FontPosture.REGULAR, 12.0);
     private static final Background DEFAULT_BACKGROUND =  new Background(new BackgroundFill(Color.web("#FFFFFF"), null, null));
     private static final Background EXECUTED_BACKGROUND =  new Background(new BackgroundFill(Color.web("#a7ff8a"), null, null));
+    private static final Background SCHEDULED_BACKGROUND =  new Background(new BackgroundFill(Color.web("#ffbd8a"), null, null));
 
     public ArrayList<Integer> breakpoints = new ArrayList<>();
-    public HashMap<Integer, Consumer<Boolean>> nums = new HashMap<>();
+    public HashMap<Integer, Consumer<LineStatus>> nums = new HashMap<>();
 
     @Override
     public Node apply(int idx) {
@@ -76,9 +61,17 @@ public class JARMEmuLineFactory implements IntFunction<Node> {
             if (event.getButton() == MouseButton.PRIMARY) toggle(idx, breakpoint);
         });
 
-        nums.put(idx, (b) -> {
-            if (b) lineNo.setBackground(EXECUTED_BACKGROUND); else lineNo.setBackground(DEFAULT_BACKGROUND);
-            if (b) breakpoint.setBackground(EXECUTED_BACKGROUND); else breakpoint.setBackground(DEFAULT_BACKGROUND);
+        nums.put(idx, (i) -> {
+            if (i == LineStatus.EXECUTED) {
+                lineNo.setBackground(EXECUTED_BACKGROUND);
+                breakpoint.setBackground(EXECUTED_BACKGROUND);
+            } else if (i == LineStatus.SCHEDULED) {
+                lineNo.setBackground(SCHEDULED_BACKGROUND);
+                breakpoint.setBackground(SCHEDULED_BACKGROUND);
+            } else {
+                lineNo.setBackground(DEFAULT_BACKGROUND);
+                breakpoint.setBackground(DEFAULT_BACKGROUND);
+            }
         });
 
         rtn.getChildren().add(lineNo);
