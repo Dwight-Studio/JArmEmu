@@ -140,6 +140,9 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private boolean doContinue = false;
         private boolean doRun = true;
         private int waitingPeriod;
+        private int last;
+        private int line;
+        private int next;
 
         public ExecutionThead(JArmEmuApplication application) {
             super("CodeExecutorDeamon");
@@ -190,8 +193,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void step() {
-            int last = application.getCodeInterpreter().getLastExecutedLine();
-            int line = application.getCodeInterpreter().nextLine();
+            last = application.getCodeInterpreter().getLastExecutedLine();
+            line = application.getCodeInterpreter().nextLine();
 
             if (application.getEditorController().hasBreakPoint(line)) {
                 Platform.runLater(() -> {
@@ -203,7 +206,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             application.getCodeInterpreter().executeCurrentLine();
 
-            int next = application.getCodeInterpreter().getNextLine();
+            next = application.getCodeInterpreter().getNextLine();
 
             if (application.getCodeInterpreter().isAtTheEnd()) {
                 Platform.runLater(() -> {
@@ -211,15 +214,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
-            }
-
-            if (shouldUpdateGUI() || !doContinue) {
-                if (!shouldUpdateGUI()) application.getEditorController().clearLineMarking();
-                Platform.runLater(() -> {
-                    if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
-                    application.getEditorController().markLine(line, LineStatus.EXECUTED);
-                    application.getEditorController().markLine(next, LineStatus.SCHEDULED);
-                });
             }
         }
 
@@ -291,6 +285,15 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     logger.warning("Updating GUI on null StateContainer");
                 application.getMemoryController().updateGUI(application.getCodeInterpreter().stateContainer);
                 application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
+
+                if (next != 0 && line != next || line != 0 && next != 0) {
+                    if (!shouldUpdateGUI()) application.getEditorController().clearLineMarking();
+                    Platform.runLater(() -> {
+                        if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
+                        application.getEditorController().markLine(line, LineStatus.EXECUTED);
+                        application.getEditorController().markLine(next, LineStatus.SCHEDULED);
+                    });
+                }
             }
         }
 
