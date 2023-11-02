@@ -175,13 +175,17 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         case UPDATE_GUI -> updateGUITask();
                         case PREPARE -> prepareTask();
 
-                        case IDLE -> {}
+                        case IDLE -> {
+                        }
                         default -> logger.severe("Unknown task: Invalid ID");
                     }
 
                 }
             } catch (Exception exception) {
-                Platform.runLater(() -> new ExceptionDialog(exception).show());
+                Platform.runLater(() -> {
+                    new ExceptionDialog(exception).show();
+                    logger.severe(ExceptionUtils.getStackTrace(exception));
+                });
             }
         }
 
@@ -239,7 +243,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 try {
                     synchronized (this) {
-                        if (application.getSettingsController().getSimulationInterval() != 0) wait(application.getSettingsController().getSimulationInterval());
+                        if (application.getSettingsController().getSimulationInterval() != 0)
+                            wait(application.getSettingsController().getSimulationInterval());
                     }
                 } catch (InterruptedException ignored) {
                     doContinue = false;
@@ -282,7 +287,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
         private void updateGUI() {
             if (application.getCodeInterpreter() != null) {
-                if (application.getCodeInterpreter().stateContainer == null) logger.warning("Updating GUI on null StateContainer");
+                if (application.getCodeInterpreter().stateContainer == null)
+                    logger.warning("Updating GUI on null StateContainer");
                 application.getMemoryController().updateGUI(application.getCodeInterpreter().stateContainer);
                 application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
             }
@@ -296,11 +302,17 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getCodeInterpreter().load(application.getSourceParser());
             } catch (SyntaxASMException exception) {
                 Platform.runLater(() -> {
-                application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
-                logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
-                application.getSimulationMenuController().abortSimulation();
+                    application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
+                    logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+                    application.getSimulationMenuController().abortSimulation();
                 });
                 return;
+            } catch (Exception e) {
+                Platform.runLater(() -> {
+                    new ExceptionDialog(e).show();
+                    logger.severe(ExceptionUtils.getStackTrace(e));
+                    application.getSimulationMenuController().abortSimulation();
+                });
             }
 
             application.getCodeInterpreter().resetState();
@@ -310,7 +322,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
             } catch (Exception e) {
-                Platform.runLater(() -> new ExceptionDialog(e).show());
+                Platform.runLater(() -> {
+                    new ExceptionDialog(e).show();
+                    logger.severe(ExceptionUtils.getStackTrace(e));
+                    application.getSimulationMenuController().abortSimulation();
+                });
             }
 
             logger.info("Done!");

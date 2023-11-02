@@ -3,6 +3,7 @@ package fr.dwightstudio.jarmemu;
 import fr.dwightstudio.jarmemu.gui.ShortcutHandler;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.*;
+import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import javafx.application.Application;
@@ -73,7 +74,7 @@ public class JArmEmuApplication extends Application {
 
         // Others
         shortcutHandler = new ShortcutHandler(this);
-        sourceParser = new RegexSourceParser(new SourceScanner(""));
+        //sourceParser = new RegexSourceParser(new SourceScanner(""));
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
@@ -230,5 +231,13 @@ public class JArmEmuApplication extends Application {
         this.onClosingRequest(event);
 
         return !event.isConsumed();
+    }
+
+    public void newSourceParser() {
+        if (getSettingsController().getSourceParserSetting() == 1) {
+            sourceParser = new LegacySourceParser(new SourceScanner(""));
+        } else {
+            sourceParser = new RegexSourceParser(new SourceScanner(""));
+        }
     }
 }

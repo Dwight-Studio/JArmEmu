@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.FileChooser;
 import javafx.stage.WindowEvent;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.io.File;
@@ -66,6 +67,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
                 application.setSaved();
             } catch (IOException exception) {
                 new ExceptionDialog(exception).show();
+                logger.severe(ExceptionUtils.getStackTrace(exception));
             }
         }
     }
@@ -100,6 +102,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
                 application.setSaved();
             } catch (FileNotFoundException exception) {
                 new ExceptionDialog(exception).show();
+                logger.severe(ExceptionUtils.getStackTrace(exception));
             }
         }
     }

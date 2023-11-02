@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.SafeAddressConverter;
 import fr.dwightstudio.jarmemu.util.SafeStringConverter;
 import javafx.scene.control.SpinnerValueFactory;
@@ -110,6 +111,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setSourceParser(int nb) {
         preferences.putInt(SOURCE_PARSER_KEY, nb);
+        application.newSourceParser();
     }
 
     public int getSourceParserSetting() {

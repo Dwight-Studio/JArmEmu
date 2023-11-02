@@ -49,11 +49,11 @@ public class LegacySourceParser implements SourceParser {
 
     /**
      * Création du lecteur de code de l'éditeur
-     * @param codeArea L'éditeyr depuis lequel récupérer le code
+     * @param sourceScanner le lecteur de source utilisé
      */
-    public LegacySourceParser(CodeArea codeArea) {
+    public LegacySourceParser(SourceScanner sourceScanner) {
 
-        this.sourceScanner = new SourceScanner(codeArea.getText());
+        this.sourceScanner = sourceScanner;
 
         this.instruction = null;
         this.updateFlags = false;

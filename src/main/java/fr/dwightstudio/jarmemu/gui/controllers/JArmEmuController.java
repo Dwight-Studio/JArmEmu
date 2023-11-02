@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -80,6 +81,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getSettingsController().initialize(url, resourceBundle);
         getSimulationMenuController().initialize(url, resourceBundle);
         getStackController().initialize(url, resourceBundle);
+
+        application.newSourceParser();
 
         getMainMenuController().onNewFile();
 
