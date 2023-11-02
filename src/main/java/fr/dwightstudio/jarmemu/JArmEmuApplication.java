@@ -90,11 +90,9 @@ public class JArmEmuApplication extends Application {
         scene.setOnKeyPressed(shortcutHandler::handle);
 
         status = Status.EDITING;
-        lastSave = null;
 
         stage.setOnCloseRequest(this::onClosingRequest);
 
-        setTitle("New File");
         stage.setScene(scene);
         stage.show();
     }

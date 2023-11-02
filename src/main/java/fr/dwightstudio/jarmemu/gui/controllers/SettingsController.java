@@ -6,6 +6,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.SafeAddressConverter;
 import fr.dwightstudio.jarmemu.util.SafeStringConverter;
+import javafx.scene.control.Alert;
 import javafx.scene.control.SpinnerValueFactory;
 
 import java.net.URL;
@@ -104,6 +105,9 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public void setSimulationInterval(int nb) {
+        if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
+            new Alert(Alert.AlertType.WARNING, "Below 50ms of simulation interval, the GUI is updated only when the simulation is interrupted.").show();
+        }
         preferences.putInt(SIMULATION_INTERVAL_KEY, nb);
     }
 
@@ -134,5 +138,13 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public int getSymbolsAddress() {
         return preferences.getInt(SYMBOLS_ADDRESS_KEY, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+    }
+
+    public String getLastSavePath() {
+        return preferences.get(LAST_SAVE_PATH_KEY, "");
+    }
+
+    public void setLastSavePath(String path) {
+        preferences.put(LAST_SAVE_PATH_KEY, path);
     }
 }

@@ -84,7 +84,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
         application.newSourceParser();
 
-        getMainMenuController().onNewFile();
+        getMainMenuController().openLastSave();
 
         getExecutionWorker().revive();
         getExecutionWorker().updateGUI();
