@@ -30,7 +30,7 @@
           </Menu>
             <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
             <items>
-            <MenuItem mnemonicParsing="false" onAction="#clearNotifs" text="Clear notifications" />
+            <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications" />
             </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -310,7 +310,7 @@
                         </StackPane>
                      </children>
                   </VBox>
-                  <VBox fx:id="notif" alignment="BOTTOM_CENTER" focusTraversable="true" mouseTransparent="true" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
+                  <VBox fx:id="notifications" alignment="BOTTOM_CENTER" focusTraversable="true" mouseTransparent="true" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
                      <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </padding></VBox>
