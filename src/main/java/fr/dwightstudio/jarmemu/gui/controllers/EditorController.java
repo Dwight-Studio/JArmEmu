@@ -212,8 +212,7 @@ public class EditorController implements Initializable {
         String text = getController().codeArea.getText();
         Task<StyleSpans<Collection<String>>> task = new Task<StyleSpans<Collection<String>>>() {
             @Override
-            protected StyleSpans<Collection<String>> call() throws Exception {
-                application.setUnsaved();
+            protected StyleSpans<Collection<String>> call() {
                 Matcher matcher = PATTERN.matcher(text);
                 int lastKwEnd = 0;
                 StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
@@ -225,9 +224,11 @@ public class EditorController implements Initializable {
                     lastKwEnd = matcher.end();
                 }
                 spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
+                application.updateSaveState();
                 return spansBuilder.create();
             }
         };
+
         executor.execute(task);
         return task;
     }

@@ -5,6 +5,7 @@ import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.stage.FileChooser;
+import javafx.stage.WindowEvent;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.io.File;
@@ -27,19 +28,20 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onNewFile() {
+        if (!application.warnUnsaved()) return;
+
+        getController().onStop();
         getEditorController().newFile();
         getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
-        Platform.runLater(() -> {
-            application.setTitle("New File");
-            application.setUnsaved();
-        });
-        getController().onStop();
+        application.setNew();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onOpen() {
+        if (!application.warnUnsaved()) return;
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
@@ -61,10 +63,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
             try {
                 getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
                 getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                Platform.runLater(() -> {
-                    application.setTitle(savePath.getName());
-                    application.setSaved();
-                });
+                application.setSaved();
             } catch (IOException exception) {
                 new ExceptionDialog(exception).show();
             }
@@ -90,27 +89,26 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReload() {
+        if (!application.warnUnsaved()) return;
+
+        getController().onStop();
         if (savePath != null) {
             try {
                 getSourceParser().setSourceScanner(new SourceScanner(savePath));
                 getController().codeArea.clear();
                 getController().codeArea.insertText(0, application.getSourceParser().getSourceScanner().exportCode());
-                Platform.runLater(() -> {
-                    application.setTitle(savePath.getName());
-                    application.setSaved();
-                });
+                application.setSaved();
             } catch (FileNotFoundException exception) {
                 new ExceptionDialog(exception).show();
             }
         }
-        getController().onStop();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     protected void onExit() {
-        Platform.exit();
+        if (application.warnUnsaved()) Platform.exit();
     }
 
     /**

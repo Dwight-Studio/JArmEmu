@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu;
 
+import fr.dwightstudio.jarmemu.gui.ShortcutHandler;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.*;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
@@ -8,11 +9,16 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -32,26 +38,27 @@ public class JArmEmuApplication extends Application {
     private SettingsController settingsController;
     private SimulationMenuController simulationMenuController;
     private StackController stackController;
-    
+
     // Others
+    private ShortcutHandler shortcutHandler;
     private SourceParser sourceParser;
     private CodeInterpreter codeInterpreter;
     private ExecutionWorker executionWorker;
-    
-    
+
+
     public Status status;
     public Stage stage;
-    private boolean unsaved = true;
+    private String lastSave;
 
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
-        
+
         LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("logging.properties"));
         logger.info("Starting JArmEmu");
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gui/main-view.fxml"));
-        
+
         editorController = new EditorController(this);
         mainMenuController = new MainMenuController(this);
         memoryController = new MemoryController(this);
@@ -62,9 +69,10 @@ public class JArmEmuApplication extends Application {
 
         fxmlLoader.setController(new JArmEmuController(this));
         controller = fxmlLoader.getController();
-        
-        
+
+
         // Others
+        shortcutHandler = new ShortcutHandler(this);
         sourceParser = new RegexSourceParser(new SourceScanner(""));
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
@@ -78,7 +86,12 @@ public class JArmEmuApplication extends Application {
         scene.getStylesheets().add(getClass().getResource("gui/registers-style.css").toExternalForm());
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
+        scene.setOnKeyPressed(shortcutHandler::handle);
+
         status = Status.EDITING;
+        lastSave = null;
+
+        stage.setOnCloseRequest(this::onClosingRequest);
 
         setTitle("New File");
         stage.setScene(scene);
@@ -88,30 +101,56 @@ public class JArmEmuApplication extends Application {
     @Override
     public void stop() {
         editorController.clean();
+
     }
 
     public static void main(String[] args) {
         JArmEmuApplication.launch();
     }
 
-    public void setTitle(String title) {
-        this.stage.setTitle("JArmEmu - " + title + (unsaved && !title.endsWith("*") ? "*" : ""));
+    private void setTitle(String title) {
+        Platform.runLater(() -> this.stage.setTitle("JArmEmu - " + title));
     }
 
-    // TODO: Améliorer la gestion de l'enregistrement (avec comparaison)
-    public void setUnsaved() {
-        String old = this.stage.getTitle();
-        if (!unsaved && !old.endsWith("*")) {
-            Platform.runLater(() -> this.stage.setTitle(old + "*"));
-        }
-        unsaved = true;
-    }
-
+    /**
+     * Défini le contenu de la dernière sauvegarde
+     *
+     * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
+     */
     public void setSaved() {
-        if (unsaved) {
-            Platform.runLater(() -> this.stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1)));
+        lastSave = String.valueOf(getEditorController().getText());
+        setTitle(getMainMenuController().getSavePath().getName());
+    }
+
+    /**
+     * Défini le contenu de la dernière sauvegarde à rien
+     *
+     * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
+     */
+    public void setNew() {
+        lastSave = null;
+        setTitle("New File");
+    }
+
+    /**
+     * Met à jour l'état de sauvegarde
+     */
+    public boolean updateSaveState() {
+        boolean saved = true;
+
+        if (getEditorController() != null && lastSave != null) {
+            saved = getEditorController().getText().equals(lastSave);
         }
-        unsaved = false;
+
+        String fileName = getMainMenuController().getSavePath() == null || lastSave == null ? "New File" : getMainMenuController().getSavePath().getName();
+
+        if (saved) {
+            setTitle(fileName);
+        } else {
+            setTitle(fileName + "*");
+        }
+
+        return saved;
     }
 
     public JArmEmuController getController() {
@@ -156,5 +195,40 @@ public class JArmEmuApplication extends Application {
 
     public SimulationMenuController getSimulationMenuController() {
         return simulationMenuController;
+    }
+
+    private void onClosingRequest(WindowEvent event) {
+        if (!updateSaveState()) {
+            ButtonType saveAndQuit = new ButtonType("Save and Close");
+            ButtonType discardAndQuit = new ButtonType("Discard and Close");
+            ButtonType cancel = new ButtonType("Cancel");
+
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The open file has unsaved changes. Changes will be permanently lost. Do you want to save the file?", saveAndQuit, discardAndQuit, cancel);
+
+            Optional<ButtonType> option = alert.showAndWait();
+
+            if (option.isPresent()) {
+                if (option.get() == saveAndQuit) {
+                    getMainMenuController().onSave();
+                } else if (option.get() == cancel) {
+                    event.consume();
+                }
+            } else {
+                event.consume();
+            }
+        }
+    }
+
+    /**
+     * Affiche un avertissement lors de la fermeture d'un fichier
+     *
+     * @return vrai si on continue la fermeture, faux sinon
+     */
+    public boolean warnUnsaved() {
+        WindowEvent event = new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST);
+
+        this.onClosingRequest(event);
+
+        return !event.isConsumed();
     }
 }

@@ -452,15 +452,13 @@
                                                        </Label>
                                                        <SplitMenuButton styleClass="split-menu-btn, split-menu-btn-primary">
                                                            <items>
-                                                               <MenuItem mnemonicParsing="false" onAction="#onRegexParser" text="Regex Parser (default)"/>
-                                                               <MenuItem mnemonicParsing="false" onAction="#onLegacyParser" text="Legacy Parser"/>
+                                                               <MenuItem mnemonicParsing="false" onAction="#onRegexParser" text="Regex Parser (default)" />
+                                                               <MenuItem mnemonicParsing="false" onAction="#onLegacyParser" text="Legacy Parser" />
                                                            </items>
+                                                         <VBox.margin>
+                                                            <Insets bottom="20.0" />
+                                                         </VBox.margin>
                                                        </SplitMenuButton>
-                                                       <TextField>
-                                                           <VBox.margin>
-                                                               <Insets bottom="20.0" />
-                                                           </VBox.margin>
-                                                       </TextField>
                                                    </children>
                                                 </VBox>
                                              </children>
