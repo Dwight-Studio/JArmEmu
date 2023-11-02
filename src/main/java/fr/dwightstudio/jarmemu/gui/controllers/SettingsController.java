@@ -1,7 +1,9 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.SafeAddressConverter;
 import fr.dwightstudio.jarmemu.util.SafeStringConverter;
 import javafx.scene.control.SpinnerValueFactory;
@@ -36,9 +38,9 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, 50, 50);
-        stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, 65536, 4);
-        symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 4);
+        simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.UPDATE_THRESHOLD, 50);
+        stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
+        symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
 
         simIntervalValue.setConverter(new SafeStringConverter(simIntervalValue));
         stackAddressValue.setConverter(new SafeAddressConverter(stackAddressValue));
@@ -78,10 +80,10 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.put(VERSION_KEY, JArmEmuApplication.VERSION);
         preferences.put(LAST_SAVE_PATH_KEY, "");
 
-        preferences.putInt(SIMULATION_INTERVAL_KEY, 50);
-        preferences.putInt(SOURCE_PARSER_KEY, 0);
-        preferences.putInt(STACK_ADDRESS_KEY, 65536);
-        preferences.putInt(SYMBOLS_ADDRESS_KEY, 0);
+        preferences.putInt(SIMULATION_INTERVAL_KEY, ExecutionWorker.UPDATE_THRESHOLD);
+        preferences.putInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER);
+        preferences.putInt(STACK_ADDRESS_KEY, StateContainer.DEFAULT_STACK_ADDRESS);
+        preferences.putInt(SYMBOLS_ADDRESS_KEY, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
         updateGUI();
     }
 
@@ -106,7 +108,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getSimulationInterval() {
-        return preferences.getInt(SIMULATION_INTERVAL_KEY, 50);
+        return preferences.getInt(SIMULATION_INTERVAL_KEY, ExecutionWorker.UPDATE_THRESHOLD);
     }
 
     public void setSourceParser(int nb) {
@@ -115,7 +117,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getSourceParserSetting() {
-        return preferences.getInt(SOURCE_PARSER_KEY, 0);
+        return preferences.getInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER);
     }
 
     public void setStackAddress(int nb) {
@@ -123,7 +125,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getStackAddress() {
-        return preferences.getInt(STACK_ADDRESS_KEY, 65536);
+        return preferences.getInt(STACK_ADDRESS_KEY, StateContainer.DEFAULT_STACK_ADDRESS);
     }
 
     public void setSymbolsAddress(int nb) {
@@ -131,6 +133,6 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getSymbolsAddress() {
-        return preferences.getInt(SYMBOLS_ADDRESS_KEY, 0);
+        return preferences.getInt(SYMBOLS_ADDRESS_KEY, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
     }
 }

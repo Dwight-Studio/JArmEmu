@@ -145,8 +145,8 @@ public class CodeInterpreter {
     /**
      * Réinitialise l'état actuel du simulateur
      */
-    public void resetState() {
-        this.stateContainer = new StateContainer();
+    public void resetState(int stackAddress, int symbolsAddress) {
+        this.stateContainer = new StateContainer(stackAddress, symbolsAddress);
         registerLabels();
     }
 

@@ -9,6 +9,8 @@ import java.util.HashMap;
 
 public interface SourceParser {
 
+    int DEFAULT_SOURCE_PARSER = 0;
+
     /**
      * @return le CodeScanner utilisé par le parseur
      */

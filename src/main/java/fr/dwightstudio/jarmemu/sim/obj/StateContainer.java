@@ -8,6 +8,9 @@ import java.util.HashMap;
 
 public class StateContainer {
 
+    public static final int DEFAULT_STACK_ADDRESS = 65536;
+    public static final int DEFAULT_SYMBOLS_ADDRESS = 0;
+
     // ASM
     public final HashMap<String, Integer> consts; // HashMap des constantes
     public final HashMap<String, Integer> data; // HashMap des données
@@ -21,8 +24,12 @@ public class StateContainer {
 
     // Memory
     public final MemoryAccessor memory;
+    private final int stackAddress;
+    private final int symbolsAddress;
 
-    public StateContainer() {
+    public StateContainer(int stackAddress, int symbolsAddress) {
+        this.stackAddress = stackAddress;
+        this.symbolsAddress = symbolsAddress;
 
         // ASM
         labels = new HashMap<>();
@@ -38,6 +45,10 @@ public class StateContainer {
 
         // Initializing memory
         this.memory = new MemoryAccessor();
+    }
+
+    public StateContainer() {
+        this(DEFAULT_STACK_ADDRESS,DEFAULT_SYMBOLS_ADDRESS);
     }
 
     public void clearRegisters() {
@@ -58,4 +69,11 @@ public class StateContainer {
         }
     }
 
+    public int getStackAddress() {
+        return stackAddress;
+    }
+
+    public int getSymbolsAddress() {
+        return symbolsAddress;
+    }
 }

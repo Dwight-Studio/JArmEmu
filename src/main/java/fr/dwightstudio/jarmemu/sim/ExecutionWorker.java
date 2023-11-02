@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ExecutionWorker extends AbstractJArmEmuModule {
-    private static final int UPDATE_THRESHOLD = 50;
+    public static final int UPDATE_THRESHOLD = 50;
 
     private static final int ERROR = -1;
     private static final int IDLE = 0;
@@ -315,7 +315,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 });
             }
 
-            application.getCodeInterpreter().resetState();
+            application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
             application.getCodeInterpreter().restart();
 
             try {

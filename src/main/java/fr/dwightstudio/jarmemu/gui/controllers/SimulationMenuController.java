@@ -148,7 +148,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      */
     public void onReset() {
         getEditorController().clearNotifs();
-        getCodeInterpreter().resetState();
+        getCodeInterpreter().resetState(getSettingsController().getStackAddress(), getSettingsController().getSymbolsAddress());
         getExecutionWorker().updateGUI();
     }
 }
