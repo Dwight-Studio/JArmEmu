@@ -40,7 +40,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.2594654788418708, 0.799554565701559" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.20657015590200445, 0.794543429844098" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
          <items>
             <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
               <items>
@@ -387,14 +387,117 @@
                                     </ScrollBar>
                                  </children>
                               </HBox>
-                              <Pagination fx:id="memoryPage" VBox.vgrow="NEVER" disable="true"/>
+                              <HBox fillHeight="false" />
+                              <GridPane>
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" />
+                                  <ColumnConstraints hgrow="SOMETIMES" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label minWidth="60.0" text="Address :" textAlignment="CENTER">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="addressField" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                       <GridPane.margin>
+                                          <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+                                       </GridPane.margin>
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                 </opaqueInsets>
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                              </GridPane>
+                              <Pagination fx:id="memoryPage" disable="true" VBox.vgrow="NEVER" />
                            </children>
                         </VBox>
                      </content>
                   </Tab>
                 <Tab text="Settings">
                         <content>
-                    <AnchorPane />
+                    <AnchorPane>
+                           <children>
+                              <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                 <children>
+                                    <TitledPane animated="false" text="Simulation">
+                                      <content>
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <Label text="Simulation interval (ms)">
+                                                         <VBox.margin>
+                                                            <Insets bottom="2.0" left="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <TextField>
+                                                         <VBox.margin>
+                                                            <Insets bottom="20.0" />
+                                                         </VBox.margin>
+                                                      </TextField>
+                                                       <Label text="Source Parser">
+                                                           <VBox.margin>
+                                                               <Insets bottom="2.0" left="5.0" />
+                                                           </VBox.margin>
+                                                       </Label>
+                                                       <SplitMenuButton styleClass="split-menu-btn, split-menu-btn-primary">
+                                                           <items>
+                                                               <MenuItem mnemonicParsing="false" onAction="#onRegexParser" text="Regex Parser (default)"/>
+                                                               <MenuItem mnemonicParsing="false" onAction="#onLegacyParser" text="Legacy Parser"/>
+                                                           </items>
+                                                       </SplitMenuButton>
+                                                       <TextField>
+                                                           <VBox.margin>
+                                                               <Insets bottom="20.0" />
+                                                           </VBox.margin>
+                                                       </TextField>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                      </content>
+                                    </TitledPane>
+                                    <TitledPane animated="false" layoutX="10.0" layoutY="10.0" text="Memory management">
+                                       <content>
+                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <Label text="Stack address">
+                                                         <VBox.margin>
+                                                            <Insets bottom="2.0" left="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <TextField>
+                                                         <VBox.margin>
+                                                            <Insets bottom="20.0" />
+                                                         </VBox.margin>
+                                                      </TextField>
+                                                      <Label layoutX="10.0" layoutY="10.0" text="Symbols address">
+                                                         <VBox.margin>
+                                                            <Insets bottom="2.0" left="5.0" />
+                                                         </VBox.margin>
+                                                      </Label>
+                                                      <TextField layoutX="10.0" layoutY="28.0" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </content>
+                                    </TitledPane>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
                   </content>
                 </Tab>
               </tabs>

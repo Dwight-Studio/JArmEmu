@@ -6,6 +6,8 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+
 // Correspond à "imm12" TODO: Ajouter le Barrel Shifting
 public class Value12Parser implements ArgumentParser<Integer> {
     @Override
@@ -48,7 +50,12 @@ public class Value12Parser implements ArgumentParser<Integer> {
 
             return Integer.parseUnsignedInt(valueString, 8);
         } else {
-            return stateContainer.eval(valueString, stateContainer.consts);
+            if (stateContainer != null) {
+                return stateContainer.eval(valueString, stateContainer.consts);
+            } else {
+                stateContainer = new StateContainer();
+                return stateContainer.eval(valueString, stateContainer.consts);
+            }
         }
     }
 

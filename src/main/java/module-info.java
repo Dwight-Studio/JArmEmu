@@ -22,4 +22,6 @@ module fr.dwightstudio.jarmemu {
     exports fr.dwightstudio.jarmemu.asm.exceptions;
     exports fr.dwightstudio.jarmemu.sim.parse;
     exports fr.dwightstudio.jarmemu.sim.parse.regex;
+    exports fr.dwightstudio.jarmemu.gui.controllers;
+    opens fr.dwightstudio.jarmemu.gui.controllers to javafx.fxml;
 }

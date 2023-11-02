@@ -3,6 +3,7 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.asm.args.AddressParser;
 import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -20,7 +21,6 @@ import java.util.logging.Logger;
 public class CodeInterpreter {
     private static final Logger logger = Logger.getLogger(CodeInterpreter.class.getName());
 
-    private final JArmEmuApplication application;
     protected StateContainer stateContainer;
     protected HashMap<Integer, ParsedObject> instructions;
     private int currentLine;
@@ -30,8 +30,7 @@ public class CodeInterpreter {
     private int lastExecutedLine;
     private boolean jumped;
 
-    public CodeInterpreter(JArmEmuApplication application) {
-        this.application = application;
+    public CodeInterpreter() {
         this.currentLine = -1;
         this.atTheEnd = false;
         jumped = false;
@@ -42,7 +41,7 @@ public class CodeInterpreter {
      * @param sourceParser le parseur de source utilisé
      */
     public void load(SourceParser sourceParser) {
-        this.instructions = sourceParser.parse();
+        instructions = sourceParser.parse();
         currentLine = 0;
         lastLine = getLastLine();
         this.atTheEnd = false;

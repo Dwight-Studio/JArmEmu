@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-// Correspond à un argument supplémentaire à "arg"
+// Correspond à un argument supplémentaire à "arg" TODO: Ajouter les flags (parce que apparent il y en a)
 public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
     @Override
     public ShiftParser.ShiftFunction parse(@NotNull StateContainer stateContainer, @NotNull String string) {

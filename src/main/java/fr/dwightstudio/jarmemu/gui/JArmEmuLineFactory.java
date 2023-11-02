@@ -19,7 +19,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 
-public class JARMEmuLineFactory implements IntFunction<Node> {
+public class JArmEmuLineFactory implements IntFunction<Node> {
 
     private static final Insets DEFAULT_INSETS = new Insets(0.0, 5.0, 0.0, 5.0);
     private static final Paint DEFAULT_TEXT_FILL = Color.web("#858585");

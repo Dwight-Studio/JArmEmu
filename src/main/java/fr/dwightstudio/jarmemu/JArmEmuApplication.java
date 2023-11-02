@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu;
 
-import fr.dwightstudio.jarmemu.gui.EditorManager;
-import fr.dwightstudio.jarmemu.gui.JAREmuController;
+import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.*;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
@@ -23,33 +22,52 @@ public class JArmEmuApplication extends Application {
 
     public final Logger logger = Logger.getLogger(getClass().getName());
 
-    public JAREmuController controller;
-    public EditorManager editorManager;
-    public SourceParser sourceParser;
-    public CodeInterpreter codeInterpreter;
-    public ExecutionWorker executionWorker;
-    public Status status;
+    // Controllers
+    private JArmEmuController controller;
 
+    private EditorController editorController;
+    private MainMenuController mainMenuController;
+    private MemoryController memoryController;
+    private RegistersController registersController;
+    private SettingsController settingsController;
+    private SimulationMenuController simulationMenuController;
+    private StackController stackController;
+    
+    // Others
+    private SourceParser sourceParser;
+    private CodeInterpreter codeInterpreter;
+    private ExecutionWorker executionWorker;
+    
+    
+    public Status status;
     public Stage stage;
     private boolean unsaved = true;
 
     @Override
     public void start(Stage stage) throws IOException {
+        this.stage = stage;
+        
         LogManager.getLogManager().readConfiguration(getClass().getResourceAsStream("logging.properties"));
-
         logger.info("Starting JArmEmu");
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("gui/main-view.fxml"));
+        
+        editorController = new EditorController(this);
+        mainMenuController = new MainMenuController(this);
+        memoryController = new MemoryController(this);
+        registersController = new RegistersController(this);
+        settingsController = new SettingsController(this);
+        simulationMenuController = new SimulationMenuController(this);
+        stackController = new StackController(this);
 
-        fxmlLoader.setController(new JAREmuController());
+        fxmlLoader.setController(new JArmEmuController(this));
         controller = fxmlLoader.getController();
-        controller.attach(this);
-        editorManager = new EditorManager();
-        controller.editorManager = editorManager;
-        codeInterpreter = new CodeInterpreter(this);
-        executionWorker = new ExecutionWorker(this);
-        this.stage = stage;
+        
+        
+        // Others
         sourceParser = new RegexSourceParser(new SourceScanner(""));
+        codeInterpreter = new CodeInterpreter();
+        executionWorker = new ExecutionWorker(this);
 
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
 
@@ -69,7 +87,7 @@ public class JArmEmuApplication extends Application {
 
     @Override
     public void stop() {
-        editorManager.clean();
+        editorController.clean();
     }
 
     public static void main(String[] args) {
@@ -94,5 +112,49 @@ public class JArmEmuApplication extends Application {
             Platform.runLater(() -> this.stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1)));
         }
         unsaved = false;
+    }
+
+    public JArmEmuController getController() {
+        return controller;
+    }
+
+    public MainMenuController getMainMenuController() {
+        return mainMenuController;
+    }
+
+    public MemoryController getMemoryController() {
+        return memoryController;
+    }
+
+    public RegistersController getRegistersController() {
+        return registersController;
+    }
+
+    public SettingsController getSettingsController() {
+        return settingsController;
+    }
+
+    public StackController getStackController() {
+        return stackController;
+    }
+
+    public SourceParser getSourceParser() {
+        return sourceParser;
+    }
+
+    public CodeInterpreter getCodeInterpreter() {
+        return codeInterpreter;
+    }
+
+    public ExecutionWorker getExecutionWorker() {
+        return executionWorker;
+    }
+
+    public EditorController getEditorController() {
+        return editorController;
+    }
+
+    public SimulationMenuController getSimulationMenuController() {
+        return simulationMenuController;
     }
 }

@@ -3,6 +3,7 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
+import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -12,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ExecutionWorker {
+public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private static int WAITING_PERIOD = 0;
     private static final int UPDATE_THRESHOLD = 50;
@@ -28,10 +29,9 @@ public class ExecutionWorker {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private ExecutionThead daemon = null;
-    private final JArmEmuApplication application;
 
     public ExecutionWorker(JArmEmuApplication application) {
-        this.application = application;
+        super(application);
 
         this.daemon = new ExecutionThead(application);
     }
@@ -184,35 +184,35 @@ public class ExecutionWorker {
         }
 
         private void step() {
-            int last = application.codeInterpreter.getLastExecutedLine();
-            int line = application.codeInterpreter.nextLine();
+            int last = application.getCodeInterpreter().getLastExecutedLine();
+            int line = application.getCodeInterpreter().nextLine();
 
-            if (application.editorManager.hasBreakPoint(line)) {
+            if (application.getEditorController().hasBreakPoint(line)) {
                 Platform.runLater(() -> {
-                    application.controller.addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", "success");
-                    application.controller.onPause();
+                    application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", "success");
+                    application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
             }
 
-            application.codeInterpreter.executeCurrentLine();
+            application.getCodeInterpreter().executeCurrentLine();
 
-            int next = application.codeInterpreter.getNextLine();
+            int next = application.getCodeInterpreter().getNextLine();
 
-            if (application.codeInterpreter.isAtTheEnd()) {
+            if (application.getCodeInterpreter().isAtTheEnd()) {
                 Platform.runLater(() -> {
-                    application.controller.addNotif("Warning", "The program reached the end of the file.", "warning");
-                    application.controller.onPause();
+                    application.getEditorController().addNotif("Warning", "The program reached the end of the file.", "warning");
+                    application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
             }
 
             if (shouldUpdateGUI() || !doContinue) {
-                if (!shouldUpdateGUI()) application.controller.editorManager.clearLineMarking();
+                if (!shouldUpdateGUI()) application.getEditorController().clearLineMarking();
                 Platform.runLater(() -> {
-                    if (last != -1) application.controller.editorManager.markLine(last, LineStatus.NONE);
-                    application.controller.editorManager.markLine(line, LineStatus.EXECUTED);
-                    application.controller.editorManager.markLine(next, LineStatus.SCHEDULED);
+                    if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
+                    application.getEditorController().markLine(line, LineStatus.EXECUTED);
+                    application.getEditorController().markLine(next, LineStatus.SCHEDULED);
                 });
             }
         }
@@ -233,7 +233,7 @@ public class ExecutionWorker {
                 step();
                 if (shouldUpdateGUI()) updateGUI();
 
-                doContinue = doContinue && !application.codeInterpreter.hasJumped();
+                doContinue = doContinue && !application.getCodeInterpreter().hasJumped();
 
                 try {
                     synchronized (this) {
@@ -279,32 +279,33 @@ public class ExecutionWorker {
         }
 
         private void updateGUI() {
-            if (application.codeInterpreter != null) {
-                if (application.codeInterpreter.stateContainer == null) logger.warning("Updating GUI on null StateContainer");
-                application.controller.updateGUI(application.codeInterpreter.stateContainer);
+            if (application.getCodeInterpreter() != null) {
+                if (application.getCodeInterpreter().stateContainer == null) logger.warning("Updating GUI on null StateContainer");
+                application.getMemoryController().updateGUI(application.getCodeInterpreter().stateContainer);
+                application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
             }
         }
 
         private void prepareTask() {
             nextTask.set(IDLE);
-            application.sourceParser.setSourceScanner(new SourceScanner(application.editorManager.codeArea.getText()));
+            application.getSourceParser().setSourceScanner(new SourceScanner(application.getEditorController().getText()));
 
             try {
-                application.codeInterpreter.load(application.sourceParser);
+                application.getCodeInterpreter().load(application.getSourceParser());
             } catch (SyntaxASMException exception) {
                 Platform.runLater(() -> {
-                application.controller.addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
+                application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
                 logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
                 });
                 return;
             }
 
-            application.codeInterpreter.resetState();
-            application.codeInterpreter.restart();
+            application.getCodeInterpreter().resetState();
+            application.getCodeInterpreter().restart();
 
             try {
-                AssemblyError[] errors = application.codeInterpreter.verifyAll();
-                Platform.runLater(() -> application.controller.launchSimulation(errors));
+                AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
+                Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
             } catch (Exception e) {
                 Platform.runLater(() -> new ExceptionDialog(e).show());
             }
