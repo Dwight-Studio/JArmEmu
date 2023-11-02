@@ -19,6 +19,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save" />
                   <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as..." />
                   <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk" />
+                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings" />
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
             </items>
@@ -318,7 +319,7 @@
             </StackPane>
             <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                  <Tab text="Memory">
+                  <Tab text="Memory" fx:id="memoryTab">
                      <content>
                         <VBox>
                            <children>
@@ -418,12 +419,12 @@
                                     <Insets bottom="10.0" top="10.0" />
                                  </VBox.margin>
                               </GridPane>
-                              <Pagination fx:id="memoryPage" disable="true" VBox.vgrow="NEVER" />
+                              <Pagination fx:id="memoryPage" VBox.vgrow="NEVER" />
                            </children>
                         </VBox>
                      </content>
                   </Tab>
-                <Tab text="Settings">
+                <Tab text="Settings" fx:id="settingsTab">
                         <content>
                     <AnchorPane>
                            <children>
@@ -440,25 +441,32 @@
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>
                                                       </Label>
-                                                      <TextField>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <Spinner fx:id="settingsSimInterval" editable="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                         </children>
                                                          <VBox.margin>
                                                             <Insets bottom="20.0" />
                                                          </VBox.margin>
-                                                      </TextField>
+                                                      </AnchorPane>
                                                        <Label text="Source Parser">
                                                            <VBox.margin>
                                                                <Insets bottom="2.0" left="5.0" />
                                                            </VBox.margin>
                                                        </Label>
-                                                       <SplitMenuButton styleClass="split-menu-btn, split-menu-btn-primary">
-                                                           <items>
-                                                               <MenuItem mnemonicParsing="false" onAction="#onRegexParser" text="Regex Parser (default)" />
-                                                               <MenuItem mnemonicParsing="false" onAction="#onLegacyParser" text="Legacy Parser" />
-                                                           </items>
+                                                      <AnchorPane>
                                                          <VBox.margin>
                                                             <Insets bottom="20.0" />
                                                          </VBox.margin>
-                                                       </SplitMenuButton>
+                                                         <children>
+                                                             <SplitMenuButton fx:id="settingsParser" styleClass="split-menu-btn, split-menu-btn-primary" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                 <items>
+                                                                     <MenuItem onAction="#onSettingsRegex" mnemonicParsing="false" text="Regex Parser (default)" />
+                                                                     <MenuItem onAction="#onSettingsLegacy" mnemonicParsing="false" text="Legacy Parser" />
+                                                                 </items>
+                                                             </SplitMenuButton>
+                                                         </children>
+                                                      </AnchorPane>
                                                    </children>
                                                 </VBox>
                                              </children>
@@ -476,17 +484,27 @@
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>
                                                       </Label>
-                                                      <TextField>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <Spinner fx:id="settingsStackAddress" editable="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                         </children>
                                                          <VBox.margin>
                                                             <Insets bottom="20.0" />
                                                          </VBox.margin>
-                                                      </TextField>
+                                                      </AnchorPane>
                                                       <Label layoutX="10.0" layoutY="10.0" text="Symbols address">
                                                          <VBox.margin>
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>
                                                       </Label>
-                                                      <TextField layoutX="10.0" layoutY="28.0" />
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <Spinner fx:id="settingsSymbolsAddress" editable="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                         </children>
+                                                         <VBox.margin>
+                                                            <Insets bottom="20.0" />
+                                                         </VBox.margin>
+                                                      </AnchorPane>
                                                    </children>
                                                 </VBox>
                                              </children>

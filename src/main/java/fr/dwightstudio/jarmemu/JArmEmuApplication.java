@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 public class JArmEmuApplication extends Application {
 
-    public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion();
+    public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
 
     public final Logger logger = Logger.getLogger(getClass().getName());
 

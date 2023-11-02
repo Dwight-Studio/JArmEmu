@@ -44,6 +44,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             getController().stop.setDisable(false);
             getController().restart.setDisable(false);
             getController().reset.setDisable(false);
+            getController().settingsTab.setDisable(true);
             application.status = Status.SIMULATING;
         } else {
             getController().simulate.setDisable(false);
@@ -54,6 +55,13 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getEditorController().addError(error);
             }
         }
+    }
+
+    /**
+     * Méthode de rappel si la préparation de la simulation a échoué
+     */
+    public void abortSimulation() {
+        getController().simulate.setDisable(false);
     }
 
     /**
@@ -121,6 +129,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().reset.setDisable(true);
         getController().memoryPage.setDisable(true);
         getController().addressField.setDisable(true);
+        getController().settingsTab.setDisable(false);
         application.status = Status.EDITING;
     }
 

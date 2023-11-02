@@ -9,13 +9,12 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
+import java.util.PrimitiveIterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ExecutionWorker extends AbstractJArmEmuModule {
-
-    private static int WAITING_PERIOD = 0;
     private static final int UPDATE_THRESHOLD = 50;
 
     private static final int ERROR = -1;
@@ -140,6 +139,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private final AtomicInteger nextTask = new AtomicInteger();
         private boolean doContinue = false;
         private boolean doRun = true;
+        private int waitingPeriod;
 
         public ExecutionThead(JArmEmuApplication application) {
             super("CodeExecutorDeamon");
@@ -162,6 +162,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         doRun = false;
                         break;
                     }
+
+                    waitingPeriod = application.getSettingsController().getSimulationInterval();
 
                     int task = nextTask.get();
                     logger.info("Executing task ID" + task + "...");
@@ -237,7 +239,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 try {
                     synchronized (this) {
-                        if (WAITING_PERIOD != 0) wait(WAITING_PERIOD);
+                        if (application.getSettingsController().getSimulationInterval() != 0) wait(application.getSettingsController().getSimulationInterval());
                     }
                 } catch (InterruptedException ignored) {
                     doContinue = false;
@@ -258,7 +260,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 try {
                     synchronized (this) {
-                        if (WAITING_PERIOD != 0) wait(WAITING_PERIOD);
+                        if (waitingPeriod != 0) wait(waitingPeriod);
                     }
                 } catch (InterruptedException ignored) {
                     doContinue = false;
@@ -296,6 +298,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 Platform.runLater(() -> {
                 application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
                 logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+                application.getSimulationMenuController().abortSimulation();
                 });
                 return;
             }
@@ -314,7 +317,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private boolean shouldUpdateGUI() {
-            return WAITING_PERIOD >= UPDATE_THRESHOLD;
+            return waitingPeriod >= UPDATE_THRESHOLD;
         }
     }
 }

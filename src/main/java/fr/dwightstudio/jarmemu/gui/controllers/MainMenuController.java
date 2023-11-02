@@ -117,4 +117,11 @@ public class MainMenuController extends AbstractJArmEmuModule {
     public File getSavePath() {
         return savePath;
     }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    public void onResetSettings() {
+        getSettingsController().setToDefaults();
+    }
 }

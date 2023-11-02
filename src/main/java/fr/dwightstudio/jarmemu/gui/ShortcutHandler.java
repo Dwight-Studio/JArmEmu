@@ -2,7 +2,6 @@ package fr.dwightstudio.jarmemu.gui;
 
 import fr.dwightstudio.jarmemu.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class ShortcutHandler extends AbstractJArmEmuModule {

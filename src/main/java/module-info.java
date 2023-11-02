@@ -11,6 +11,7 @@ module fr.dwightstudio.jarmemu {
     requires org.fxmisc.richtext;
     requires reactfx;
     requires exp4j;
+    requires java.prefs;
 
     opens fr.dwightstudio.jarmemu.gui to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui;

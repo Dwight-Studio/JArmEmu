@@ -18,11 +18,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    @FXML
-    protected CodeArea codeArea;
+    @FXML protected CodeArea codeArea;
 
-    @FXML
-    protected VBox notifications;
+    @FXML protected VBox notifications;
     @FXML protected Button simulate;
     @FXML protected Button stepInto;
     @FXML protected Button stepOver;
@@ -52,13 +50,21 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Text CPSRT;
     @FXML protected Text SPSR;
     @FXML protected Text SPSRT;
+
+    @FXML protected Tab memoryTab;
     @FXML protected GridPane memoryGrid;
     @FXML protected ScrollPane memoryScroll;
     @FXML protected ScrollBar memoryScrollBar;
     @FXML protected AnchorPane memoryPane;
     @FXML protected Pagination memoryPage;
     @FXML protected TextField addressField;
-    protected ArrayList<Text> stack;
+
+    @FXML protected Tab settingsTab;
+    @FXML protected Spinner<Integer> settingsSimInterval;
+    @FXML protected SplitMenuButton settingsParser;
+    @FXML protected Spinner<Integer> settingsStackAddress;
+    @FXML protected Spinner<Integer> settingsSymbolsAddress;
+
 
     public JArmEmuController(JArmEmuApplication application) {
         super(application);
@@ -74,8 +80,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getSettingsController().initialize(url, resourceBundle);
         getSimulationMenuController().initialize(url, resourceBundle);
         getStackController().initialize(url, resourceBundle);
-
-        stack = new ArrayList<>();
 
         getMainMenuController().onNewFile();
 
@@ -154,17 +158,22 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     }
 
     @FXML
-    protected void onRegexParser() {
-
-    }
-
-    @FXML
-    protected void onLegacyParser() {
-
-    }
-
-    @FXML
     protected void onClearNotifs() {
         getEditorController().clearNotifs();
+    }
+
+    @FXML
+    public void onSettingsRegex() {
+        getSettingsController().onSettingsRegex();
+    }
+
+    @FXML
+    public void onSettingsLegacy() {
+        getSettingsController().onSettingsLegacy();
+    }
+
+    @FXML
+    public void onResetSettings() {
+        getMainMenuController().onResetSettings();
     }
 }
