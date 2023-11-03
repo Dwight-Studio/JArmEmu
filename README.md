@@ -10,6 +10,10 @@ colorimetry to see if it is implemented).
 
 JArmEmu is powered by a ARMv7 interpreter made *Ex Nihilo* for this project.
 
+## Limitations
+Currently known limitations or differences with the real architecture:
+- Labels are considered instructions in memory, which means that the PC counts them.
+
 ## Licence
 This project was created by Kévin TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (indendant
 project). It is distributed in open source under GPL3 (refer to the LICENCE file).

@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
-import javafx.fxml.Initializable;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import javafx.scene.text.Text;
 
 import java.net.URL;

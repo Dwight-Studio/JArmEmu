@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
@@ -16,7 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.reactfx.Subscription;

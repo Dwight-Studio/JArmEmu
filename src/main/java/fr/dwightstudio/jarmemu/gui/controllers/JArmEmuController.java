@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -11,7 +10,6 @@ import javafx.scene.text.Text;
 import org.fxmisc.richtext.CodeArea;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 

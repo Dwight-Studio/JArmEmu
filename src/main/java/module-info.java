@@ -2,7 +2,6 @@ module fr.dwightstudio.jarmemu {
     requires javafx.controls;
     requires javafx.fxml;
 
-    requires org.controlsfx.controls;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires java.logging;
@@ -12,6 +11,8 @@ module fr.dwightstudio.jarmemu {
     requires reactfx;
     requires exp4j;
     requires java.prefs;
+    requires java.desktop;
+    requires org.controlsfx.controls;
 
     opens fr.dwightstudio.jarmemu.gui to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui;

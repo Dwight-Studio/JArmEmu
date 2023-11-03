@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;

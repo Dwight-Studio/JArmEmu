@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;

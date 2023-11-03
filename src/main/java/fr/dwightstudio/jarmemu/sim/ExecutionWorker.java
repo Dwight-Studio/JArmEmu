@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
@@ -9,7 +9,6 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
-import java.util.PrimitiveIterator;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;

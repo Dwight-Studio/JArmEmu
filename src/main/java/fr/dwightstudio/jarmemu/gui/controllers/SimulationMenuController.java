@@ -1,10 +1,9 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
-import javafx.fxml.FXML;
 
 import java.util.logging.Logger;
 
