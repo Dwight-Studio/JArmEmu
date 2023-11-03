@@ -15,5 +15,5 @@ Currently known limitations or differences with the real architecture:
 - Labels are considered instructions in memory, which means that the PC counts them.
 
 ## Licence
-This project was created by Kévin TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (indendant
+This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (independant
 project). It is distributed in open source under GPL3 (refer to the LICENCE file).
