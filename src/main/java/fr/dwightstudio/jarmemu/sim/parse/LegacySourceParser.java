@@ -3,7 +3,6 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.jetbrains.annotations.NotNull;
@@ -285,8 +284,7 @@ public class LegacySourceParser implements SourceParser {
     public ParsedObject parseOneLine() {
         try {
             readOneLineASM();
-        } catch (SyntaxASMException exception) {
-            //TODO: Gérer les exceptions après avoir géré les Pseudo-OP
+        } catch (SyntaxASMException ignored) {
         }
 
         if (this.instruction == null) {
