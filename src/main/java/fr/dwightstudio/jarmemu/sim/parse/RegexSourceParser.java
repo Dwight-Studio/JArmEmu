@@ -3,7 +3,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.regex.ASMParser;
-import fr.dwightstudio.jarmemu.sim.parse.regex.PseudoOpParser;
+import fr.dwightstudio.jarmemu.sim.parse.regex.PseudoInstructionParser;
 import fr.dwightstudio.jarmemu.sim.parse.regex.SectionParser;
 import org.jetbrains.annotations.NotNull;
 
@@ -73,7 +73,7 @@ public class RegexSourceParser implements SourceParser {
             this.currentSection = section;
             return null;
         }
-        ParsedObject instruction = PseudoOpParser.parseOneLine(sourceScanner, line, section);
+        ParsedObject instruction = PseudoInstructionParser.parseOneLine(sourceScanner, line, section);
         if (instruction != null) return instruction;
         if (currentSection == Section.TEXT) return ASMParser.parseOneLine(sourceScanner, line);
         return null;

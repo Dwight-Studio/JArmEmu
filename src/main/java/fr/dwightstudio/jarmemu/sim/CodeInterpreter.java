@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
+import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
@@ -21,6 +22,7 @@ public class CodeInterpreter {
 
     protected StateContainer stateContainer;
     protected HashMap<Integer, ParsedObject> instructions;
+    protected ArrayList<Integer> instructionPositions;
     private int currentLine;
     private int lastLine;
     private boolean atTheEnd;
@@ -40,6 +42,7 @@ public class CodeInterpreter {
      */
     public void load(SourceParser sourceParser) {
         instructions = sourceParser.parse();
+        instructionPositions = computeInstructionsPositions();
         currentLine = 0;
         lastLine = getLastLine();
         this.atTheEnd = false;
@@ -79,7 +82,6 @@ public class CodeInterpreter {
      */
     public int nextLine() {
         currentLine = getNextLine();
-        setCurrentByteToPC();
         return currentLine;
     }
 
@@ -135,6 +137,8 @@ public class CodeInterpreter {
         if (oldPC != newPC) {
             setCurrentLineFromPC();
             jumped = true;
+        } else {
+            nextLineToPC();
         }
 
         this.atTheEnd = !hasNextLine();
@@ -155,7 +159,7 @@ public class CodeInterpreter {
         this.currentLine = -1;
         if (stateContainer.labels.containsKey("_START")) {
             stateContainer.registers[RegisterUtils.PC.getN()].setData(stateContainer.labels.get("_START"));
-            this.currentLine = RegisterUtils.PCToLine(stateContainer.labels.get("_START"));
+            setCurrentLineFromPC();
         }
     }
 
@@ -208,20 +212,54 @@ public class CodeInterpreter {
         return currentLine;
     }
 
-    public int getCurrentByte() {
-        return RegisterUtils.lineToPC(currentLine);
+    private int getCurrentByte() {
+        int pos = -1;
+        for (int i = 0 ; i < instructionPositions.size() ; i++) {
+            if (instructionPositions.get(i) == currentLine) {
+                pos = i;
+                break;
+            }
+        }
+        if (pos == -1) logger.severe("Unable to found current byte (current line is " + currentLine + ")");
+        return RegisterUtils.lineToPC(pos);
     }
 
     private int getCurrentLineFromPC() {
-        return RegisterUtils.PCToLine(stateContainer.registers[RegisterUtils.PC.getN()].getData());
+        int pos = RegisterUtils.PCToLine(stateContainer.registers[RegisterUtils.PC.getN()].getData());
+        try {
+            return instructionPositions.get(pos) - 1;
+        } catch (IndexOutOfBoundsException exception) {
+            logger.info("Unable to fetch current line from PC, end of file is considered reached");
+            return getLastLine() + 1;
+        }
     }
 
-    private void setCurrentByteToPC() {
+    protected void setCurrentByteToPC() {
         stateContainer.registers[RegisterUtils.PC.getN()].setData(getCurrentByte());
     }
 
-    private void setCurrentLineFromPC() {
+    private void nextLineToPC() {
+        stateContainer.registers[RegisterUtils.PC.getN()].add(4);
+    }
+
+    protected void setCurrentLineFromPC() {
         currentLine = getCurrentLineFromPC();
+    }
+
+    /**
+     * Calcul la position des instructions dans la mémoire du programme (pour utiliser avec PC)
+     * @return une liste des positions
+     */
+    private ArrayList<Integer> computeInstructionsPositions() {
+        ArrayList<Integer> rtn = new ArrayList<>();
+
+        for (Map.Entry<Integer, ParsedObject> entry : instructions.entrySet()) {
+            if (entry.getValue() instanceof ParsedInstruction) {
+                rtn.add(entry.getKey());
+            }
+        }
+
+        return rtn;
     }
 
     public ParsedInstruction getLastExecuted() {

@@ -19,7 +19,7 @@ public class Value8Parser implements ArgumentParser<Integer> {
                 return rtn;
 
             } else if (string.startsWith("=")) {
-                throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Op");
+                throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Instruction");
             } else {
                 throw new SyntaxASMException("Invalid 8bits immediate value '" + string + "'");
             }

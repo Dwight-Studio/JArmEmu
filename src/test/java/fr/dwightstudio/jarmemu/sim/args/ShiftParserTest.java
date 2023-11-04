@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.asm.args;
+package fr.dwightstudio.jarmemu.sim.args;
 
 import fr.dwightstudio.jarmemu.sim.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;

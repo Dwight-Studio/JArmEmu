@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm;
 
-public enum PseudoOperation {
+public enum PseudoInstructions {
     //Sections
     SECTION,
     BSS, //Uninitialized read-write data.

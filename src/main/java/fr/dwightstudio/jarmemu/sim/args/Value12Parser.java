@@ -17,7 +17,7 @@ public class Value12Parser implements ArgumentParser<Integer> {
                 return value;
 
             } else if (string.startsWith("=")) {
-                throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Op");
+                throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Instruction");
             } else {
                 throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "'");
             }

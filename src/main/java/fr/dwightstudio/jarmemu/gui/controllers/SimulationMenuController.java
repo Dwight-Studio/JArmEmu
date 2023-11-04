@@ -23,6 +23,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getEditorController().clearNotifs();
         getExecutionWorker().revive();
         getExecutionWorker().prepare();
+        getExecutionWorker().updateGUI();
     }
 
     /**

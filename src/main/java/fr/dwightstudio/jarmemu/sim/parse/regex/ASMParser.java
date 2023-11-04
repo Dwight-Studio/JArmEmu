@@ -76,7 +76,7 @@ public class ASMParser {
         Matcher matcher = LABEL_PATTERN.matcher(line);
 
         if (matcher.find()) {
-            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(sourceScanner.getCurrentInstructionValue()));
+            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(sourceScanner.getCurrentInstructionPos()));
         }
 
         matcher = INSTRUCTION_PATTERN.matcher(line);
@@ -122,6 +122,7 @@ public class ASMParser {
                 throw new SyntaxASMException("Unknown update mode '" + updateString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
 
+            sourceScanner.countInstruction();
         } else {
             throw new SyntaxASMException("Unexpected statement '" + line + "', at line " + sourceScanner.getCurrentInstructionValue());
         }
