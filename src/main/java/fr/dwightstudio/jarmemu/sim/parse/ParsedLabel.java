@@ -5,7 +5,7 @@ import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class ParsedLabel extends ParsedObject {
@@ -27,10 +27,11 @@ public class ParsedLabel extends ParsedObject {
     }
 
     @Override
-    public AssemblyError verify(int line, HashMap<String, Integer> labels) {
-        if (labels.get(this.name) == null) {
+    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+        StateContainer container = stateSupplier.get();
+        if (container.labels.get(this.name) == null) {
             throw new IllegalStateException("Unable to verify label (incorrectly registered in the StateContainer)");
-        } else if (labels.get(this.name) != this.line) {
+        } else if (container.labels.get(this.name) != this.line) {
             return new AssemblyError(line, new SyntaxASMException("Label '" + this.name + "' is already defined"));
         }
         return null;

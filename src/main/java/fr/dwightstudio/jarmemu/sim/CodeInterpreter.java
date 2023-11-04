@@ -57,13 +57,27 @@ public class CodeInterpreter {
         ArrayList<AssemblyError> rtn = new ArrayList<>();
 
         registerLabels();
+        registerData();
+        registerConsts();
 
         for (Map.Entry<Integer, ParsedObject> inst : instructions.entrySet()) {
-            AssemblyError e = inst.getValue().verify(inst.getKey(), stateContainer.labels);
+            AssemblyError e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
             if (e != null) rtn.add(e);
         }
 
         return rtn.toArray(AssemblyError[]::new);
+    }
+
+    /**
+     * Enregistre les constantes dans le conteur d'états
+     */
+    private void registerConsts() {
+    }
+
+    /**
+     * Enregistre les données ajoutées par pseudo-instructions
+     */
+    private void registerData() {
     }
 
     /**

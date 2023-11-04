@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class StateContainer {
@@ -13,7 +14,7 @@ public class StateContainer {
 
     // ASM
     public final HashMap<String, Integer> consts; // HashMap des constantes
-    public final HashMap<String, Integer> data; // HashMap des données
+    public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par pseudo-instruction
     public final HashMap<String, Integer> labels; // HashMap des labels
 
     // Registers
@@ -51,10 +52,27 @@ public class StateContainer {
         this(DEFAULT_STACK_ADDRESS,DEFAULT_SYMBOLS_ADDRESS);
     }
 
+    public StateContainer(StateContainer stateContainer) {
+        this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
+        this.consts.putAll(stateContainer.consts);
+        this.data.putAll(stateContainer.data);
+        this.labels.putAll(stateContainer.labels);
+
+        for (int i = 0; i < REGISTER_NUMBER; i++) {
+            registers[i].setData(stateContainer.registers[i].getData());
+        }
+
+        cpsr.setData(stateContainer.cpsr.getData());
+        spsr.setData(stateContainer.spsr.getData());
+    }
+
     public void clearRegisters() {
         for (int i = 0; i < REGISTER_NUMBER; i++) {
-            registers[i] = new Register();
+            registers[i].setData(0);
         }
+
+        cpsr.setData(0);
+        spsr.setData(0);
     }
 
     public int eval(String expString, HashMap<String, Integer> map) {
