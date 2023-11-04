@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
@@ -26,7 +27,12 @@ public class ParsedLabel extends ParsedObject {
     }
 
     @Override
-    public AssemblyError verify(int line, Set<String> labels) {
+    public AssemblyError verify(int line, HashMap<String, Integer> labels) {
+        if (labels.get(this.name) == null) {
+            throw new IllegalStateException("Unable to verify label (incorrectly registered in the StateContainer)");
+        } else if (labels.get(this.name) != this.line) {
+            return new AssemblyError(line, new SyntaxASMException("Label '" + this.name + "' is already defined"));
+        }
         return null;
     }
 

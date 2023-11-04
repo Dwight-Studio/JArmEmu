@@ -247,7 +247,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
             }
 
-            if (!isThresholdExceeded()) updateGUI();
+            if (isIntervalTooShort()) updateGUI();
             logger.info("Done!");
         }
 
@@ -268,7 +268,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
             }
 
-            if (!isThresholdExceeded()) updateGUI();
+            if (isIntervalTooShort()) updateGUI();
             logger.info("Done!");
         }
 
@@ -288,7 +288,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
-                    if (!isThresholdExceeded()) application.getEditorController().clearLineMarking();
+                    if (isIntervalTooShort()) application.getEditorController().clearLineMarking();
                     Platform.runLater(() -> {
                         if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
                         application.getEditorController().markLine(line, LineStatus.EXECUTED);
@@ -338,12 +338,12 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             logger.info("Done!");
         }
 
-        private boolean isThresholdExceeded() {
-            return waitingPeriod >= UPDATE_THRESHOLD;
+        private boolean isIntervalTooShort() {
+            return waitingPeriod < UPDATE_THRESHOLD;
         }
 
         private boolean shouldUpdateGUI() {
-            return !isThresholdExceeded() && (System.currentTimeMillis() - updateGUITimestamp) > 50;
+            return !isIntervalTooShort() || (System.currentTimeMillis() - updateGUITimestamp) > 50;
         }
     }
 }

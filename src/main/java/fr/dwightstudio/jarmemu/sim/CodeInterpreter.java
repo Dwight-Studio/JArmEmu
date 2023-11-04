@@ -56,8 +56,10 @@ public class CodeInterpreter {
     public AssemblyError[] verifyAll() {
         ArrayList<AssemblyError> rtn = new ArrayList<>();
 
+        registerLabels();
+
         for (Map.Entry<Integer, ParsedObject> inst : instructions.entrySet()) {
-            AssemblyError e = inst.getValue().verify(inst.getKey(), stateContainer.labels.keySet());
+            AssemblyError e = inst.getValue().verify(inst.getKey(), stateContainer.labels);
             if (e != null) rtn.add(e);
         }
 

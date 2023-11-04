@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 
+import java.util.HashMap;
 import java.util.Set;
 
 public abstract class ParsedObject {
@@ -15,6 +16,6 @@ public abstract class ParsedObject {
      * @param labels les étiquettes enregistrées
      * @return les erreurs détectées
      */
-    public abstract AssemblyError verify(int line, Set<String> labels);
+    public abstract AssemblyError verify(int line, HashMap<String, Integer> labels);
 
 }
