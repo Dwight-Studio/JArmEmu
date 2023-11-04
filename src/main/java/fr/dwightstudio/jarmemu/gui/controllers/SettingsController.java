@@ -106,7 +106,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setSimulationInterval(int nb) {
         if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
-            new Alert(Alert.AlertType.WARNING, "Below 50ms of simulation interval, the GUI is updated only when the simulation is interrupted.").show();
+            new Alert(Alert.AlertType.WARNING, "The GUI is updated every 50ms or more and when the simulation is interrupted. Using a simulation interval below 50ms will affect your visibility of the program steps.").show();
         }
         preferences.putInt(SIMULATION_INTERVAL_KEY, nb);
     }
