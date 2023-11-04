@@ -38,11 +38,11 @@ public class StateContainer {
         data = new HashMap<>();
 
         // Initializing registers
-        this.registers = new Register[REGISTER_NUMBER];
-        clearRegisters();
-
         cpsr = new PSR();
         spsr = new PSR();
+
+        this.registers = new Register[REGISTER_NUMBER];
+        clearRegisters();
 
         // Initializing memory
         this.memory = new MemoryAccessor();
@@ -68,7 +68,11 @@ public class StateContainer {
 
     public void clearRegisters() {
         for (int i = 0; i < REGISTER_NUMBER; i++) {
-            registers[i].setData(0);
+            if (registers[i] != null) {
+                registers[i].setData(0);
+            } else {
+                registers[i] = new Register();
+            }
         }
 
         cpsr.setData(0);
