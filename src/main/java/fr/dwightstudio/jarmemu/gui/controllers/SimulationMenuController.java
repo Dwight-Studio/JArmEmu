@@ -26,7 +26,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().simulate.setDisable(true);
         getEditorController().clearNotifs();
 
-        getEditorController().addNotif("Parsing in progress...", "Please wait, this can take a few seconds.", "primary");
+        getEditorController().addNotif("Parsing in progress...", "Please wait, this can take up to a few seconds.", "info");
 
         getExecutionWorker().revive();
         getExecutionWorker().prepare();
@@ -70,7 +70,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      */
     public void abortSimulation() {
         getEditorController().clearNotifs();
-        getEditorController().addNotif("Unable to parse", "Exceptions prevented the code from being parsed. See console for more details.", "danger");
+        getEditorController().addNotif("Parsing error: ", "Exceptions prevented the code from being parsed. See console for more details.", "danger");
         getController().simulate.setDisable(false);
     }
 

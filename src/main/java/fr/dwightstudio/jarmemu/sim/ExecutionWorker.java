@@ -216,6 +216,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 });
                 doContinue = false;
             }
+
+            // TODO: Vérifier si les flags doivent être persistants
         }
 
         private void stepIntoTask() {
@@ -303,6 +305,12 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void prepareTask() {
             nextTask.set(IDLE);
             application.getSourceParser().setSourceScanner(new SourceScanner(application.getEditorController().getText()));
+
+            synchronized (this) {
+                try {
+                    this.wait(50);
+                } catch (InterruptedException ignored) {}
+            }
 
             try {
                 application.getCodeInterpreter().load(application.getSourceParser());
