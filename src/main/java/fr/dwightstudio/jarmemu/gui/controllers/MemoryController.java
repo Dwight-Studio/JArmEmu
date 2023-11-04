@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.asm.args.ArgumentParsers;
+import fr.dwightstudio.jarmemu.sim.args.ArgumentParsers;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
 import javafx.scene.control.ScrollPane;

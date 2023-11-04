@@ -1,8 +1,7 @@
-package fr.dwightstudio.jarmemu.asm.args;
+package fr.dwightstudio.jarmemu.sim.args;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.util.MathUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;

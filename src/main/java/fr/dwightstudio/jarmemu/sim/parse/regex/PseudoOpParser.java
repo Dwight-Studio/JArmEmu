@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
-import fr.dwightstudio.jarmemu.sim.parse.Section;
+import fr.dwightstudio.jarmemu.asm.Section;
 
 public class PseudoOpParser {
 

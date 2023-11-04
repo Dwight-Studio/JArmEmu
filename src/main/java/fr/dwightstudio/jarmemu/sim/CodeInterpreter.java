@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.args.AddressParser;
-import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
+import fr.dwightstudio.jarmemu.sim.args.AddressParser;
+import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;

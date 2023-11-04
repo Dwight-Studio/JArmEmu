@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.Section;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
 import java.util.regex.Matcher;

@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.args;
 
+import fr.dwightstudio.jarmemu.sim.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

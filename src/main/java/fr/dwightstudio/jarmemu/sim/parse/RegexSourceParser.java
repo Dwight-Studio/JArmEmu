@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.regex.ASMParser;
 import fr.dwightstudio.jarmemu.sim.parse.regex.PseudoOpParser;
@@ -8,7 +8,6 @@ import fr.dwightstudio.jarmemu.sim.parse.regex.SectionParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Objects;
 
 public class RegexSourceParser implements SourceParser {
 

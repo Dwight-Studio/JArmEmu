@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.asm.args;
+package fr.dwightstudio.jarmemu.sim.args;
 
 public class ArgumentParsers {
 

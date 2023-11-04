@@ -1,15 +1,14 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.args.AddressParser;
-import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
-import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
+import fr.dwightstudio.jarmemu.sim.args.AddressParser;
+import fr.dwightstudio.jarmemu.sim.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Logger;
 

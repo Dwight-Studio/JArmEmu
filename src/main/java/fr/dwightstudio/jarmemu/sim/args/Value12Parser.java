@@ -1,12 +1,9 @@
-package fr.dwightstudio.jarmemu.asm.args;
+package fr.dwightstudio.jarmemu.sim.args;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.util.MathUtils;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 // Correspond à "imm12" TODO: Ajouter le Barrel Shifting
 public class Value12Parser implements ArgumentParser<Integer> {
