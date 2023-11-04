@@ -2,7 +2,9 @@ package fr.dwightstudio.jarmemu.gui;
 
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
-import fr.dwightstudio.jarmemu.sim.*;
+import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
+import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
@@ -12,22 +14,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Optional;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 public class JArmEmuApplication extends Application {
 
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
-
-    public final Logger logger = Logger.getLogger(getClass().getName());
+    public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
 
     // Controllers
     private JArmEmuController controller;
@@ -73,7 +77,6 @@ public class JArmEmuApplication extends Application {
 
         // Others
         shortcutHandler = new ShortcutHandler(this);
-        //sourceParser = new RegexSourceParser(new SourceScanner(""));
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
@@ -91,11 +94,22 @@ public class JArmEmuApplication extends Application {
         status = Status.EDITING;
 
         stage.setOnCloseRequest(this::onClosingRequest);
-
+        stage.getIcons().addAll(
+                new Image(getClass().getResourceAsStream("medias/favicon@16.png")),
+                new Image(getClass().getResourceAsStream("medias/favicon@32.png")),
+                new Image(getClass().getResourceAsStream("medias/favicon@64.png")),
+                new Image(getClass().getResourceAsStream("medias/favicon@128.png")),
+                new Image(getClass().getResourceAsStream("medias/favicon@256.png")),
+                new Image(getClass().getResourceAsStream("medias/favicon@512.png")),
+                new Image(getClass().getResourceAsStream("medias/logo.png"))
+        );
         stage.setScene(scene);
         stage.show();
 
         SplashScreen splashScreen = SplashScreen.getSplashScreen();
+
+        int scale = (int) (stage.getOutputScaleY() * 100);
+        Preferences.userRoot().node(getClass().getPackage().getName()).putInt("scale", scale);
 
         if (splashScreen != null) {
             splashScreen.close();
@@ -105,6 +119,35 @@ public class JArmEmuApplication extends Application {
 
     }
 
+    private static void adaptSplashScreen(SplashScreen splashScreen) {
+        try {
+            int scale = Preferences.userRoot().node(JArmEmuApplication.class.getPackage().getName()).getInt("scale", 100);
+
+            logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
+
+            URL url;
+            
+            if (scale >= 125 && scale < 150) {
+                url = JArmEmuApplication.class.getResource("medias/splash@125pct.png");
+            } else if (scale >= 150 && scale < 200) {
+                url = JArmEmuApplication.class.getResource("medias/splash@150pct.png");
+            } else if (scale >= 200 && scale < 250) {
+                url = JArmEmuApplication.class.getResource("medias/splash@200pct.png");
+            } else if (scale >= 250 && scale < 300) {
+                url = JArmEmuApplication.class.getResource("medias/splash@250pct.png");
+            } else if (scale >= 300) {
+                url = JArmEmuApplication.class.getResource("medias/splash@300pct.png");
+            } else {
+                url = JArmEmuApplication.class.getResource("medias/splash.png");
+            }
+
+            logger.info("Loading SplashScreen: " + url);
+            splashScreen.setImageURL(url);
+        } catch (Exception e) {
+            logger.severe(ExceptionUtils.getStackTrace(e));
+        }
+    }
+
     @Override
     public void stop() {
         editorController.clean();
@@ -112,7 +155,13 @@ public class JArmEmuApplication extends Application {
     }
 
     public static void main(String[] args) {
-        JArmEmuApplication.launch();
+        SplashScreen splashScreen = SplashScreen.getSplashScreen();
+
+        if (splashScreen != null) {
+            adaptSplashScreen(splashScreen);
+        }
+
+        JArmEmuApplication.launch(args);
     }
 
     private void setTitle(String title) {
