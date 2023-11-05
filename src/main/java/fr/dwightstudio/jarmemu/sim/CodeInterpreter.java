@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
@@ -21,7 +20,7 @@ public class CodeInterpreter {
     private static final Logger logger = Logger.getLogger(CodeInterpreter.class.getName());
 
     protected StateContainer stateContainer;
-    protected HashMap<Integer, ParsedObject> instructions;
+    protected HashMap<Integer, ParsedObject> parsedObjects;
     protected ArrayList<Integer> instructionPositions;
     private int currentLine;
     private int lastLine;
@@ -41,7 +40,7 @@ public class CodeInterpreter {
      * @param sourceParser le parseur de source utilisé
      */
     public void load(SourceParser sourceParser) {
-        instructions = sourceParser.parse();
+        parsedObjects = sourceParser.parse();
         instructionPositions = computeInstructionsPositions();
         currentLine = 0;
         lastLine = getLastLine();
@@ -50,17 +49,16 @@ public class CodeInterpreter {
     }
 
     /**
-     * Verifie toutes les ParsedInstructions et ParsedPseudoInstructions
+     * Verifie toutes les ParsedInstructions et ParsedDirective
      * @return les erreurs si il y en a
      */
     public AssemblyError[] verifyAll() {
         ArrayList<AssemblyError> rtn = new ArrayList<>();
 
+        applyDirectives();
         registerLabels();
-        registerData();
-        registerConsts();
 
-        for (Map.Entry<Integer, ParsedObject> inst : instructions.entrySet()) {
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             AssemblyError e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
             if (e != null) rtn.add(e);
         }
@@ -69,22 +67,16 @@ public class CodeInterpreter {
     }
 
     /**
-     * Enregistre les constantes dans le conteur d'états
+     * Applique toutes les directives, remplace les constantes, etc...
      */
-    private void registerConsts() {
-    }
-
-    /**
-     * Enregistre les données ajoutées par pseudo-instructions
-     */
-    private void registerData() {
+    private void applyDirectives() {
     }
 
     /**
      * Enregistre les labels dans le conteur d'états
      */
     public void registerLabels() {
-        for (Map.Entry<Integer, ParsedObject> inst : instructions.entrySet()) {
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedLabel label) {
                 label.register(stateContainer);
             }
@@ -116,7 +108,7 @@ public class CodeInterpreter {
     }
 
     private int getNextLineR(int c) {
-        if (!instructions.containsKey(c) || !(instructions.get(c) instanceof ParsedInstruction)) return getNextLineR(c+1);
+        if (!parsedObjects.containsKey(c) || !(parsedObjects.get(c) instanceof ParsedInstruction)) return getNextLineR(c+1);
         else return c;
     }
 
@@ -136,8 +128,8 @@ public class CodeInterpreter {
 
         int oldPC = getCurrentLineFromPC();
 
-        if (instructions.containsKey(currentLine)) {
-            ParsedObject parsedObject = instructions.get(currentLine);
+        if (parsedObjects.containsKey(currentLine)) {
+            ParsedObject parsedObject = parsedObjects.get(currentLine);
 
             if (parsedObject instanceof ParsedInstruction instruction) {
                 instruction.execute(stateContainer);
@@ -165,6 +157,7 @@ public class CodeInterpreter {
      */
     public void resetState(int stackAddress, int symbolsAddress) {
         this.stateContainer = new StateContainer(stackAddress, symbolsAddress);
+        applyDirectives();
         registerLabels();
     }
 
@@ -191,7 +184,7 @@ public class CodeInterpreter {
      * @return le nombre de lignes
      */
     public int getLineCount() {
-        return instructions.size();
+        return parsedObjects.size();
     }
 
     /**
@@ -199,7 +192,7 @@ public class CodeInterpreter {
      */
     public int getInstructionCount() {
         int rtn = 0;
-        for (ParsedObject parsedObject : instructions.values()) {
+        for (ParsedObject parsedObject : parsedObjects.values()) {
             if (parsedObject instanceof ParsedInstruction) rtn++;
         }
         return rtn;
@@ -210,7 +203,7 @@ public class CodeInterpreter {
      */
     public int getLastLine() {
         final int[] line = {0};
-        instructions.keySet().forEach(i -> line[0] = Math.max(instructions.get(i) instanceof ParsedInstruction ? i : 0, line[0]));
+        parsedObjects.keySet().forEach(i -> line[0] = Math.max(parsedObjects.get(i) instanceof ParsedInstruction ? i : 0, line[0]));
         return line[0];
     }
 
@@ -269,7 +262,7 @@ public class CodeInterpreter {
     private ArrayList<Integer> computeInstructionsPositions() {
         ArrayList<Integer> rtn = new ArrayList<>();
 
-        for (Map.Entry<Integer, ParsedObject> entry : instructions.entrySet()) {
+        for (Map.Entry<Integer, ParsedObject> entry : parsedObjects.entrySet()) {
             if (entry.getValue() instanceof ParsedInstruction) {
                 rtn.add(entry.getKey());
             }

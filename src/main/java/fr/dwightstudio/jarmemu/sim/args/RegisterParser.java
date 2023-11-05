@@ -22,8 +22,8 @@ public class RegisterParser implements ArgumentParser<Register> {
             case "R8" -> stateContainer.registers[8];
             case "R9" -> stateContainer.registers[9];
             case "R10" -> stateContainer.registers[10];
-            case "R11" -> stateContainer.registers[11];
-            case "R12" -> stateContainer.registers[12];
+            case "FP", "R11" -> stateContainer.registers[11];
+            case "IP", "R12" -> stateContainer.registers[12];
             case "SP", "R13" -> stateContainer.registers[13];
             case "LR", "R14" -> stateContainer.registers[14];
             case "PC", "R15" -> stateContainer.registers[15];

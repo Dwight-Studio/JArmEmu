@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
@@ -22,10 +23,7 @@ import org.reactfx.Subscription;
 
 import java.net.URL;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -38,7 +36,7 @@ import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
 public class EditorController implements Initializable {
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
-    private static final String[] KEYWORDS = getFromEnum(PseudoInstructions.values(), false);
+    private static final String[] KEYWORDS = ArrayUtils.addAll(getFromEnum(Directive.values(), false), getFromEnum(Section.values(), false));
     private static final String[] REGISTERS = getFromEnum(RegisterUtils.values(), false);
     private static final String[] CONDITIONS = getFromEnum(Condition.values(), true);
     private static final String[] DATA_MODES = getFromEnum(DataMode.values(), true);

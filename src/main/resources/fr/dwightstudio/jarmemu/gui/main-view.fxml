@@ -114,8 +114,8 @@
                                                             <Label text="R8" GridPane.rowIndex="8" />
                                                             <Label text="R9" GridPane.rowIndex="9" />
                                                             <Label text="R10" GridPane.rowIndex="10" />
-                                                            <Label text="R11" GridPane.rowIndex="11" />
-                                                            <Label text="R12" GridPane.rowIndex="12" />
+                                                            <Label text="(FP) R11" GridPane.rowIndex="11" />
+                                                            <Label text="(IP) R12" GridPane.rowIndex="12" />
                                                             <Label text="(SP) R13" GridPane.rowIndex="13" />
                                                             <Label text="(LR) R14" GridPane.rowIndex="14" />
                                                             <Label text="(PC) R15" GridPane.rowIndex="15" />

@@ -10,7 +10,6 @@ import java.util.Scanner;
 public class SourceScanner {
 
     private int currentInstructionValue;
-    private int currentInstructionPos;
     private final ArrayList<String> code;
 
     public SourceScanner(File file) throws FileNotFoundException {
@@ -18,7 +17,6 @@ public class SourceScanner {
         Scanner scanner = new Scanner(file);
         while (scanner.hasNextLine()) code.add(scanner.nextLine());
         this.currentInstructionValue = -1;
-        this.currentInstructionPos = 0;
     }
 
     public SourceScanner(String code) {
@@ -66,14 +64,4 @@ public class SourceScanner {
         printWriter.close();
     }
 
-    /**
-     * Compte la ligne courante comme instruction
-     */
-    public void countInstruction() {
-        currentInstructionPos++;
-    }
-
-    public int getCurrentInstructionPos() {
-        return currentInstructionPos;
-    }
 }

@@ -3,7 +3,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.regex.ASMParser;
-import fr.dwightstudio.jarmemu.sim.parse.regex.PseudoInstructionParser;
+import fr.dwightstudio.jarmemu.sim.parse.regex.DirectiveParser;
 import fr.dwightstudio.jarmemu.sim.parse.regex.SectionParser;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,10 +13,17 @@ public class RegexSourceParser implements SourceParser {
 
     private SourceScanner sourceScanner;
     protected Section currentSection;
+    private ASMParser asmParser;
+    private DirectiveParser directiveParser;
+    private SectionParser sectionParser;
 
     public RegexSourceParser(SourceScanner sourceScanner) {
         this.sourceScanner = sourceScanner;
         currentSection = Section.NONE;
+
+        asmParser = new ASMParser();
+        directiveParser = new DirectiveParser();
+        sectionParser = new SectionParser();
     }
 
     /**
@@ -45,12 +52,17 @@ public class RegexSourceParser implements SourceParser {
     @Override
     public HashMap<Integer, ParsedObject> parse() {
         HashMap<Integer, ParsedObject> rtn = new HashMap<>();
+        asmParser = new ASMParser();
+        directiveParser = new DirectiveParser();
+        sectionParser = new SectionParser();
 
         sourceScanner.goTo(-1);
         currentSection = Section.NONE;
         while (this.sourceScanner.hasNextLine()){
-            ParsedObject inst = parseOneLine();
-            if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
+            ParsedObject parsed = parseOneLine();
+            if (parsed != null) {
+                rtn.put(sourceScanner.getCurrentInstructionValue(), parsed);
+            }
         }
 
         return rtn;
@@ -68,14 +80,16 @@ public class RegexSourceParser implements SourceParser {
 
         if (line.isEmpty()) return null;
 
-        Section section = SectionParser.parseOneLine(sourceScanner, line);
+        Section section = sectionParser.parseOneLine(sourceScanner, line);
         if (section != null) {
             this.currentSection = section;
             return null;
         }
-        ParsedObject instruction = PseudoInstructionParser.parseOneLine(sourceScanner, line, section);
-        if (instruction != null) return instruction;
-        if (currentSection == Section.TEXT) return ASMParser.parseOneLine(sourceScanner, line);
+
+        ParsedObject directives = directiveParser.parseOneLine(sourceScanner, line, currentSection);
+        if (directives != null) return directives;
+
+        if (currentSection == Section.TEXT) return asmParser.parseOneLine(sourceScanner, line);
         return null;
     }
 

@@ -28,7 +28,7 @@ public class SectionParser {
      * @param line la ligne à parser
      * @return un ParsedObject à verifier.
      */
-    public static Section parseOneLine(SourceScanner codeScanner, String line) {
+    public Section parseOneLine(SourceScanner codeScanner, String line) {
         Section section;
 
         Matcher matcher = SECTION_PATTERN.matcher(line);

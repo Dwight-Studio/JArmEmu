@@ -26,7 +26,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private ExecutionThead daemon = null;
+    private ExecutionThead daemon;
 
     public ExecutionWorker(JArmEmuApplication application) {
         super(application);

@@ -14,7 +14,7 @@ public class StateContainer {
 
     // ASM
     public final HashMap<String, Integer> consts; // HashMap des constantes
-    public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par pseudo-instruction
+    public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     public final HashMap<String, Integer> labels; // HashMap des labels
 
     // Registers
