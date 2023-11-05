@@ -31,17 +31,19 @@ public enum Directive {
     /**
      * Calcul de la place en mémoire nécessaire pour cette directive
      * @param args la chaine d'arguments
+     * @param currentPos la position actuelle dans la mémoire
      */
-    public int computeDataLength(String args) throws SyntaxASMException {
-        return executor.computeDataLength(args);
+    public int computeDataLength(String args, int currentPos) throws SyntaxASMException {
+        return executor.computeDataLength(args, currentPos);
     }
 
     /**
      * Application de la directive
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      * @param args la chaine d'arguments
+     * @param currentPos     la position actuelle dans la mémoire
      */
-    public void apply(StateContainer stateContainer, String args) {
-        executor.apply(stateContainer, args);
+    public void apply(StateContainer stateContainer, String args, int currentPos) {
+        executor.apply(stateContainer, args, currentPos);
     }
 }

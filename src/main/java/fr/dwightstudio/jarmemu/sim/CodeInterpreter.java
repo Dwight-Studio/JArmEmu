@@ -3,11 +3,8 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
-import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 
 import java.util.ArrayList;
@@ -70,6 +67,17 @@ public class CodeInterpreter {
      * Applique toutes les directives, remplace les constantes, etc...
      */
     private void applyDirectives() {
+        // TODO: Faire les tests pour les directives (mais ça semble fonctionner comme prévu)
+
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                parsedDirective.apply(stateContainer);
+            } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                parsedDirectivePack.apply(stateContainer);
+            }
+        }
+
+        // TODO: Ajouter les pseudo-instruction '='
     }
 
     /**

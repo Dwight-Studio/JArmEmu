@@ -6,12 +6,12 @@ public class DirectiveExecutors {
 
     public static final DirectiveExecutor NOT_IMPLEMENTED = new DirectiveExecutor() {
         @Override
-        public void apply(StateContainer stateContainer, String args) {
+        public void apply(StateContainer stateContainer, String args, int currentPos) {
             throw new IllegalStateException("Directive not implemented");
         }
 
         @Override
-        public int computeDataLength(String args) {
+        public int computeDataLength(String args, int currentPos) {
             throw new IllegalStateException("Directive not implemented");
         }
     };

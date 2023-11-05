@@ -33,7 +33,7 @@ public class Value12Parser implements ArgumentParser<Integer> {
      * @param valueString la chaine à analyser
      * @return la valeur dans un entier
      */
-    public int generalParse(StateContainer stateContainer, @NotNull String valueString) {
+    public static int generalParse(StateContainer stateContainer, @NotNull String valueString) {
         if (valueString.startsWith("0B")) {
             valueString = valueString.substring(2).strip();
 
@@ -48,10 +48,10 @@ public class Value12Parser implements ArgumentParser<Integer> {
             return Integer.parseUnsignedInt(valueString, 8);
         } else {
             if (stateContainer != null) {
-                return stateContainer.eval(valueString, stateContainer.consts);
+                return stateContainer.evalWithConsts(valueString);
             } else {
                 stateContainer = new StateContainer();
-                return stateContainer.eval(valueString, stateContainer.consts);
+                return stateContainer.evalWithConsts(valueString);
             }
         }
     }

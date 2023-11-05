@@ -8,9 +8,10 @@ public class FillExecutor implements DirectiveExecutor {
      *
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      * @param args           la chaine d'arguments
+     * @param currentPos     la position actuelle dans la mémoire
      */
     @Override
-    public void apply(StateContainer stateContainer, String args) {
+    public void apply(StateContainer stateContainer, String args, int currentPos) {
         //TODO: Faire la directive Fill
         throw new IllegalStateException("Directive Fill not implemented");
     }
@@ -18,11 +19,12 @@ public class FillExecutor implements DirectiveExecutor {
     /**
      * Calcul de la taille prise en mémoire
      *
-     * @param args la chaine d'arguments
-     * @return
+     * @param args       la chaine d'arguments
+     * @param currentPos la position actuelle dans la mémoire
+     * @return la taille des données
      */
     @Override
-    public int computeDataLength(String args) {
+    public int computeDataLength(String args, int currentPos) {
         return 0;
     }
 }

@@ -20,13 +20,13 @@ public class DirectiveParser {
     private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
     private static final String ARGS_REGEX = "[^\n\\.]*";
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile(
-            "(?i)[ \t]*"
+            "(?i)"
                     + "("
-                    + "((?<LABEL>" + LABEL_REGEX + ")[ \t]*:)|"
-                    + "(\\.(?<DIRECTIVE>" + DIRECTIVE_REGEX + "))"
-                    + "[ \t]+(?<ARGS>" + ARGS_REGEX + ")"
+                    + "(^[ \t]*(?<LABEL>" + LABEL_REGEX + ")[ \t]*:)|"
+                    + "([ \t]*\\.(?<DIRECTIVE>" + DIRECTIVE_REGEX + "))"
+                    + "(([ \t]+(?<ARGS>" + ARGS_REGEX + "))|)"
                     + ")"
-                    + "[ \t]*(?-i)"
+                    + "(?-i)"
     );
 
     private int memoryPos;
@@ -61,7 +61,7 @@ public class DirectiveParser {
             } else if (directiveString != null && !directiveString.isEmpty()) {
                 try {
                     Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip());
+                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip().toUpperCase(), memoryPos);
                     directives.add(parsedDirective);
                     memoryPos += parsedDirective.computeDataLength();
                 } catch (IllegalArgumentException exception) {

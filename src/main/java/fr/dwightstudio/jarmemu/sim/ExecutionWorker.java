@@ -345,6 +345,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 return;
             }
 
+            updateGUI();
+
             logger.info("Done!");
         }
 

@@ -5,7 +5,6 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class StateContainer {
@@ -82,12 +81,31 @@ public class StateContainer {
         spsr.setData(0);
     }
 
-    public int eval(String expString, HashMap<String, Integer> map) {
+    public int evalWithConsts(String expString) {
         try {
-            Expression exp = new ExpressionBuilder(expString).variables(map.keySet()).build();
-            for (String str : map.keySet()) {
-                exp.setVariable(str, (double) map.get(str));
+            Expression exp = new ExpressionBuilder(expString).variables(consts.keySet()).build();
+
+            for (String str : consts.keySet()) {
+                exp.setVariable(str, (double) consts.get(str));
             }
+
+            return (int) exp.evaluate();
+        } catch (IllegalArgumentException exception) {
+            throw new SyntaxASMException("Malformed math expression '" + expString + "'");
+        }
+    }
+
+    public int evalWithAll(String expString) {
+        try {
+            Expression exp = new ExpressionBuilder(expString).variables(consts.keySet()).variables(data.keySet()).build();
+
+            for (String str : consts.keySet()) {
+                exp.setVariable(str, (double) consts.get(str));
+            }
+            for (String str : data.keySet()) {
+                exp.setVariable(str, (double) data.get(str));
+            }
+
             return (int) exp.evaluate();
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException("Malformed math expression '" + expString + "'");

@@ -8,16 +8,19 @@ import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.ref.PhantomReference;
 import java.util.function.Supplier;
 
 public class ParsedDirective extends ParsedObject {
 
     private final Directive directive;
     private final String args;
+    private final int currentPos;
 
-    public ParsedDirective(@NotNull Directive directive, @NotNull String args) {
+    public ParsedDirective(@NotNull Directive directive, @NotNull String args, int currentPos) {
         this.directive = directive;
         this.args = args;
+        this.currentPos = currentPos;
     }
 
     /**
@@ -25,7 +28,7 @@ public class ParsedDirective extends ParsedObject {
      */
     public int computeDataLength() {
         try {
-            return directive.computeDataLength(args);
+            return directive.computeDataLength(args, currentPos);
         } catch (SyntaxASMException e) {
             return 0;
         }
@@ -50,7 +53,7 @@ public class ParsedDirective extends ParsedObject {
      * Application de la directive
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
-    void apply(StateContainer stateContainer) {
-        directive.apply(stateContainer, this.args);
+    public void apply(StateContainer stateContainer) {
+        directive.apply(stateContainer, this.args, currentPos);
     }
 }

@@ -1,5 +1,7 @@
 package fr.dwightstudio.jarmemu.util;
 
+import java.nio.ByteBuffer;
+
 public class MathUtils {
 
     public static boolean hasCarry(int num1, int num2) {
@@ -16,14 +18,8 @@ public class MathUtils {
         return ((a ^ r) & (b ^ r)) < 0;
     }
 
-    public static int toInt(Byte byte3, Byte byte2, Byte byte1, Byte byte0) {
-        short short0 = (short) (((0xFF & byte3) << 8) | (0xFF & byte2));
-        short short1 = (short) (((0xFF & byte1) << 8) | (0xFF & byte0));
-        return toInt(short0, short1);
-    }
-
-    public static int toInt(short short1, short short0) {
-        return ((0xFFFF & short1) << 16) | (0xFFFF & short0);
+    public static int toWord(Byte byte3, Byte byte2, Byte byte1, Byte byte0) {
+        return ByteBuffer.wrap(new byte[]{byte3, byte2, byte1, byte0}).getInt();
     }
 
     public static String toBinString(byte b) {
