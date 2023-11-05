@@ -479,7 +479,7 @@
                                              <children>
                                                 <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
-                                                      <Label text="Stack address">
+                                                      <Label text="Stack address (Hex)">
                                                          <VBox.margin>
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>
@@ -492,7 +492,7 @@
                                                             <Insets bottom="20.0" />
                                                          </VBox.margin>
                                                       </AnchorPane>
-                                                      <Label layoutX="10.0" layoutY="10.0" text="Symbols address">
+                                                      <Label layoutX="10.0" layoutY="10.0" text="Symbols address (Hex)">
                                                          <VBox.margin>
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>

@@ -7,20 +7,20 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public enum Directive {
     // Consts
-    SET(DirectiveExecutors.NOT_IMPLEMENTED), EQU(DirectiveExecutors.NOT_IMPLEMENTED), EQUIV(DirectiveExecutors.NOT_IMPLEMENTED), EQV(DirectiveExecutors.NOT_IMPLEMENTED), // Définir une constante
-    GLOBAL(DirectiveExecutors.NOT_IMPLEMENTED), // Inutile pour l'interpréteur
+    SET(DirectiveExecutors.EQUIVALENT), EQU(DirectiveExecutors.EQUIVALENT), EQUIV(DirectiveExecutors.EQUIVALENT), EQV(DirectiveExecutors.EQUIVALENT), // Définir une constante
+    GLOBAL(DirectiveExecutors.GLOBAL), // Inutile pour l'interpréteur
 
     // Data
-    WORD(DirectiveExecutors.NOT_IMPLEMENTED), // Donnée sur 32bits
-    HALF(DirectiveExecutors.NOT_IMPLEMENTED), // Donnée sur 16bits
-    BYTE(DirectiveExecutors.NOT_IMPLEMENTED), // Donnée sur 8bits
-    SPACE(DirectiveExecutors.NOT_IMPLEMENTED), // Vide sur nbits
-    ASCII(DirectiveExecutors.NOT_IMPLEMENTED), // Chaîne de caractères
-    ASCIZ(DirectiveExecutors.NOT_IMPLEMENTED), // Chaîne de caractère finissant par '\0'
-    FILL(DirectiveExecutors.NOT_IMPLEMENTED), // Remplir n fois, un nombre de taille x, de valeur y
+    WORD(DirectiveExecutors.WORD), // Donnée sur 32bits
+    HALF(DirectiveExecutors.HALF), // Donnée sur 16bits
+    BYTE(DirectiveExecutors.BYTE), // Donnée sur 8bits
+    SPACE(DirectiveExecutors.SPACE), // Vide sur nbits
+    ASCII(DirectiveExecutors.ASCII), // Chaîne de caractères
+    ASCIZ(DirectiveExecutors.ASCIZ), // Chaîne de caractère finissant par '\0'
+    FILL(DirectiveExecutors.FILL), // Remplir n fois, un nombre de taille x, de valeur y
 
     // Other
-    ALIGN(DirectiveExecutors.NOT_IMPLEMENTED); // Alignement des données sur la grille des 4 bytes
+    ALIGN(DirectiveExecutors.ALIGN); // Alignement des données sur la grille des 4 bytes
 
     private final DirectiveExecutor executor;
 

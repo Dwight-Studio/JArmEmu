@@ -327,6 +327,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     logger.severe(ExceptionUtils.getStackTrace(e));
                     application.getSimulationMenuController().abortSimulation();
                 });
+                return;
             }
 
             application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
@@ -341,6 +342,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     logger.severe(ExceptionUtils.getStackTrace(e));
                     application.getSimulationMenuController().abortSimulation();
                 });
+                return;
             }
 
             logger.info("Done!");

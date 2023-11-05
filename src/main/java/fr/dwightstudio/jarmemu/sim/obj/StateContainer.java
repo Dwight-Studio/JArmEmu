@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -16,6 +17,7 @@ public class StateContainer {
     public final HashMap<String, Integer> consts; // HashMap des constantes
     public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     public final HashMap<String, Integer> labels; // HashMap des labels
+    public final ArrayList<String> globals; // Labels globaux
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -36,6 +38,7 @@ public class StateContainer {
         labels = new HashMap<>();
         consts = new HashMap<>();
         data = new HashMap<>();
+        globals = new ArrayList<>();
 
         // Initializing registers
         cpsr = new PSR();
