@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class EquivalentExecutor implements DirectiveExecutor {
@@ -12,8 +13,21 @@ public class EquivalentExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
-        //TODO: Faire la directive Equivalent
-        throw new IllegalStateException("Directive Equivalent not implemented");
+        String[] arg = args.split(",");
+
+        if (arg.length == 2) {
+            String symbol = arg[0];
+
+            if (!symbol.matches("[A-Za-z_0-9]+")) {
+                throw new SyntaxASMException("Invalid symbol name '" + symbol + "'");
+            } else {
+                int val = stateContainer.evalWithConsts(arg[1]);
+
+                stateContainer.consts.put(symbol, val);
+            }
+        } else {
+            throw new SyntaxASMException("Invalid arguments '" + args + "' for Equivalent directive");
+        }
     }
 
     /**

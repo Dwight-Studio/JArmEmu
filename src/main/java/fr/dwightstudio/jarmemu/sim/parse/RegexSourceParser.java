@@ -101,6 +101,7 @@ public class RegexSourceParser implements SourceParser {
     @Override
     public void setSymbolsAddress(int address) {
         this.symbolsAddress = address;
+        this.directiveParser.memoryOffset(address);
     }
 
     @Override
