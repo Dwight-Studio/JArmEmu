@@ -9,7 +9,29 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser.UpdatableRegister, Register[], Object, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, RegisterWithUpdateParser.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) {
-        //TODO: Faire l'instruction STM
-        throw new IllegalStateException("Instruction STM not implemented");
+        int length = arg2.length;
+        switch (updateMode) {
+            case FD, DB -> {
+                for (int i = 0; i < length; i++) {
+                    stateContainer.memory.putWord(arg1.getData() - 4 * i, arg2[length - i - 1].getData());
+                }
+            }
+            case FA, IB -> {
+                for (int i = 0; i < length; i++) {
+                    stateContainer.memory.putWord(arg1.getData() + 4 * i, arg2[length - i - 1].getData());
+                }
+            }
+            case ED, DA -> {
+                for (int i = 0; i < length; i++) {
+                    stateContainer.memory.putWord(arg1.getData() - 4 * (i + 1), arg2[length - i - 1].getData());
+                }
+            }
+            case EA, IA -> {
+                for (int i = 0; i < length; i++) {
+                    stateContainer.memory.putWord(arg1.getData() + 4 * (i + 1), arg2[length - i - 1].getData());
+                }
+            }
+        }
+        arg1.update();
     }
 }
