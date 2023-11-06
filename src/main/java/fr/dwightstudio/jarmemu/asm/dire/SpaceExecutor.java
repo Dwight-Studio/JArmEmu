@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class SpaceExecutor implements DirectiveExecutor {
@@ -13,6 +14,12 @@ public class SpaceExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         // Rien à faire, on veut juste laisser de la place
+
+        try {
+            Integer.parseInt(args);
+        } catch (Exception e) {
+            throw new SyntaxASMException("Invalid argument '" + args + "'");
+        }
     }
 
     /**

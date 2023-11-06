@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class GlobalExecutor implements DirectiveExecutor {
@@ -12,7 +13,11 @@ public class GlobalExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
-        stateContainer.globals.add(args);
+        if (args.matches("[A-Za-z_0-9]+")) {
+            stateContainer.globals.add(args);
+        } else {
+            throw new SyntaxASMException("Invalid argument '" + args + "'");
+        }
     }
 
     /**
