@@ -31,8 +31,8 @@ public class DirectiveParser {
 
     private int memoryPos;
 
-    public DirectiveParser(int offset) {
-        this.memoryPos = offset;
+    public DirectiveParser() {
+        this.memoryPos = 0;
     }
 
     /**

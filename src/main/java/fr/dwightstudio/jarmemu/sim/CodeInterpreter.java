@@ -69,7 +69,7 @@ public class CodeInterpreter {
         // TODO: Faire les tests pour les directives (mais ça semble fonctionner comme prévu)
 
         int off = getLastLine() + 1;
-        int pos = stateContainer.getSymbolsAddress();
+        int pos = 0;
 
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedDirective parsedDirective) {

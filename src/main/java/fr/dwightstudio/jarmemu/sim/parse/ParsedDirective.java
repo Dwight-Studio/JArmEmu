@@ -54,7 +54,8 @@ public class ParsedDirective extends ParsedObject {
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
     public void apply(StateContainer stateContainer) {
-        directive.apply(stateContainer, this.args, currentPos);
+        int symbolAddress = stateContainer.getSymbolsAddress();
+        directive.apply(stateContainer, this.args, currentPos + symbolAddress);
     }
 
     public int getNextPos() {

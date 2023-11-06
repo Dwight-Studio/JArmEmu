@@ -308,14 +308,4 @@ public class LegacySourceParser implements SourceParser {
 
         return new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
-
-    @Override
-    public void setSymbolsAddress(int address) {
-
-    }
-
-    @Override
-    public void setStackAddress(int address) {
-
-    }
 }

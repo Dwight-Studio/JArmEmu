@@ -40,7 +40,7 @@ public class ParsedLabel extends ParsedObject {
         if (directiveLabel) {
             if (container.data.get(this.name) == null) {
                 throw new IllegalStateException("Unable to verify directive label (incorrectly registered in the StateContainer)");
-            } else if (container.data.get(this.name) != this.pos) {
+            } else if (container.data.get(this.name) != this.pos + container.getSymbolsAddress()) {
                 return new AssemblyError(line, new SyntaxASMException("Directive label '" + this.name + "' is already defined"));
             }
         } else {
@@ -55,7 +55,7 @@ public class ParsedLabel extends ParsedObject {
 
     public void register(StateContainer stateContainer) {
         if (directiveLabel)  {
-            stateContainer.data.put(name.strip().toUpperCase(), pos);
+            stateContainer.data.put(name.strip().toUpperCase(), pos + stateContainer.getSymbolsAddress());
         } else {
             stateContainer.labels.put(name.strip().toUpperCase(), pos);
         }

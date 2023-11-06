@@ -294,8 +294,5 @@ public class JArmEmuApplication extends Application {
         } else {
             sourceParser = new RegexSourceParser(new SourceScanner(""));
         }
-
-        getSourceParser().setSymbolsAddress(getSettingsController().getSymbolsAddress());
-        getSourceParser().setStackAddress(getSettingsController().getStackAddress());
     }
 }

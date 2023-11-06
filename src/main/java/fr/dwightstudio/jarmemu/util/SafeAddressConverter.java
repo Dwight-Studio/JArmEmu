@@ -22,7 +22,7 @@ public class SafeAddressConverter extends StringConverter<Integer> {
     @Override
     public Integer fromString(String string) {
         try {
-            int n = Integer.parseInt(string, 16);
+            int n = Integer.parseUnsignedInt(string, 16);
             return n - (n % 4);
         } catch (NumberFormatException exception) {
             int c = value.getValue();
@@ -34,6 +34,6 @@ public class SafeAddressConverter extends StringConverter<Integer> {
     @Override
     public String toString(Integer integer) {
         int n = (integer == null ? 0 : integer);
-        return String.format(DATA_FORMAT, n);
+        return String.format(DATA_FORMAT, n).toUpperCase();
     }
 }
