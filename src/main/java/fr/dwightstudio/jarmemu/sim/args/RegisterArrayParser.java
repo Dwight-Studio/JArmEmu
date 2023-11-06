@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 // Correspond à "mreg"
 public class RegisterArrayParser implements ArgumentParser<Register[]> {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    protected final Logger logger = Logger.getLogger(getClass().getName());
 
     @Override
     public Register[] parse(@NotNull StateContainer stateContainer, @NotNull String string) {

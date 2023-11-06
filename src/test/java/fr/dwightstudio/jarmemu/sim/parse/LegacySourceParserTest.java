@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.Instruction;
@@ -19,7 +20,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LegacySourceParserTest {
+public class LegacySourceParserTest extends JArmEmuTest {
     @BeforeEach
     public void setup() {
 

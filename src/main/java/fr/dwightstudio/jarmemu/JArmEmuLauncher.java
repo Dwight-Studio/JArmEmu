@@ -14,8 +14,11 @@ public class JArmEmuLauncher {
     private static Logger logger = Logger.getLogger(JArmEmuLauncher.class.getName());
 
     public static void main(String[] args) throws IOException {
-        LogManager.getLogManager().readConfiguration(JArmEmuLauncher.class.getResourceAsStream("logging.properties"));
-
+        setUpLogger();
         JArmEmuApplication.main(args);
+    }
+
+    public static void setUpLogger() throws IOException {
+        LogManager.getLogManager().readConfiguration(JArmEmuLauncher.class.getResourceAsStream("logging.properties"));
     }
 }

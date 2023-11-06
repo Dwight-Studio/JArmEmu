@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.args;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.RegisterArrayParser;
 import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
@@ -10,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-class RegisterWithUpdateParserTest {
+class RegisterWithUpdateParserTest extends JArmEmuTest {
 
     private StateContainer stateContainer;
     private static final RegisterWithUpdateParser REGISTER_WITH_UPDATE = new RegisterWithUpdateParser();

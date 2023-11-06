@@ -1,10 +1,11 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class BXExecutorTest {
+public class BXExecutorTest extends JArmEmuTest {
 
     private StateContainer stateContainer;
     private BXExecutor bxExecutor;

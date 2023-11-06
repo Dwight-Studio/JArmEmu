@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.args.ArgumentParsers;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CMPExecutorTest {
+public class CMPExecutorTest extends JArmEmuTest {
 
     private StateContainer stateContainer;
     private CMPExecutor cmpExecutor;

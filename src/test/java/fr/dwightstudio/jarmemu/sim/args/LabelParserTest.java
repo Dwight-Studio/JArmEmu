@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.args;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.LabelParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -9,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class LabelParserTest {
+public class LabelParserTest extends JArmEmuTest {
 
     private StateContainer stateContainer;
     private static final LabelParser LABEL = new LabelParser();

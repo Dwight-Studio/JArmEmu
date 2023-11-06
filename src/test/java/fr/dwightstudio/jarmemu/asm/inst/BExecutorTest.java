@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.args.LabelParser;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class BExecutorTest {
+public class BExecutorTest extends JArmEmuTest {
 
     private StateContainer stateContainer;
     private BExecutor bExecutor;

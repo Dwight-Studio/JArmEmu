@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RegexSourceParserTest {
+public class RegexSourceParserTest extends JArmEmuTest {
 
     StateContainer container;
 

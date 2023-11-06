@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.args;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -11,7 +12,7 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AddressParserTest {
+class AddressParserTest extends JArmEmuTest {
     private StateContainer stateContainer;
     private static final AddressParser ADDRESS = new AddressParser();
     private static final ShiftParser SHIFT = new ShiftParser();
