@@ -8,7 +8,6 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class LSLExecutor implements InstructionExecutor<Register, Register, Integer, Object>  {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
-        //TODO: Faire l'instruction LSL
         arg1.setData(arg2.getData() << arg3);
 
         if (updateFlags) {
