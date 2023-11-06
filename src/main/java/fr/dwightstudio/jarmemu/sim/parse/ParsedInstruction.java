@@ -1,16 +1,16 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.args.AddressParser;
-import fr.dwightstudio.jarmemu.asm.args.ArgumentParser;
-import fr.dwightstudio.jarmemu.asm.args.RegisterWithUpdateParser;
+import fr.dwightstudio.jarmemu.sim.args.AddressParser;
+import fr.dwightstudio.jarmemu.sim.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class ParsedInstruction extends ParsedObject {
@@ -32,10 +32,8 @@ public class ParsedInstruction extends ParsedObject {
         this.args = new String[]{arg1, arg2, arg3, arg4};
     }
 
-    public AssemblyError verify(int line, Set<String> labels) {
-        StateContainer stateContainer = new StateContainer();
-
-        labels.forEach(s -> stateContainer.labels.put(s, 0));
+    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+        StateContainer stateContainer = stateSupplier.get();
 
         try {
             execute(stateContainer);

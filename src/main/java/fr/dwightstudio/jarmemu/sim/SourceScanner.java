@@ -37,6 +37,9 @@ public class SourceScanner {
         this.currentInstructionValue = lineNb;
     }
 
+    /**
+     * Déplace le curseur de lecture à la ligne spécifiée. Attention, invalide le comptage d'instruction !
+     */
     public String goToValue(int lineNb) {
         this.currentInstructionValue = lineNb;
         return this.code.get(this.currentInstructionValue);
@@ -60,4 +63,5 @@ public class SourceScanner {
         if (!last.strip().equals("")) printWriter.println("");
         printWriter.close();
     }
+
 }

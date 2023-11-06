@@ -114,8 +114,8 @@
                                                             <Label text="R8" GridPane.rowIndex="8" />
                                                             <Label text="R9" GridPane.rowIndex="9" />
                                                             <Label text="R10" GridPane.rowIndex="10" />
-                                                            <Label text="R11" GridPane.rowIndex="11" />
-                                                            <Label text="R12" GridPane.rowIndex="12" />
+                                                            <Label text="(FP) R11" GridPane.rowIndex="11" />
+                                                            <Label text="(IP) R12" GridPane.rowIndex="12" />
                                                             <Label text="(SP) R13" GridPane.rowIndex="13" />
                                                             <Label text="(LR) R14" GridPane.rowIndex="14" />
                                                             <Label text="(PC) R15" GridPane.rowIndex="15" />
@@ -479,7 +479,7 @@
                                              <children>
                                                 <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
-                                                      <Label text="Stack address">
+                                                      <Label text="Stack address (Hex)">
                                                          <VBox.margin>
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>
@@ -492,7 +492,7 @@
                                                             <Insets bottom="20.0" />
                                                          </VBox.margin>
                                                       </AnchorPane>
-                                                      <Label layoutX="10.0" layoutY="10.0" text="Symbols address">
+                                                      <Label layoutX="10.0" layoutY="10.0" text="Symbols address (Hex)">
                                                          <VBox.margin>
                                                             <Insets bottom="2.0" left="5.0" />
                                                          </VBox.margin>

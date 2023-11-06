@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.asm.args.ArgumentParsers;
+import fr.dwightstudio.jarmemu.sim.args.ArgumentParsers;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
 import javafx.scene.control.ScrollPane;
@@ -15,7 +15,8 @@ import java.util.logging.Logger;
 
 public class MemoryController extends AbstractJArmEmuModule {
 
-    protected static final String DATA_FORMAT = "%08x";
+    protected static final String HEX_FORMAT = "%08x";
+    protected static final String DEC_FORMAT = "%08d";
 
     protected static final int LINES_PER_PAGE = 512;
     protected static final int ADDRESS_PER_LINE = 4;
@@ -85,16 +86,16 @@ public class MemoryController extends AbstractJArmEmuModule {
         for (int i = 0; i < LINES_PER_PAGE; i++) {
             int add = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
 
-            memory[i][0].setText(String.format(DATA_FORMAT, add).toUpperCase());
+            memory[i][0].setText(String.format(HEX_FORMAT, add).toUpperCase());
 
             if (stateContainer != null) {
-                byte byte3 = stateContainer.memory.get(add);
-                byte byte2 = stateContainer.memory.get(add + 1);
-                byte byte1 = stateContainer.memory.get(add + 2);
-                byte byte0 = stateContainer.memory.get(add + 3);
+                byte byte3 = stateContainer.memory.getByte(add);
+                byte byte2 = stateContainer.memory.getByte(add + 1);
+                byte byte1 = stateContainer.memory.getByte(add + 2);
+                byte byte0 = stateContainer.memory.getByte(add + 3);
 
-                memory[i][1].setText(String.format(DATA_FORMAT, MathUtils.toInt(byte3, byte2, byte1, byte0)).toUpperCase());
-                memory[i][2].setText(String.format(DATA_FORMAT, MathUtils.toInt(byte3, byte2, byte1, byte0)));
+                memory[i][1].setText(String.format(HEX_FORMAT, MathUtils.toWord(byte3, byte2, byte1, byte0)).toUpperCase());
+                memory[i][2].setText(String.format(DEC_FORMAT, MathUtils.toWord(byte3, byte2, byte1, byte0)));
                 memory[i][3].setText(MathUtils.toBinString(byte3));
                 memory[i][4].setText(MathUtils.toBinString(byte2));
                 memory[i][5].setText(MathUtils.toBinString(byte1));

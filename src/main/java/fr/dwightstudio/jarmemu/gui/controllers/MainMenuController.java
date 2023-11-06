@@ -36,8 +36,6 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onOpen() {
-        if (!application.warnUnsaved()) return;
-
         logger.info("Locating new file to open...");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");

@@ -1,8 +1,10 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
-import java.util.Set;
+import java.util.HashMap;
+import java.util.function.Supplier;
 
 public abstract class ParsedObject {
 
@@ -11,10 +13,10 @@ public abstract class ParsedObject {
     /**
      * Vérifie la syntaxe de l'objet et renvoie les erreurs.
      *
-     * @param line le numéro de la ligne
-     * @param labels les étiquettes enregistrées
+     * @param line   le numéro de la ligne
+     * @param stateSupplier un fournisseur de conteneur d'état
      * @return les erreurs détectées
      */
-    public abstract AssemblyError verify(int line, Set<String> labels);
+    public abstract AssemblyError verify(int line, Supplier<StateContainer> stateSupplier);
 
 }

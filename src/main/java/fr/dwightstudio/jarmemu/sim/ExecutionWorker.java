@@ -26,7 +26,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private ExecutionThead daemon = null;
+    private ExecutionThead daemon;
 
     public ExecutionWorker(JArmEmuApplication application) {
         super(application);
@@ -142,11 +142,13 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private int last;
         private int line;
         private int next;
+        private long updateGUITimestamp;
 
         public ExecutionThead(JArmEmuApplication application) {
             super("CodeExecutorDeamon");
 
             this.application = application;
+            updateGUITimestamp = System.currentTimeMillis();
 
             setDaemon(true);
             start();
@@ -214,6 +216,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 });
                 doContinue = false;
             }
+
+            // TODO: Vérifier si les flags doivent être persistants
         }
 
         private void stepIntoTask() {
@@ -245,7 +249,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
             }
 
-            if (!shouldUpdateGUI()) updateGUI();
+            if (isIntervalTooShort()) updateGUI();
             logger.info("Done!");
         }
 
@@ -266,7 +270,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
             }
 
-            if (!shouldUpdateGUI()) updateGUI();
+            if (isIntervalTooShort()) updateGUI();
             logger.info("Done!");
         }
 
@@ -286,7 +290,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
-                    if (!shouldUpdateGUI()) application.getEditorController().clearLineMarking();
+                    if (isIntervalTooShort()) application.getEditorController().clearLineMarking();
                     Platform.runLater(() -> {
                         if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
                         application.getEditorController().markLine(line, LineStatus.EXECUTED);
@@ -294,11 +298,19 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     });
                 }
             }
+
+            updateGUITimestamp = System.currentTimeMillis();
         }
 
         private void prepareTask() {
             nextTask.set(IDLE);
             application.getSourceParser().setSourceScanner(new SourceScanner(application.getEditorController().getText()));
+
+            synchronized (this) {
+                try {
+                    this.wait(50);
+                } catch (InterruptedException ignored) {}
+            }
 
             try {
                 application.getCodeInterpreter().load(application.getSourceParser());
@@ -315,6 +327,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     logger.severe(ExceptionUtils.getStackTrace(e));
                     application.getSimulationMenuController().abortSimulation();
                 });
+                return;
             }
 
             application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
@@ -329,13 +342,20 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     logger.severe(ExceptionUtils.getStackTrace(e));
                     application.getSimulationMenuController().abortSimulation();
                 });
+                return;
             }
+
+            updateGUI();
 
             logger.info("Done!");
         }
 
+        private boolean isIntervalTooShort() {
+            return waitingPeriod < UPDATE_THRESHOLD;
+        }
+
         private boolean shouldUpdateGUI() {
-            return waitingPeriod >= UPDATE_THRESHOLD;
+            return !isIntervalTooShort() || (System.currentTimeMillis() - updateGUITimestamp) > 50;
         }
     }
 }

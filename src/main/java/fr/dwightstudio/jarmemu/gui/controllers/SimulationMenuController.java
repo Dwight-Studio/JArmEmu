@@ -4,12 +4,16 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
 import java.util.logging.Logger;
 
 public class SimulationMenuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
+
+    private Alert loadingAlert;
 
     public SimulationMenuController(JArmEmuApplication application) {
         super(application);
@@ -21,6 +25,9 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
     public void onSimulate() {
         getController().simulate.setDisable(true);
         getEditorController().clearNotifs();
+
+        getEditorController().addNotif("Parsing in progress...", "Please wait, this can take up to a few seconds.", "info");
+
         getExecutionWorker().revive();
         getExecutionWorker().prepare();
     }
@@ -30,6 +37,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * @param errors les erreurs rencontrées lors de l'analyse du code
      */
     public void launchSimulation(AssemblyError[] errors) {
+        getEditorController().clearNotifs();
+
         if (errors.length == 0 && getCodeInterpreter().getInstructionCount() != 0) {
             getEditorController().clearLineMarking();
             getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
@@ -60,6 +69,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode de rappel si la préparation de la simulation a échoué
      */
     public void abortSimulation() {
+        getEditorController().clearNotifs();
+        getEditorController().addNotif("Parsing error: ", "Exceptions prevented the code from being parsed. See console for more details.", "danger");
         getController().simulate.setDisable(false);
     }
 

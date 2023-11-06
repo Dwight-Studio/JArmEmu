@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.Section;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
 import java.util.regex.Matcher;
@@ -28,7 +28,7 @@ public class SectionParser {
      * @param line la ligne à parser
      * @return un ParsedObject à verifier.
      */
-    public static Section parseOneLine(SourceScanner codeScanner, String line) {
+    public Section parseOneLine(SourceScanner codeScanner, String line) {
         Section section;
 
         Matcher matcher = SECTION_PATTERN.matcher(line);

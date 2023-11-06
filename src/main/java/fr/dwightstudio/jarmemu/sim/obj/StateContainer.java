@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class StateContainer {
@@ -13,8 +14,9 @@ public class StateContainer {
 
     // ASM
     public final HashMap<String, Integer> consts; // HashMap des constantes
-    public final HashMap<String, Integer> data; // HashMap des données
+    public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     public final HashMap<String, Integer> labels; // HashMap des labels
+    public final ArrayList<String> globals; // Labels globaux
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -35,13 +37,14 @@ public class StateContainer {
         labels = new HashMap<>();
         consts = new HashMap<>();
         data = new HashMap<>();
+        globals = new ArrayList<>();
 
         // Initializing registers
-        this.registers = new Register[REGISTER_NUMBER];
-        clearRegisters();
-
         cpsr = new PSR();
         spsr = new PSR();
+
+        this.registers = new Register[REGISTER_NUMBER];
+        clearRegisters();
 
         // Initializing memory
         this.memory = new MemoryAccessor();
@@ -51,18 +54,58 @@ public class StateContainer {
         this(DEFAULT_STACK_ADDRESS,DEFAULT_SYMBOLS_ADDRESS);
     }
 
+    public StateContainer(StateContainer stateContainer) {
+        this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
+        this.consts.putAll(stateContainer.consts);
+        this.data.putAll(stateContainer.data);
+        this.labels.putAll(stateContainer.labels);
+
+        for (int i = 0; i < REGISTER_NUMBER; i++) {
+            registers[i].setData(stateContainer.registers[i].getData());
+        }
+
+        cpsr.setData(stateContainer.cpsr.getData());
+        spsr.setData(stateContainer.spsr.getData());
+    }
+
     public void clearRegisters() {
         for (int i = 0; i < REGISTER_NUMBER; i++) {
-            registers[i] = new Register();
+            if (registers[i] != null) {
+                registers[i].setData(0);
+            } else {
+                registers[i] = new Register();
+            }
+        }
+
+        cpsr.setData(0);
+        spsr.setData(0);
+    }
+
+    public int evalWithConsts(String expString) {
+        try {
+            Expression exp = new ExpressionBuilder(expString).variables(consts.keySet()).build();
+
+            for (String str : consts.keySet()) {
+                exp.setVariable(str, (double) consts.get(str));
+            }
+
+            return (int) exp.evaluate();
+        } catch (IllegalArgumentException exception) {
+            throw new SyntaxASMException("Malformed math expression '" + expString + "'");
         }
     }
 
-    public int eval(String expString, HashMap<String, Integer> map) {
+    public int evalWithAll(String expString) {
         try {
-            Expression exp = new ExpressionBuilder(expString).variables(map.keySet()).build();
-            for (String str : map.keySet()) {
-                exp.setVariable(str, (double) map.get(str));
+            Expression exp = new ExpressionBuilder(expString).variables(consts.keySet()).variables(data.keySet()).build();
+
+            for (String str : consts.keySet()) {
+                exp.setVariable(str, (double) consts.get(str));
             }
+            for (String str : data.keySet()) {
+                exp.setVariable(str, (double) data.get(str));
+            }
+
             return (int) exp.evaluate();
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException("Malformed math expression '" + expString + "'");

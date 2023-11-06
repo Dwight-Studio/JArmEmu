@@ -54,6 +54,12 @@ public class ASMParser {
             "(?<LABEL>" + LABEL_REGEX + ")[ \t]*:"
     );
 
+    private int instructionPos;
+
+    public ASMParser() {
+        this.instructionPos = 0;
+    }
+
     /**
      * Lecture d'une ligne avec assembler
      *
@@ -61,7 +67,7 @@ public class ASMParser {
      * @param line la ligne à parser
      * @return un ParsedObject à verifier.
      */
-    public static ParsedObject parseOneLine(SourceScanner sourceScanner, String line) {
+    public ParsedObject parseOneLine(SourceScanner sourceScanner, String line) {
         Instruction instruction;
         boolean updateFlags = false;
         DataMode dataMode = null;
@@ -76,7 +82,7 @@ public class ASMParser {
         Matcher matcher = LABEL_PATTERN.matcher(line);
 
         if (matcher.find()) {
-            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(sourceScanner.getCurrentInstructionValue()));
+            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(instructionPos));
         }
 
         matcher = INSTRUCTION_PATTERN.matcher(line);
@@ -122,6 +128,7 @@ public class ASMParser {
                 throw new SyntaxASMException("Unknown update mode '" + updateString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
 
+            instructionPos++;
         } else {
             throw new SyntaxASMException("Unexpected statement '" + line + "', at line " + sourceScanner.getCurrentInstructionValue());
         }
