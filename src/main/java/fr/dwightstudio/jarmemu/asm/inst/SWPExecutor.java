@@ -8,7 +8,19 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class SWPExecutor implements InstructionExecutor<Register, Register, Integer, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
-        //TODO: Faire l'instruction SWP
-        throw new IllegalStateException("Instruction SWP not implemented");
+        switch (dataMode){
+            case null -> {
+                arg1.setData(stateContainer.memory.getWord(arg3));
+                stateContainer.memory.putWord(arg3, arg2.getData());
+            }
+            case HALF_WORD -> {
+                arg1.setData(stateContainer.memory.getHalf(arg3));
+                stateContainer.memory.putHalf(arg3, (short) arg2.getData());
+            }
+            case BYTE -> {
+                arg1.setData(stateContainer.memory.getByte(arg3));
+                stateContainer.memory.putByte(arg3, (byte) arg2.getData());
+            }
+        }
     }
 }
