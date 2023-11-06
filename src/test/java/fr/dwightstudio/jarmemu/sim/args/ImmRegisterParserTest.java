@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.args;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.Value8OrRegisterParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,9 +8,9 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class Value8OrRegisterParserTest {
+public class ImmRegisterParserTest {
     private StateContainer stateContainer;
-    private static final Value8OrRegisterParser VALUE_OR_REGISTER = new Value8OrRegisterParser();
+    private static final ImmOrRegisterParser VALUE_OR_REGISTER = new ImmOrRegisterParser();
 
     @BeforeEach
     public void setUp() {

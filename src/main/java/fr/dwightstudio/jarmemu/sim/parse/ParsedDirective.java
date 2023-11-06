@@ -8,7 +8,6 @@ import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.ref.PhantomReference;
 import java.util.function.Supplier;
 
 public class ParsedDirective extends ParsedObject {
@@ -16,22 +15,23 @@ public class ParsedDirective extends ParsedObject {
     private final Directive directive;
     private final String args;
     private final int currentPos;
+    private final int nextPos;
+    private boolean generated;
 
     public ParsedDirective(@NotNull Directive directive, @NotNull String args, int currentPos) {
         this.directive = directive;
         this.args = args;
         this.currentPos = currentPos;
-    }
 
-    /**
-     * Calcul de la place en mémoire nécessaire pour cette directive
-     */
-    public int computeDataLength() {
+        int tempNextPos;
+
         try {
-            return directive.computeDataLength(args, currentPos);
+            tempNextPos = currentPos + directive.computeDataLength(args, currentPos);
         } catch (SyntaxASMException e) {
-            return 0;
+            tempNextPos = currentPos;
         }
+
+        this.nextPos = tempNextPos;
     }
 
     @Override
@@ -42,7 +42,7 @@ public class ParsedDirective extends ParsedObject {
             apply(stateContainer);
             return null;
         } catch (SyntaxASMException exception) {
-            return new AssemblyError(line, exception);
+            return new AssemblyError(line, exception, this);
         } finally {
             AddressParser.reset(stateContainer);
             RegisterWithUpdateParser.reset(stateContainer);
@@ -55,5 +55,21 @@ public class ParsedDirective extends ParsedObject {
      */
     public void apply(StateContainer stateContainer) {
         directive.apply(stateContainer, this.args, currentPos);
+    }
+
+    public int getNextPos() {
+        return nextPos;
+    }
+
+    public Directive getDirective() {
+        return directive;
+    }
+
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    public void setGenerated() {
+        this.generated = true;
     }
 }

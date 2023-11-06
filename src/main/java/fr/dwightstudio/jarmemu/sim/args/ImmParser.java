@@ -5,31 +5,33 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-// Correspond à "imm8"
-public class Value8Parser implements ArgumentParser<Integer> {
+// Correspond à "imm12"
+public class ImmParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         try {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1).strip();
 
-                int rtn = ArgumentParsers.VALUE_12.generalParse(stateContainer, valueString);
-                if (Integer.numberOfLeadingZeros(rtn) < 24)
-                    throw new SyntaxASMException("Overflowing 8bits value '" + string + "'");
+                int rtn = RotatedImmParser.generalParse(stateContainer, valueString);
+                if (Integer.numberOfLeadingZeros(rtn) < 20)
+                    throw new SyntaxASMException("Overflowing 12bits value '" + string + "'");
                 return rtn;
 
             } else if (string.startsWith("=")) {
                 throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Instruction");
+            } else if (string.startsWith("*")) {
+                    throw new SyntaxASMException("Detecting Pseudo-Instruction '" + string + "'");
             } else {
-                throw new SyntaxASMException("Invalid 8bits immediate value '" + string + "'");
+                throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "'");
             }
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Invalid 8bits immediate value '" + string + "' (" + exception.getMessage() + ")");
+            throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "' (" + exception.getMessage() + ")");
         }
     }
 
     @Override
     public Integer none() {
-        throw new BadArgumentsASMException("missing immediate (8bits)");
+        throw new BadArgumentsASMException("missing immediate (12bits)");
     }
 }

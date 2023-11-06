@@ -9,19 +9,24 @@ import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import javax.swing.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 public class ParsedInstruction extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private final Instruction instruction;
-    private final String[] args;
+    private final String[] originalArgs;
+    private final String[] processedArgs;
     private final Condition condition;
     private final boolean updateFlags;
     private final DataMode dataMode;
     private final UpdateMode updateMode;
+
+    private final Pattern PSEUDO_OP_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]\\{\\}]+)");
 
     public ParsedInstruction(@NotNull Instruction instruction, @NotNull Condition conditionExec, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) {
         this.instruction = instruction;
@@ -29,7 +34,8 @@ public class ParsedInstruction extends ParsedObject {
         this.updateFlags = updateFlags;
         this.dataMode = dataMode;
         this.updateMode = updateMode;
-        this.args = new String[]{arg1, arg2, arg3, arg4};
+        this.originalArgs = new String[]{arg1, arg2, arg3, arg4};
+        this.processedArgs = new String[]{arg1, arg2, arg3, arg4};
     }
 
     public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
@@ -39,7 +45,7 @@ public class ParsedInstruction extends ParsedObject {
             execute(stateContainer);
             return null;
         } catch (SyntaxASMException exception) {
-            return new AssemblyError(line, exception);
+            return new AssemblyError(line, exception, this);
         } finally {
             AddressParser.reset(stateContainer);
             RegisterWithUpdateParser.reset(stateContainer);
@@ -53,8 +59,8 @@ public class ParsedInstruction extends ParsedObject {
 
             try {
                 for (int i = 0; i < 4; i++) {
-                    if (args[i] != null) {
-                        parsedArgs[i] = argParsers[i].parse(stateContainer, args[i]);
+                    if (processedArgs[i] != null) {
+                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
                     } else {
                         parsedArgs[i] = argParsers[i].none();
                     }
@@ -62,8 +68,8 @@ public class ParsedInstruction extends ParsedObject {
             } catch (SyntaxASMException exception) {
                 try {
                     for (int i = 1; i < 4; i++) {
-                        if (args[i-1] != null) {
-                            parsedArgs[i] = argParsers[i].parse(stateContainer, args[i-1]);
+                        if (processedArgs[i-1] != null) {
+                            parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i-1]);
                         } else {
                             parsedArgs[i] = argParsers[i].none();
                         }
@@ -80,10 +86,10 @@ public class ParsedInstruction extends ParsedObject {
             Object[] parsedArgs = new Object[4];
 
             for (int i = 0; i < 4; i++) {
-                if (args[i] != null) {
-                    parsedArgs[i] = argParsers[i].parse(stateContainer, args[i]);
+                if (processedArgs[i] != null) {
+                    parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
                 } else {
-                    parsedArgs[i] = argParsers[i].none();
+                    parsedArgs[i] = argParsers[i].none(i + 1);
                 }
             }
 
@@ -130,13 +136,13 @@ public class ParsedInstruction extends ParsedObject {
         }
 
         for (int i = 0 ; i < 4 ; i++) {
-            if (pInst.args[i] == null) {
-                if (this.args[i] != null) {
+            if (pInst.processedArgs[i] == null) {
+                if (this.processedArgs[i] != null) {
                     if (VERBOSE) logger.info("Difference: Arg" + (1 + i) + " (Null)");
                     return false;
                 }
             } else {
-                if (!(pInst.args[i].equalsIgnoreCase(this.args[i]))) {
+                if (!(pInst.processedArgs[i].equalsIgnoreCase(this.processedArgs[i]))) {
                     if (VERBOSE) logger.info("Difference: Arg" + (1 + i));
                     return false;
                 }
@@ -147,5 +153,26 @@ public class ParsedInstruction extends ParsedObject {
 
     public Instruction getInstruction() {
         return instruction;
+    }
+
+    public ParsedDirectivePack convertValueToDirective(StateContainer stateContainer, int pos) {
+        ParsedDirectivePack pack = new ParsedDirectivePack();
+        final int[] off = {0};
+
+        for (int i = 0; i < originalArgs.length; i++) {
+            if (originalArgs[i] != null) {
+                String valueString = originalArgs[i];
+                processedArgs[i] = PSEUDO_OP_PATTERN.matcher(valueString).replaceAll(matchResult -> {
+                    int value = stateContainer.evalWithAll(matchResult.group("VALUE"));
+                    ParsedDirective dir = new ParsedDirective(Directive.WORD, Integer.toString(value), pos + off[0]);
+                    dir.setGenerated();
+                    pack.add(dir);
+                    off[0] += 4;
+                    return "*" + (pos + off[0] - 4);
+                });
+            }
+        }
+
+        return pack;
     }
 }

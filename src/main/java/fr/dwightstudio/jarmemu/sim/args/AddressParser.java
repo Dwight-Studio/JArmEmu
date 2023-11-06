@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 // Correspond à "mem", à utiliser avec Value12OrRegisterParser et ShiftParser
 public class AddressParser implements ArgumentParser<AddressParser.UpdatableInteger> {
-//TODO: corriger ça
     protected static HashMap<StateContainer, Integer> updateValue = new HashMap<>();
 
     public static void reset(StateContainer stateContainer) {
@@ -19,7 +18,10 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
 
     @Override
     public UpdatableInteger parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        if (!string.startsWith("[")) {
+        if (string.startsWith("*")) {
+            int rtn = RotatedImmParser.generalParse(stateContainer, string.substring(1));
+            return new UpdatableInteger(rtn, stateContainer, false, false, null);
+        } else if (!string.startsWith("[")) {
             throw new SyntaxASMException("Invalid address '" + string + "'");
         }
 
@@ -44,7 +46,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
 
             } else if (mems.length == 2) {
                 if (mems[1].startsWith("#")) {
-                    return new UpdatableInteger(reg.getData() + ArgumentParsers.VALUE_12.parse(stateContainer, mems[1]),
+                    return new UpdatableInteger(reg.getData() + ArgumentParsers.IMM.parse(stateContainer, mems[1]),
                             stateContainer,
                             false,
                             updateNow,
@@ -99,6 +101,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
         }
 
         public void update() {
+            if (register == null) return;
             if (update && updateValue.containsKey(stateContainer)) register.setData(updateValue.get(stateContainer));
             update = false;
         }

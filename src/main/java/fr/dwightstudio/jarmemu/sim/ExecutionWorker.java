@@ -330,10 +330,12 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 return;
             }
 
-            application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
-            application.getCodeInterpreter().restart();
-
             try {
+                line = next = last = 0;
+                application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
+                application.getCodeInterpreter().restart();
+                application.getEditorController().clearLineMarking();
+
                 AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
             } catch (Exception e) {

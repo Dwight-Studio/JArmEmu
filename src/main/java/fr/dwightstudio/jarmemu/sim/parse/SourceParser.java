@@ -35,4 +35,8 @@ public interface SourceParser {
      * @return un ParsedObject non vérifié
      */
     public ParsedObject parseOneLine();
+
+    public void setSymbolsAddress(int address);
+
+    public void setStackAddress(int address);
 }

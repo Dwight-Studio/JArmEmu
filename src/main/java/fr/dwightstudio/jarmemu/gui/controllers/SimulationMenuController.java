@@ -57,7 +57,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         } else {
             getController().simulate.setDisable(false);
             if (getCodeInterpreter().getInstructionCount() == 0) {
-                getEditorController().addNotif("Parsing error: ", "No instructions detected", "danger");
+                getEditorController().addNotif("Simulation error: ", "No instructions detected", "danger");
             }
             for (AssemblyError error : errors) {
                 getEditorController().addError(error);

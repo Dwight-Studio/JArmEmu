@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.Value12Parser;
+import fr.dwightstudio.jarmemu.sim.args.RotatedImmParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class WordExecutor implements DirectiveExecutor {
@@ -15,7 +15,7 @@ public class WordExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         try {
-            int data = Value12Parser.generalParse(stateContainer, args);
+            int data = RotatedImmParser.generalParse(stateContainer, args);
             stateContainer.memory.putWord(currentPos, data);
         } catch (NumberFormatException exception) {
             throw new SyntaxASMException("Invalid Word value '" + args + "'");

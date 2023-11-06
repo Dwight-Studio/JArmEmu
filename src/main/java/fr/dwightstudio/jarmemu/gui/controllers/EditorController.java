@@ -6,6 +6,8 @@ import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -168,8 +170,19 @@ public class EditorController implements Initializable {
      * @param error l'erreur en question
      */
     protected void addError(AssemblyError error) {
-        addNotif(error.getException().getTitle(), " " + error.getException().getMessage() + " at line " + error.getLine(), "danger");
+        if (error.getObject() != null) {
+            if (error.getObject() instanceof ParsedInstruction instruction) {
+                logger.info("Error parsing " + instruction.getInstruction().toString() + " at line " + error.getLine());
+            } else if (error.getObject() instanceof ParsedDirective directive) {
+                logger.info("Error parsing " + directive.getDirective().toString() + " at line " + error.getLine());
+            } else {
+                logger.info("Error parsing code at line " + error.getLine());
+            }
+        } else {
+            logger.info("Error parsing code at line " + error.getLine());
+        }
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(error.getException()));
+        addNotif(error.getException().getTitle(), " " + error.getException().getMessage() + " at line " + error.getLine(), "danger");
     }
 
     /**

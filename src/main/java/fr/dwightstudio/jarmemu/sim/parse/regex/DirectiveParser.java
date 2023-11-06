@@ -31,8 +31,8 @@ public class DirectiveParser {
 
     private int memoryPos;
 
-    public DirectiveParser() {
-        this.memoryPos = 0;
+    public DirectiveParser(int offset) {
+        this.memoryPos = offset;
     }
 
     /**
@@ -63,7 +63,7 @@ public class DirectiveParser {
                     Directive directive = Directive.valueOf(directiveString.toUpperCase());
                     ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip().toUpperCase(), memoryPos);
                     directives.add(parsedDirective);
-                    memoryPos += parsedDirective.computeDataLength();
+                    memoryPos = parsedDirective.getNextPos();
                 } catch (IllegalArgumentException exception) {
                     if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "' at line " + sourceScanner.getCurrentInstructionValue());
                 }
@@ -75,6 +75,10 @@ public class DirectiveParser {
         }
 
         return directives.close();
+    }
+
+    public void memoryOffset(int memoryPos) {
+        this.memoryPos = memoryPos;
     }
 
 }

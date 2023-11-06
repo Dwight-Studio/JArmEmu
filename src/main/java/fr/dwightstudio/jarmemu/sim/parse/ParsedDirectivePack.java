@@ -70,17 +70,41 @@ public class ParsedDirectivePack extends ParsedObject {
         }
     }
 
-    /**
-     * Calcul de la place en mémoire nécessaire pour ces directives
-     */
-    public int computeDataLength() {
-        int length = 0;
-        for (ParsedObject directive : directives) {
-            if (directive instanceof ParsedDirective dir) {
-                length += dir.computeDataLength();
+    public int getNextPos() {
+        int pos = 0;
+        for (ParsedObject object : directives) {
+            if (object instanceof ParsedDirective directive) {
+                if (!directive.isGenerated()) pos = Math.max(directive.getNextPos(), pos);
             }
         }
 
-        return length;
+        return pos;
+    }
+
+    public int getGeneratedNextPos() {
+        int pos = 0;
+        for (ParsedObject object : directives) {
+            if (object instanceof ParsedDirective directive) {
+                if (directive.isGenerated()) pos = Math.max(directive.getNextPos(), pos);
+            }
+        }
+
+        return pos;
+    }
+
+    public boolean isEmpty() {
+        return directives.isEmpty();
+    }
+
+    public boolean isGenerated() {
+        boolean flag = false;
+
+        for (ParsedObject object : directives) {
+            if (object instanceof ParsedDirective directive) {
+                flag = flag || directive.isGenerated();
+            }
+        }
+
+        return flag;
     }
 }

@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.args;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.Value12Parser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class Value12ParserTest {
+public class RotatedImmParserTest {
     // TODO: Refaire tous les tests
     private StateContainer stateContainer;
-    private static final Value12Parser VALUE12 = new Value12Parser();
+    private static final RotatedImmParser VALUE12 = new RotatedImmParser();
 
     @BeforeEach
     void setUp() {

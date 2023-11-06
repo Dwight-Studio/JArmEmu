@@ -17,12 +17,12 @@ public class MemoryAccessor {
     }
 
     public short getHalf(int add) {
-        byte[] bytes = new byte[]{memory.get(add), memory.get(add + 1)};
+        byte[] bytes = new byte[]{getByte(add), getByte(add + 1)};
         return ByteBuffer.wrap(bytes).getShort();
     }
 
     public int getWord(int add) {
-        byte[] bytes = new byte[]{memory.get(add), memory.get(add + 1), memory.get(add + 2), memory.get(add + 3)};
+        byte[] bytes = new byte[]{getByte(add), getByte(add + 1), getByte(add + 2), getByte(add + 3)};
         return ByteBuffer.wrap(bytes).getInt();
     }
 

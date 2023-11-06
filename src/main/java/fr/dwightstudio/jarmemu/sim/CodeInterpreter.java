@@ -46,14 +46,13 @@ public class CodeInterpreter {
     }
 
     /**
-     * Verifie toutes les ParsedInstructions et ParsedDirective
+     * Vérifie toutes les ParsedInstructions et ParsedDirective
+     *
+     * @apiNote Doit être appelé après un resetState
      * @return les erreurs si il y en a
      */
     public AssemblyError[] verifyAll() {
         ArrayList<AssemblyError> rtn = new ArrayList<>();
-
-        applyDirectives();
-        registerLabels();
 
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             AssemblyError e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
@@ -69,15 +68,49 @@ public class CodeInterpreter {
     private void applyDirectives() {
         // TODO: Faire les tests pour les directives (mais ça semble fonctionner comme prévu)
 
+        int off = getLastLine() + 1;
+        int pos = stateContainer.getSymbolsAddress();
+
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedDirective parsedDirective) {
-                parsedDirective.apply(stateContainer);
+                if (!parsedDirective.isGenerated()) {
+                    parsedDirective.apply(stateContainer);
+                    pos = Math.max(parsedDirective.getNextPos(), pos);
+                }
             } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                parsedDirectivePack.apply(stateContainer);
+                if (!parsedDirectivePack.isGenerated()) {
+                    parsedDirectivePack.apply(stateContainer);
+                    pos = Math.max(parsedDirectivePack.getNextPos(), pos);
+                }
             }
         }
 
-        // TODO: Ajouter les pseudo-instruction '='
+        HashMap<Integer, ParsedObject> temp = new HashMap<>();
+
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
+                ParsedDirectivePack pack = parsedInstruction.convertValueToDirective(stateContainer, pos);
+                if (!pack.isEmpty()) {
+                    pos = pack.getGeneratedNextPos();
+                    temp.put(off, pack.close());
+                    off++;
+                }
+            }
+        }
+
+        parsedObjects.putAll(temp);
+
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                if (parsedDirective.isGenerated()) {
+                    parsedDirective.apply(stateContainer);
+                }
+            } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                if (parsedDirectivePack.isGenerated()) {
+                    parsedDirectivePack.apply(stateContainer);
+                }
+            }
+        }
     }
 
     /**

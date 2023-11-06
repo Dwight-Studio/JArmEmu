@@ -5,8 +5,8 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-// Correspond à "imm12" TODO: Ajouter le Barrel Shifting
-public class Value12Parser implements ArgumentParser<Integer> {
+// Correspond à "imm8"
+public class RotatedImmParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         try {
@@ -19,10 +19,10 @@ public class Value12Parser implements ArgumentParser<Integer> {
             } else if (string.startsWith("=")) {
                 throw new IllegalArgumentException("Detecting unprocessed '=' Pseudo-Instruction");
             } else {
-                throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "'");
+                throw new SyntaxASMException("Invalid 8bits rotated immediate value '" + string + "'");
             }
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Invalid 12bits immediate value '" + string + "' (" + exception.getMessage() + ")");
+            throw new SyntaxASMException("Invalid 8bits rotated immediate value '" + string + "' (" + exception.getMessage() + ")");
         }
     }
 

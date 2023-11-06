@@ -68,7 +68,7 @@ public class MemoryController extends AbstractJArmEmuModule {
         getController().addressField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 try {
-                    int add = ArgumentParsers.VALUE_12.generalParse(null, getController().addressField.getText().toUpperCase());
+                    int add = ArgumentParsers.ROTATED_IMM.generalParse(null, getController().addressField.getText().toUpperCase());
                     int page = Math.floorDiv(add, ADDRESS_PER_PAGE) + PAGE_OFFSET;
                     getController().memoryPage.setCurrentPageIndex(page);
                 } catch (Exception ignored) {}

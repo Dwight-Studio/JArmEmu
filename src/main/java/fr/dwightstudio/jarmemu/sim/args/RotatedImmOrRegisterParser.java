@@ -5,11 +5,11 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "arg"
-public class Value12OrRegisterParser implements ArgumentParser<Integer> {
+public class RotatedImmOrRegisterParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        if (string.startsWith("#") || string.startsWith("=")) {
-            int rtn = ArgumentParsers.VALUE_12.parse(stateContainer, string);
+        if (string.startsWith("#") || string.startsWith("=") || string.startsWith("*")) {
+            int rtn = ArgumentParsers.ROTATED_IMM.parse(stateContainer, string);
             AddressParser.updateValue.put(stateContainer, rtn);
             return rtn;
         } else {
@@ -21,6 +21,6 @@ public class Value12OrRegisterParser implements ArgumentParser<Integer> {
 
     @Override
     public Integer none() {
-        throw new BadArgumentsASMException("missing immediate (12 bits) or register");
+        throw new BadArgumentsASMException("missing immediate (rotated 8bits) or register");
     }
 }

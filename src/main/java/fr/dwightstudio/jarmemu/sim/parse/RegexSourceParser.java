@@ -16,13 +16,18 @@ public class RegexSourceParser implements SourceParser {
     private ASMParser asmParser;
     private DirectiveParser directiveParser;
     private SectionParser sectionParser;
+    private int symbolsAddress;
+    private int stackAddress;
 
     public RegexSourceParser(SourceScanner sourceScanner) {
         this.sourceScanner = sourceScanner;
         currentSection = Section.NONE;
 
+        symbolsAddress = 0;
+        stackAddress = 0;
+
         asmParser = new ASMParser();
-        directiveParser = new DirectiveParser();
+        directiveParser = new DirectiveParser(symbolsAddress);
         sectionParser = new SectionParser();
     }
 
@@ -53,7 +58,7 @@ public class RegexSourceParser implements SourceParser {
     public HashMap<Integer, ParsedObject> parse() {
         HashMap<Integer, ParsedObject> rtn = new HashMap<>();
         asmParser = new ASMParser();
-        directiveParser = new DirectiveParser();
+        directiveParser = new DirectiveParser(symbolsAddress);
         sectionParser = new SectionParser();
 
         sourceScanner.goTo(-1);
@@ -91,6 +96,16 @@ public class RegexSourceParser implements SourceParser {
 
         if (currentSection == Section.TEXT) return asmParser.parseOneLine(sourceScanner, line);
         return null;
+    }
+
+    @Override
+    public void setSymbolsAddress(int address) {
+        this.symbolsAddress = address;
+    }
+
+    @Override
+    public void setStackAddress(int address) {
+        this.stackAddress = address;
     }
 
     /**
