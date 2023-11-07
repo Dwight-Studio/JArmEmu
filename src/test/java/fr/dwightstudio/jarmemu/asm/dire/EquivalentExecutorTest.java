@@ -30,12 +30,12 @@ class EquivalentExecutorTest extends JArmEmuTest {
             assertEquals(r, container.consts.get(s));
         }
 
-        assertEquals(0, EQUIVALENT.computeDataLength("HEY, 31", 0));
+        assertEquals(0, EQUIVALENT.computeDataLength(container, "HEY, 31", 0));
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> EQUIVALENT.computeDataLength("HEY,", 0));
+        assertDoesNotThrow(() -> EQUIVALENT.computeDataLength(container, "HEY,", 0));
         assertThrows(SyntaxASMException.class, () -> EQUIVALENT.apply(container, "HEY, p", 0));
         assertThrows(SyntaxASMException.class, () -> EQUIVALENT.apply(container, "/, 3", 0));
         assertThrows(SyntaxASMException.class, () -> EQUIVALENT.apply(container, ", 0", 0));

@@ -26,7 +26,7 @@ class SpaceExecutorTest extends JArmEmuTest {
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            assertEquals(r, SPACE.computeDataLength("" + r, 0));
+            assertEquals(r, SPACE.computeDataLength(container,"" + r, 0));
         }
     }
 

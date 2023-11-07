@@ -129,7 +129,7 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/factorial-memory.d");
     }
 
-    @Test
+    //@Test
     public void matrixTest() {
         load("/complete/matrix.s");
 

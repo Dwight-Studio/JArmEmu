@@ -17,7 +17,7 @@ public class ImmParser implements ArgumentParser<Integer> {
 
 
 
-                if (Integer.numberOfLeadingZeros(Math.abs(rtn)) < 21)
+                if (Integer.numberOfLeadingZeros(Math.abs(rtn)) < 21 && rtn != -2048)
                     throw new SyntaxASMException("Overflowing 12bits value '" + string + "'");
                 return rtn;
 

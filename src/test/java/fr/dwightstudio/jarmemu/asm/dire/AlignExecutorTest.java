@@ -26,7 +26,7 @@ class AlignExecutorTest extends JArmEmuTest {
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            assertEquals(0, (ALIGN.computeDataLength("", r) + r) % 4);
+            assertEquals(0, (ALIGN.computeDataLength(container, "", r) + r) % 4);
         }
     }
 

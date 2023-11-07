@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class ImmParserTest extends JArmEmuTest {
 
     private StateContainer stateContainer;
-    private static final ImmParser VALUE8 = new ImmParser();
+    private static final ImmParser IMM = new ImmParser();
 
     @BeforeEach
     public void setUp() {
@@ -21,17 +21,17 @@ public class ImmParserTest extends JArmEmuTest {
 
     @Test
     public void normalTest() {
-        assertEquals(2048, VALUE8.parse(stateContainer, "#2048"));
-        assertEquals(256, VALUE8.parse(stateContainer, "#256"));
-        assertEquals(4095, VALUE8.parse(stateContainer, "#0XFFF"));
-        assertEquals(0, VALUE8.parse(stateContainer, "#00000"));
+        assertEquals(2047, IMM.parse(stateContainer, "#2047"));
+        assertEquals(256, IMM.parse(stateContainer, "#256"));
+        assertEquals(-2048, IMM.parse(stateContainer, "#-2048"));
+        assertEquals(0, IMM.parse(stateContainer, "#00000"));
     }
 
     @Test
     public void overflowTest() {
-        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#-132"));
-        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#4096"));
-        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#-2048"));
-        assertThrows(SyntaxASMException.class, () -> VALUE8.parse(stateContainer, "#4096"));
+        assertThrows(SyntaxASMException.class, () -> IMM.parse(stateContainer, "#-2049"));
+        assertThrows(SyntaxASMException.class, () -> IMM.parse(stateContainer, "#4096"));
+        assertThrows(SyntaxASMException.class, () -> IMM.parse(stateContainer, "#2048"));
+        assertThrows(SyntaxASMException.class, () -> IMM.parse(stateContainer, "#4096"));
     }
 }
