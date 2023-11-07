@@ -21,8 +21,8 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
             String arrayString = string.substring(1, string.length()-1);
             ArrayList<Register> rtn = new ArrayList<>();
 
-            if(string.contains("-")){
-                String[] stringArray = string.split("-");
+            if(arrayString.contains("-")){
+                String[] stringArray = arrayString.split("-");
                 if (stringArray.length!=2) throw new SyntaxASMException("Unexpected value '" + string + "' (expected a Register Array)");
                 int registerFirst = Integer.parseInt(String.valueOf(stringArray[0].strip().charAt(1)));
                 int registerSecond = Integer.parseInt(String.valueOf(stringArray[1].strip().charAt(1)));
