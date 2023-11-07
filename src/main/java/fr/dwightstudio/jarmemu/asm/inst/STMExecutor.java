@@ -14,25 +14,25 @@ public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser
         switch (updateMode) {
             case FD, DB -> {
                 for (int i = 0; i < length; i++) {
-                    stateContainer.memory.putWord(arg1.getData() - 4 * i, arg2[length - i - 1].getData());
+                    stateContainer.memory.putWord(arg1.getData() - 4 * (i + 1), arg2[length - i - 1].getData());
                 }
                 value = - 4 * (length - 1);
             }
             case FA, IB -> {
                 for (int i = 0; i < length; i++) {
-                    stateContainer.memory.putWord(arg1.getData() + 4 * i, arg2[length - i - 1].getData());
+                    stateContainer.memory.putWord(arg1.getData() + 4 * (i + 1), arg2[length - i - 1].getData());
                 }
                 value = 4 * (length - 1);
             }
             case ED, DA -> {
                 for (int i = 0; i < length; i++) {
-                    stateContainer.memory.putWord(arg1.getData() - 4 * (i + 1), arg2[length - i - 1].getData());
+                    stateContainer.memory.putWord(arg1.getData() - 4 * i, arg2[length - i - 1].getData());
                 }
                 value = - 4 * (length);
             }
             case EA, IA -> {
                 for (int i = 0; i < length; i++) {
-                    stateContainer.memory.putWord(arg1.getData() + 4 * (i + 1), arg2[length - i - 1].getData());
+                    stateContainer.memory.putWord(arg1.getData() + 4 * i, arg2[length - i - 1].getData());
                 }
                 value = 4 * (length);
             }

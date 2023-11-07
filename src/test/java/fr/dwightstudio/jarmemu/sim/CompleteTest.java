@@ -129,4 +129,22 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/factorial-memory.d");
     }
 
+    @Test
+    public void matrixTest() {
+        load("/complete/matrix.s");
+
+        // Parse
+        codeInterpreter.load(parser);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        codeInterpreter.restart();
+
+        // Execution
+        while (codeInterpreter.hasNextLine()) {
+            codeInterpreter.nextLine();
+            codeInterpreter.executeCurrentLine();
+        }
+
+        assertEqualsMemory("/complete/matrix-memory.d");
+    }
+
 }

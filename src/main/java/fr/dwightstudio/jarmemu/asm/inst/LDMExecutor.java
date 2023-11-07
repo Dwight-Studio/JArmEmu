@@ -14,25 +14,25 @@ public class LDMExecutor implements InstructionExecutor<RegisterWithUpdateParser
         switch (updateMode) {
             case FD, DB -> {
                 for (int i = 0; i < length; i++) {
-                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() - 4 * i));
+                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() - 4 * (i + 1)));
                 }
                 value = - 4 * (length - 1);
             }
             case FA, IB -> {
                 for (int i = 0; i < length; i++) {
-                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() + 4 * i));
+                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() + 4 * (i + 1)));
                 }
                 value = 4 * (length - 1);
             }
             case ED, DA -> {
                 for (int i = 0; i < length; i++) {
-                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() - 4 * (i + 1)));
+                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() - 4 * i));
                 }
                 value = - 4 * (length);
             }
             case EA, IA -> {
                 for (int i = 0; i < length; i++) {
-                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() + 4 * (i + 1)));
+                    arg2[i].setData(stateContainer.memory.getWord(arg1.getData() + 4 * i));
                 }
                 value = 4 * (length);
             }
