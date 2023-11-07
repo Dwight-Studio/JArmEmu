@@ -72,9 +72,8 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
         /**
          * Met à jour le registre en fonction du nombre de registres de l'argument RegisterArray
          */
-        public void update() {
-            //TODO: modifier l'update car incorrect actuellement
-            if (update) register.add(RegisterWithUpdateParser.updateValue.get(stateContainer));
+        public void update(int value) {
+            if (update) register.add(value);
             update = false;
         }
     }

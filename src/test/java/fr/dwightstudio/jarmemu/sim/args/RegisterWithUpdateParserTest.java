@@ -24,28 +24,28 @@ class RegisterWithUpdateParserTest extends JArmEmuTest {
 
     @Test
     public void normalTest() {
-        stateContainer.registers[0].setData(7430223);
+        stateContainer.registers[0].setData(404);
 
         RegisterWithUpdateParser.UpdatableRegister reg = REGISTER_WITH_UPDATE.parse(stateContainer, "R0");
         assertEquals(stateContainer.registers[0].getData(), reg.getData());
 
         REGISTER_ARRAY.parse(stateContainer, "{R0,R1,R2}");
-        reg.update();
+        reg.update(0);
 
-        assertEquals(7430223, reg.getData());
+        assertEquals(404, reg.getData());
     }
 
     @Test
     public void updateTest() {
-        stateContainer.registers[0].setData(7430223);
+        stateContainer.registers[0].setData(404);
 
         RegisterWithUpdateParser.UpdatableRegister reg = REGISTER_WITH_UPDATE.parse(stateContainer, "R0!");
         assertEquals(stateContainer.registers[0].getData(), reg.getData());
 
         REGISTER_ARRAY.parse(stateContainer, "{R0,R1,R2}");
-        reg.update();
+        reg.update(-12);
 
-        assertEquals(7430226, reg.getData());
+        assertEquals(392, reg.getData());
     }
 
     @Test
