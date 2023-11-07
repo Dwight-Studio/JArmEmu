@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
@@ -171,7 +172,13 @@ public class CodeInterpreter {
             ParsedObject parsedObject = parsedObjects.get(currentLine);
 
             if (parsedObject instanceof ParsedInstruction instruction) {
-                instruction.execute(stateContainer);
+                try {
+                    instruction.execute(stateContainer);
+                } catch (ExecutionASMException exception) {
+                    this.atTheEnd = true;
+                    jumped = true;
+                    return;
+                }
                 this.lastExecuted = instruction;
                 this.lastExecutedLine = currentLine;
             }
@@ -216,7 +223,7 @@ public class CodeInterpreter {
      * @return vrai si il y a une ligne, faux sinon
      */
     public boolean hasNextLine() {
-        return lastLine > currentLine;
+        return lastLine > currentLine && !atTheEnd;
     }
 
     /**

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -121,15 +122,17 @@ public class CompleteTest extends JArmEmuTest {
         codeInterpreter.restart();
 
         // Execution
-        while (codeInterpreter.hasNextLine()) {
-            codeInterpreter.nextLine();
-            codeInterpreter.executeCurrentLine();
-        }
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            while (codeInterpreter.hasNextLine()) {
+                codeInterpreter.nextLine();
+                codeInterpreter.executeCurrentLine();
+            }
+        });
 
         assertEqualsMemory("/complete/factorial-memory.d");
     }
 
-    //@Test
+    @Test
     public void matrixTest() {
         load("/complete/matrix.s");
 
@@ -139,12 +142,34 @@ public class CompleteTest extends JArmEmuTest {
         codeInterpreter.restart();
 
         // Execution
-        while (codeInterpreter.hasNextLine()) {
-            codeInterpreter.nextLine();
-            codeInterpreter.executeCurrentLine();
-        }
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            while (codeInterpreter.hasNextLine()) {
+                codeInterpreter.nextLine();
+                codeInterpreter.executeCurrentLine();
+            }
+        });
 
         assertEqualsMemory("/complete/matrix-memory.d");
+    }
+
+    @Test
+    public void pgcdTest() {
+        load("/complete/pgcd.s");
+
+        // Parse
+        codeInterpreter.load(parser);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            while (codeInterpreter.hasNextLine()) {
+                codeInterpreter.nextLine();
+                codeInterpreter.executeCurrentLine();
+            }
+        });
+
+        assertEqualsMemory("/complete/pgcd-memory.d");
     }
 
 }
