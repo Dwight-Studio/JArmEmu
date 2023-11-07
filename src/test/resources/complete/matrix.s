@@ -22,7 +22,7 @@
 _start:
 	ldr r0, =matrice1
 	ldr r1, =matrice2
-	ldr r2, =array
+	ldr r2, =1000
 	@ 3 parametres d'entree
 	stmfd sp!, {r0, r1, r2}
 	@ saut a la fonction produit
