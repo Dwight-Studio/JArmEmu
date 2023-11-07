@@ -82,11 +82,14 @@ public class JArmEmuApplication extends Application {
 
         Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
 
-        Font.loadFont(getClass().getResourceAsStream("roboto/static/RobotoMono-Regular.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("roboto/static/RobotoMono-Thin.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("roboto/static/RobotoMono-ThinItalic.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-Regular.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-Thin.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-ThinItalic.ttf"), 14);
 
-        scene.getStylesheets().add(getClass().getResource("registers-style.css").toExternalForm());
+        Font.loadFont(getClass().getResourceAsStream("fonts/roboto/Roboto-Regular.ttf"), 14);
+        Font.loadFont(getClass().getResourceAsStream("fonts/roboto/Roboto-Medium.ttf"), 14);
+
+        scene.getStylesheets().add(getClass().getResource("jarmemu-style.css").toExternalForm());
         scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
         scene.setOnKeyPressed(shortcutHandler::handle);

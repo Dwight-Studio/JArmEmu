@@ -21,6 +21,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.kordamp.bootstrapfx.BootstrapFX;
 import org.reactfx.Subscription;
 
 import java.net.URL;
@@ -155,10 +156,11 @@ public class EditorController implements Initializable {
         textFlow.getStyleClass().add("alert-" + classString);
 
         Text title = new Text(titleString);
-        title.getStyleClass().add("strong");
+        title.getStyleClass().add("notif-title");
         textFlow.getChildren().add(title);
 
         Text label = new Text(" " + contentString);
+        label.getStyleClass().add("notif-content");
         textFlow.getChildren().add(label);
 
         getController().notifications.getChildren().add(textFlow);
