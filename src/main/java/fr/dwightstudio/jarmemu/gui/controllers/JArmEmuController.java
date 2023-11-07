@@ -64,6 +64,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
 
+    @FXML protected Tab stackTab;
+    @FXML protected GridPane stackGrid;
+
 
     public JArmEmuController(JArmEmuApplication application) {
         super(application);

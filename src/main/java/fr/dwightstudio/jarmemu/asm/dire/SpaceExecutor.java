@@ -16,7 +16,7 @@ public class SpaceExecutor implements DirectiveExecutor {
         // Rien à faire, on veut juste laisser de la place
 
         try {
-            Integer.parseInt(args);
+            stateContainer.evalWithAll(args);
         } catch (Exception e) {
             throw new SyntaxASMException("Invalid argument '" + args + "'");
         }
@@ -25,14 +25,15 @@ public class SpaceExecutor implements DirectiveExecutor {
     /**
      * Calcul de la taille prise en mémoire
      *
-     * @param args       la chaine d'arguments
-     * @param currentPos la position actuelle dans la mémoire
+     * @param stateContainer Le conteneur d'état sur lequel calculer
+     * @param args           la chaine d'arguments
+     * @param currentPos     la position actuelle
      * @return la taille des données
      */
     @Override
-    public int computeDataLength(String args, int currentPos) {
+    public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
         try {
-            return Integer.parseInt(args);
+            return stateContainer.evalWithConsts(args);
         } catch (Exception e) {
             return 0;
         }

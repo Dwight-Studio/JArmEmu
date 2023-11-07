@@ -156,7 +156,7 @@
                   </TabPane>
                   <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                      <tabs>
-                        <Tab text="Stack">
+                        <Tab text="Stack" fx:id="stackTab">
                            <content>
                               <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
                                  <content>
@@ -182,11 +182,7 @@
                                              <content>
                                                 <AnchorPane>
                                                    <children>
-                                                      <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
-                                                         <children>
-                                                            <Text styleClass="reg-data" text="00000000" />
-                                                            <Text styleClass="reg-data" text="00000000" GridPane.columnIndex="1" />
-                                                         </children>
+                                                      <GridPane fx:id="stackGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                          <columnConstraints>
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />

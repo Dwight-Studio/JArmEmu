@@ -31,9 +31,20 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
     public ArrayList<Integer> breakpoints = new ArrayList<>();
     public HashMap<Integer, Consumer<LineStatus>> nums = new HashMap<>();
+    private final HashMap<Integer, Node> nodes = new HashMap<>();
 
     @Override
-    public Node apply(int idx) {
+    public Node apply(int line) {
+        Node rtn = nodes.get(line);
+
+        if (rtn == null) {
+            rtn = generate(line);
+        }
+
+        return rtn;
+    }
+
+    public Node generate(int line) {
         HBox rtn = new HBox();
 
         Label lineNo = new Label();
@@ -42,7 +53,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         lineNo.setTextFill(DEFAULT_TEXT_FILL);
         lineNo.setPadding(DEFAULT_INSETS);
         lineNo.setAlignment(Pos.CENTER_RIGHT);
-        lineNo.setText(String.format("%d", idx));
+        lineNo.setText(String.format("%d", line));
         lineNo.setMinWidth(40);
         lineNo.setMaxWidth(40);
 
@@ -52,16 +63,16 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         breakpoint.setTextFill(BREAKPOINT_TEXT_FILL);
         breakpoint.setPadding(DEFAULT_INSETS);
         breakpoint.setAlignment(Pos.CENTER_LEFT);
-        if (breakpoints.contains(idx)) breakpoint.setText("⬤"); else breakpoint.setText("");
+        if (breakpoints.contains(line)) breakpoint.setText("⬤"); else breakpoint.setText("");
         breakpoint.setMinWidth(32);
         breakpoint.setMaxWidth(32);
         breakpoint.setTooltip(new Tooltip("Toggle breakpoint"));
 
         breakpoint.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY) toggle(idx, breakpoint);
+            if (event.getButton() == MouseButton.PRIMARY) toggle(line, breakpoint);
         });
 
-        nums.put(idx, (i) -> {
+        nums.put(line, (i) -> {
             if (i == LineStatus.EXECUTED) {
                 lineNo.setBackground(EXECUTED_BACKGROUND);
                 breakpoint.setBackground(EXECUTED_BACKGROUND);
@@ -79,11 +90,19 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
         rtn.setAlignment(Pos.TOP_RIGHT);
 
+        nodes.put(line, rtn);
+
         return rtn;
     }
 
     private void toggle(int id, Label label) {
         if (breakpoints.contains(id)) breakpoints.remove((Integer) id); else breakpoints.add(id);
         if (breakpoints.contains(id)) label.setText("⬤"); else label.setText("");
+    }
+
+    public void pregenAll(int lineNum) {
+        for (int i = 0; i < lineNum; i++) {
+            apply(i);
+        }
     }
 }

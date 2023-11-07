@@ -11,7 +11,7 @@ public class DirectiveExecutors {
         }
 
         @Override
-        public int computeDataLength(String args, int currentPos) {
+        public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
             throw new IllegalStateException("Directive not implemented");
         }
     };

@@ -257,4 +257,11 @@ public class EditorController implements Initializable {
     public String getText() {
         return getController().codeArea.getText();
     }
+
+    public void prepareSimulation() {
+        int lineNum = getController().codeArea.getParagraphs().size();
+        logger.info("Pre-generate " + lineNum + " lines");
+        lineFactory.pregenAll(getController().codeArea.getParagraphs().size());
+        clearLineMarking();
+    }
 }

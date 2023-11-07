@@ -226,6 +226,12 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             step();
             updateGUI();
 
+            try {
+                synchronized (this) {
+                    if (waitingPeriod != 0) wait(waitingPeriod);
+                }
+            } catch (InterruptedException ignored) {}
+
             logger.info("Done!");
         }
 
@@ -288,6 +294,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     logger.warning("Updating GUI on null StateContainer");
                 application.getMemoryController().updateGUI(application.getCodeInterpreter().stateContainer);
                 application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
+                application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
                     if (isIntervalTooShort()) application.getEditorController().clearLineMarking();
@@ -334,7 +341,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 line = next = last = 0;
                 application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
                 application.getCodeInterpreter().restart();
-                application.getEditorController().clearLineMarking();
+                application.getEditorController().prepareSimulation();
 
                 AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));

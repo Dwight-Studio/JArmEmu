@@ -3,10 +3,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectivePack;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
+import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
@@ -29,10 +26,8 @@ public class DirectiveParser {
                     + "(?-i)"
     );
 
-    private int memoryPos;
-
     public DirectiveParser() {
-        this.memoryPos = 0;
+
     }
 
     /**
@@ -56,14 +51,13 @@ public class DirectiveParser {
             String argsString = matcher.group("ARGS");
 
             if (labelString != null && !labelString.isEmpty()) {
-                if (section.shouldParseDirective()) directives.add(new ParsedLabel(labelString.strip().toUpperCase(), memoryPos, true));
+                if (section.shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase()));
 
             } else if (directiveString != null && !directiveString.isEmpty()) {
                 try {
                     Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip().toUpperCase(), memoryPos);
+                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip().toUpperCase());
                     directives.add(parsedDirective);
-                    memoryPos = parsedDirective.getNextPos();
                 } catch (IllegalArgumentException exception) {
                     if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "' at line " + sourceScanner.getCurrentInstructionValue());
                 }
@@ -76,9 +70,4 @@ public class DirectiveParser {
 
         return directives.close();
     }
-
-    public void memoryOffset(int memoryPos) {
-        this.memoryPos = memoryPos;
-    }
-
 }

@@ -14,24 +14,12 @@ public class ParsedDirective extends ParsedObject {
 
     private final Directive directive;
     private final String args;
-    private final int currentPos;
-    private final int nextPos;
     private boolean generated;
+    private String hash;
 
-    public ParsedDirective(@NotNull Directive directive, @NotNull String args, int currentPos) {
+    public ParsedDirective(@NotNull Directive directive, @NotNull String args) {
         this.directive = directive;
         this.args = args;
-        this.currentPos = currentPos;
-
-        int tempNextPos;
-
-        try {
-            tempNextPos = currentPos + directive.computeDataLength(args, currentPos);
-        } catch (SyntaxASMException e) {
-            tempNextPos = currentPos;
-        }
-
-        this.nextPos = tempNextPos;
     }
 
     @Override
@@ -39,7 +27,7 @@ public class ParsedDirective extends ParsedObject {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
-            apply(stateContainer);
+            apply(stateContainer, 0);
             return null;
         } catch (SyntaxASMException exception) {
             return new AssemblyError(line, exception, this);
@@ -52,13 +40,15 @@ public class ParsedDirective extends ParsedObject {
      * Application de la directive
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
-    public void apply(StateContainer stateContainer) {
+    public int apply(StateContainer stateContainer, int currentPos) {
         int symbolAddress = stateContainer.getSymbolsAddress();
         directive.apply(stateContainer, this.args, currentPos + symbolAddress);
-    }
 
-    public int getNextPos() {
-        return nextPos;
+        if (generated) {
+            stateContainer.pseudoData.put(hash, currentPos);
+        }
+
+        return directive.computeDataLength(stateContainer, args, currentPos) + currentPos;
     }
 
     public Directive getDirective() {
@@ -69,7 +59,8 @@ public class ParsedDirective extends ParsedObject {
         return generated;
     }
 
-    public void setGenerated() {
+    public void setGenerated(String hash) {
+        this.hash = hash;
         this.generated = true;
     }
 }

@@ -51,4 +51,16 @@ public class MemoryAccessor {
     public void clear() {
         memory.clear();
     }
+
+    public boolean isByteInitiated(int address) {
+        return memory.get(address) != null;
+    }
+
+    public boolean isHalfInitiated(int address) {
+        return isByteInitiated(address) || isByteInitiated(address + 1);
+    }
+
+    public boolean isWordInitiated(int address) {
+        return isHalfInitiated(address) || isHalfInitiated(address + 2);
+    }
 }

@@ -19,7 +19,8 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
     @Override
     public UpdatableInteger parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         if (string.startsWith("*")) {
-            int rtn = RotatedImmParser.generalParse(stateContainer, string.substring(1)) + stateContainer.getSymbolsAddress();
+            String symbol = string.substring(1).strip();
+            int rtn = stateContainer.pseudoData.get(symbol) + stateContainer.getSymbolsAddress();
             return new UpdatableInteger(rtn, stateContainer, false, false, null);
         } else if (!string.startsWith("[")) {
             throw new SyntaxASMException("Invalid address '" + string + "'");

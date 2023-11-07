@@ -16,6 +16,7 @@ public class StateContainer {
     // ASM
     public final HashMap<String, Integer> consts; // HashMap des constantes
     public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
+    public final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
     public final HashMap<String, Integer> labels; // HashMap des labels
     public final ArrayList<String> globals; // Labels globaux
 
@@ -38,6 +39,7 @@ public class StateContainer {
         labels = new HashMap<>();
         consts = new HashMap<>();
         data = new HashMap<>();
+        pseudoData = new HashMap<>();
         globals = new ArrayList<>();
 
         // Initializing registers
@@ -60,6 +62,7 @@ public class StateContainer {
         this.consts.putAll(stateContainer.consts);
         this.data.putAll(stateContainer.data);
         this.labels.putAll(stateContainer.labels);
+        this.pseudoData.putAll(stateContainer.pseudoData);
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
             registers[i].setData(stateContainer.registers[i].getData());

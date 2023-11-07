@@ -7,6 +7,7 @@ import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -154,20 +155,18 @@ public class ParsedInstruction extends ParsedObject {
         return instruction;
     }
 
-    public ParsedDirectivePack convertValueToDirective(StateContainer stateContainer, int pos) {
+    public ParsedDirectivePack convertValueToDirective(StateContainer stateContainer) {
         ParsedDirectivePack pack = new ParsedDirectivePack();
-        final int[] off = {0};
-
         for (int i = 0; i < originalArgs.length; i++) {
             if (originalArgs[i] != null) {
                 String valueString = originalArgs[i];
                 processedArgs[i] = PSEUDO_OP_PATTERN.matcher(valueString).replaceAll(matchResult -> {
                     int value = stateContainer.evalWithAll(matchResult.group("VALUE"));
-                    ParsedDirective dir = new ParsedDirective(Directive.WORD, Integer.toString(value), pos + off[0]);
-                    dir.setGenerated();
+                    ParsedDirective dir = new ParsedDirective(Directive.WORD, Integer.toString(value));
+                    String hash = RandomStringUtils.randomAlphabetic(10).toUpperCase();
+                    dir.setGenerated(hash.strip());
                     pack.add(dir);
-                    off[0] += 4;
-                    return "*" + (pos + off[0] - 4);
+                    return "*" + hash;
                 });
             }
         }

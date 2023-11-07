@@ -74,14 +74,14 @@ public class CodeInterpreter {
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                 if (!parsedDirective.isGenerated()) {
-                    parsedDirective.apply(stateContainer);
-                    pos = Math.max(parsedDirective.getNextPos(), pos);
+                    pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
                 }
             } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
                 if (!parsedDirectivePack.isGenerated()) {
-                    parsedDirectivePack.apply(stateContainer);
-                    pos = Math.max(parsedDirectivePack.getNextPos(), pos);
+                    pos = Math.max(parsedDirectivePack.apply(stateContainer, pos), pos);
                 }
+            } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
+                label.register(stateContainer, pos);
             }
         }
 
@@ -89,9 +89,8 @@ public class CodeInterpreter {
 
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
-                ParsedDirectivePack pack = parsedInstruction.convertValueToDirective(stateContainer, pos);
+                ParsedDirectivePack pack = parsedInstruction.convertValueToDirective(stateContainer);
                 if (!pack.isEmpty()) {
-                    pos = pack.getGeneratedNextPos();
                     temp.put(off, pack.close());
                     off++;
                 }
@@ -103,11 +102,11 @@ public class CodeInterpreter {
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                 if (parsedDirective.isGenerated()) {
-                    parsedDirective.apply(stateContainer);
+                    pos = parsedDirective.apply(stateContainer, pos);
                 }
             } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
                 if (parsedDirectivePack.isGenerated()) {
-                    parsedDirectivePack.apply(stateContainer);
+                    pos = parsedDirectivePack.apply(stateContainer, pos);
                 }
             }
         }

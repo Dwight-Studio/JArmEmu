@@ -23,12 +23,13 @@ public class GlobalExecutor implements DirectiveExecutor {
     /**
      * Calcul de la taille prise en mémoire
      *
-     * @param args       la chaine d'arguments
-     * @param currentPos la position actuelle dans la mémoire
+     * @param stateContainer Le conteneur d'état sur lequel calculer
+     * @param args           la chaine d'arguments
+     * @param currentPos     la position actuelle
      * @return la taille des données
      */
     @Override
-    public int computeDataLength(String args, int currentPos) {
+    public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
         return 0;
     }
 }

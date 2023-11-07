@@ -30,15 +30,19 @@ public enum Directive {
 
     /**
      * Calcul de la place en mémoire nécessaire pour cette directive
+     *
+     * @param stateContainer Le conteneur d'état sur lequel calculer
      * @param args la chaine d'arguments
      * @param currentPos la position actuelle dans la mémoire
      */
-    public int computeDataLength(String args, int currentPos) throws SyntaxASMException {
-        return executor.computeDataLength(args, currentPos);
+    public int computeDataLength(StateContainer stateContainer, String args, int currentPos) throws SyntaxASMException {
+        return executor.computeDataLength(stateContainer, args, currentPos);
     }
 
     /**
      * Application de la directive
+     *
+     * 
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      * @param args la chaine d'arguments
      * @param currentPos     la position actuelle dans la mémoire

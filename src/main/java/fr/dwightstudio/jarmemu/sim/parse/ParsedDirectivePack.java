@@ -33,10 +33,10 @@ public class ParsedDirectivePack extends ParsedObject {
     }
 
     public boolean add(ParsedObject directive) {
-        if (directive instanceof ParsedDirective || directive instanceof ParsedLabel) {
+        if (directive instanceof ParsedDirective || directive instanceof ParsedDirectiveLabel) {
             return directives.add(directive);
         } else {
-            throw new IllegalArgumentException("ParsedDirectivePack can only accept ParsedDirective or ParsedLabel");
+            throw new IllegalArgumentException("ParsedDirectivePack can only accept ParsedDirective or ParsedDirectiveLabel");
         }
     }
 
@@ -60,32 +60,12 @@ public class ParsedDirectivePack extends ParsedObject {
      *
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
-    public void apply(StateContainer stateContainer) {
+    public int apply(StateContainer stateContainer, int pos) {
         for (ParsedObject directive : directives) {
             if (directive instanceof ParsedDirective dir) {
-                dir.apply(stateContainer);
-            } else if (directive instanceof ParsedLabel label) {
-                label.register(stateContainer);
-            }
-        }
-    }
-
-    public int getNextPos() {
-        int pos = 0;
-        for (ParsedObject object : directives) {
-            if (object instanceof ParsedDirective directive) {
-                if (!directive.isGenerated()) pos = Math.max(directive.getNextPos(), pos);
-            }
-        }
-
-        return pos;
-    }
-
-    public int getGeneratedNextPos() {
-        int pos = 0;
-        for (ParsedObject object : directives) {
-            if (object instanceof ParsedDirective directive) {
-                if (directive.isGenerated()) pos = Math.max(directive.getNextPos(), pos);
+                pos = dir.apply(stateContainer, pos);
+            } else if (directive instanceof ParsedDirectiveLabel label) {
+                label.register(stateContainer, pos);
             }
         }
 

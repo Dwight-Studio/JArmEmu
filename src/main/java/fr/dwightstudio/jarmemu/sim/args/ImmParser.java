@@ -14,7 +14,10 @@ public class ImmParser implements ArgumentParser<Integer> {
                 String valueString = string.substring(1).strip();
 
                 int rtn = RotatedImmParser.generalParse(stateContainer, valueString);
-                if (Integer.numberOfLeadingZeros(rtn) < 20)
+
+
+
+                if (Integer.numberOfLeadingZeros(Math.abs(rtn)) < 21)
                     throw new SyntaxASMException("Overflowing 12bits value '" + string + "'");
                 return rtn;
 

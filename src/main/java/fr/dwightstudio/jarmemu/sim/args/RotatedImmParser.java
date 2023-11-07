@@ -68,7 +68,7 @@ public class RotatedImmParser implements ArgumentParser<Integer> {
             }
         }
 
-        if (!valid) throw new SyntaxASMException("Overflowing 12bits value '" + string + "'");
+        if (!valid) throw new SyntaxASMException("Overflowing 8bits rotated immediate value '" + string + "'");
     }
 
     @Override
