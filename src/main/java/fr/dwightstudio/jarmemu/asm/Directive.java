@@ -14,7 +14,7 @@ public enum Directive {
     WORD(DirectiveExecutors.WORD), // Donnée sur 32bits
     HALF(DirectiveExecutors.HALF), // Donnée sur 16bits
     BYTE(DirectiveExecutors.BYTE), // Donnée sur 8bits
-    SPACE(DirectiveExecutors.SPACE), // Vide sur nbits
+    SPACE(DirectiveExecutors.SPACE), SKIP(DirectiveExecutors.SPACE), // Vide sur nbits
     ASCII(DirectiveExecutors.ASCII), // Chaîne de caractères
     ASCIZ(DirectiveExecutors.ASCIZ), // Chaîne de caractère finissant par '\0'
     FILL(DirectiveExecutors.FILL), // Remplir n fois, un nombre de taille x, de valeur y
