@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
@@ -74,6 +75,10 @@ public class StateContainer {
                 registers[i].setData(0);
             } else {
                 registers[i] = new Register();
+            }
+
+            if (i == RegisterUtils.SP.getN()) {
+                registers[i].setData(stackAddress);
             }
         }
 
