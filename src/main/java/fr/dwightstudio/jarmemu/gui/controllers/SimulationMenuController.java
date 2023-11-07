@@ -163,6 +163,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
     public void onReset() {
         getEditorController().clearNotifs();
         getCodeInterpreter().resetState(getSettingsController().getStackAddress(), getSettingsController().getSymbolsAddress());
+        getStackController().clear();
         getExecutionWorker().updateGUI();
     }
 }

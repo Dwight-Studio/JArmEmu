@@ -164,10 +164,12 @@
                                        <children>
                                           <GridPane hgap="10.0">
                                              <children>
-                                                <Label alignment="CENTER" text="Address" />
-                                                <Label alignment="CENTER" text="Byte" GridPane.columnIndex="1" />
+                                                <Label alignment="CENTER" text="SP" />
+                                                <Label alignment="CENTER" text="Address" GridPane.columnIndex="1" />
+                                                <Label alignment="CENTER" text="Byte" GridPane.columnIndex="2" />
                                              </children>
                                              <columnConstraints>
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="16" minWidth="16" prefWidth="16" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                              </columnConstraints>
@@ -184,8 +186,9 @@
                                                    <children>
                                                       <GridPane fx:id="stackGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                          <columnConstraints>
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="16" minWidth="16" prefWidth="16" />
+                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                          </columnConstraints>
                                                          <rowConstraints>
                                                             <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />

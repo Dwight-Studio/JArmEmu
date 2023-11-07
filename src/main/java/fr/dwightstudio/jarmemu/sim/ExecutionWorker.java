@@ -342,6 +342,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
                 application.getCodeInterpreter().restart();
                 application.getEditorController().prepareSimulation();
+                application.getStackController().clear();
 
                 AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
