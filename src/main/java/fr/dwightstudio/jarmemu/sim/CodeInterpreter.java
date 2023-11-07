@@ -165,7 +165,6 @@ public class CodeInterpreter {
 
         // Remise à zéro des drapeaux de ligne des parseurs
         AddressParser.reset(this.stateContainer);
-        RegisterWithUpdateParser.reset(this.stateContainer);
 
         int oldPC = getCurrentLineFromPC();
 

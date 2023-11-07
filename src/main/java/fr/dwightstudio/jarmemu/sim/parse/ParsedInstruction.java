@@ -48,7 +48,6 @@ public class ParsedInstruction extends ParsedObject {
             return new AssemblyError(line, exception, this);
         } finally {
             AddressParser.reset(stateContainer);
-            RegisterWithUpdateParser.reset(stateContainer);
         }
     }
 
