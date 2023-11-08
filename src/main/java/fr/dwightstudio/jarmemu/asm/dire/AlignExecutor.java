@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.args.RotatedImmParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class AlignExecutor implements DirectiveExecutor {
@@ -13,9 +14,9 @@ public class AlignExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
-        // Rien à faire, on veut juste laisser de la place
-
-        if (!args.isEmpty()) throw new SyntaxASMException("Unexpected argument '" + args + "'");
+        if (!args.isEmpty()) {
+            RotatedImmParser.generalParse(stateContainer, args);
+        }
     }
 
     /**
@@ -28,6 +29,10 @@ public class AlignExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
-        return (4 - (currentPos % 4)) % 4;
+        int d = 4;
+        if (!args.isEmpty()) {
+            d = RotatedImmParser.generalParse(stateContainer, args);
+        }
+        return (d - (currentPos % d)) % d;
     }
 }

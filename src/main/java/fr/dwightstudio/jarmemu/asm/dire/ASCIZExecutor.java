@@ -12,8 +12,8 @@ public class ASCIZExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
-        //TODO: Faire la directive ASCIZ
-        throw new IllegalStateException("Directive ASCIZ not implemented");
+        DirectiveExecutors.ASCII.apply(stateContainer, args, currentPos);
+        DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) '\0'), currentPos + DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos));
     }
 
     /**
@@ -26,6 +26,6 @@ public class ASCIZExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
-        return 0;
+        return DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos) + 1;
     }
 }

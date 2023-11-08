@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ASCIIExecutor implements DirectiveExecutor {
@@ -12,8 +13,15 @@ public class ASCIIExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
-        //TODO: Faire la directive ASCII
-        throw new IllegalStateException("Directive ASCII not implemented");
+        if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
+            String str = args.substring(1, args.length()-1);
+            for (char c : str.toCharArray()) {
+                DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), currentPos);
+                currentPos++;
+            }
+        } else {
+            throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+        }
     }
 
     /**
@@ -26,6 +34,7 @@ public class ASCIIExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
-        return 0;
+        String str = args.substring(1, args.length() - 1);
+        return str.length();
     }
 }

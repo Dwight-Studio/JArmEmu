@@ -20,10 +20,10 @@ public class ByteExecutor implements DirectiveExecutor {
                 byte b = (byte) data;
                 stateContainer.memory.putByte(currentPos, b);
             } else {
-                throw new SyntaxASMException("Overflowing Half value '" + args + "'");
+                throw new SyntaxASMException("Overflowing byte value '" + args + "'");
             }
         } catch (NumberFormatException exception) {
-            throw new SyntaxASMException("Invalid Half value '" + args + "'");
+            throw new SyntaxASMException("Invalid byte value '" + args + "'");
         }
     }
 
