@@ -6,7 +6,7 @@
 
     <groupId>fr.dwightstudio.jarmemu</groupId>
     <artifactId>JArmEmu</artifactId>
-    <version>1.0</version>
+    <version>0.1.0</version>
 
     <scm>
         <connection>scm:git:https://github.com/Dwight-Studio/JArmEmu</connection>
@@ -107,6 +107,7 @@
     </dependencies>
 
     <build>
+        <finalName>JArmEmu</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
