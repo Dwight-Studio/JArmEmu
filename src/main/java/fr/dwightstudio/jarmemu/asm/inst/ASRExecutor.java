@@ -14,6 +14,7 @@ public class ASRExecutor implements InstructionExecutor<Register, Register, Inte
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
             //TODO: Update carry flag
+            //stateContainer.cpsr.setC();
         }
     }
 }
