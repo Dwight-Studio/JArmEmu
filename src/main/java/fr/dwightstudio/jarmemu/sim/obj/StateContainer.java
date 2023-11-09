@@ -19,10 +19,10 @@ public class StateContainer {
     private static final Pattern SPECIAL_VALUE_PATTERN = Pattern.compile(
             "(?i)"
                     + "(?<VALUE>"
-                    + "0B\\w+"
-                    + "|0X\\w+"
-                    + "|00\\w+"
-                    + "|'.'"
+                    + "\\b0B\\w+"
+                    + "|\\b0X\\w+"
+                    + "|\\b00\\w+"
+                    + "|\\b'.'"
                     + ")" +
                     "(?-i)"
     );
