@@ -158,7 +158,7 @@ public class StateContainer {
                 throw new SyntaxASMException("Malformed math expression '" + valueString + "' (" + exception.getMessage() + ")");
             }
             return valueString;
-        });
+        }).toUpperCase();
 
     }
 

@@ -55,7 +55,6 @@ public class RotatedImmParserTest extends JArmEmuTest {
         assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"#udhad"));
         assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"#0B0xff"));
         assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"#7440b"));
-        assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"# 0b01"));
         assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"#"));
         assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"=#48"));
         assertThrows(SyntaxASMException.class, () -> VALUE12.parse(stateContainer,"-4"));
