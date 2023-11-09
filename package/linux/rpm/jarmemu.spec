@@ -13,7 +13,7 @@ Requires:       bash, desktop-file-utils
 
 %description
 The portable arm simulator
-JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a simulated ARMv7 interpreted architecture.
+JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a simulated ARMv7 architecture.
 
 %prep
 %setup -q
