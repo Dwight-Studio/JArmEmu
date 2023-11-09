@@ -60,10 +60,7 @@ public class JArmEmuApplication extends Application {
         this.stage = stage;
 
         logger.info("Starting up JArmEmu");
-        // TODO: Ajouter automatiquement le label "_end"
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre etc...)
-        // TODO: Régler le problème du scroll lors de la simulation
-
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
 

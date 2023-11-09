@@ -14,6 +14,7 @@ module fr.dwightstudio.jarmemu {
     requires java.prefs;
     requires java.desktop;
     requires org.controlsfx.controls;
+    requires org.fxmisc.flowless;
 
     exports fr.dwightstudio.jarmemu;
     exports fr.dwightstudio.jarmemu.gui;

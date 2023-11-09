@@ -45,7 +45,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             getController().stackGrid.setDisable(false);
             getController().memoryPage.setDisable(false);
             getController().addressField.setDisable(false);
-            getController().codeArea.setDisable(true);
+            getController().codeArea.setEditable(false);
             getController().stepInto.setDisable(false);
             getController().stepOver.setDisable(false);
             getController().conti.setDisable(false);
@@ -106,6 +106,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().stackGrid.setDisable(true);
         getController().memoryPage.setDisable(true);
         getController().addressField.setDisable(true);
+        getController().codeArea.setDisable(true);
+        getController().editorScroll.setDisable(true);
     }
 
     /**
@@ -122,6 +124,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().stackGrid.setDisable(false);
         getController().memoryPage.setDisable(false);
         getController().addressField.setDisable(false);
+        getController().codeArea.setDisable(false);
+        getController().editorScroll.setDisable(false);
     }
 
     /**
@@ -130,8 +134,9 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
     public void onStop() {
         getEditorController().clearNotifs();
         getExecutionWorker().pause();
-        getController().codeArea.deselect();
         getController().codeArea.setDisable(false);
+        getController().codeArea.setEditable(true);
+        getController().editorScroll.setDisable(false);
         getController().simulate.setDisable(false);
         getController().stepInto.setDisable(true);
         getController().stepOver.setDisable(true);

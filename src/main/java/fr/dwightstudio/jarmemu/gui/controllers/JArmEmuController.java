@@ -7,6 +7,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 
 import java.net.URL;
@@ -18,6 +19,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     @FXML protected CodeArea codeArea;
+    @FXML protected VirtualizedScrollPane editorScroll;
 
     @FXML protected VBox notifications;
     @FXML protected Button simulate;

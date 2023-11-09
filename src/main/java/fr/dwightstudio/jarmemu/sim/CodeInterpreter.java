@@ -2,7 +2,6 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
-import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -133,6 +132,8 @@ public class CodeInterpreter {
                 label.register(stateContainer);
             }
         }
+
+        stateContainer.labels.put("_END", getLineByte(getLastLine()) + 4);
     }
 
     /**
@@ -278,10 +279,10 @@ public class CodeInterpreter {
         return currentLine;
     }
 
-    private int getCurrentByte() {
+    private int getLineByte(int line) {
         int pos = -1;
         for (int i = 0 ; i < instructionPositions.size() ; i++) {
-            if (instructionPositions.get(i) == currentLine) {
+            if (instructionPositions.get(i) == line) {
                 pos = i;
                 break;
             }
@@ -301,7 +302,7 @@ public class CodeInterpreter {
     }
 
     protected void setCurrentByteToPC() {
-        stateContainer.registers[RegisterUtils.PC.getN()].setData(getCurrentByte());
+        stateContainer.registers[RegisterUtils.PC.getN()].setData(getLineByte(currentLine));
     }
 
     private void nextLineToPC() {

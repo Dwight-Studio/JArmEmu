@@ -296,7 +296,7 @@
                         </ToolBar>
                         <StackPane VBox.vgrow="ALWAYS">
                            <children>
-                              <VirtualizedScrollPane>
+                              <VirtualizedScrollPane fx:id="editorScroll">
                                   <content>
                                 <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" styleClass="editor" />
                                   </content>
