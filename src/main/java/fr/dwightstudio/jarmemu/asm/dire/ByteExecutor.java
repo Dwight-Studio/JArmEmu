@@ -26,6 +26,7 @@ public class ByteExecutor implements DirectiveExecutor {
             throw new SyntaxASMException("Invalid byte value '" + args + "'");
         }
     }
+    //TODO: Prendre en compte les chars
 
     /**
      * Calcul de la taille prise en mémoire

@@ -63,6 +63,7 @@ public class JArmEmuApplication extends Application {
         // TODO: Ajouter automatiquement le label "_end"
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre etc...)
         // TODO: Régler le problème du scroll lors de la simulation
+        // TODO: Ajouter les directive-label dans les directives de données
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
 
