@@ -128,7 +128,7 @@ public class StateContainer {
                 exp.setVariable(str, (double) data.get(str));
             }
 
-            return (int) exp.evaluate();
+            return (int) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException("Malformed math expression '" + expString + "' (" + exception.getMessage() + ")");
         }

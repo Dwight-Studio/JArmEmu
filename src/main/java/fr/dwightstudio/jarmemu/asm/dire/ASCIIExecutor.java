@@ -14,7 +14,9 @@ public class ASCIIExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
+            String del = String.valueOf(args.charAt(0));
             String str = args.substring(1, args.length()-1);
+            if (str.contains(del)) throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
             for (char c : str.toCharArray()) {
                 DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), currentPos);
                 currentPos++;
