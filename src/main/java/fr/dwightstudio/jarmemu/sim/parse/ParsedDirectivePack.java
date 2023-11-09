@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class ParsedDirectivePack extends ParsedObject {
      * @return les erreurs détectées
      */
     @Override
-    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         for (ParsedObject directive : directives) {
-            AssemblyError error = directive.verify(line, stateSupplier);
+            SyntaxASMException error = directive.verify(line, stateSupplier);
             if (error != null) return error;
         }
 

@@ -3,8 +3,6 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
-import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,14 +21,14 @@ public class ParsedDirective extends ParsedObject {
     }
 
     @Override
-    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
             apply(stateContainer, 0);
             return null;
         } catch (SyntaxASMException exception) {
-            return new AssemblyError(line, exception, this);
+            return exception.with(this);
         } finally {
             AddressParser.reset(stateContainer);
         }

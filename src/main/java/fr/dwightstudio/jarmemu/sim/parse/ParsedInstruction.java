@@ -1,17 +1,13 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.ArgumentParser;
-import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -39,14 +35,14 @@ public class ParsedInstruction extends ParsedObject {
         this.processedArgs = new String[]{arg1, arg2, arg3, arg4};
     }
 
-    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
             execute(stateContainer);
             return null;
         } catch (SyntaxASMException exception) {
-            return new AssemblyError(line, exception, this);
+            return exception.with(line).with(this);
         } finally {
             AddressParser.reset(stateContainer);
         }

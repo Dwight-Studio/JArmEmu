@@ -1,10 +1,11 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.ExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.StuckExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
-import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 
 import java.util.ArrayList;
@@ -36,13 +37,21 @@ public class CodeInterpreter {
      * Charge des instructions parsées dans l'exécuteur
      * @param sourceParser le parseur de source utilisé
      */
-    public void load(SourceParser sourceParser) {
-        parsedObjects = sourceParser.parse();
+    public SyntaxASMException load(SourceParser sourceParser) {
+
+        try {
+            parsedObjects = sourceParser.parse();
+        } catch (SyntaxASMException exception) {
+            return exception;
+        }
+
         instructionPositions = computeInstructionsPositions();
         currentLine = 0;
         lastLine = getLastLine();
         this.atTheEnd = false;
         lastExecutedLine = -1;
+
+        return null;
     }
 
     /**
@@ -51,15 +60,15 @@ public class CodeInterpreter {
      * @apiNote Doit être appelé après un resetState
      * @return les erreurs si il y en a
      */
-    public AssemblyError[] verifyAll() {
-        ArrayList<AssemblyError> rtn = new ArrayList<>();
+    public SyntaxASMException[] verifyAll() {
+        ArrayList<SyntaxASMException> rtn = new ArrayList<>();
 
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
-            AssemblyError e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
+            SyntaxASMException e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
             if (e != null) rtn.add(e);
         }
 
-        return rtn.toArray(AssemblyError[]::new);
+        return rtn.toArray(SyntaxASMException[]::new);
     }
 
     /**
@@ -186,7 +195,7 @@ public class CodeInterpreter {
             if (parsedObject instanceof ParsedInstruction instruction) {
                 try {
                     instruction.execute(stateContainer);
-                } catch (ExecutionASMException exception) {
+                } catch (StuckExecutionASMException exception) {
                     this.atTheEnd = true;
                     jumped = true;
                     return;
@@ -249,6 +258,8 @@ public class CodeInterpreter {
      * @return le nombre de lignes
      */
     public int getInstructionCount() {
+        if (parsedObjects == null) return 0;
+
         int rtn = 0;
         for (ParsedObject parsedObject : parsedObjects.values()) {
             if (parsedObject instanceof ParsedInstruction) rtn++;

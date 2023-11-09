@@ -10,9 +10,7 @@ import java.util.logging.Logger;
 
 public class RegistersController extends AbstractJArmEmuModule {
 
-    protected static final String HEX_FORMAT = "%08x";
     private int DATA_FORMAT;
-    // TODO: Ajouter le DEC avec redimensionnement des cases (modifier dans la mémoire et le stack aussi)
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private Text[] registers;

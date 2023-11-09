@@ -1,11 +1,11 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
@@ -21,7 +21,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.kordamp.bootstrapfx.BootstrapFX;
 import org.reactfx.Subscription;
 
 import java.net.URL;
@@ -54,10 +53,21 @@ public class EditorController implements Initializable {
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
     private static final String LABEL_PATTERN = "[A-Za-z_0-9]+:";
-    private static final String STRING_PATTERN = "\"([^\"\\\\]|\\\\.)*\"|\'([^\'\\\\]|\\\\.)*\'";
+    private static final String STRING_PATTERN = "\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'";
     private static final String COMMENT_PATTERN = "@[^\n]*";
-    private static final String IMM_PATTERN = "=[^\n]*|#[^\n\\]]*";
-    private static final Pattern PATTERN = Pattern.compile("(?<SHIFT>" + SHIFT_PATTERN + ")" + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")" + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")" + "|(?<REGISTER>" + REGISTER_PATTERN + ")" + "|(?<IMM>" + IMM_PATTERN + ")" + "|(?<BRACE>" + BRACE_PATTERN + ")" + "|(?<BRACKET>" + BRACKET_PATTERN + ")" + "|(?<LABEL>" + LABEL_PATTERN + ")" + "|(?<STRING>" + STRING_PATTERN + ")" + "|(?<COMMENT>" + COMMENT_PATTERN + ")");
+    private static final String IMM_PATTERN = "=[^\n@]*|#[^\n\\]@]*";
+    private static final Pattern PATTERN = Pattern.compile(
+            "(?<COMMENT>" + COMMENT_PATTERN + ")"
+                    + "|(?<STRING>" + STRING_PATTERN + ")"
+                    + "|(?<SHIFT>" + SHIFT_PATTERN + ")"
+                    + "|(?<LABEL>" + LABEL_PATTERN + ")"
+                    + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+                    + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")"
+                    + "|(?<REGISTER>" + REGISTER_PATTERN + ")"
+                    + "|(?<IMM>" + IMM_PATTERN + ")"
+                    + "|(?<BRACE>" + BRACE_PATTERN + ")"
+                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
+    );
     private static final String sampleCode = String.join("\n", new String[]{".text", "_start:", "\t@ Beginning of the program"});
 
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -169,22 +179,22 @@ public class EditorController implements Initializable {
     /**
      * Affiche une notification relative à une AssemblyError.
      *
-     * @param error l'erreur en question
+     * @param exception l'erreur en question
      */
-    protected void addError(AssemblyError error) {
-        if (error.getObject() != null) {
-            if (error.getObject() instanceof ParsedInstruction instruction) {
-                logger.info("Error parsing " + instruction.getInstruction().toString() + " at line " + error.getLine());
-            } else if (error.getObject() instanceof ParsedDirective directive) {
-                logger.info("Error parsing " + directive.getDirective().toString() + " at line " + error.getLine());
+    protected void addError(SyntaxASMException exception) {
+        if (exception.getObject() != null) {
+            if (exception.getObject() instanceof ParsedInstruction instruction) {
+                logger.info("Error parsing " + instruction.getInstruction().toString() + " at line " + exception.getLine());
+            } else if (exception.getObject() instanceof ParsedDirective directive) {
+                logger.info("Error parsing " + directive.getDirective().toString() + " at line " + exception.getLine());
             } else {
-                logger.info("Error parsing code at line " + error.getLine());
+                logger.info("Error parsing code at line " + exception.getLine());
             }
         } else {
-            logger.info("Error parsing code at line " + error.getLine());
+            logger.info("Error parsing code at line " + exception.getLine());
         }
-        logger.log(Level.INFO, ExceptionUtils.getStackTrace(error.getException()));
-        addNotif(error.getException().getTitle(), " " + error.getException().getMessage() + " at line " + error.getLine(), "danger");
+        logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+        addNotif(exception.getTitle(), " " + exception.getMessage() + " at line " + exception.getLine(), "danger");
     }
 
     /**
@@ -231,7 +241,16 @@ public class EditorController implements Initializable {
                 int lastKwEnd = 0;
                 StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
                 while (matcher.find()) {
-                    String styleClass = matcher.group("INSTRUCTION") != null ? "instruction" : matcher.group("KEYWORD") != null ? "keyword" : matcher.group("SHIFT") != null ? "shift" : matcher.group("REGISTER") != null ? "register" : matcher.group("BRACE") != null ? "brace" : matcher.group("BRACKET") != null ? "bracket" : matcher.group("LABEL") != null ? "label" : matcher.group("STRING") != null ? "string" : matcher.group("COMMENT") != null ? "comment" :  matcher.group("IMM") != null ? "imm" : null; /* never happens */
+                    String styleClass = matcher.group("COMMENT") != null ? "comment"
+                            : matcher.group("STRING") != null ? "string"
+                            : matcher.group("SHIFT") != null ? "shift"
+                            : matcher.group("LABEL") != null ? "label"
+                            : matcher.group("KEYWORD") != null ? "keyword"
+                            : matcher.group("INSTRUCTION") != null ? "instruction"
+                            : matcher.group("REGISTER") != null ? "register"
+                            : matcher.group("BRACE") != null ? "brace"
+                            : matcher.group("BRACKET") != null ? "bracket"
+                            : matcher.group("IMM") != null ? "imm" : null;
                     assert styleClass != null;
                     spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
                     spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());

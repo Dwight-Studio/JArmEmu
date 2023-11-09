@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -318,21 +317,23 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             }
 
             try {
-                application.getCodeInterpreter().load(application.getSourceParser());
+                SyntaxASMException error = application.getCodeInterpreter().load(application.getSourceParser());
+
+                if (error != null) {
+                    Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(new SyntaxASMException[]{error}));
+                    return;
+                }
+
                 line = next = last = 0;
                 application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
                 application.getCodeInterpreter().restart();
                 application.getEditorController().prepareSimulation();
                 application.getStackController().clear();
 
-                AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
+                SyntaxASMException[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
             } catch (SyntaxASMException exception) {
-                Platform.runLater(() -> {
-                    application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
-                    logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
-                    application.getSimulationMenuController().abortSimulation();
-                });
+                Platform.runLater(() -> Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(new SyntaxASMException[]{exception})));
                 return;
             } catch (Exception e) {
                 Platform.runLater(() -> {

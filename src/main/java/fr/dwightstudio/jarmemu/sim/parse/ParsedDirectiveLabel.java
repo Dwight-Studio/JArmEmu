@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Supplier;
@@ -22,7 +21,7 @@ public class ParsedDirectiveLabel extends ParsedObject {
      * @return les erreurs détectées
      */
     @Override
-    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer container = stateSupplier.get();
 
         if (container.data.get(this.name) == null) {

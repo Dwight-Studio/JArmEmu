@@ -88,6 +88,15 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
         private final Register register;
         private boolean update;
 
+        /**
+         * Crée un UpdatableInteger qui s'occupe de mettre à jour
+         *
+         * @param integer l'entier contenu
+         * @param stateContainer le conteneur d'état associé à cet Updatable
+         * @param update vrai si on autorise l'update du registre à l'appel de update()
+         * @param updateNow si l'update doit se faire à la création de l'objet
+         * @param register le registre à appeler
+         */
         private UpdatableInteger(int integer, StateContainer stateContainer, boolean update, boolean updateNow, Register register) {
             this.integer = integer;
             this.register = register;
