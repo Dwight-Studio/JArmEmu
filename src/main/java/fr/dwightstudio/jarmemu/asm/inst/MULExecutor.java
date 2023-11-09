@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.util.MathUtils;
 
 public class MULExecutor implements InstructionExecutor<Register, Register, Register, Object> {
     @Override
