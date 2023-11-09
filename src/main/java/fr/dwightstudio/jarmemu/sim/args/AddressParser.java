@@ -88,7 +88,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
         private final Register register;
         private boolean update;
 
-        private UpdatableInteger(int integer, StateContainer stateContainer, boolean update, boolean updateNow, Register register) {
+        public UpdatableInteger(int integer, StateContainer stateContainer, boolean update, boolean updateNow, Register register) {
             this.integer = integer;
             this.register = register;
             this.update = update;
