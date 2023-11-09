@@ -1,9 +1,8 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
-import java.util.HashMap;
 import java.util.function.Supplier;
 
 public abstract class ParsedObject {
@@ -17,6 +16,6 @@ public abstract class ParsedObject {
      * @param stateSupplier un fournisseur de conteneur d'état
      * @return les erreurs détectées
      */
-    public abstract AssemblyError verify(int line, Supplier<StateContainer> stateSupplier);
+    public abstract SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier);
 
 }

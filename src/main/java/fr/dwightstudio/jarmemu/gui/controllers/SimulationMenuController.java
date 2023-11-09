@@ -1,11 +1,10 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.Status;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 
 import java.util.logging.Logger;
 
@@ -36,7 +35,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode de rappel si la préparation de la simulation s'est effectué avec succès
      * @param errors les erreurs rencontrées lors de l'analyse du code
      */
-    public void launchSimulation(AssemblyError[] errors) {
+    public void launchSimulation(SyntaxASMException[] errors) {
         getEditorController().clearNotifs();
 
         if (errors.length == 0 && getCodeInterpreter().getInstructionCount() != 0) {
@@ -55,12 +54,12 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             getController().reset.setDisable(false);
             getController().settingsTab.setDisable(true);
             application.status = Status.SIMULATING;
+        } else if (getCodeInterpreter().getInstructionCount() == 0) {
+            getController().simulate.setDisable(false);
+            getEditorController().addNotif("Simulation error: ", "No instructions detected", "danger");
         } else {
             getController().simulate.setDisable(false);
-            if (getCodeInterpreter().getInstructionCount() == 0) {
-                getEditorController().addNotif("Simulation error: ", "No instructions detected", "danger");
-            }
-            for (AssemblyError error : errors) {
+            for (SyntaxASMException error : errors) {
                 getEditorController().addError(error);
             }
         }

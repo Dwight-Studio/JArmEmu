@@ -1,17 +1,13 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.args.ArgumentParser;
-import fr.dwightstudio.jarmemu.sim.args.RegisterWithUpdateParser;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.AssemblyError;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
@@ -39,14 +35,14 @@ public class ParsedInstruction extends ParsedObject {
         this.processedArgs = new String[]{arg1, arg2, arg3, arg4};
     }
 
-    public AssemblyError verify(int line, Supplier<StateContainer> stateSupplier) {
+    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
             execute(stateContainer);
             return null;
         } catch (SyntaxASMException exception) {
-            return new AssemblyError(line, exception, this);
+            return exception.with(line).with(this);
         } finally {
             AddressParser.reset(stateContainer);
         }
@@ -60,7 +56,7 @@ public class ParsedInstruction extends ParsedObject {
             try {
                 for (int i = 0; i < 4; i++) {
                     if (processedArgs[i] != null) {
-                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
+                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i].toUpperCase());
                     } else {
                         parsedArgs[i] = argParsers[i].none();
                     }
@@ -69,7 +65,7 @@ public class ParsedInstruction extends ParsedObject {
                 try {
                     for (int i = 1; i < 4; i++) {
                         if (processedArgs[i-1] != null) {
-                            parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i-1]);
+                            parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i-1].toUpperCase());
                         } else {
                             parsedArgs[i] = argParsers[i].none();
                         }
@@ -87,7 +83,7 @@ public class ParsedInstruction extends ParsedObject {
 
             for (int i = 0; i < 4; i++) {
                 if (processedArgs[i] != null) {
-                    parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
+                    parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i].toUpperCase());
                 } else {
                     parsedArgs[i] = argParsers[i].none(i + 1);
                 }

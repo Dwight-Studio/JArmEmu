@@ -59,13 +59,13 @@ public class DirectiveParser {
                     ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip());
                     directives.add(parsedDirective);
                 } catch (IllegalArgumentException exception) {
-                    if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "' at line " + sourceScanner.getCurrentInstructionValue());
+                    if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'", sourceScanner.getCurrentInstructionValue());
                 }
             }
         }
 
         if (!flag) {
-            if (section.shouldParseDirective()) throw new SyntaxASMException("Unexpected statement '" + line + "', at line " + sourceScanner.getCurrentInstructionValue());
+            if (section.shouldParseDirective()) throw new SyntaxASMException("Unexpected statement '" + line + "'", sourceScanner.getCurrentInstructionValue());
         }
 
         return directives.close();
