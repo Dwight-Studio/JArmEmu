@@ -21,7 +21,6 @@ public class ASRExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleAsrTest() {
-        //TODO: faire les tests de ASR
         Register r0 = stateContainer.registers[0];
         Register r1 = stateContainer.registers[1];
         r0.setData(25);
