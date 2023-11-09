@@ -33,6 +33,10 @@ public class JArmEmuApplication extends Application {
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
 
+    // Format Settings
+    public static final int DEFAULT_DATA_FORMAT = 0;
+    public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
+
     // Controllers
     private JArmEmuController controller;
 
@@ -297,6 +301,20 @@ public class JArmEmuApplication extends Application {
             sourceParser = new LegacySourceParser(new SourceScanner(""));
         } else {
             sourceParser = new RegexSourceParser(new SourceScanner(""));
+        }
+    }
+
+    /**
+     * @param data les données
+     * @param format le format (0, 1, 2)
+     * @return une version formatée du nombre en données
+     */
+    public String getFormattedData(int data, int format) {
+        if (format == 2) {
+            return String.format(DATA_FORMAT_DICT[format], (long) data & 0xFFFFFFFFL).toUpperCase();
+        } else {
+            return String.format(DATA_FORMAT_DICT[format], data).toUpperCase();
+
         }
     }
 }

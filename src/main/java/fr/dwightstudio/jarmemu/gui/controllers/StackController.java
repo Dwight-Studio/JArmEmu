@@ -14,7 +14,8 @@ import java.util.logging.Logger;
 public class StackController extends AbstractJArmEmuModule {
 
     protected static final String HEX_FORMAT = "%08x";
-    private static final int MAX_NUMBER = 100;
+    protected int DATA_FORMAT;
+    private static final int MAX_NUMBER = 500;
     private int spDisplayer;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -37,6 +38,8 @@ public class StackController extends AbstractJArmEmuModule {
     public void updateGUI(StateContainer stateContainer) {
         if (stateContainer == null) return;
         TreeMap<Integer, Integer> stack = new TreeMap<>();
+
+        DATA_FORMAT = getSettingsController().getDataFormat();
 
         stack.putAll(getLowerValues(stateContainer));
         stack.putAll(getHigherValues(stateContainer));
@@ -78,8 +81,6 @@ public class StackController extends AbstractJArmEmuModule {
                 final double currentViewTop = (totalSize - viewSize) * current;
                 final double currentViewBottom = currentViewTop + viewSize;
 
-                logger.info("current: " + spDisplayer);
-
                 if (linePos < currentViewTop) {
                     getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
                 } else if ((linePos + lineSize) > currentViewBottom) {
@@ -96,7 +97,10 @@ public class StackController extends AbstractJArmEmuModule {
 
         int number = 0;
         while (container.memory.isWordInitiated(address) || (sp < container.getStackAddress() && address >= sp)) {
-            if (number > MAX_NUMBER) break;
+            if (number > MAX_NUMBER) {
+                rtn.put(address, null);
+                break;
+            }
             rtn.put(address, container.memory.getWord(address));
             address -= 4;
             number++;
@@ -112,7 +116,10 @@ public class StackController extends AbstractJArmEmuModule {
 
         int number = 0;
         while (container.memory.isWordInitiated(address) || (sp >= container.getStackAddress() && address <= sp)) {
-            if (number > MAX_NUMBER) break;
+            if (number > MAX_NUMBER) {
+                rtn.put(address, null);
+                break;
+            }
             rtn.put(address, container.memory.getWord(address));
             address += 4;
             number++;
@@ -136,7 +143,12 @@ public class StackController extends AbstractJArmEmuModule {
         Platform.runLater(() -> getController().stackGrid.add(address, 1, line));
         texts[1] = address;
 
-        Text value = new Text(String.format(HEX_FORMAT, entry.getValue()).toUpperCase());
+        Text value;
+        if (entry.getValue() == null) {
+            value = new Text("...");
+        } else {
+            value = new Text(getApplication().getFormattedData(entry.getValue(), DATA_FORMAT));
+        }
         value.getStyleClass().add("reg-data");
         value.setTextAlignment(TextAlignment.CENTER);
         Platform.runLater(() -> getController().stackGrid.add(value, 2, line));
@@ -150,7 +162,11 @@ public class StackController extends AbstractJArmEmuModule {
 
         texts[0].setText(sp ? "➤" : "");
         texts[1].setText(String.format(HEX_FORMAT, entry.getKey()).toUpperCase());
-        texts[2].setText(String.format(HEX_FORMAT, entry.getValue()).toUpperCase());
+        if (entry.getValue() == null) {
+            texts[2].setText("...");
+        } else {
+            texts[2].setText(getApplication().getFormattedData(entry.getValue(), DATA_FORMAT));
+        }
     }
 
     public void clear() {

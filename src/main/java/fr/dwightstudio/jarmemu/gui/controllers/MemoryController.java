@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.sim.args.ArgumentParsers;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
 import javafx.scene.control.ScrollPane;
@@ -16,7 +15,7 @@ import java.util.logging.Logger;
 public class MemoryController extends AbstractJArmEmuModule {
 
     protected static final String HEX_FORMAT = "%08x";
-    protected static final String DEC_FORMAT = "%08d";
+    protected int DATA_FORMAT;
 
     protected static final int LINES_PER_PAGE = 512;
     protected static final int ADDRESS_PER_LINE = 4;
@@ -34,11 +33,11 @@ public class MemoryController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        memory = new Text[LINES_PER_PAGE][7];
+        memory = new Text[LINES_PER_PAGE][6];
 
         for (int i = 0; i < LINES_PER_PAGE; i++) {
 
-            for (int j = 0; j < 7; j++) {
+            for (int j = 0; j < 6; j++) {
                 Text node = new Text("00000000");
                 node.getStyleClass().add(j == 0 ? "reg-address" : "reg-data");
                 getController().memoryGrid.add(node, j, i);
@@ -51,6 +50,7 @@ public class MemoryController extends AbstractJArmEmuModule {
             getController().memoryGrid.getRowConstraints().add(i, rowConstraints);
         }
 
+        // Configuration du sélecteur de pages
         getController().memoryPage.setPageCount(PAGE_NUMBER);
         getController().memoryPage.setCurrentPageIndex(PAGE_OFFSET);
         getController().memoryPage.currentPageIndexProperty().addListener((observableValue, number, t1) -> {
@@ -59,6 +59,7 @@ public class MemoryController extends AbstractJArmEmuModule {
             }
         });
 
+        // Relier la barre virtuelle à la barre du ScrollPane
         getController().memoryScrollBar.minProperty().bind(getController().memoryScroll.vminProperty());
         getController().memoryScrollBar.maxProperty().bind(getController().memoryScroll.vmaxProperty());
         getController().memoryScrollBar.visibleAmountProperty().bind(getController().memoryScroll.heightProperty().divide(getController().memoryPane.heightProperty()));
@@ -73,6 +74,7 @@ public class MemoryController extends AbstractJArmEmuModule {
                     int add = container.evalWithConsts(getController().addressField.getText().toUpperCase());
                     int page = Math.floorDiv(add, ADDRESS_PER_PAGE) + PAGE_OFFSET;
                     getController().memoryPage.setCurrentPageIndex(page);
+                    // TODO: Ajouter le scroll automatique vers la bonne adresse (s'inspirer de ce qui est fait avec le stack)
                 } catch (Exception ignored) {}
             }
         });
@@ -85,6 +87,8 @@ public class MemoryController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
+        DATA_FORMAT = getSettingsController().getDataFormat();
+
         for (int i = 0; i < LINES_PER_PAGE; i++) {
             int add = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
 
@@ -96,12 +100,11 @@ public class MemoryController extends AbstractJArmEmuModule {
                 byte byte1 = stateContainer.memory.getByte(add + 2);
                 byte byte0 = stateContainer.memory.getByte(add + 3);
 
-                memory[i][1].setText(String.format(HEX_FORMAT, MathUtils.toWord(byte3, byte2, byte1, byte0)).toUpperCase());
-                memory[i][2].setText(String.format(DEC_FORMAT, MathUtils.toWord(byte3, byte2, byte1, byte0)));
-                memory[i][3].setText(MathUtils.toBinString(byte3));
-                memory[i][4].setText(MathUtils.toBinString(byte2));
-                memory[i][5].setText(MathUtils.toBinString(byte1));
-                memory[i][6].setText(MathUtils.toBinString(byte0));
+                memory[i][1].setText(getApplication().getFormattedData(MathUtils.toWord(byte3, byte2, byte1, byte0), DATA_FORMAT).toUpperCase());
+                memory[i][2].setText(MathUtils.toBinString(byte3));
+                memory[i][3].setText(MathUtils.toBinString(byte2));
+                memory[i][4].setText(MathUtils.toBinString(byte1));
+                memory[i][5].setText(MathUtils.toBinString(byte0));
             }
         }
     }

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 public class RegistersController extends AbstractJArmEmuModule {
 
     protected static final String HEX_FORMAT = "%08x";
+    private int DATA_FORMAT;
     // TODO: Ajouter le DEC avec redimensionnement des cases (modifier dans la mémoire et le stack aussi)
 
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -32,14 +33,16 @@ public class RegistersController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
+        DATA_FORMAT = getSettingsController().getDataFormat();
+
         if (stateContainer != null) {
             for (int i = 0; i < 16; i++) {
-                registers[i].setText(String.format(HEX_FORMAT, stateContainer.registers[i].getData()).toUpperCase());
+                registers[i].setText(getApplication().getFormattedData(stateContainer.registers[i].getData(), DATA_FORMAT));
             }
 
-            getController().CPSR.setText(String.format(HEX_FORMAT, stateContainer.cpsr.getData()).toUpperCase());
+            getController().CPSR.setText(getApplication().getFormattedData(stateContainer.cpsr.getData(), DATA_FORMAT));
             getController().CPSRT.setText(stateContainer.cpsr.toString());
-            getController().SPSR.setText(String.format(HEX_FORMAT, stateContainer.spsr.getData()).toUpperCase());
+            getController().SPSR.setText(getApplication().getFormattedData(stateContainer.spsr.getData(), DATA_FORMAT));
             getController().SPSRT.setText(stateContainer.spsr.toString());
         }
     }

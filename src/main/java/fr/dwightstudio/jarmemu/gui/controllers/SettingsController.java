@@ -20,10 +20,12 @@ public class SettingsController extends AbstractJArmEmuModule {
     private static final String LAST_SAVE_PATH_KEY = "lastSavePath";
     private static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
     private static final String SOURCE_PARSER_KEY = "sourceParser";
+    private static final String DATA_FORMAT_KEY = "dataFormat";
     private static final String STACK_ADDRESS_KEY = "stackAddress";
     private static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
 
-    private static final String[] SOURCE_PARSER_DICT = new String[]{"Regex Parser (default)", "Legacy Parser"};
+    private static final String[] SOURCE_PARSER_LABEL_DICT = new String[]{"Regex Parser (default)", "Legacy Parser"};
+    private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -69,7 +71,8 @@ public class SettingsController extends AbstractJArmEmuModule {
      */
     private void updateGUI() {
         simIntervalValue.setValue(getSimulationInterval());
-        getController().settingsParser.setText(SOURCE_PARSER_DICT[getSourceParserSetting()]);
+        getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[getSourceParserSetting()]);
+        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
         stackAddressValue.setValue(getStackAddress());
         symbolsAddressValue.setValue(getSymbolsAddress());
     }
@@ -85,23 +88,48 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.putInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER);
         preferences.putInt(STACK_ADDRESS_KEY, StateContainer.DEFAULT_STACK_ADDRESS);
         preferences.putInt(SYMBOLS_ADDRESS_KEY, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        preferences.putInt(DATA_FORMAT_KEY, JArmEmuApplication.DEFAULT_DATA_FORMAT);
         updateGUI();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
-    public void onSettingsRegex() {
+    protected void onSettingsRegex() {
         setSourceParser(0);
-        getController().settingsParser.setText(SOURCE_PARSER_DICT[0]);
+        getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[0]);
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
-    public void onSettingsLegacy() {
+    protected void onSettingsLegacy() {
         setSourceParser(1);
-        getController().settingsParser.setText(SOURCE_PARSER_DICT[1]);
+        getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[1]);
+    }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    protected void onSettingsHex() {
+        setDataFormat(0);
+        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[0]);
+    }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    protected void onSettingsDec() {
+        setDataFormat(1);
+        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[1]);
+    }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    protected void onSettingsUDec() {
+        setDataFormat(2);
+        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[2]);
     }
 
     public void setSimulationInterval(int nb) {
@@ -121,7 +149,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getSourceParserSetting() {
-        return preferences.getInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER);
+        return Math.min(Math.max(preferences.getInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER), 0), 1);
     }
 
     public void setStackAddress(int nb) {
@@ -146,5 +174,13 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setLastSavePath(String path) {
         preferences.put(LAST_SAVE_PATH_KEY, path);
+    }
+
+    public int getDataFormat() {
+        return Math.max(Math.min(preferences.getInt(DATA_FORMAT_KEY, JArmEmuApplication.DEFAULT_DATA_FORMAT), 2), 0);
+    }
+
+    public void setDataFormat(int nb) {
+        preferences.putInt(DATA_FORMAT_KEY, nb);
     }
 }
