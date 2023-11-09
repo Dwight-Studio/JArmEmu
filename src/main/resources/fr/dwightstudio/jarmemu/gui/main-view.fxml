@@ -180,7 +180,7 @@
                                                 <Insets bottom="5.0" left="10.0" top="5.0" />
                                              </VBox.margin>
                                           </GridPane>
-                                          <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                          <ScrollPane fx:id="stackScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                              <content>
                                                 <AnchorPane>
                                                    <children>

@@ -68,6 +68,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected Tab stackTab;
     @FXML protected GridPane stackGrid;
+    @FXML protected ScrollPane stackScroll;
 
 
     public JArmEmuController(JArmEmuApplication application) {

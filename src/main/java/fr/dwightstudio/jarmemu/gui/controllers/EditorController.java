@@ -210,8 +210,10 @@ public class EditorController implements Initializable {
 
     public void markLine(int line, LineStatus status) {
         if (line >= 0) {
-            getController().codeArea.moveTo(line, 0);
-            getController().codeArea.requestFollowCaret();
+            if (status == LineStatus.EXECUTED) {
+                getController().codeArea.moveTo(line, 0);
+                getController().codeArea.requestFollowCaret();
+            }
             lineFactory.nums.get(line).accept(status);
         }
     }

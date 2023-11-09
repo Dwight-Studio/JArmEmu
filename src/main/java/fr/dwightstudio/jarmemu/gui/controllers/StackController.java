@@ -4,16 +4,9 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
-import java.lang.reflect.Executable;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;
@@ -21,9 +14,8 @@ import java.util.logging.Logger;
 public class StackController extends AbstractJArmEmuModule {
 
     protected static final String HEX_FORMAT = "%08x";
-    private static final Background DEFAULT_BACKGROUND =  new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
-    private static final Background POINTED_BACKGROUND =  new Background(new BackgroundFill(Color.web("#8aeaff"), null, null));
     private static final int MAX_NUMBER = 100;
+    private int spDisplayer;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     protected ArrayList<Text[]> stackTexts;
@@ -51,12 +43,15 @@ public class StackController extends AbstractJArmEmuModule {
 
         int i = 0;
         int sp = stateContainer.registers[RegisterUtils.SP.getN()].getData();
+        spDisplayer = -1;
         for (Map.Entry<Integer, Integer> entry : stack.entrySet()) {
+            boolean hasSp = entry.getKey().equals(sp);
             if (stackTexts.size() > i) {
-                update(entry, i, sp);
+                update(entry, i, hasSp);
             } else {
-                create(entry, i, sp);
+                create(entry, i, hasSp);
             }
+            if (hasSp) spDisplayer = i;
             i++;
         }
 
@@ -68,6 +63,28 @@ public class StackController extends AbstractJArmEmuModule {
                 getController().stackGrid.getChildren().remove(texts[0]);
                 getController().stackGrid.getChildren().remove(texts[1]);
                 getController().stackGrid.getChildren().remove(texts[2]);
+            });
+        }
+
+        if (spDisplayer != -1) {
+            Platform.runLater(() -> {
+                final double current = getController().stackScroll.getVvalue();
+
+                final double totalSize = getController().stackGrid.getBoundsInParent().getHeight();
+                final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
+                final double lineSize = getController().stackGrid.getChildren().getFirst().getBoundsInParent().getHeight();
+                final double linePos = spDisplayer * lineSize;
+
+                final double currentViewTop = (totalSize - viewSize) * current;
+                final double currentViewBottom = currentViewTop + viewSize;
+
+                logger.info("current: " + spDisplayer);
+
+                if (linePos < currentViewTop) {
+                    getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
+                } else if ((linePos + lineSize) > currentViewBottom) {
+                    getController().stackScroll.setVvalue((linePos - viewSize + lineSize * 1.3) / (totalSize - viewSize));
+                }
             });
         }
     }
@@ -104,10 +121,10 @@ public class StackController extends AbstractJArmEmuModule {
         return rtn;
     }
 
-    private void create(Map.Entry<Integer, Integer> entry, int line, int sp) {
+    private void create(Map.Entry<Integer, Integer> entry, int line, boolean sp) {
         Text[] texts = new Text[3];
 
-        Text indicator = new Text(entry.getKey().equals(sp) ? "➤" : "");
+        Text indicator = new Text(sp ? "➤" : "");
         indicator.getStyleClass().add("reg-data");
         indicator.setTextAlignment(TextAlignment.CENTER);
         Platform.runLater(() -> getController().stackGrid.add(indicator, 0, line));
@@ -128,10 +145,10 @@ public class StackController extends AbstractJArmEmuModule {
         stackTexts.add(texts);
     }
 
-    private void update(Map.Entry<Integer, Integer> entry, int line, int sp) {
+    private void update(Map.Entry<Integer, Integer> entry, int line, boolean sp) {
         Text[] texts = stackTexts.get(line);
 
-        texts[0].setText(entry.getKey().equals(sp) ? "➤" : "");
+        texts[0].setText(sp ? "➤" : "");
         texts[1].setText(String.format(HEX_FORMAT, entry.getKey()).toUpperCase());
         texts[2].setText(String.format(HEX_FORMAT, entry.getValue()).toUpperCase());
     }
