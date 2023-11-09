@@ -13,6 +13,7 @@ JArmEmu is powered by a ARMv7 interpreter made *Ex Nihilo* for this project.
 ## Limitations
 Currently, known limitations or differences with the real architecture:
 - Carry flag not updated when using the S condition on ASR and ROR
+- SWI instruction is not implemented
 
 ## Licence
 This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (independent
