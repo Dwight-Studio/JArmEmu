@@ -21,7 +21,6 @@ public class LSLExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleLslTest() {
-        //TODO: faire les tests de LSL
         Register r0 = stateContainer.registers[0];
         Register r1 = stateContainer.registers[1];
         r0.setData(25);

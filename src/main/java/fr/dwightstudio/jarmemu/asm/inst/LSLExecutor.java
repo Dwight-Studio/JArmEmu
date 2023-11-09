@@ -14,7 +14,6 @@ public class LSLExecutor implements InstructionExecutor<Register, Register, Inte
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
-            //TODO: Update carry flag
             stateContainer.cpsr.setC((oldValue & (1 << (32 - arg3))) != 0);
         }
     }
