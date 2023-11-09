@@ -56,7 +56,7 @@ public class ParsedInstruction extends ParsedObject {
             try {
                 for (int i = 0; i < 4; i++) {
                     if (processedArgs[i] != null) {
-                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
+                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i].toUpperCase());
                     } else {
                         parsedArgs[i] = argParsers[i].none();
                     }
@@ -65,7 +65,7 @@ public class ParsedInstruction extends ParsedObject {
                 try {
                     for (int i = 1; i < 4; i++) {
                         if (processedArgs[i-1] != null) {
-                            parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i-1]);
+                            parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i-1].toUpperCase());
                         } else {
                             parsedArgs[i] = argParsers[i].none();
                         }
@@ -83,7 +83,7 @@ public class ParsedInstruction extends ParsedObject {
 
             for (int i = 0; i < 4; i++) {
                 if (processedArgs[i] != null) {
-                    parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
+                    parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i].toUpperCase());
                 } else {
                     parsedArgs[i] = argParsers[i].none(i + 1);
                 }

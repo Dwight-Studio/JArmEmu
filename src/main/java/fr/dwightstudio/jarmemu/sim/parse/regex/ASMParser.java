@@ -116,7 +116,7 @@ public class ASMParser {
 
             try {
                 if (Objects.equals(dataString, "")) dataString = null;
-                if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase().strip());
+                if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase());
             } catch (IllegalArgumentException exception) {
                 throw new SyntaxASMException("Unknown data mode '" + dataString + "' at line " + sourceScanner.getCurrentInstructionValue());
             }
@@ -134,22 +134,22 @@ public class ASMParser {
         }
 
         if (arg1 != null) {
-            arg1 = arg1.strip().toUpperCase();
+            arg1 = arg1.strip();
             if (arg1.isEmpty()) arg1 = null;
         }
 
         if (arg2 != null) {
-            arg2 = arg2.strip().toUpperCase();
+            arg2 = arg2.strip();
             if (arg2.isEmpty()) arg2 = null;
         }
 
         if (arg3 != null) {
-            arg3 = arg3.strip().toUpperCase();
+            arg3 = arg3.strip();
             if (arg3.isEmpty()) arg3 = null;
         }
 
         if (arg4 != null) {
-            arg4 = arg4.strip().toUpperCase();
+            arg4 = arg4.strip();
             if (arg4.isEmpty()) arg4 = null;
         }
 
