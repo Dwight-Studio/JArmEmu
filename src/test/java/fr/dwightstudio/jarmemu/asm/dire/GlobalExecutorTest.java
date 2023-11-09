@@ -6,8 +6,6 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Random;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class GlobalExecutorTest extends JArmEmuTest {
@@ -23,7 +21,7 @@ class GlobalExecutorTest extends JArmEmuTest {
     @Test
     void normalTest() {
         GLOBAL.apply(container, "EXEMPLE", 0);
-        assertEquals("EXEMPLE", container.globals.get(0));
+        assertEquals("EXEMPLE", container.getGlobal());
         assertEquals(0, GLOBAL.computeDataLength(container,"EXEMPLE", 0));
     }
 

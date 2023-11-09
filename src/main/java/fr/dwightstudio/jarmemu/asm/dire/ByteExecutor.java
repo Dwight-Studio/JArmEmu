@@ -15,7 +15,7 @@ public class ByteExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         try {
-            int data = RotatedImmParser.generalParse(stateContainer, args);
+            int data = stateContainer.evalWithAll(args);
             if (Integer.numberOfLeadingZeros(data) >= 24) {
                 byte b = (byte) data;
                 stateContainer.memory.putByte(currentPos, b);
@@ -26,7 +26,6 @@ public class ByteExecutor implements DirectiveExecutor {
             throw new SyntaxASMException("Invalid byte value '" + args + "'");
         }
     }
-    //TODO: Prendre en compte les chars
 
     /**
      * Calcul de la taille prise en mémoire

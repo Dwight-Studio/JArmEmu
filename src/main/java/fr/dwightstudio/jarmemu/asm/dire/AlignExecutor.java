@@ -15,7 +15,7 @@ public class AlignExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         if (!args.isEmpty()) {
-            RotatedImmParser.generalParse(stateContainer, args);
+            stateContainer.evalWithConsts(args);
         }
     }
 
@@ -31,7 +31,7 @@ public class AlignExecutor implements DirectiveExecutor {
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
         int d = 4;
         if (!args.isEmpty()) {
-            d = RotatedImmParser.generalParse(stateContainer, args);
+            d = stateContainer.evalWithConsts(args);
         }
         return (d - (currentPos % d)) % d;
     }

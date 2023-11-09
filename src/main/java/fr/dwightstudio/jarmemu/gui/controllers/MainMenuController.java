@@ -81,6 +81,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
         if (savePath != null) fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
         File file = fileChooser.showSaveDialog(application.stage);
         if (file != null) {
+            if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
             logger.info("File located: " + file.getAbsolutePath());
             savePath = file;
             onSave();

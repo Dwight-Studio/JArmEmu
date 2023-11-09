@@ -15,7 +15,7 @@ public class HalfExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         try {
-            int data = RotatedImmParser.generalParse(stateContainer, args);
+            int data = stateContainer.evalWithConsts(args);
             if (Integer.numberOfLeadingZeros(data) >= 16) {
                 short half = (short) data;
                 stateContainer.memory.putHalf(currentPos, half);

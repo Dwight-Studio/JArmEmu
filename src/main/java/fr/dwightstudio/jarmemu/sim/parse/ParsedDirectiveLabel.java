@@ -11,7 +11,7 @@ public class ParsedDirectiveLabel extends ParsedObject {
     private final String name;
 
     public ParsedDirectiveLabel(String name) {
-        this.name = name;
+        this.name = name.toUpperCase();
     }
 
     /**

@@ -72,6 +72,15 @@ public class CodeInterpreter {
         int off = getLastLine() + 1;
         int pos = 0;
 
+        // Suppression des directives générées
+        parsedObjects.replaceAll((k, v) -> {
+            if (v instanceof ParsedDirective directive) {
+                if (directive.isGenerated()) return null;
+            }
+            return v;
+        });
+
+        // Application de toutes les directives
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                 if (!parsedDirective.isGenerated()) {
@@ -88,6 +97,7 @@ public class CodeInterpreter {
 
         HashMap<Integer, ParsedObject> temp = new HashMap<>();
 
+        // Génération des directives à l'aide des pseudo-opérations '='
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
                 ParsedDirectivePack pack = parsedInstruction.convertValueToDirective(stateContainer);
@@ -100,6 +110,7 @@ public class CodeInterpreter {
 
         parsedObjects.putAll(temp);
 
+        // Application des directives générée
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                 if (parsedDirective.isGenerated()) {

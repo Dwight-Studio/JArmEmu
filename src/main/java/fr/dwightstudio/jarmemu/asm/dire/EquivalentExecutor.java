@@ -16,7 +16,7 @@ public class EquivalentExecutor implements DirectiveExecutor {
         String[] arg = args.split(",");
 
         if (arg.length == 2) {
-            String symbol = arg[0];
+            String symbol = arg[0].toUpperCase();
 
             if (!symbol.matches("[A-Za-z_0-9]+")) {
                 throw new SyntaxASMException("Invalid symbol name '" + symbol + "'");

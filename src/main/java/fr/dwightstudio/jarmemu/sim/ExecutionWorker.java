@@ -216,8 +216,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 });
                 doContinue = false;
             }
-
-            // TODO: Vérifier si les flags doivent être persistants
         }
 
         private void stepIntoTask() {
@@ -321,23 +319,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             try {
                 application.getCodeInterpreter().load(application.getSourceParser());
-            } catch (SyntaxASMException exception) {
-                Platform.runLater(() -> {
-                    application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
-                    logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
-                    application.getSimulationMenuController().abortSimulation();
-                });
-                return;
-            } catch (Exception e) {
-                Platform.runLater(() -> {
-                    new ExceptionDialog(e).show();
-                    logger.severe(ExceptionUtils.getStackTrace(e));
-                    application.getSimulationMenuController().abortSimulation();
-                });
-                return;
-            }
-
-            try {
                 line = next = last = 0;
                 application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
                 application.getCodeInterpreter().restart();
@@ -346,6 +327,13 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 AssemblyError[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
+            } catch (SyntaxASMException exception) {
+                Platform.runLater(() -> {
+                    application.getEditorController().addNotif(exception.getTitle(), " " + exception.getMessage(), "danger");
+                    logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+                    application.getSimulationMenuController().abortSimulation();
+                });
+                return;
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     new ExceptionDialog(e).show();

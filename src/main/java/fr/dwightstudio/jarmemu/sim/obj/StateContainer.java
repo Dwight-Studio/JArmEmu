@@ -1,24 +1,38 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
+import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 
 public class StateContainer {
 
     public static final int DEFAULT_STACK_ADDRESS = 65536;
     public static final int DEFAULT_SYMBOLS_ADDRESS = 0;
+    private static final Pattern SPECIAL_VALUE_PATTERN = Pattern.compile(
+            "(?i)"
+                    + "(?<VALUE>"
+                    + "0B\\w+"
+                    + "|0X\\w+"
+                    + "|00\\w+"
+                    + "|'.'"
+                    + ")" +
+                    "(?-i)"
+    );
 
     // ASM
     public final HashMap<String, Integer> consts; // HashMap des constantes
     public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     public final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
     public final HashMap<String, Integer> labels; // HashMap des labels
-    public final ArrayList<String> globals; // Labels globaux
+    private String global; // Labels globaux
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -40,7 +54,7 @@ public class StateContainer {
         consts = new HashMap<>();
         data = new HashMap<>();
         pseudoData = new HashMap<>();
-        globals = new ArrayList<>();
+        global = null;
 
         // Initializing registers
         cpsr = new PSR();
@@ -91,7 +105,7 @@ public class StateContainer {
 
     public int evalWithConsts(String expString) {
         try {
-            Expression exp = new ExpressionBuilder(expString).variables(consts.keySet()).build();
+            Expression exp = new ExpressionBuilder(preEval(expString)).variables(consts.keySet()).build();
 
             for (String str : consts.keySet()) {
                 exp.setVariable(str, (double) consts.get(str));
@@ -105,7 +119,7 @@ public class StateContainer {
 
     public int evalWithAll(String expString) {
         try {
-            Expression exp = new ExpressionBuilder(expString).variables(consts.keySet()).variables(data.keySet()).build();
+            Expression exp = new ExpressionBuilder(preEval(expString)).variables(consts.keySet()).variables(data.keySet()).build();
 
             for (String str : consts.keySet()) {
                 exp.setVariable(str, (double) consts.get(str));
@@ -116,8 +130,36 @@ public class StateContainer {
 
             return (int) exp.evaluate();
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Malformed math expression '" + expString + "'");
+            throw new SyntaxASMException("Malformed math expression '" + expString + "' (" + exception.getMessage() + ")");
         }
+    }
+
+    private String preEval(String s) {
+
+        return SPECIAL_VALUE_PATTERN.matcher(s).replaceAll(matchResult -> {
+            String valueString = matchResult.group("VALUE").toUpperCase();
+            try {
+                if (valueString.startsWith("0B")) {
+                    valueString = valueString.substring(2).strip();
+
+                    return String.valueOf(Integer.parseUnsignedInt(valueString, 2));
+                } else if (valueString.startsWith("0X")) {
+                    valueString = valueString.substring(2).strip();
+
+                    return String.valueOf(Integer.parseUnsignedInt(valueString, 16));
+                } else if (valueString.startsWith("00")) {
+                    valueString = valueString.substring(2).strip();
+
+                    return String.valueOf(Integer.parseUnsignedInt(valueString, 8));
+                } else if (valueString.startsWith("'")) {
+                    return String.valueOf((int) matchResult.group("VALUE").charAt(1));
+                }
+            } catch (NumberFormatException exception) {
+                throw new SyntaxASMException("Malformed math expression '" + valueString + "' (" + exception.getMessage() + ")");
+            }
+            return valueString;
+        });
+
     }
 
     public int getStackAddress() {
@@ -126,5 +168,13 @@ public class StateContainer {
 
     public int getSymbolsAddress() {
         return symbolsAddress;
+    }
+
+    public String getGlobal() {
+        return global;
+    }
+
+    public void setGlobal(String global) {
+        this.global = global;
     }
 }

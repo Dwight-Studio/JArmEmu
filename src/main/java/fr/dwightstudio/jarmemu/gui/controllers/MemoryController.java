@@ -65,10 +65,12 @@ public class MemoryController extends AbstractJArmEmuModule {
         getController().memoryScroll.vvalueProperty().bindBidirectional(getController().memoryScrollBar.valueProperty());
         getController().memoryScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
+        final StateContainer container = new StateContainer();
+
         getController().addressField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 try {
-                    int add = ArgumentParsers.ROTATED_IMM.generalParse(null, getController().addressField.getText().toUpperCase());
+                    int add = container.evalWithConsts(getController().addressField.getText().toUpperCase());
                     int page = Math.floorDiv(add, ADDRESS_PER_PAGE) + PAGE_OFFSET;
                     getController().memoryPage.setCurrentPageIndex(page);
                 } catch (Exception ignored) {}

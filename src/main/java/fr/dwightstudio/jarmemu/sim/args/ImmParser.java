@@ -13,7 +13,7 @@ public class ImmParser implements ArgumentParser<Integer> {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1).strip();
 
-                int rtn = RotatedImmParser.generalParse(stateContainer, valueString);
+                int rtn = stateContainer.evalWithConsts(valueString);
 
 
 

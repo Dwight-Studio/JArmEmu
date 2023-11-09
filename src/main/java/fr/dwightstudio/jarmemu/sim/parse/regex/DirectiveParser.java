@@ -56,7 +56,7 @@ public class DirectiveParser {
             } else if (directiveString != null && !directiveString.isEmpty()) {
                 try {
                     Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip().toUpperCase());
+                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip());
                     directives.add(parsedDirective);
                 } catch (IllegalArgumentException exception) {
                     if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "' at line " + sourceScanner.getCurrentInstructionValue());

@@ -12,7 +12,7 @@ public class RotatedImmParser implements ArgumentParser<Integer> {
         try {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1).strip();
-                int value = generalParse(stateContainer, valueString);
+                int value = stateContainer.evalWithConsts(valueString);
                 checkOverflow(value, string);
                 return value;
 
@@ -23,36 +23,6 @@ public class RotatedImmParser implements ArgumentParser<Integer> {
             }
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException("Invalid 8bits rotated immediate value '" + string + "' (" + exception.getMessage() + ")");
-        }
-    }
-
-    /**
-     * Analyse une chaine de caractères pour trouver des valeurs immédiates (sans # ou =).
-     *
-     * @param stateContainer le conteneur d'état sur lequel faire l'analyse (pour les constantes)
-     * @param valueString la chaine à analyser
-     * @return la valeur dans un entier
-     */
-    public static int generalParse(StateContainer stateContainer, @NotNull String valueString) {
-        if (valueString.startsWith("0B")) {
-            valueString = valueString.substring(2).strip();
-
-            return Integer.parseUnsignedInt(valueString, 2);
-        } else if (valueString.startsWith("0X")) {
-            valueString = valueString.substring(2).strip();
-
-            return Integer.parseUnsignedInt(valueString, 16);
-        } else if (valueString.startsWith("00")) {
-            valueString = valueString.substring(2).strip();
-
-            return Integer.parseUnsignedInt(valueString, 8);
-        } else {
-            if (stateContainer != null) {
-                return stateContainer.evalWithConsts(valueString);
-            } else {
-                stateContainer = new StateContainer();
-                return stateContainer.evalWithConsts(valueString);
-            }
         }
     }
 
