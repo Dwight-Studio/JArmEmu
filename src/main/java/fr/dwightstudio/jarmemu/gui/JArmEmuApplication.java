@@ -58,6 +58,7 @@ public class JArmEmuApplication extends Application {
     public Status status;
     public Stage stage;
     private String lastSave;
+    private String argSave;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -81,7 +82,15 @@ public class JArmEmuApplication extends Application {
         controller = fxmlLoader.getController();
 
 
-        // Others
+        // Essayer d'ouvrir le fichier passé en paramètre
+        if (!getParameters().getUnnamed().isEmpty()) {
+            logger.info("Detecting file argument: " + getParameters().getUnnamed().getFirst());
+            argSave = getParameters().getUnnamed().getFirst();
+        } else {
+            argSave = null;
+        }
+
+        // Autres
         shortcutHandler = new ShortcutHandler(this);
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
@@ -317,5 +326,12 @@ public class JArmEmuApplication extends Application {
             return String.format(DATA_FORMAT_DICT[format], data).toUpperCase();
 
         }
+    }
+
+    /**
+     * @return le chemin vers le fichier passé en paramètre (ou null si rien n'est passé en paramètre)
+     */
+    public String getArgSave() {
+        return argSave;
     }
 }
