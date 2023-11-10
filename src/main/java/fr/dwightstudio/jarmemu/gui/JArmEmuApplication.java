@@ -64,7 +64,7 @@ public class JArmEmuApplication extends Application {
     public void start(Stage stage) throws IOException {
         this.stage = stage;
 
-        logger.info("Starting up JArmEmu");
+        logger.info("Starting up JArmEmu v" + VERSION);
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre etc...)
         // TODO: Ajouter un desktop pour les .s et surtout ajouter un argument pour l'ouverture de fichiers
 
@@ -183,7 +183,7 @@ public class JArmEmuApplication extends Application {
     }
 
     private void setTitle(String title) {
-        Platform.runLater(() -> this.stage.setTitle("JArmEmu - " + title));
+        Platform.runLater(() -> this.stage.setTitle("JArmEmu v" + VERSION +" - " + title));
     }
 
     /**
