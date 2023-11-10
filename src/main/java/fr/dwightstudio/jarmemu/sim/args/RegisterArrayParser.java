@@ -21,22 +21,21 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
             String arrayString = string.substring(1, string.length()-1);
             ArrayList<Register> rtn = new ArrayList<>();
 
-            //TODO: Fix this part cause both cases can happen at the time
-            if(arrayString.contains("-")){
-                String[] stringArray = arrayString.split("-");
-                if (stringArray.length!=2) throw new SyntaxASMException("Unexpected value '" + string + "' (expected a Register Array)");
-                int registerFirst = Integer.parseInt(String.valueOf(stringArray[0].strip().charAt(1)));
-                int registerSecond = Integer.parseInt(String.valueOf(stringArray[1].strip().charAt(1)));
-                for (int i = registerFirst; i <= registerSecond; i++) {
-                    Register reg = ArgumentParsers.REGISTER.parse(stateContainer, "R" + i);
-                    if (!rtn.contains(reg)) {
-                        rtn.add(reg);
-                    } else {
-                        logger.log(Level.WARNING, "Duplicate register in array");
+            for (String regString : arrayString.split(",")) {
+                if(regString.contains("-")){
+                    String[] stringArray = regString.split("-");
+                    if (stringArray.length!=2) throw new SyntaxASMException("Unexpected value '" + string + "' (expected a Register Array)");
+                    int registerFirst = Integer.parseInt(String.valueOf(stringArray[0].strip().charAt(1)));
+                    int registerSecond = Integer.parseInt(String.valueOf(stringArray[1].strip().charAt(1)));
+                    for (int i = registerFirst; i <= registerSecond; i++) {
+                        Register reg = ArgumentParsers.REGISTER.parse(stateContainer, "R" + i);
+                        if (!rtn.contains(reg)) {
+                            rtn.add(reg);
+                        } else {
+                            logger.log(Level.WARNING, "Duplicate register in array");
+                        }
                     }
-                }
-            } else {
-                for (String regString : arrayString.split(",")) {
+                } else {
                     Register reg = ArgumentParsers.REGISTER.parse(stateContainer, regString.strip());
                     if (!rtn.contains(reg)) {
                         rtn.add(reg);

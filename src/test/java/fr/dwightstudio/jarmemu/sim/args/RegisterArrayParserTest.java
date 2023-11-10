@@ -42,6 +42,16 @@ class RegisterArrayParserTest extends JArmEmuTest {
     }
 
     @Test
+    public void twoTypesTest() {
+        String string = "{R0-R3, R4}";
+        Register[] registers = new Register[5];
+
+        System.arraycopy(stateContainer.registers, 0, registers, 0, 5);
+
+        assertArrayEquals(registers, REGISTER_ARRAY.parse(stateContainer, string));
+    }
+
+    @Test
     public void duplicateTest() {
         StringBuilder stringBuilder = new StringBuilder();
         Register[] registers = new Register[16];
