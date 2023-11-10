@@ -1,5 +1,5 @@
 Name:           jarmemu
-Version:        0.1.1
+Version:        0.1.2
 Release:        ALPHA
 Summary:        JArmEmu
 Group:          Development/Tools
