@@ -36,6 +36,7 @@ public class StackController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
+        // TODO: Corriger le scroll sur grand écran (windows)
         if (stateContainer == null) return;
         TreeMap<Integer, Integer> stack = new TreeMap<>();
 
