@@ -5,8 +5,6 @@ import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 // Correspond à "reg!", à utiliser avec ShiftParser
 public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.UpdatableRegister> {
 

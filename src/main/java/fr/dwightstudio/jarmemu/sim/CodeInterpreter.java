@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.args.AddressParser;

@@ -1,11 +1,8 @@
 package fr.dwightstudio.jarmemu;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 

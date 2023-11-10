@@ -1,10 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 

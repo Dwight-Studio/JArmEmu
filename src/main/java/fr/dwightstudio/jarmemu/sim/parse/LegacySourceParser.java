@@ -1,10 +1,12 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.Condition;
+import fr.dwightstudio.jarmemu.asm.DataMode;
+import fr.dwightstudio.jarmemu.asm.Instruction;
+import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
-import org.fxmisc.richtext.CodeArea;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;

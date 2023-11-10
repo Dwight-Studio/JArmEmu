@@ -1,14 +1,10 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
-import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.apache.commons.lang3.RandomStringUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 

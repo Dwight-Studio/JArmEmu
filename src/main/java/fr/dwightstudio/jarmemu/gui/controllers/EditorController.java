@@ -1,9 +1,9 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
@@ -25,7 +25,10 @@ import org.reactfx.Subscription;
 
 import java.net.URL;
 import java.time.Duration;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;

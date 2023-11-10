@@ -1,7 +1,5 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.RotatedImmParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class AlignExecutor implements DirectiveExecutor {

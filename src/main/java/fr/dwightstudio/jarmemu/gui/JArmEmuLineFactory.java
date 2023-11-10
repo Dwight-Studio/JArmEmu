@@ -1,10 +1,5 @@
 package fr.dwightstudio.jarmemu.gui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.function.Consumer;
-import java.util.function.IntFunction;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,6 +13,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
 
 public class JArmEmuLineFactory implements IntFunction<Node> {
 
