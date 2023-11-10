@@ -18,7 +18,7 @@ public class StateContainer {
                     + "\\b0B\\w+"
                     + "|\\b0X\\w+"
                     + "|\\b00\\w+"
-                    + "|\\b'.'"
+                    + "|'.'"
                     + ")" +
                     "(?-i)"
     );

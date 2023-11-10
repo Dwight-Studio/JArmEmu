@@ -29,6 +29,9 @@ class WordExecutorTest {
             WORD.apply(container, "" + r, i*4);
             assertEquals(r, container.memory.getWord(i*4));
         }
+
+        WORD.apply(container, "'c'", 32*4);
+        assertEquals(99, container.memory.getWord(32*4));
     }
 
     @Test

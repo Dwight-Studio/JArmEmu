@@ -136,10 +136,18 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Tente de lire la dernière sauvegarde, ouvre un nouveau fichier sinon.
      */
     public void openLastSave() {
+        String path;
+
+        if (application.getArgSave() == null) {
+            path = getSettingsController().getLastSavePath();
+        } else {
+            path = application.getArgSave();
+        }
+
         logger.info("Trying to open last save...");
-        if (!getSettingsController().getLastSavePath().isEmpty()) {
+        if (!path.isEmpty()) {
             try {
-                savePath = new File(getSettingsController().getLastSavePath());
+                savePath = new File(path);
 
                 if (savePath.exists()) {
                     if (savePath.isFile()) {

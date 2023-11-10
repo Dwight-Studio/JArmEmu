@@ -2,7 +2,8 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "JArmEmu"
-#define MyAppVersion "0.1.1"
+#define MyAppVersion "0.1.2"
+#define MyAppRelease "ALPHA"
 #define MyAppPublisher "Dwight Studio"
 #define MyAppURL "https://dwightstudio.fr/"
 #define MyAppExeName "launcher.exe"
@@ -29,7 +30,7 @@ LicenseFile=C:\Users\reaze\IdeaProjects\JArmEmu\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 OutputDir=C:\Users\reaze\IdeaProjects\JArmEmu\target
-OutputBaseFilename=JArmEmu-Windows
+OutputBaseFilename={#MyAppName}-{#MyAppVersion}-{#MyAppRelease}
 SetupIconFile=C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\favicon.ico
 Compression=lzma
 SolidCompression=yes

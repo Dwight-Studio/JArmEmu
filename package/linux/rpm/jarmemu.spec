@@ -1,6 +1,6 @@
 Name:           jarmemu
-Version:        0.1.1
-Release:        1
+Version:        0.1.2
+Release:        ALPHA
 Summary:        JArmEmu
 Group:          Development/Tools
 BuildArch:      noarch
@@ -25,6 +25,7 @@ mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons
 
 cp -r java/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r icons/ $RPM_BUILD_ROOT/%{_datadir}/
+cp -r mime/ $RPM_BUILD_ROOT/%{_datadir}/
 
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop
 
@@ -49,6 +50,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %{_datadir}/java/jarmemu/*
+
+%{_datadir}/mime/packages/text-x-jarmemu-source.xml
 
 %{_datadir}/icons/hicolor/128x128/apps/jarmemu.png
 %{_datadir}/icons/hicolor/16x16/apps/jarmemu.png

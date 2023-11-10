@@ -58,12 +58,13 @@ public class JArmEmuApplication extends Application {
     public Status status;
     public Stage stage;
     private String lastSave;
+    private String argSave;
 
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
 
-        logger.info("Starting up JArmEmu");
+        logger.info("Starting up JArmEmu v" + VERSION);
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre etc...)
         // TODO: Ajouter un desktop pour les .s et surtout ajouter un argument pour l'ouverture de fichiers
         // TODO: Gérer les saves inexistantes
@@ -82,7 +83,15 @@ public class JArmEmuApplication extends Application {
         controller = fxmlLoader.getController();
 
 
-        // Others
+        // Essayer d'ouvrir le fichier passé en paramètre
+        if (!getParameters().getUnnamed().isEmpty()) {
+            logger.info("Detecting file argument: " + getParameters().getUnnamed().getFirst());
+            argSave = getParameters().getUnnamed().getFirst();
+        } else {
+            argSave = null;
+        }
+
+        // Autres
         shortcutHandler = new ShortcutHandler(this);
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
@@ -175,7 +184,7 @@ public class JArmEmuApplication extends Application {
     }
 
     private void setTitle(String title) {
-        Platform.runLater(() -> this.stage.setTitle("JArmEmu - " + title));
+        Platform.runLater(() -> this.stage.setTitle("JArmEmu v" + VERSION +" - " + title));
     }
 
     /**
@@ -318,5 +327,12 @@ public class JArmEmuApplication extends Application {
             return String.format(DATA_FORMAT_DICT[format], data).toUpperCase();
 
         }
+    }
+
+    /**
+     * @return le chemin vers le fichier passé en paramètre (ou null si rien n'est passé en paramètre)
+     */
+    public String getArgSave() {
+        return argSave;
     }
 }
