@@ -29,6 +29,6 @@ cp -r ./target/lib/ $US/java/jarmemu/
 dpkg-deb --root-owner-group --build $CPF
 
 # Clean et rendu
-cp $BF/jarmemu.deb ./target/jarmemu-${VER}-${RELEASE}_all.deb
+cp $BF/jarmemu.deb ./target/JArmEmu-${VER}-${RELEASE}_all.deb
 rm -r $BF
 

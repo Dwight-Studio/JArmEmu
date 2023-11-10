@@ -33,5 +33,5 @@ cp ./package/linux/rpm/jarmemu.spec $BF/SPECS/
 rpmbuild -ba $BF/SPECS/jarmemu.spec
 
 # Clean et rendu
-cp $BF/RPMS/noarch/jarmemu-$VER-$RELEASE.noarch.rpm ./target/
+cp $BF/RPMS/noarch/jarmemu-$VER-$RELEASE.noarch.rpm ./target/JArmEmu-$VER-$RELEASE.noarch.rpm
 rm -r $BF
