@@ -28,7 +28,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
 
     @Test
     public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
-        File file = new File(getClass().getResource("/singleLine.s").toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/singleLine.s")).toURI());
 
         LegacySourceParser reader = new LegacySourceParser(file);
 
