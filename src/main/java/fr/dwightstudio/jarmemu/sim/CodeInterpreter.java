@@ -34,6 +34,7 @@ public class CodeInterpreter {
 
     /**
      * Charge des instructions parsées dans l'exécuteur
+     *
      * @param sourceParser le parseur de source utilisé
      */
     public SyntaxASMException load(SourceParser sourceParser) {
@@ -56,8 +57,8 @@ public class CodeInterpreter {
     /**
      * Vérifie toutes les ParsedInstructions et ParsedDirective
      *
-     * @apiNote Doit être appelé après un resetState
      * @return les erreurs si il y en a
+     * @apiNote Doit être appelé après un resetState
      */
     public SyntaxASMException[] verifyAll() {
         ArrayList<SyntaxASMException> rtn = new ArrayList<>();
@@ -89,16 +90,20 @@ public class CodeInterpreter {
 
         // Application de toutes les directives
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
-            if (inst.getValue() instanceof ParsedDirective parsedDirective) {
-                if (!parsedDirective.isGenerated()) {
-                    pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
+            try {
+                if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                    if (!parsedDirective.isGenerated()) {
+                        pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
+                    }
+                } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                    if (!parsedDirectivePack.isGenerated()) {
+                        pos = Math.max(parsedDirectivePack.apply(stateContainer, pos), pos);
+                    }
+                } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
+                    label.register(stateContainer, pos);
                 }
-            } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                if (!parsedDirectivePack.isGenerated()) {
-                    pos = Math.max(parsedDirectivePack.apply(stateContainer, pos), pos);
-                }
-            } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
-                label.register(stateContainer, pos);
+            } catch (SyntaxASMException e) {
+                throw e.with(inst.getKey());
             }
         }
 
@@ -119,14 +124,18 @@ public class CodeInterpreter {
 
         // Application des directives générée
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
-            if (inst.getValue() instanceof ParsedDirective parsedDirective) {
-                if (parsedDirective.isGenerated()) {
-                    pos = parsedDirective.apply(stateContainer, pos);
+            try {
+                if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                    if (parsedDirective.isGenerated()) {
+                        pos = parsedDirective.apply(stateContainer, pos);
+                    }
+                } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                    if (parsedDirectivePack.isGenerated()) {
+                        pos = parsedDirectivePack.apply(stateContainer, pos);
+                    }
                 }
-            } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                if (parsedDirectivePack.isGenerated()) {
-                    pos = parsedDirectivePack.apply(stateContainer, pos);
-                }
+            } catch (SyntaxASMException e) {
+                throw e.with(inst.getKey());
             }
         }
     }
@@ -164,12 +173,12 @@ public class CodeInterpreter {
             logger.info("Unable to find next line: program marked as having reached the end");
             atTheEnd = true;
             return currentLine;
-        }
-        else return getNextLineR(currentLine + 1);
+        } else return getNextLineR(currentLine + 1);
     }
 
     private int getNextLineR(int c) {
-        if (!parsedObjects.containsKey(c) || !(parsedObjects.get(c) instanceof ParsedInstruction)) return getNextLineR(c+1);
+        if (!parsedObjects.containsKey(c) || !(parsedObjects.get(c) instanceof ParsedInstruction))
+            return getNextLineR(c + 1);
         else return c;
     }
 
@@ -240,6 +249,7 @@ public class CodeInterpreter {
 
     /**
      * Vérifie que la ligne suivante existe.
+     *
      * @return vrai si il y a une ligne, faux sinon
      */
     public boolean hasNextLine() {
@@ -291,7 +301,7 @@ public class CodeInterpreter {
 
     private int getLineByte(int line) {
         int pos = -1;
-        for (int i = 0 ; i < instructionPositions.size() ; i++) {
+        for (int i = 0; i < instructionPositions.size(); i++) {
             if (instructionPositions.get(i) == line) {
                 pos = i;
                 break;
@@ -325,6 +335,7 @@ public class CodeInterpreter {
 
     /**
      * Calcul la position des instructions dans la mémoire du programme (pour utiliser avec PC)
+     *
      * @return une liste des positions
      */
     private ArrayList<Integer> computeInstructionsPositions() {
