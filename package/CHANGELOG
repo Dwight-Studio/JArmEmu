@@ -1,0 +1,10 @@
+0.1.1 -> 0.1.2
+
+- Fixing character parsing
+- Fixing unresponsive app bug due to inexistant save file
+- Optimizing concurrent management (using bound properties instead of direct assignation)
+- Fixing unrefreshed screen bug
+- Adding global directive logic (actually usable now)
+- Fixing the stack auto-scrolling for non-HDPI screens
+- Adding Directive Parser unit tests
+- Adding Fill directive and associated unit tests
