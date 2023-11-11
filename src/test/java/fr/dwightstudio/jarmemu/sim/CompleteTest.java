@@ -186,11 +186,51 @@ public class CompleteTest extends JArmEmuTest {
     }
 
     @Test
+    public void matrixLegacyTest() {
+        loadLegacy("/complete/matrix.s");
+
+        // Parse
+        codeInterpreter.load(parserLegacy);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            while (codeInterpreter.hasNextLine()) {
+                codeInterpreter.nextLine();
+                codeInterpreter.executeCurrentLine();
+            }
+        });
+
+        assertEqualsMemory("/complete/matrix-memory.d");
+    }
+
+    @Test
     public void pgcdTest() {
         load("/complete/pgcd.s");
 
         // Parse
         codeInterpreter.load(parser);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            while (codeInterpreter.hasNextLine()) {
+                codeInterpreter.nextLine();
+                codeInterpreter.executeCurrentLine();
+            }
+        });
+
+        assertEqualsMemory("/complete/pgcd-memory.d");
+    }
+
+    @Test
+    public void pgcdLegacyTest() {
+        loadLegacy("/complete/pgcd.s");
+
+        // Parse
+        codeInterpreter.load(parserLegacy);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
         codeInterpreter.restart();
 
