@@ -6,5 +6,4 @@
 - Fixing unrefreshed screen bug
 - Adding global directive logic (actually usable now)
 - Fixing the stack auto-scrolling for non-HDPI screens
-- Adding Directive Parser unit tests
-- Adding Fill directive and associated unit tests
+- Adding Fill directive
