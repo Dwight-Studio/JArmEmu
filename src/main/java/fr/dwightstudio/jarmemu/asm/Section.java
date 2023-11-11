@@ -7,7 +7,8 @@ public enum Section {
     DATA(false, true), // Initialized read-write data.
     RODATA(false, true), // Read-only data.
     TEXT(true, false), // Executable instructions.
-    NOTE(false, false); // Special information from vendors or system builders.
+    NOTE(false, false), // Special information from vendors or system builders.
+    END(false, false); // End of source file.
 
     private final boolean parseASM;
     private final boolean parseDirective;

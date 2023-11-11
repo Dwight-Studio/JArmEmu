@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.regex.ASMParser;
 import fr.dwightstudio.jarmemu.sim.parse.regex.DirectiveParser;
-import fr.dwightstudio.jarmemu.sim.parse.regex.SectionParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -12,18 +11,16 @@ import java.util.HashMap;
 public class RegexSourceParser implements SourceParser {
 
     private SourceScanner sourceScanner;
-    protected Section currentSection;
+    protected CurrentSection currentSection;
     private ASMParser asmParser;
     private DirectiveParser directiveParser;
-    private SectionParser sectionParser;
 
     public RegexSourceParser(SourceScanner sourceScanner) {
         this.sourceScanner = sourceScanner;
-        currentSection = Section.NONE;
+        currentSection= new CurrentSection();
 
         asmParser = new ASMParser();
         directiveParser = new DirectiveParser();
-        sectionParser = new SectionParser();
     }
 
     /**
@@ -42,7 +39,7 @@ public class RegexSourceParser implements SourceParser {
     @Override
     public void setSourceScanner(SourceScanner sourceScanner) {
         this.sourceScanner = sourceScanner;
-        currentSection = Section.NONE;
+        currentSection = new CurrentSection();
     }
 
     /**
@@ -54,10 +51,9 @@ public class RegexSourceParser implements SourceParser {
         HashMap<Integer, ParsedObject> rtn = new HashMap<>();
         asmParser = new ASMParser();
         directiveParser = new DirectiveParser();
-        sectionParser = new SectionParser();
 
         sourceScanner.goTo(-1);
-        currentSection = Section.NONE;
+        currentSection = new CurrentSection();
         while (this.sourceScanner.hasNextLine()){
             ParsedObject parsed = parseOneLine();
             if (parsed != null) {
@@ -80,16 +76,10 @@ public class RegexSourceParser implements SourceParser {
 
         if (line.isEmpty()) return null;
 
-        Section section = sectionParser.parseOneLine(sourceScanner, line);
-        if (section != null) {
-            this.currentSection = section;
-            return null;
-        }
-
-        ParsedObject directives = directiveParser.parseOneLine(sourceScanner, line, currentSection);
+        ParsedObject directives = directiveParser.parseOneLine(sourceScanner, line + " ", currentSection);
         if (directives != null) return directives;
 
-        if (currentSection == Section.TEXT) return asmParser.parseOneLine(sourceScanner, line);
+        if (currentSection.getValue() == Section.TEXT) return asmParser.parseOneLine(sourceScanner, line);
         return null;
     }
 
@@ -101,5 +91,21 @@ public class RegexSourceParser implements SourceParser {
      */
     public static String prepare(@NotNull String line) {
         return line.split("@")[0].strip();
+    }
+
+    public static class CurrentSection {
+        private Section value;
+
+        public CurrentSection() {
+            this.value = Section.NONE;
+        }
+
+        public Section getValue() {
+            return value == null ? Section.NONE : value;
+        }
+
+        public void setValue(Section value) {
+            this.value = value;
+        }
     }
 }

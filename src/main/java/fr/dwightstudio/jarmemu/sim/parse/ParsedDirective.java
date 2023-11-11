@@ -7,6 +7,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class ParsedDirective extends ParsedObject {
 
@@ -14,6 +15,7 @@ public class ParsedDirective extends ParsedObject {
     private final String args;
     private boolean generated;
     private String hash;
+    private final Logger logger = Logger.getLogger(getClass().getName());
 
     public ParsedDirective(@NotNull Directive directive, @NotNull String args) {
         this.directive = directive;
@@ -65,5 +67,39 @@ public class ParsedDirective extends ParsedObject {
     @Override
     public String toString() {
         return directive.name();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ParsedDirective dir)) return false;
+
+        if (!(dir.args.equalsIgnoreCase(this.args))) {
+            if (VERBOSE) logger.info("Difference: Args");
+            return false;
+        }
+
+        if (dir.directive != this.directive) {
+            if (VERBOSE) logger.info("Difference: Directive");
+            return false;
+        }
+
+        if (dir.generated != this.generated) {
+            if (VERBOSE) logger.info("Difference: Generated flag");
+            return false;
+        }
+
+        if (dir.hash == null) {
+            if (this.hash != null) {
+                if (VERBOSE) logger.info("Difference: Hash (Null)");
+                return false;
+            }
+        } else {
+            if (!(dir.hash.equalsIgnoreCase(this.hash))) {
+                if (VERBOSE) logger.info("Difference: Hash");
+                return false;
+            }
+        }
+
+        return true;
     }
 }

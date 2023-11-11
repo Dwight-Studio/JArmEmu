@@ -4,6 +4,7 @@ import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Supplier;
 
 public class ParsedDirectivePack extends ParsedObject {
@@ -33,7 +34,7 @@ public class ParsedDirectivePack extends ParsedObject {
     }
 
     public boolean add(ParsedObject directive) {
-        if (directive instanceof ParsedDirective || directive instanceof ParsedDirectiveLabel) {
+        if (directive instanceof ParsedDirective || directive instanceof ParsedDirectiveLabel || directive instanceof ParsedSection) {
             return content.add(directive);
         } else {
             throw new IllegalArgumentException("ParsedDirectivePack can only accept ParsedDirective or ParsedDirectiveLabel");
@@ -95,5 +96,11 @@ public class ParsedDirectivePack extends ParsedObject {
 
     public ParsedObject[] getContent() {
         return this.content.toArray(new ParsedObject[0]);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ParsedDirectivePack pack)) return false;
+        return pack.content.equals(content);
     }
 }

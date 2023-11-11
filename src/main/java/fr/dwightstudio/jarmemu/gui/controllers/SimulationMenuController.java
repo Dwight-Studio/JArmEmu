@@ -38,24 +38,26 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
     public void launchSimulation(SyntaxASMException[] errors) {
         getEditorController().clearNotifs();
 
-        if (errors.length == 0 && getCodeInterpreter().getInstructionCount() != 0) {
-            getEditorController().clearLineMarking();
-            getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
-            getController().stackGrid.setDisable(false);
-            getController().memoryPage.setDisable(false);
-            getController().addressField.setDisable(false);
-            getController().codeArea.setEditable(false);
-            getController().stepInto.setDisable(false);
-            getController().stepOver.setDisable(false);
-            getController().conti.setDisable(false);
-            getController().pause.setDisable(true);
-            getController().stop.setDisable(false);
-            getController().restart.setDisable(false);
-            getController().settingsTab.setDisable(true);
-            application.status = Status.SIMULATING;
-        } else if (getCodeInterpreter().getInstructionCount() == 0) {
-            getController().simulate.setDisable(false);
-            getEditorController().addNotif("Simulation error: ", "No instructions detected (did you forget '.text'?)", "danger");
+        if (errors.length == 0) {
+            if (getCodeInterpreter().getInstructionCount() == 0) {
+                getController().simulate.setDisable(false);
+                getEditorController().addNotif("Simulation error: ", "No instructions detected (did you forget '.text'?)", "danger");
+            } else {
+                getEditorController().clearLineMarking();
+                getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
+                getController().stackGrid.setDisable(false);
+                getController().memoryPage.setDisable(false);
+                getController().addressField.setDisable(false);
+                getController().codeArea.setEditable(false);
+                getController().stepInto.setDisable(false);
+                getController().stepOver.setDisable(false);
+                getController().conti.setDisable(false);
+                getController().pause.setDisable(true);
+                getController().stop.setDisable(false);
+                getController().restart.setDisable(false);
+                getController().settingsTab.setDisable(true);
+                application.status = Status.SIMULATING;
+            }
         } else {
             getController().simulate.setDisable(false);
             for (SyntaxASMException error : errors) {
