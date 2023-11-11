@@ -3,7 +3,6 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +13,8 @@ import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class RegexSourceParserTest extends JArmEmuTest {
 
