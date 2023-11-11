@@ -20,7 +20,7 @@ class GlobalExecutorTest extends JArmEmuTest {
 
     @Test
     void normalTest() {
-        GLOBAL.apply(container, "EXEMPLE", 0);
+        GLOBAL.apply(container, "ExEMpLE", 0);
         assertEquals("EXEMPLE", container.getGlobal());
         assertEquals(0, GLOBAL.computeDataLength(container,"EXEMPLE", 0));
     }
