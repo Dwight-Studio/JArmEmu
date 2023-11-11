@@ -1,11 +1,9 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.Condition;
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.Instruction;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.sim.parse.legacy.LegacySectionParser;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +20,7 @@ public class LegacySourceParser implements SourceParser {
     protected Instruction instruction;
     protected boolean updateFlags;
     protected SourceScanner sourceScanner;
+    protected LegacySectionParser legacySectionParser;
 
     protected DataMode dataMode;
     protected UpdateMode updateMode;
@@ -29,6 +28,8 @@ public class LegacySourceParser implements SourceParser {
     protected String currentLine;
     protected String instructionString;
     protected ArrayList<String> arguments;
+    protected Section section;
+    protected Section currentSection;
 
     /**
      * Création du lecteur de code du fichier *.s
@@ -38,6 +39,7 @@ public class LegacySourceParser implements SourceParser {
     public LegacySourceParser(File file) throws FileNotFoundException {
 
         this.sourceScanner = new SourceScanner(file);
+        this.legacySectionParser = new LegacySectionParser();
 
         this.instruction = null;
         this.updateFlags = false;
@@ -46,6 +48,8 @@ public class LegacySourceParser implements SourceParser {
         this.currentLine = "";
         this.instructionString = "";
         this.arguments = new ArrayList<>();
+        this.section = null;
+        this.currentSection = Section.NONE;
     }
 
     /**
@@ -55,6 +59,7 @@ public class LegacySourceParser implements SourceParser {
     public LegacySourceParser(SourceScanner sourceScanner) {
 
         this.sourceScanner = sourceScanner;
+        this.legacySectionParser = new LegacySectionParser();
 
         this.instruction = null;
         this.updateFlags = false;
@@ -63,6 +68,8 @@ public class LegacySourceParser implements SourceParser {
         this.currentLine = "";
         this.instructionString = "";
         this.arguments = new ArrayList<>();
+        this.section = null;
+        this.currentSection = Section.NONE;
     }
 
     /**
@@ -178,6 +185,7 @@ public class LegacySourceParser implements SourceParser {
         this.updateFlags = false;
         this.updateMode = null;
         this.dataMode = null;
+        this.section = null;
         this.conditionExec = Condition.AL;
         this.arguments.clear();
 
@@ -186,64 +194,69 @@ public class LegacySourceParser implements SourceParser {
         currentLine = this.removeBlanks(currentLine);
         currentLine = currentLine.toUpperCase();
 
-        instructionString = currentLine.split(" ")[0];
-        int instructionLength = instructionString.length();
-        instructionString = this.removeFlags(instructionString);
-        instructionString = this.removeCondition(instructionString);
-
-        Instruction[] instructions = Instruction.values();
-        for (Instruction instruction:instructions) {
-            if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
-        }
-
-        if(currentLine.endsWith(":")){
-            this.arguments.add(currentLine);
+        Section section = this.legacySectionParser.parseOneLine(currentLine);
+        if (section != null) {
+            this.section = section;
         } else {
-            if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + instructionString + "'");
-        }
+            instructionString = currentLine.split(" ")[0];
+            int instructionLength = instructionString.length();
+            instructionString = this.removeFlags(instructionString);
+            instructionString = this.removeCondition(instructionString);
 
-        if (currentLine.contains("{")) {
-            StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
-            argument.deleteCharAt(0);
-            argument.deleteCharAt(argument.length() - 1);
-            ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
-            argumentArray.replaceAll(String::strip);
-            argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
-            for (String arg : argumentArray) {
-                arg = this.joinString(arg);
-                argument.append(arg).append(",");
+            Instruction[] instructions = Instruction.values();
+            for (Instruction instruction:instructions) {
+                if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
             }
-            argument.deleteCharAt(argument.length() - 1);
-            argument.append("}");
-            this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
-            this.arguments.replaceAll(String::strip);
-        } else if (currentLine.contains("[")) {
-            StringBuilder argument = new StringBuilder(currentLine.split("\\[")[1]);
-            if (argument.toString().split("\\]").length==2){
-                this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
-                this.arguments.replaceAll(String::strip);
-                this.arguments = this.joinStringArray(this.arguments);
+
+            if(currentLine.endsWith(":")){
+                this.arguments.add(currentLine);
             } else {
-                argument = new StringBuilder(argument.toString().split("\\]")[0]);
+                if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + instructionString + "'");
+            }
+
+            if (currentLine.contains("{")) {
+                StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
+                argument.deleteCharAt(0);
+                argument.deleteCharAt(argument.length() - 1);
                 ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
                 argumentArray.replaceAll(String::strip);
-                argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "[");
+                argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
                 for (String arg : argumentArray) {
                     arg = this.joinString(arg);
                     argument.append(arg).append(",");
                 }
                 argument.deleteCharAt(argument.length() - 1);
-                argument.append("]");
+                argument.append("}");
                 this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
                 this.arguments.replaceAll(String::strip);
+            } else if (currentLine.contains("[")) {
+                StringBuilder argument = new StringBuilder(currentLine.split("\\[")[1]);
+                if (argument.toString().split("\\]").length==2){
+                    this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
+                    this.arguments.replaceAll(String::strip);
+                    this.arguments = this.joinStringArray(this.arguments);
+                } else {
+                    argument = new StringBuilder(argument.toString().split("\\]")[0]);
+                    ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
+                    argumentArray.replaceAll(String::strip);
+                    argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "[");
+                    for (String arg : argumentArray) {
+                        arg = this.joinString(arg);
+                        argument.append(arg).append(",");
+                    }
+                    argument.deleteCharAt(argument.length() - 1);
+                    argument.append("]");
+                    this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
+                    this.arguments.replaceAll(String::strip);
+                }
+            } else if (!(currentLine.endsWith(":"))) {
+                this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
+                this.arguments.replaceAll(String::strip);
+                this.arguments = this.joinStringArray(this.arguments);
             }
-        } else if (!(currentLine.endsWith(":"))) {
-            this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
-            this.arguments.replaceAll(String::strip);
-            this.arguments = this.joinStringArray(this.arguments);
-        }
 
-        if (arguments.size() > 4) throw new SyntaxASMException("Invalid instruction '" + currentLine + "' (too many arguments");
+            if (arguments.size() > 4) throw new SyntaxASMException("Invalid instruction '" + currentLine + "' (too many arguments");
+        }
     }
 
     /**
@@ -289,9 +302,14 @@ public class LegacySourceParser implements SourceParser {
         } catch (SyntaxASMException ignored) {
         }
 
+        if (this.section != null) {
+            this.currentSection = this.section;
+            return null;
+        }
+
         if (this.instruction == null) {
-            if (!arguments.isEmpty() && arguments.get(0).strip().endsWith(":")) {
-                String str = arguments.get(0);
+            if (!arguments.isEmpty() && arguments.getFirst().strip().endsWith(":")) {
+                String str = arguments.getFirst();
                 return new ParsedLabel(str.substring(0, str.length()-1), RegisterUtils.lineToPC(getCurrentLine()));
             }
         }
@@ -308,6 +326,7 @@ public class LegacySourceParser implements SourceParser {
             arg4 = arguments.get(3);
         } catch (IndexOutOfBoundsException ignored) {};
 
+        assert instruction != null;
         return new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 }

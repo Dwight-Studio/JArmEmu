@@ -49,7 +49,7 @@ public class ParsedDirectivePack extends ParsedObject {
         if (directives.isEmpty()) {
             return null;
         } else if (directives.size() == 1) {
-            return directives.get(0);
+            return directives.getFirst();
         } else {
             return this;
         }
