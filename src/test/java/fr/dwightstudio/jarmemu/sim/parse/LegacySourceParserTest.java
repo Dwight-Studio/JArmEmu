@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
@@ -144,6 +145,117 @@ public class LegacySourceParserTest extends JArmEmuTest {
         assertEquals(
                 new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[R0]", "R1" ,"LSL#2"),
                 parser.parseOneLine()
+        );
+    }
+
+    @Test
+    public void TestReadDirectives() throws URISyntaxException, FileNotFoundException {
+        File file = new File(Objects.requireNonNull(getClass().getResource("/directiveMultipleLinesLegacy.s")).toURI());
+
+        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file));
+
+        ParsedDirectivePack parsedDirectivePack;
+        parser.parseOneLine();
+        assertEquals(
+                Section.BSS,
+                parser.currentSection
+        );
+
+        parser.parseOneLine();
+        assertEquals(
+                Section.DATA,
+                parser.currentSection
+        );
+
+        assertEquals(
+                new ParsedDirective(Directive.GLOBAL, "ExEC"),
+                parser.parseOneLine()
+        );
+
+        parser.currentSection = Section.TEXT;
+        assertEquals(
+                new ParsedLabel("A", 0),
+                parser.parseOneLine()
+        );
+
+        parser.currentSection = Section.DATA;
+        parsedDirectivePack = new ParsedDirectivePack();
+        parsedDirectivePack.add(new ParsedDirectiveLabel("b"));
+        parsedDirectivePack.add(new ParsedDirective(Directive.WORD, "3"));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        parsedDirectivePack = new ParsedDirectivePack();
+        parsedDirectivePack.add(new ParsedDirective(Directive.BYTE, "'x'"));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        parsedDirectivePack = new ParsedDirectivePack();
+        parsedDirectivePack.add(new ParsedDirective(Directive.GLOBAL, "Test"));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        parsedDirectivePack = new ParsedDirectivePack();
+        parsedDirectivePack.add(new ParsedDirective(Directive.ASCII, ""));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        parsedDirectivePack = new ParsedDirectivePack();
+        parsedDirectivePack.add(new ParsedDirective(Directive.ASCIZ, "\"\""));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        assertEquals(
+                new ParsedDirective(Directive.EQU, "laBEL, 'c'"),
+                parser.parseOneLine()
+        );
+
+        parser.parseOneLine();
+        assertEquals(
+                Section.DATA,
+                parser.currentSection
+        );
+
+        parser.parseOneLine();
+        assertEquals(
+                Section.COMMENT,
+                parser.currentSection
+        );
+
+        assertNull(
+                parser.parseOneLine()
+        );
+
+        assertEquals(
+                new ParsedDirective(Directive.ASCII, "\"Hey\""),
+                parser.parseOneLine()
+        );
+
+        parser.parseOneLine();
+        assertEquals(
+                Section.TEXT,
+                parser.currentSection
+        );
+
+        assertEquals(
+                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1", "=B", null, null),
+                parser.parseOneLine()
+        );
+
+        parser.parseOneLine();
+        assertEquals(
+                Section.END,
+                parser.currentSection
         );
     }
 

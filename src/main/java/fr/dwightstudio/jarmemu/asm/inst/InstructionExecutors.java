@@ -1,9 +1,9 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.RegisterWithUpdateParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.ShiftParser;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
 
 public class InstructionExecutors {
 

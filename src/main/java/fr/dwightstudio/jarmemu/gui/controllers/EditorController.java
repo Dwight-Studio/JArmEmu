@@ -1,13 +1,11 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;

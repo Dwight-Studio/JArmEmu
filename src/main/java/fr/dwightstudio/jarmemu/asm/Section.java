@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.asm;
 
 public enum Section {
-    NONE(false, true),
+    NONE(false, false),
     BSS(false, true), // Uninitialized read-write data.
     COMMENT(false, false), // Version control information.
     DATA(false, true), // Initialized read-write data.

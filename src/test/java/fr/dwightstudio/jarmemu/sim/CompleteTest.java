@@ -2,15 +2,19 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -42,11 +46,20 @@ public class CompleteTest extends JArmEmuTest {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     RegexSourceParser parser;
+    LegacySourceParser parserLegacy;
     CodeInterpreter codeInterpreter;
 
     public void load(String name) {
         try {
-            parser = new RegexSourceParser(new SourceScanner(new File(getClass().getResource(name).toURI())));
+            parser = new RegexSourceParser(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadLegacy(String name) {
+        try {
+            parserLegacy = new LegacySourceParser(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -57,7 +70,7 @@ public class CompleteTest extends JArmEmuTest {
 
         Scanner scanner;
         try {
-            scanner = new Scanner(new File(getClass().getResource(memoryDumpFileName).toURI()));
+            scanner = new Scanner(new File(Objects.requireNonNull(getClass().getResource(memoryDumpFileName)).toURI()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -118,6 +131,26 @@ public class CompleteTest extends JArmEmuTest {
 
         // Parse
         codeInterpreter.load(parser);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            while (codeInterpreter.hasNextLine()) {
+                codeInterpreter.nextLine();
+                codeInterpreter.executeCurrentLine();
+            }
+        });
+
+        assertEqualsMemory("/complete/factorial-memory.d");
+    }
+
+    @Test
+    public void factorialLegacyTest() {
+        loadLegacy("/complete/factorial.s");
+
+        // Parse
+        codeInterpreter.load(parserLegacy);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
         codeInterpreter.restart();
 

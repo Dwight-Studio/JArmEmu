@@ -1,9 +1,9 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.Status;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import javafx.scene.control.Alert;
 
 import java.util.logging.Logger;

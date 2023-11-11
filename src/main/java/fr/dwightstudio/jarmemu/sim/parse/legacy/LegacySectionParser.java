@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse.legacy;
 
+import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 
@@ -13,13 +14,17 @@ public class LegacySectionParser {
         if (!line.startsWith(".")) {
             return null;
         } else {
-            String sectionString = Arrays.asList(line.split("\\.")).getLast();
+            String sectionString = Arrays.asList(line.split("\\.")).getLast().split(" ")[0];
             try {
-                section = Section.valueOf(sectionString.toUpperCase());
-            } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown section '" + sectionString + "'");
+                Directive.valueOf(sectionString.toUpperCase());
+                section = null;
+            } catch (Exception e) {
+                try {
+                    section = Section.valueOf(sectionString.toUpperCase());
+                } catch (IllegalArgumentException exception) {
+                    throw new SyntaxASMException("Unknown section '" + sectionString + "'");
+                }
             }
-
             return section;
         }
     }

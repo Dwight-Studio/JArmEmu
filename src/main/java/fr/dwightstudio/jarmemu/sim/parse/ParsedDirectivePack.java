@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.Supplier;
 
 public class ParsedDirectivePack extends ParsedObject {
