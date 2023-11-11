@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class RotatedImmParserTest extends JArmEmuTest {
-    // TODO: Refaire tous les tests
     private StateContainer stateContainer;
     private static final RotatedImmParser VALUE12 = new RotatedImmParser();
 
