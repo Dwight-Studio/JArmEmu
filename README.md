@@ -8,7 +8,7 @@ ARMv7 architecture.
 You can write you program and include GNU Assembly directives (only the basic ones are implemented, refer to synthaxic
 colorimetry to see if it is implemented).
 
-JArmEmu is powered by a ARMv7 interpreter made *Ex Nihilo* for this project.
+JArmEmu is powered by an ARMv7 interpreter made *Ex Nihilo* for this project.
 
 ## Limitations
 Currently, known limitations or differences with the real architecture:
