@@ -20,5 +20,6 @@
     <requires64Bit>false</requires64Bit>
     <minVersion>21</minVersion>
     <maxVersion></maxVersion>
+    <opt>-Dprism.dirtyopts=false</opt>
   </jre>
 </launch4jConfig>

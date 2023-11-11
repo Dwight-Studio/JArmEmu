@@ -41,3 +41,46 @@ Launcher:	C:\Program Files\Java\jdk-21\bin\javaw.exe
 Launcher args:	-jar "C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\JArmEmu.jar"
 Args length:	70/32768 chars
 Exit code:	0
+
+
+Version:	3.50
+CmdLine:	C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\launcher.exe --l4j-debug
+JNI:		No
+WOW64:		Yes
+Working dir:	C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\.
+Requires JDK:	No
+Requires 64-Bit: No
+Java min ver:	1.021.000
+Java max ver:	
+Substitute:	JAVA_HOME = C:\Program Files\Java\jdk-17.0.3.1
+Substitute:	PATH = C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\ffmpeg\bin;C:\Program Files\PostgreSQL\15\bin;C:\Program Files\Java\jdk-17.0.3.1\bin;C:\Program Files\CraftOS-PC;C:\Users\reaze\AppData\Local\Microsoft\WindowsApps;C:\Users\reaze\AppData\Local\JetBrains\Toolbox\scripts;C:\Users\reaze\AppData\Local\Microsoft\WindowsApps;C:\Users\reaze\AppData\Roaming\ytdl-cli;C:\Users\reaze\AppData\Local\Seekr;;C:\Program Files\Java\jdk-21\bin
+JRE paths:	C:\Program Files\Java\jdk-17.0.3.1;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\ffmpeg\bin;C:\Program Files\PostgreSQL\15\bin;C:\Program Files\Java\jdk-17.0.3.1\bin;C:\Program Files\CraftOS-PC;C:\Users\reaze\AppData\Local\Microsoft\WindowsApps;C:\Users\reaze\AppData\Local\JetBrains\Toolbox\scripts;C:\Users\reaze\AppData\Local\Microsoft\WindowsApps;C:\Users\reaze\AppData\Roaming\ytdl-cli;C:\Users\reaze\AppData\Local\Seekr;;C:\Program Files\Java\jdk-21\bin
+Check launcher:	C:\Program Files\Java\jdk-17.0.3.1\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Common Files\Oracle\Java\javapath\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\system32\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\Wbem\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\WindowsPowerShell\v1.0\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\OpenSSH\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Git\cmd\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\system32\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\Wbem\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\WindowsPowerShell\v1.0\bin\javaw.exe (not found)
+Check launcher:	C:\Windows\System32\OpenSSH\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files (x86)\ffmpeg\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\PostgreSQL\15\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Java\jdk-17.0.3.1\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\CraftOS-PC\bin\javaw.exe (not found)
+Check launcher:	C:\Users\reaze\AppData\Local\Microsoft\WindowsApps\bin\javaw.exe (not found)
+Check launcher:	C:\Users\reaze\AppData\Local\JetBrains\Toolbox\scripts\bin\javaw.exe (not found)
+Check launcher:	C:\Users\reaze\AppData\Local\Microsoft\WindowsApps\bin\javaw.exe (not found)
+Check launcher:	C:\Users\reaze\AppData\Roaming\ytdl-cli\bin\javaw.exe (not found)
+Check launcher:	C:\Users\reaze\AppData\Local\Seekr\bin\javaw.exe (not found)
+Check launcher:	C:\Program Files\Java\jdk-21\bin\javaw.exe (OK)
+Version string: 1.021.000_001 / 64-Bit (OK)
+Launcher:	C:\Program Files\Java\jdk-21\bin\javaw.exe
+Launcher args:	-Dprism.dirtyopts=false -jar "C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\JArmEmu.jar"
+Args length:	94/32768 chars
+Exit code:	0
