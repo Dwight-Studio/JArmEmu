@@ -3,8 +3,6 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
-import javafx.application.Platform;
-import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.ScrollPane;
@@ -20,14 +18,14 @@ import java.util.logging.Logger;
 public class MemoryController extends AbstractJArmEmuModule {
 
     protected static final String HEX_FORMAT = "%08x";
-    protected int DATA_FORMAT;
-
     protected static final int LINES_PER_PAGE = 512;
     protected static final int ADDRESS_PER_LINE = 4;
     protected static final int ADDRESS_PER_PAGE = LINES_PER_PAGE * ADDRESS_PER_LINE;
     protected static final int PAGE_NUMBER = (int) (((long) Math.pow(2L, 32L)) / ADDRESS_PER_PAGE);
     protected static final int PAGE_OFFSET = PAGE_NUMBER/2;
     protected static final int LINE_HEIGHT = 20;
+
+    protected int dataFormat;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private StringProperty[][] memoryStrings;
@@ -99,7 +97,7 @@ public class MemoryController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
-        DATA_FORMAT = getSettingsController().getDataFormat();
+        dataFormat = getSettingsController().getDataFormat();
 
         for (int i = 0; i < LINES_PER_PAGE; i++) {
             int add = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
@@ -112,7 +110,7 @@ public class MemoryController extends AbstractJArmEmuModule {
                 byte byte1 = stateContainer.memory.getByte(add + 2);
                 byte byte0 = stateContainer.memory.getByte(add + 3);
 
-                memoryStrings[i][1].set(getApplication().getFormattedData(MathUtils.toWord(byte3, byte2, byte1, byte0), DATA_FORMAT).toUpperCase());
+                memoryStrings[i][1].set(getApplication().getFormattedData(MathUtils.toWord(byte3, byte2, byte1, byte0), dataFormat).toUpperCase());
                 memoryStrings[i][2].set(MathUtils.toBinString(byte3));
                 memoryStrings[i][3].set(MathUtils.toBinString(byte2));
                 memoryStrings[i][4].set(MathUtils.toBinString(byte1));

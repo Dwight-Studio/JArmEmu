@@ -169,7 +169,7 @@
                                                 <Label alignment="CENTER" text="Value" GridPane.columnIndex="2" />
                                              </children>
                                              <columnConstraints>
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="16" minWidth="16" prefWidth="16" />
+                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
                                              </columnConstraints>
@@ -186,7 +186,7 @@
                                                    <children>
                                                       <GridPane fx:id="stackGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                          <columnConstraints>
-                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="16" minWidth="16" prefWidth="16" />
+                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
                                                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                          </columnConstraints>

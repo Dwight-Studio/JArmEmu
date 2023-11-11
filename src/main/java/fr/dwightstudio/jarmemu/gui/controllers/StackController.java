@@ -6,6 +6,7 @@ import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
@@ -16,8 +17,10 @@ import java.util.logging.Logger;
 public class StackController extends AbstractJArmEmuModule {
 
     protected static final String HEX_FORMAT = "%08x";
-    protected int DATA_FORMAT;
     private static final int MAX_NUMBER = 500;
+    private static final int ROW_HEIGHT = 20;
+
+    protected int dataFormat;
     private int spDisplayer;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
@@ -40,11 +43,10 @@ public class StackController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
-        // TODO: Corriger le scroll sur grand écran (windows)
         if (stateContainer == null) return;
         TreeMap<Integer, Integer> stack = new TreeMap<>();
 
-        DATA_FORMAT = getSettingsController().getDataFormat();
+        dataFormat = getSettingsController().getDataFormat();
 
         stack.putAll(getLowerValues(stateContainer));
         stack.putAll(getHigherValues(stateContainer));
@@ -79,9 +81,10 @@ public class StackController extends AbstractJArmEmuModule {
                 try {
                     final double current = getController().stackScroll.getVvalue();
 
-                    final double totalSize = getController().stackGrid.getBoundsInParent().getHeight();
+                    final double totalSize = getController().stackGrid.getLayoutBounds().getHeight();
                     final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
-                    final double lineSize = getController().stackGrid.getChildren().getLast().getBoundsInParent().getHeight() + getController().stackGrid.getVgap();
+                    //final double lineSize = getController().stackGrid.getChildren().getLast().getLayoutBounds().getHeight() + getController().stackGrid.getVgap();
+                    final double lineSize = ROW_HEIGHT;
                     final double linePos = spDisplayer * lineSize;
 
                     final double currentViewTop = (totalSize - viewSize) * current;
@@ -158,7 +161,14 @@ public class StackController extends AbstractJArmEmuModule {
             stringProperties[i] = textProperty;
         }
 
+        RowConstraints rowConstraints = new RowConstraints();
+        rowConstraints.setMinHeight(ROW_HEIGHT);
+        rowConstraints.setPrefHeight(ROW_HEIGHT);
+        rowConstraints.setMaxHeight(ROW_HEIGHT);
+
         Platform.runLater(() -> {
+            if (getController().stackGrid.getRowConstraints().size() < line) getController().stackGrid.getRowConstraints().add(rowConstraints);
+
             getController().stackGrid.add(texts[0], 0, line);
             getController().stackGrid.add(texts[1], 1, line);
             getController().stackGrid.add(texts[2], 2, line);
@@ -177,7 +187,7 @@ public class StackController extends AbstractJArmEmuModule {
         if (entry.getValue() == null) {
             property[2].set("...");
         } else {
-            property[2].set(getApplication().getFormattedData(entry.getValue(), DATA_FORMAT));
+            property[2].set(getApplication().getFormattedData(entry.getValue(), dataFormat));
         }
     }
 

@@ -2,7 +2,6 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.text.Text;
@@ -13,10 +12,9 @@ import java.util.logging.Logger;
 
 public class RegistersController extends AbstractJArmEmuModule {
 
-    private int DATA_FORMAT;
-
     private final Logger logger = Logger.getLogger(getClass().getName());
     private StringProperty[] stringProperties;
+    private int dataFormat;
 
     public RegistersController(JArmEmuApplication application) {
         super(application);
@@ -42,15 +40,15 @@ public class RegistersController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
-        DATA_FORMAT = getSettingsController().getDataFormat();
+        dataFormat = getSettingsController().getDataFormat();
 
         if (stateContainer != null) {
             for (int i = 0; i < 16; i++) {
-                stringProperties[i].set(getApplication().getFormattedData(stateContainer.registers[i].getData(), DATA_FORMAT));
+                stringProperties[i].set(getApplication().getFormattedData(stateContainer.registers[i].getData(), dataFormat));
             }
 
-            stringProperties[16].set(getApplication().getFormattedData(stateContainer.cpsr.getData(), DATA_FORMAT));
-            stringProperties[17].set(getApplication().getFormattedData(stateContainer.spsr.getData(), DATA_FORMAT));
+            stringProperties[16].set(getApplication().getFormattedData(stateContainer.cpsr.getData(), dataFormat));
+            stringProperties[17].set(getApplication().getFormattedData(stateContainer.spsr.getData(), dataFormat));
             stringProperties[18].set(stateContainer.cpsr.toString());
             stringProperties[19].set(stateContainer.spsr.toString());
         }
