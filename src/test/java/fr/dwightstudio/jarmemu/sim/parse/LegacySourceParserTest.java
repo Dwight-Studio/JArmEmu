@@ -1,10 +1,7 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.asm.Condition;
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.Instruction;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
@@ -36,6 +33,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         File file = new File(Objects.requireNonNull(getClass().getResource("/singleLine.s")).toURI());
 
         LegacySourceParser parser = new LegacySourceParser(file);
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(Instruction.ADD, Condition.AL, false, null, null, "R1", "R0", null, null),
@@ -54,6 +52,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
 
         LegacySourceParser parser = new LegacySourceParser(file);
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1", "[R2]", null, null),
@@ -77,6 +76,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
 
         LegacySourceParser parser = new LegacySourceParser(file);
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "R2", "R0", "R1", null),
@@ -94,6 +94,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
 
         LegacySourceParser parser = new LegacySourceParser(file);
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(Instruction.ADD, Condition.CC, true, null, null, "R0", "R9", "#2", null),

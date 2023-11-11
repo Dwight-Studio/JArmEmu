@@ -195,9 +195,8 @@ public class LegacySourceParser implements SourceParser {
         currentLine = currentLine.toUpperCase();
 
         Section section = this.legacySectionParser.parseOneLine(currentLine);
-        if (section != null) {
-            this.section = section;
-        } else {
+        if (section != null) this.section = section;
+        if (currentSection == Section.TEXT){
             instructionString = currentLine.split(" ")[0];
             int instructionLength = instructionString.length();
             instructionString = this.removeFlags(instructionString);
