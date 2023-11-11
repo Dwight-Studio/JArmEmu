@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=JArmEmu
 Comment=The portable arm simulator
-Exec=java -jar /usr/share/java/jarmemu/JArmEmu.jar %f
+Exec=java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/JArmEmu.jar %f
 Terminal=false
 Icon=jarmemu
 Type=Application

@@ -4,6 +4,8 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
@@ -20,6 +22,7 @@ public class StackController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     protected ArrayList<Text[]> stackTexts;
+    protected ArrayList<StringProperty[]> stackTextProperties;
     public StackController(JArmEmuApplication application) {
         super(application);
     }
@@ -27,6 +30,7 @@ public class StackController extends AbstractJArmEmuModule {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         stackTexts = new ArrayList<>();
+        stackTextProperties = new ArrayList<>();
     }
 
     /**
@@ -50,11 +54,10 @@ public class StackController extends AbstractJArmEmuModule {
         spDisplayer = -1;
         for (Map.Entry<Integer, Integer> entry : stack.entrySet()) {
             boolean hasSp = entry.getKey().equals(sp);
-            if (stackTexts.size() > i) {
-                update(entry, i, hasSp);
-            } else {
+            if (stackTexts.size() <= i) {
                 create(entry, i, hasSp);
             }
+            update(entry, i, hasSp);
             if (hasSp) spDisplayer = i;
             i++;
         }
@@ -62,6 +65,7 @@ public class StackController extends AbstractJArmEmuModule {
         int s = stackTexts.size();
         for (int j = i; j < s; j++) {
             Text[] texts = stackTexts.remove(i);
+            stackTextProperties.remove(i);
 
             Platform.runLater(() -> {
                 getController().stackGrid.getChildren().remove(texts[0]);
@@ -72,20 +76,24 @@ public class StackController extends AbstractJArmEmuModule {
 
         if (spDisplayer != -1) {
             Platform.runLater(() -> {
-                final double current = getController().stackScroll.getVvalue();
+                try {
+                    final double current = getController().stackScroll.getVvalue();
 
-                final double totalSize = getController().stackGrid.getBoundsInParent().getHeight();
-                final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
-                final double lineSize = getController().stackGrid.getChildren().getFirst().getBoundsInParent().getHeight();
-                final double linePos = spDisplayer * lineSize;
+                    final double totalSize = getController().stackGrid.getBoundsInParent().getHeight();
+                    final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
+                    final double lineSize = getController().stackGrid.getChildren().getLast().getBoundsInParent().getHeight();
+                    final double linePos = spDisplayer * lineSize;
 
-                final double currentViewTop = (totalSize - viewSize) * current;
-                final double currentViewBottom = currentViewTop + viewSize;
+                    final double currentViewTop = (totalSize - viewSize) * current;
+                    final double currentViewBottom = currentViewTop + viewSize;
 
-                if (linePos < currentViewTop) {
-                    getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
-                } else if ((linePos + lineSize) > currentViewBottom) {
-                    getController().stackScroll.setVvalue((linePos - viewSize + lineSize * 1.3) / (totalSize - viewSize));
+                    if (linePos < currentViewTop) {
+                        getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
+                    } else if ((linePos + lineSize) > currentViewBottom) {
+                        getController().stackScroll.setVvalue((linePos - viewSize + lineSize * 1.3) / (totalSize - viewSize));
+                    }
+                } catch (Exception e) {
+                    logger.warning("Failed to calculate scroll value for StackScroll");
                 }
             });
         }
@@ -131,42 +139,45 @@ public class StackController extends AbstractJArmEmuModule {
 
     private void create(Map.Entry<Integer, Integer> entry, int line, boolean sp) {
         Text[] texts = new Text[3];
+        StringProperty[] stringProperties = new StringProperty[3];
 
-        Text indicator = new Text(sp ? "➤" : "");
-        indicator.getStyleClass().add("reg-data");
-        indicator.setTextAlignment(TextAlignment.CENTER);
-        Platform.runLater(() -> getController().stackGrid.add(indicator, 0, line));
-        texts[0] = indicator;
+        for (int i = 0 ; i < 3 ; i++) {
+            Text text = new Text();
+            StringProperty textProperty = new SimpleStringProperty();
 
-        Text address = new Text(String.format(HEX_FORMAT, entry.getKey()).toUpperCase());
-        address.getStyleClass().add("reg-address");
-        address.setTextAlignment(TextAlignment.CENTER);
-        Platform.runLater(() -> getController().stackGrid.add(address, 1, line));
-        texts[1] = address;
+            if (i == 1) {
+                text.getStyleClass().add("reg-address");
+            } else {
+                text.getStyleClass().add("reg-data");
+            }
 
-        Text value;
-        if (entry.getValue() == null) {
-            value = new Text("...");
-        } else {
-            value = new Text(getApplication().getFormattedData(entry.getValue(), DATA_FORMAT));
+            text.setTextAlignment(TextAlignment.CENTER);
+            text.textProperty().bind(textProperty);
+
+            texts[i] = text;
+            stringProperties[i] = textProperty;
         }
-        value.getStyleClass().add("reg-data");
-        value.setTextAlignment(TextAlignment.CENTER);
-        Platform.runLater(() -> getController().stackGrid.add(value, 2, line));
-        texts[2] = value;
+
+        Platform.runLater(() -> {
+            getController().stackGrid.add(texts[0], 0, line);
+            getController().stackGrid.add(texts[1], 1, line);
+            getController().stackGrid.add(texts[2], 2, line);
+        });
 
         stackTexts.add(texts);
+        stackTextProperties.add(stringProperties);
     }
 
     private void update(Map.Entry<Integer, Integer> entry, int line, boolean sp) {
-        Text[] texts = stackTexts.get(line);
+        StringProperty[] property = stackTextProperties.get(line);
 
-        texts[0].setText(sp ? "➤" : "");
-        texts[1].setText(String.format(HEX_FORMAT, entry.getKey()).toUpperCase());
+        property[0].set(sp ? "➤" : "");
+        property[1].set(String.format(HEX_FORMAT, entry.getKey()).toUpperCase());
+
         if (entry.getValue() == null) {
-            texts[2].setText("...");
+            property[2].set("...");
         } else {
-            texts[2].setText(getApplication().getFormattedData(entry.getValue(), DATA_FORMAT));
+            property[2].set(getApplication().getFormattedData(entry.getValue(), DATA_FORMAT));
         }
     }
 
@@ -174,6 +185,7 @@ public class StackController extends AbstractJArmEmuModule {
         int s = stackTexts.size();
         for (int j = 0; j < s; j++) {
             Text[] texts = stackTexts.remove(0);
+            stackTextProperties.remove(0);
 
             Platform.runLater(() -> {
                 getController().stackGrid.getChildren().remove(texts[0]);

@@ -2,6 +2,9 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.text.Text;
 
 import java.net.URL;
@@ -13,7 +16,7 @@ public class RegistersController extends AbstractJArmEmuModule {
     private int DATA_FORMAT;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private Text[] registers;
+    private StringProperty[] stringProperties;
 
     public RegistersController(JArmEmuApplication application) {
         super(application);
@@ -21,7 +24,15 @@ public class RegistersController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        registers = new Text[]{getController().R0, getController().R1, getController().R2, getController().R3, getController().R4, getController().R5, getController().R6, getController().R7, getController().R8, getController().R9, getController().R10, getController().R11, getController().R12, getController().R13, getController().R14, getController().R15};
+        Text[] texts = new Text[]{getController().R0, getController().R1, getController().R2, getController().R3, getController().R4, getController().R5, getController().R6, getController().R7, getController().R8, getController().R9, getController().R10, getController().R11, getController().R12, getController().R13, getController().R14, getController().R15, getController().CPSR, getController().SPSR, getController().CPSRT, getController().SPSRT};
+        stringProperties = new StringProperty[texts.length];
+
+        for (int i = 0 ; i < texts.length ; i ++) {
+            StringProperty property = new SimpleStringProperty();
+            texts[i].textProperty().bind(property);
+            property.set("-");
+            stringProperties[i] = property;
+        }
     }
 
     /**
@@ -35,13 +46,13 @@ public class RegistersController extends AbstractJArmEmuModule {
 
         if (stateContainer != null) {
             for (int i = 0; i < 16; i++) {
-                registers[i].setText(getApplication().getFormattedData(stateContainer.registers[i].getData(), DATA_FORMAT));
+                stringProperties[i].set(getApplication().getFormattedData(stateContainer.registers[i].getData(), DATA_FORMAT));
             }
 
-            getController().CPSR.setText(getApplication().getFormattedData(stateContainer.cpsr.getData(), DATA_FORMAT));
-            getController().CPSRT.setText(stateContainer.cpsr.toString());
-            getController().SPSR.setText(getApplication().getFormattedData(stateContainer.spsr.getData(), DATA_FORMAT));
-            getController().SPSRT.setText(stateContainer.spsr.toString());
+            stringProperties[16].set(getApplication().getFormattedData(stateContainer.cpsr.getData(), DATA_FORMAT));
+            stringProperties[17].set(getApplication().getFormattedData(stateContainer.spsr.getData(), DATA_FORMAT));
+            stringProperties[18].set(stateContainer.cpsr.toString());
+            stringProperties[19].set(stateContainer.spsr.toString());
         }
     }
 }

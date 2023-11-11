@@ -56,7 +56,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             application.status = Status.SIMULATING;
         } else if (getCodeInterpreter().getInstructionCount() == 0) {
             getController().simulate.setDisable(false);
-            getEditorController().addNotif("Simulation error: ", "No instructions detected", "danger");
+            getEditorController().addNotif("Simulation error: ", "No instructions detected (did you forget '.text'?)", "danger");
         } else {
             getController().simulate.setDisable(false);
             for (SyntaxASMException error : errors) {

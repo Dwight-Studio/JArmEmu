@@ -3,10 +3,15 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
+import javafx.application.Platform;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -25,7 +30,7 @@ public class MemoryController extends AbstractJArmEmuModule {
     protected static final int LINE_HEIGHT = 20;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private Text[][] memory;
+    private StringProperty[][] memoryStrings;
 
     public MemoryController(JArmEmuApplication application) {
         super(application);
@@ -33,15 +38,22 @@ public class MemoryController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        memory = new Text[LINES_PER_PAGE][6];
+        memoryStrings = new StringProperty[LINES_PER_PAGE][6];
 
         for (int i = 0; i < LINES_PER_PAGE; i++) {
 
             for (int j = 0; j < 6; j++) {
-                Text node = new Text("00000000");
+                Text node = new Text();
+                StringProperty stringProperty = new SimpleStringProperty();
+
                 node.getStyleClass().add(j == 0 ? "reg-address" : "reg-data");
+                node.textProperty().bind(stringProperty);
+                node.setTextAlignment(TextAlignment.CENTER);
                 getController().memoryGrid.add(node, j, i);
-                memory[i][j] = node;
+
+                stringProperty.set("-");
+
+                memoryStrings[i][j] = stringProperty;
             }
 
             RowConstraints rowConstraints = new RowConstraints();
@@ -92,7 +104,7 @@ public class MemoryController extends AbstractJArmEmuModule {
         for (int i = 0; i < LINES_PER_PAGE; i++) {
             int add = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
 
-            memory[i][0].setText(String.format(HEX_FORMAT, add).toUpperCase());
+            memoryStrings[i][0].set(String.format(HEX_FORMAT, add).toUpperCase());
 
             if (stateContainer != null) {
                 byte byte3 = stateContainer.memory.getByte(add);
@@ -100,11 +112,11 @@ public class MemoryController extends AbstractJArmEmuModule {
                 byte byte1 = stateContainer.memory.getByte(add + 2);
                 byte byte0 = stateContainer.memory.getByte(add + 3);
 
-                memory[i][1].setText(getApplication().getFormattedData(MathUtils.toWord(byte3, byte2, byte1, byte0), DATA_FORMAT).toUpperCase());
-                memory[i][2].setText(MathUtils.toBinString(byte3));
-                memory[i][3].setText(MathUtils.toBinString(byte2));
-                memory[i][4].setText(MathUtils.toBinString(byte1));
-                memory[i][5].setText(MathUtils.toBinString(byte0));
+                memoryStrings[i][1].set(getApplication().getFormattedData(MathUtils.toWord(byte3, byte2, byte1, byte0), DATA_FORMAT).toUpperCase());
+                memoryStrings[i][2].set(MathUtils.toBinString(byte3));
+                memoryStrings[i][3].set(MathUtils.toBinString(byte2));
+                memoryStrings[i][4].set(MathUtils.toBinString(byte1));
+                memoryStrings[i][5].set(MathUtils.toBinString(byte0));
             }
         }
     }

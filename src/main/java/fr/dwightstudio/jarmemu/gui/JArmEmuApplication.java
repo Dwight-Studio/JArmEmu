@@ -173,6 +173,7 @@ public class JArmEmuApplication extends Application {
     }
 
     public static void main(String[] args) {
+        System.setProperty("prism.dirtyopts", "false");
         SplashScreen splashScreen = SplashScreen.getSplashScreen();
 
         if (splashScreen != null) {

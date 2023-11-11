@@ -130,6 +130,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private static class ExecutionThead extends Thread {
 
+        private static final int FALLBACK_UPDATE_INTERVAL = 100;
         private final Logger logger = Logger.getLogger(getClass().getName());
 
         private final JArmEmuApplication application;
@@ -293,7 +294,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
-                    if (isIntervalTooShort()) application.getEditorController().clearLineMarking();
+                    if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearLineMarking());
                     Platform.runLater(() -> {
                         if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
                         application.getEditorController().markLine(line, LineStatus.EXECUTED);
@@ -353,7 +354,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private boolean shouldUpdateGUI() {
-            return !isIntervalTooShort() || (System.currentTimeMillis() - updateGUITimestamp) > 50;
+            return !isIntervalTooShort() || (System.currentTimeMillis() - updateGUITimestamp) > FALLBACK_UPDATE_INTERVAL;
         }
     }
 }
