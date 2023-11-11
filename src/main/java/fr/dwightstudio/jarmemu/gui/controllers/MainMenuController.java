@@ -40,9 +40,11 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (savePath != null) fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
+        if (isValid(savePath)) {
+            fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
+        }
         File file = fileChooser.showOpenDialog(application.stage);
-        if (file != null && file.exists() && file.isFile()) {
+        if (isValidFile(file)) {
             logger.info("File located: " + file.getAbsolutePath());
             savePath = file;
             onReload();
@@ -53,7 +55,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSave() {
-        if (savePath == null) {
+        if (!isValid(savePath)) {
             onSaveAs();
         } else {
             try {
@@ -78,9 +80,11 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (savePath != null) fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
+        if (isValid(savePath)) {
+            fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
+        }
         File file = fileChooser.showSaveDialog(application.stage);
-        if (file != null) {
+        if (file != null && file.isFile()) {
             if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
             logger.info("File located: " + file.getAbsolutePath());
             savePath = file;
@@ -96,7 +100,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
 
         logger.info("Reloading file from disk");
         getController().onStop();
-        if (savePath != null) {
+        if (isValidFile(savePath)) {
             try {
                 getSourceParser().setSourceScanner(new SourceScanner(savePath));
                 getController().codeArea.clear();
@@ -168,5 +172,21 @@ public class MainMenuController extends AbstractJArmEmuModule {
         }
 
         onNewFile();
+    }
+
+    private boolean isValid(File file) {
+        if (file != null) {
+            return file.exists();
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isValidFile(File file) {
+        if (isValid(file)) {
+            return file.isFile();
+        } else {
+            return false;
+        }
     }
 }

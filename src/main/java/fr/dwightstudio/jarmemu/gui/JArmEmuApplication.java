@@ -66,8 +66,6 @@ public class JArmEmuApplication extends Application {
 
         logger.info("Starting up JArmEmu v" + VERSION);
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre etc...)
-        // TODO: Ajouter un desktop pour les .s et surtout ajouter un argument pour l'ouverture de fichiers
-        // TODO: Gérer les saves inexistantes
         // TODO: Ajouter le about dans help
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
