@@ -7,3 +7,4 @@
 - Adding global directive logic (actually usable now)
 - Fixing the stack auto-scrolling for non-HDPI screens
 - Adding Fill directive
+- Legacy Parser now works when selected in the drop down menu (its use is still not recommended nonetheless)
