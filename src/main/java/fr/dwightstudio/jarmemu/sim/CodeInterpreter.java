@@ -103,8 +103,6 @@ public class CodeInterpreter {
      * Applique toutes les directives, remplace les constantes, etc...
      */
     private void applyDirectives() {
-        // TODO: Faire les tests pour les directives (mais ça semble fonctionner comme prévu)
-
         int off = getLastLine() + 1;
         int pos = 0;
 
