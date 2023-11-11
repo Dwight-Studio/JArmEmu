@@ -1,6 +1,9 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+
+import java.nio.ByteBuffer;
 
 public class FillExecutor implements DirectiveExecutor {
     /**
@@ -12,8 +15,47 @@ public class FillExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
-        //TODO: Faire la directive Fill
-        throw new IllegalStateException("Directive Fill not implemented");
+        String[] arg = args.split(",");
+
+        switch (arg.length) {
+            case 1 -> apply(stateContainer, args + ", 0, 1", currentPos);
+
+            case 2 -> apply(stateContainer, args + ", 1", currentPos);
+
+            case 3 -> {
+                int totalNum = stateContainer.evalWithConsts(arg[0]);
+                int value = stateContainer.evalWithConsts(arg[1]);
+                int valueSize = stateContainer.evalWithConsts(arg[2]);
+
+                if (valueSize <= 0) throw new SyntaxASMException("Invalid value size '" + valueSize + "' (must be positive)");
+
+                byte[] bytes = new byte[valueSize];
+
+                switch (valueSize) {
+                    case 1 -> ByteBuffer.wrap(bytes).put((byte) (value & 0xFF));
+
+                    case 2 -> ByteBuffer.wrap(bytes).putShort((short) (value & 0xFFFF));
+
+                    case 3 -> ByteBuffer.wrap(bytes).put((byte) ((value >> 16) & 0xFF)).putShort((short) (value & 0xFFFF));
+
+                    default -> {
+                        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+
+                        for (int i = 0 ; i < valueSize - 4 ; i++) {
+                            buffer.put((byte) 0);
+                        }
+
+                        buffer.putInt(value);
+                    }
+                }
+
+                for (int i = currentPos ; i < currentPos + totalNum ; i++) {
+                    stateContainer.memory.putByte(currentPos + i, bytes[i % valueSize]);
+                }
+            }
+
+            default -> throw new SyntaxASMException("Invalid arguments '" + args + "' for Fill directive");
+        }
     }
 
     /**
@@ -26,6 +68,7 @@ public class FillExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
-        return 0;
+        String[] arg = args.split(",");
+        return stateContainer.evalWithConsts(arg[0]);
     }
 }

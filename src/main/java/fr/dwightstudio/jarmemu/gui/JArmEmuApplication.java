@@ -65,8 +65,9 @@ public class JArmEmuApplication extends Application {
         this.stage = stage;
 
         logger.info("Starting up JArmEmu v" + VERSION);
-        // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre etc...)
+        // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre, écriture dans RODATA etc...)
         // TODO: Ajouter le about dans help
+        // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS)
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
 
