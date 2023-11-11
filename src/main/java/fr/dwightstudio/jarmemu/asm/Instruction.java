@@ -1,14 +1,14 @@
 package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
-import fr.dwightstudio.jarmemu.sim.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static fr.dwightstudio.jarmemu.asm.inst.InstructionExecutors.*;
-import static fr.dwightstudio.jarmemu.sim.args.ArgumentParsers.*;
+import static fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers.*;
 
 public enum Instruction {
 

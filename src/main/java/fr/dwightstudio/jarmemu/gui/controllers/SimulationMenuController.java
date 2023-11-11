@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.Status;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import javafx.scene.control.Alert;
@@ -51,7 +51,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             getController().pause.setDisable(true);
             getController().stop.setDisable(false);
             getController().restart.setDisable(false);
-            getController().reset.setDisable(false);
             getController().settingsTab.setDisable(true);
             application.status = Status.SIMULATING;
         } else if (getCodeInterpreter().getInstructionCount() == 0) {
@@ -101,7 +100,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().conti.setDisable(true);
         getController().pause.setDisable(false);
         getController().restart.setDisable(true);
-        getController().reset.setDisable(true);
         getController().stackGrid.setDisable(true);
         getController().memoryPage.setDisable(true);
         getController().addressField.setDisable(true);
@@ -119,7 +117,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().conti.setDisable(false);
         getController().pause.setDisable(true);
         getController().restart.setDisable(false);
-        getController().reset.setDisable(false);
         getController().stackGrid.setDisable(false);
         getController().memoryPage.setDisable(false);
         getController().addressField.setDisable(false);
@@ -143,7 +140,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(true);
         getController().stop.setDisable(true);
         getController().restart.setDisable(true);
-        getController().reset.setDisable(true);
         getController().stackGrid.setDisable(true);
         getController().memoryPage.setDisable(true);
         getController().addressField.setDisable(true);
@@ -156,18 +152,13 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      */
     public void onRestart() {
         getEditorController().clearNotifs();
-        getCodeInterpreter().restart();
-        getEditorController().clearLineMarking();
-        getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
-    }
-
-    /**
-     * Méthode invoquée par JavaFX
-     */
-    public void onReset() {
-        getEditorController().clearNotifs();
-        getCodeInterpreter().resetState(getSettingsController().getStackAddress(), getSettingsController().getSymbolsAddress());
         getStackController().clear();
-        getExecutionWorker().updateGUI();
+        getEditorController().clearLineMarking();
+
+        getCodeInterpreter().resetState(getSettingsController().getStackAddress(), getSettingsController().getSymbolsAddress());
+        getCodeInterpreter().restart();
+
+        getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
+        getExecutionWorker().restart();
     }
 }

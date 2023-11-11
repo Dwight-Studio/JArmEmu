@@ -1,8 +1,8 @@
-package fr.dwightstudio.jarmemu.sim.args;
+package fr.dwightstudio.jarmemu.sim.parse.args;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.sim.args.AddressParser;
-import fr.dwightstudio.jarmemu.sim.args.ShiftParser;
+import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
+import fr.dwightstudio.jarmemu.sim.parse.args.ShiftParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

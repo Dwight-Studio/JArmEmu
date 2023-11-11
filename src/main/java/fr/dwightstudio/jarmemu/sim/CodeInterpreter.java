@@ -1,10 +1,12 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.AddressParser;
+import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.*;
+import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 
 import java.util.ArrayList;
@@ -66,6 +68,32 @@ public class CodeInterpreter {
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             SyntaxASMException e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
             if (e != null) rtn.add(e);
+        }
+
+        int line = -1;
+        try {
+            if (stateContainer.getGlobal() != null) {
+                ArgumentParsers.LABEL.parse(stateContainer, stateContainer.getGlobal());
+            }
+        } catch (SyntaxASMException exception) {
+
+            for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+                if (inst.getValue() instanceof ParsedDirective directive) {
+                    if (directive.getDirective() == Directive.GLOBAL) {
+                        line = Math.max(line, inst.getKey());
+                    }
+                } else if (inst.getValue() instanceof ParsedDirectivePack pack) {
+                    for (ParsedObject parsedObject : pack.getContent()) {
+                        if (inst.getValue() instanceof ParsedDirective directive) {
+                            if (directive.getDirective() == Directive.GLOBAL) {
+                                line = Math.max(line, inst.getKey());
+                            }
+                        }
+                    }
+                }
+            }
+
+            rtn.add(exception.with(line));
         }
 
         return rtn.toArray(SyntaxASMException[]::new);
@@ -240,9 +268,17 @@ public class CodeInterpreter {
      * Revient à la première ligne
      */
     public void restart() {
-        this.currentLine = -1;
-        if (stateContainer.labels.containsKey("_START")) {
-            stateContainer.registers[RegisterUtils.PC.getN()].setData(stateContainer.labels.get("_START"));
+        currentLine = 0;
+        lastLine = getLastLine();
+        this.atTheEnd = false;
+        lastExecutedLine = -1;
+
+        if (stateContainer.getGlobal() != null) {
+            try {
+                stateContainer.registers[RegisterUtils.PC.getN()].setData(stateContainer.labels.get(stateContainer.getGlobal()));
+            } catch (Exception e) {
+                stateContainer.registers[RegisterUtils.PC.getN()].setData(0);
+            }
             setCurrentLineFromPC();
         }
     }

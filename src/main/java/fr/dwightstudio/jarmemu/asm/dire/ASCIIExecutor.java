@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ASCIIExecutor implements DirectiveExecutor {

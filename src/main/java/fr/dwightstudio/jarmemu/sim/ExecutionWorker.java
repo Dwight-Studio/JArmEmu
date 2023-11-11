@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
@@ -21,6 +21,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     private static final int CONTINUE = 3;
     private static final int UPDATE_GUI = 4;
     private static final int PREPARE = 5;
+    private static final int RESTART = 6;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -82,6 +83,17 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void prepare() {
         checkTask(PREPARE);
         this.daemon.nextTask.set(PREPARE);
+        synchronized (this.daemon) {
+            this.daemon.notifyAll();
+        }
+    }
+
+    /**
+     * Réinitialise les indicateur du GUI pour le redémarrage
+     */
+    public void restart() {
+        checkTask(RESTART);
+        this.daemon.nextTask.set(RESTART);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
         }
@@ -177,6 +189,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         case CONTINUE -> continueTask();
                         case UPDATE_GUI -> updateGUITask();
                         case PREPARE -> prepareTask();
+                        case RESTART -> restartTask();
 
                         case IDLE -> {
                         }
@@ -344,6 +357,15 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 return;
             }
 
+            updateGUI();
+
+            logger.info("Done!");
+        }
+
+        private void restartTask() {
+            nextTask.set(IDLE);
+
+            line = next = last = 0;
             updateGUI();
 
             logger.info("Done!");

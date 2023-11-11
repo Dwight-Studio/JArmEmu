@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Supplier;
@@ -33,5 +33,10 @@ public class ParsedDirectiveLabel extends ParsedObject {
 
     public void register(StateContainer stateContainer, int currentPos) {
         stateContainer.data.put(name.strip().toUpperCase(), currentPos + stateContainer.getSymbolsAddress());
+    }
+
+    @Override
+    public String toString() {
+        return "DirectiveLabel";
     }
 }

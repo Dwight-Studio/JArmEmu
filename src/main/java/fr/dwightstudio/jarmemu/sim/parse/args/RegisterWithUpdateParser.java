@@ -1,6 +1,6 @@
-package fr.dwightstudio.jarmemu.sim.args;
+package fr.dwightstudio.jarmemu.sim.parse.args;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.BadArgumentsASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;

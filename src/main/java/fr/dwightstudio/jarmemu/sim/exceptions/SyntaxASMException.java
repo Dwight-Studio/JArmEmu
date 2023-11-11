@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.asm.exceptions;
+package fr.dwightstudio.jarmemu.sim.exceptions;
 
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 

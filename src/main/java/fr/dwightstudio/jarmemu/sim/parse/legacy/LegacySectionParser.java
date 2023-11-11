@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.sim.parse.legacy;
 
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 
 import java.util.Arrays;
 

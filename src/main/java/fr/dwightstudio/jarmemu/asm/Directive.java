@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.dire.DirectiveExecutor;
 import fr.dwightstudio.jarmemu.asm.dire.DirectiveExecutors;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public enum Directive {

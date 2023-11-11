@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;

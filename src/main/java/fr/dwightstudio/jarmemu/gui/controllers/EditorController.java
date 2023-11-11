@@ -1,7 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
@@ -71,7 +71,7 @@ public class EditorController implements Initializable {
                     + "|(?<BRACE>" + BRACE_PATTERN + ")"
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
     );
-    private static final String sampleCode = String.join("\n", new String[]{".text", "_start:", "\t@ Beginning of the program"});
+    private static final String sampleCode = String.join("\n", new String[]{".global _start", ".text", "_start:", "\t@ Beginning of the program"});
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -186,18 +186,16 @@ public class EditorController implements Initializable {
      */
     protected void addError(SyntaxASMException exception) {
         if (exception.getObject() != null) {
-            if (exception.getObject() instanceof ParsedInstruction instruction) {
-                logger.info("Error parsing " + instruction.getInstruction().toString() + " at line " + exception.getLine());
-            } else if (exception.getObject() instanceof ParsedDirective directive) {
-                logger.info("Error parsing " + directive.getDirective().toString() + " at line " + exception.getLine());
-            } else {
-                logger.info("Error parsing code at line " + exception.getLine());
-            }
+            logger.info("Error parsing " + exception.getObject().toString() + " at line " + exception.getLine());
         } else {
             logger.info("Error parsing code at line " + exception.getLine());
         }
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
-        addNotif(exception.getTitle(), " " + exception.getMessage() + " at line " + exception.getLine(), "danger");
+        if (exception.isLineSpecified()) {
+            addNotif(exception.getTitle(), exception.getMessage() + " at line " + exception.getLine(), "danger");
+        } else {
+            addNotif(exception.getTitle(), exception.getMessage(), "danger");
+        }
     }
 
     /**

@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.sim.parse.regex;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;

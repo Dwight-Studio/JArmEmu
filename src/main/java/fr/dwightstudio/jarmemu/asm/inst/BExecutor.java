@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
-import fr.dwightstudio.jarmemu.asm.exceptions.StuckExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class BExecutor implements InstructionExecutor<Integer, Object, Object, Object> {

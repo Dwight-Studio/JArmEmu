@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.asm.exceptions;
+package fr.dwightstudio.jarmemu.sim.exceptions;
 
 public class BadArgumentsASMException extends SyntaxASMException {
     public BadArgumentsASMException(String s) {

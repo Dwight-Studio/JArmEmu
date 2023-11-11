@@ -1,9 +1,10 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.AddressParser;
-import fr.dwightstudio.jarmemu.sim.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
+import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
@@ -40,12 +41,15 @@ public class ParsedInstruction extends ParsedObject {
 
         try {
             execute(stateContainer);
-            return null;
         } catch (SyntaxASMException exception) {
+            AddressParser.reset(stateContainer);
             return exception.with(line).with(this);
+        } catch (ExecutionASMException ignored) {
+            // On ignore
         } finally {
             AddressParser.reset(stateContainer);
         }
+        return null;
     }
 
     public void execute(StateContainer stateContainer) {
@@ -168,5 +172,10 @@ public class ParsedInstruction extends ParsedObject {
         }
 
         return pack;
+    }
+
+    @Override
+    public String toString() {
+        return instruction.name();
     }
 }

@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.ArrayList;
@@ -8,11 +8,11 @@ import java.util.function.Supplier;
 
 public class ParsedDirectivePack extends ParsedObject {
 
-    ArrayList<ParsedObject> directives;
+    ArrayList<ParsedObject> content;
 
 
     public ParsedDirectivePack() {
-        directives = new ArrayList<>();
+        content = new ArrayList<>();
     }
 
     /**
@@ -24,7 +24,7 @@ public class ParsedDirectivePack extends ParsedObject {
      */
     @Override
     public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
-        for (ParsedObject directive : directives) {
+        for (ParsedObject directive : content) {
             SyntaxASMException error = directive.verify(line, stateSupplier);
             if (error != null) return error;
         }
@@ -34,7 +34,7 @@ public class ParsedDirectivePack extends ParsedObject {
 
     public boolean add(ParsedObject directive) {
         if (directive instanceof ParsedDirective || directive instanceof ParsedDirectiveLabel) {
-            return directives.add(directive);
+            return content.add(directive);
         } else {
             throw new IllegalArgumentException("ParsedDirectivePack can only accept ParsedDirective or ParsedDirectiveLabel");
         }
@@ -46,10 +46,10 @@ public class ParsedDirectivePack extends ParsedObject {
      * @return lui-même s'il y a plusieurs entrées, la première entrée si elle est seule ou null s'il est vide
      */
     public ParsedObject close() {
-        if (directives.isEmpty()) {
+        if (content.isEmpty()) {
             return null;
-        } else if (directives.size() == 1) {
-            return directives.getFirst();
+        } else if (content.size() == 1) {
+            return content.getFirst();
         } else {
             return this;
         }
@@ -61,7 +61,7 @@ public class ParsedDirectivePack extends ParsedObject {
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
     public int apply(StateContainer stateContainer, int pos) {
-        for (ParsedObject directive : directives) {
+        for (ParsedObject directive : content) {
             if (directive instanceof ParsedDirective dir) {
                 pos = dir.apply(stateContainer, pos);
             } else if (directive instanceof ParsedDirectiveLabel label) {
@@ -73,18 +73,27 @@ public class ParsedDirectivePack extends ParsedObject {
     }
 
     public boolean isEmpty() {
-        return directives.isEmpty();
+        return content.isEmpty();
     }
 
     public boolean isGenerated() {
         boolean flag = false;
 
-        for (ParsedObject object : directives) {
+        for (ParsedObject object : content) {
             if (object instanceof ParsedDirective directive) {
                 flag = flag || directive.isGenerated();
             }
         }
 
         return flag;
+    }
+
+    @Override
+    public String toString() {
+        return "Directives";
+    }
+
+    public ParsedObject[] getContent() {
+        return this.content.toArray(new ParsedObject[0]);
     }
 }

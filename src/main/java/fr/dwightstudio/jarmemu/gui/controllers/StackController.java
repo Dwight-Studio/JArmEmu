@@ -81,7 +81,7 @@ public class StackController extends AbstractJArmEmuModule {
 
                     final double totalSize = getController().stackGrid.getBoundsInParent().getHeight();
                     final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
-                    final double lineSize = getController().stackGrid.getChildren().getLast().getBoundsInParent().getHeight();
+                    final double lineSize = getController().stackGrid.getChildren().getLast().getBoundsInParent().getHeight() + getController().stackGrid.getVgap();
                     final double linePos = spDisplayer * lineSize;
 
                     final double currentViewTop = (totalSize - viewSize) * current;
@@ -90,7 +90,7 @@ public class StackController extends AbstractJArmEmuModule {
                     if (linePos < currentViewTop) {
                         getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
                     } else if ((linePos + lineSize) > currentViewBottom) {
-                        getController().stackScroll.setVvalue((linePos - viewSize + lineSize * 1.3) / (totalSize - viewSize));
+                        getController().stackScroll.setVvalue((linePos - viewSize + (lineSize * 1.3)) / (totalSize - viewSize));
                     }
                 } catch (Exception e) {
                     logger.warning("Failed to calculate scroll value for StackScroll");

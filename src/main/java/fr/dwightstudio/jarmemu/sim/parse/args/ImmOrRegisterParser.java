@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.sim.args;
+package fr.dwightstudio.jarmemu.sim.parse.args;
 
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;

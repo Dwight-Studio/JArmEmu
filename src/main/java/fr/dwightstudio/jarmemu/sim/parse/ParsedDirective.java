@@ -1,8 +1,8 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.args.AddressParser;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -60,5 +60,10 @@ public class ParsedDirective extends ParsedObject {
     public void setGenerated(String hash) {
         this.hash = hash;
         this.generated = true;
+    }
+
+    @Override
+    public String toString() {
+        return directive.name();
     }
 }

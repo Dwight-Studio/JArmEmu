@@ -29,7 +29,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Button pause;
     @FXML protected Button stop;
     @FXML protected Button restart;
-    @FXML protected Button reset;
 
     @FXML protected Text R0;
     @FXML protected Text R1;
@@ -158,11 +157,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML
     protected void onRestart() {
         getSimulationMenuController().onRestart();
-    }
-
-    @FXML
-    protected void onReset() {
-        getSimulationMenuController().onReset();
     }
 
     @FXML

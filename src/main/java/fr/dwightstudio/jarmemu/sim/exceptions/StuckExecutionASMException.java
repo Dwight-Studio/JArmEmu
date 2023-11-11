@@ -1,4 +1,5 @@
-package fr.dwightstudio.jarmemu.asm.exceptions;
+package fr.dwightstudio.jarmemu.sim.exceptions;
 
 public class StuckExecutionASMException extends ExecutionASMException {
+
 }

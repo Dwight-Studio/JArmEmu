@@ -1,6 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
-import fr.dwightstudio.jarmemu.asm.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;
 import org.junit.jupiter.api.BeforeEach;
