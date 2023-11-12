@@ -13,7 +13,7 @@ public class RORExecutor implements InstructionExecutor<Register, Register, Inte
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
-            //TODO: Update carry flag
+            stateContainer.cpsr.setC(((arg1.getData() >> 31) & 1) == 1);
         }
     }
 }
