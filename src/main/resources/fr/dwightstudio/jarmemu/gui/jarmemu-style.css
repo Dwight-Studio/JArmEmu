@@ -1,21 +1,10 @@
-.root {
-    -fx-font-family: "Roboto Regular";
-}
-
 .reg-data {
-    -fx-font-family: "Roboto Mono Thin";
+    -fx-font-family: Monospaced;
     -fx-font-size: 14px;
 }
 
 .reg-address {
-    -fx-font-family: "Roboto Mono Thin Italic";
+    -fx-font-family: Monospaced;
+    -fx-font-style: Italic;
     -fx-font-size: 14px;
-}
-
-.notif-title {
-    -fx-font-family: "Roboto Medium";
-}
-
-.notif-content {
-    -fx-font-family: "Roboto Regular";
 }

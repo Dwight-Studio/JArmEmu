@@ -9,7 +9,6 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
-import fr.dwightstudio.jarmemu.util.RichTextUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.input.KeyCode;
@@ -216,27 +215,18 @@ public class EditorController extends AbstractJArmEmuModule {
 
     public void markLine(int line, LineStatus status) {
         if (line >= 0) {
-            if (status == LineStatus.EXECUTED) {
-                RichTextUtils.setExecuted(getController().codeArea, line, true);
-                RichTextUtils.setScheduled(getController().codeArea, line, false);
-
-            } else if (status == LineStatus.SCHEDULED) {
+            if (status == LineStatus.SCHEDULED) {
                 getController().codeArea.moveTo(line, 0);
                 getController().codeArea.requestFollowCaret();
-                RichTextUtils.setExecuted(getController().codeArea, line, false);
-                RichTextUtils.setScheduled(getController().codeArea, line, true);
-            } else {
-                RichTextUtils.setExecuted(getController().codeArea, line, false);
-                RichTextUtils.setScheduled(getController().codeArea, line, false);
             }
-            computeHighlightingAsync();
+
+            this.lineFactory.markLine(line, status == null ? LineStatus.NONE : status);
         }
     }
 
     public void clearLineMarking() {
         for (int i = 0 ; i < getController().codeArea.getParagraphs().size() ; i++) {
-            RichTextUtils.setExecuted(getController().codeArea, i, false);
-            RichTextUtils.setScheduled(getController().codeArea, i, false);
+            this.lineFactory.markLine(i, LineStatus.NONE);
         }
     }
 

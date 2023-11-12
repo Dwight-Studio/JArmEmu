@@ -1,25 +1,22 @@
 .paragraph-box {
     -fx-background-color: -color-bg-overlay;
-    -fx-border-color: -color-bg-overlay;
-    -fx-arc-width: 0px;
-    -fx-border-width: 0px;
 }
 .code-area .caret {
     -fx-stroke: -color-fg-emphasis;
 }
 
 .code-area .text {
-    -fx-font-family: "Roboto Mono Regular";
+    -fx-font-family: Monospaced;
     -fx-fill: -color-fg-default;
 }
 
 .code-area .lineno {
-    -fx-font-family: "Roboto Mono Regular";
+    -fx-font-family: Monospaced;
     -fx-fill: -color-fg-muted;
 }
 
 .code-area .breakpoint {
-    -fx-font-family: "Roboto Mono Regular";
+    -fx-font-family: Monospaced;
     -fx-fill: -color-danger-emphasis;
 }
 
@@ -59,20 +56,12 @@
     -fx-fill: #9d3257;
 }
 
-.paragraph-box:executedLight {
-    -fx-background-color: -color-success-2;
+.executed {
+    -fx-background-color: -color-success-muted;
 }
 
-.paragraph-box:scheduledLight {
-    -fx-background-color: -color-warning-2;
-}
-
-.paragraph-box:executedDark {
-    -fx-background-color: -color-success-8;
-}
-
-.paragraph-box:scheduledDark {
-    -fx-background-color: -color-warning-8;
+.scheduled {
+    -fx-background-color: -color-warning-muted;
 }
 
 /*

@@ -100,15 +100,9 @@ public class JArmEmuApplication extends Application {
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
-        Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-Regular.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-Thin.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-ThinItalic.ttf"), 14);
-
-        Font.loadFont(getClass().getResourceAsStream("fonts/roboto/Roboto-Regular.ttf"), 14);
-        Font.loadFont(getClass().getResourceAsStream("fonts/roboto/Roboto-Medium.ttf"), 14);
-
         scene = new Scene(fxmlLoader.load(), 1280, 720);
         updateUserAgentStyle(getSettingsController().getTheme());
+        scene.getStylesheets().add(getClass().getResource("jarmemu-style.css").toExternalForm());
 
         scene.setOnKeyPressed(shortcutHandler::handle);
 
