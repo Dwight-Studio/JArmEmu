@@ -16,8 +16,11 @@ import java.util.logging.Logger;
 public class RichTextUtils {
 
     public static Logger logger = Logger.getLogger(RichTextUtils.class.getName());
-    public static PseudoClass EXECUTED = PseudoClass.getPseudoClass("executed");
-    public static PseudoClass SCHEDULED = PseudoClass.getPseudoClass("scheduled");
+    public static PseudoClass EXECUTED_LIGHT = PseudoClass.getPseudoClass("executedLight");
+    public static PseudoClass SCHEDULED_LIGHT = PseudoClass.getPseudoClass("scheduledLight");
+
+    public static PseudoClass EXECUTED_DARK = PseudoClass.getPseudoClass("executedDark");
+    public static PseudoClass SCHEDULED_DARK = PseudoClass.getPseudoClass("scheduledDark");
 
 
     public static Optional<Object> getParagraphBox(CodeArea codeArea, int i) {
@@ -64,11 +67,13 @@ public class RichTextUtils {
     }
 
     public static void setExecuted(CodeArea codeArea, int i, boolean val) {
-        setPseudoClass(codeArea, i, val, EXECUTED);
+        if (Application.getUserAgentStylesheet() == null) setPseudoClass(codeArea, i, val, EXECUTED_DARK);
+        else setPseudoClass(codeArea, i, val, Application.getUserAgentStylesheet().endsWith("dark.css") ? EXECUTED_DARK : EXECUTED_LIGHT);
     }
 
     public static void setScheduled(CodeArea codeArea, int i, boolean val) {
-        setPseudoClass(codeArea, i, val, SCHEDULED);
+        if (Application.getUserAgentStylesheet() == null) setPseudoClass(codeArea, i, val, SCHEDULED_DARK);
+        else setPseudoClass(codeArea, i, val, Application.getUserAgentStylesheet().endsWith("dark.css") ? SCHEDULED_DARK : SCHEDULED_LIGHT);
 
     }
 }

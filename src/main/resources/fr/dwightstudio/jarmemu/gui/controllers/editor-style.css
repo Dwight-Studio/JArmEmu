@@ -59,12 +59,20 @@
     -fx-fill: #9d3257;
 }
 
-.paragraph-box:executed {
-    -fx-background-color: -color-success-4;
+.paragraph-box:executedLight {
+    -fx-background-color: -color-success-2;
 }
 
-.paragraph-box:scheduled {
-    -fx-background-color: -color-warning-4;
+.paragraph-box:scheduledLight {
+    -fx-background-color: -color-warning-2;
+}
+
+.paragraph-box:executedDark {
+    -fx-background-color: -color-success-8;
+}
+
+.paragraph-box:scheduledDark {
+    -fx-background-color: -color-warning-8;
 }
 
 /*
