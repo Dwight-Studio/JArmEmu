@@ -17,7 +17,6 @@ public class RRXExecutor implements InstructionExecutor<Register, Register, Obje
         }
         arg1.setData(i);
 
-        //TODO: Vérifier les conditions des flags
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);

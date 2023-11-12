@@ -6,7 +6,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RRXExecutorTest extends JArmEmuTest {
 
@@ -48,7 +48,33 @@ public class RRXExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        //TODO: faire les tests de RRX
+        Register r0 = stateContainer.registers[0];
+        r0.setData(25);
+        stateContainer.cpsr.setC(true);
+        rrxExecutor.execute(stateContainer, true, null, null, r0, r0, null, null);
+        assertTrue(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC());
+        rrxExecutor.execute(stateContainer, true, null, null, r0, r0, null, null);
+        assertTrue(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.cpsr.getC());
+        rrxExecutor.execute(stateContainer, true, null, null, r0, r0, null, null);
+        assertFalse(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.cpsr.getC());
+        rrxExecutor.execute(stateContainer, true, null, null, r0, r0, null, null);
+        assertFalse(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC());
+        rrxExecutor.execute(stateContainer, true, null, null, r0, r0, null, null);
+        assertTrue(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.cpsr.getC());
+        rrxExecutor.execute(stateContainer, true, null, null, r0, r0, null, null);
+        assertTrue(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.cpsr.getC());
     }
 
 }
