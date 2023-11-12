@@ -1,5 +1,9 @@
 package fr.dwightstudio.jarmemu.gui;
 
+import atlantafx.base.theme.PrimerDark;
+import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
@@ -19,7 +23,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.awt.*;
 import java.io.IOException;
@@ -55,8 +58,10 @@ public class JArmEmuApplication extends Application {
     private ExecutionWorker executionWorker;
 
 
+    public Theme theme;
     public Status status;
     public Stage stage;
+    public Scene scene;
     private String lastSave;
     private String argSave;
 
@@ -82,7 +87,6 @@ public class JArmEmuApplication extends Application {
         fxmlLoader.setController(new JArmEmuController(this));
         controller = fxmlLoader.getController();
 
-
         // Essayer d'ouvrir le fichier passé en paramètre
         if (!getParameters().getUnnamed().isEmpty()) {
             logger.info("Detecting file argument: " + getParameters().getUnnamed().getFirst());
@@ -96,8 +100,6 @@ public class JArmEmuApplication extends Application {
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
-        Scene scene = new Scene(fxmlLoader.load(), 1280, 720);
-
         Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-Regular.ttf"), 14);
         Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-Thin.ttf"), 14);
         Font.loadFont(getClass().getResourceAsStream("fonts/roboto-mono/RobotoMono-ThinItalic.ttf"), 14);
@@ -105,8 +107,8 @@ public class JArmEmuApplication extends Application {
         Font.loadFont(getClass().getResourceAsStream("fonts/roboto/Roboto-Regular.ttf"), 14);
         Font.loadFont(getClass().getResourceAsStream("fonts/roboto/Roboto-Medium.ttf"), 14);
 
-        scene.getStylesheets().add(getClass().getResource("jarmemu-style.css").toExternalForm());
-        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+        scene = new Scene(fxmlLoader.load(), 1280, 720);
+        updateUserAgentStyle(getSettingsController().getTheme());
 
         scene.setOnKeyPressed(shortcutHandler::handle);
 
@@ -136,6 +138,16 @@ public class JArmEmuApplication extends Application {
 
         logger.info("Startup finished");
 
+    }
+
+    public void updateUserAgentStyle(int nb) {
+        if (nb == 0) {
+            theme = new PrimerDark();
+        } else {
+            theme = new PrimerLight();
+        }
+
+        Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
     }
 
     private static void adaptSplashScreen(SplashScreen splashScreen) {

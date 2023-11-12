@@ -1,43 +1,74 @@
-.instruction {
+.paragraph-box {
+    -fx-background-color: -color-bg-overlay;
+    -fx-border-color: -color-bg-overlay;
+    -fx-arc-width: 0px;
+    -fx-border-width: 0px;
+}
+.code-area .caret {
+    -fx-stroke: -color-fg-emphasis;
+}
+
+.code-area .text {
+    -fx-font-family: "Roboto Mono Regular";
+    -fx-fill: -color-fg-default;
+}
+
+.code-area .lineno {
+    -fx-font-family: "Roboto Mono Regular";
+    -fx-fill: -color-fg-muted;
+}
+
+.code-area .breakpoint {
+    -fx-font-family: "Roboto Mono Regular";
+    -fx-fill: -color-danger-emphasis;
+}
+
+.code-area .text.instruction {
     -fx-fill: #ab44d9;
     -fx-font-weight: bold;
 }
-.keyword {
+.code-area .text.keyword {
     -fx-fill: #44b6d9;
     -fx-font-weight: bold;
 }
-.bracket {
+.code-area .text.bracket {
     -fx-fill: #d95044;
     -fx-font-weight: bold;
 }
-.brace {
+.code-area .text.brace {
     -fx-fill: #d9a544;
     -fx-font-weight: bold;
 }
-.string {
+.code-area .text.string {
     -fx-fill: #32409d;
 }
-.label {
+.code-area .text.label {
     -fx-fill: #569d32;
     -fx-font-weight: bold;
 }
-.comment {
+.code-area .text.comment {
     -fx-fill: cadetblue;
 }
-.register{
+.code-area .text.register {
     -fx-fill: #6444d9;
 }
-.imm {
+.code-area .text.imm {
     -fx-fill: #329d61;
 }
-.shift {
+.code-area .text.shift {
     -fx-fill: #9d3257;
 }
 
-.paragraph-box:has-caret {
-    -fx-background-color: #ffffff;
+.paragraph-box:executed {
+    -fx-background-color: -color-success-4;
 }
 
-.editor {
-    -fx-font-family: "Roboto Mono Regular";
+.paragraph-box:scheduled {
+    -fx-background-color: -color-warning-4;
 }
+
+/*
+.paragraph-box:has-caret {
+    -fx-background-color: #be3030;
+}
+ */

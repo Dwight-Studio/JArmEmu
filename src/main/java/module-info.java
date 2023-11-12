@@ -4,7 +4,7 @@ module fr.dwightstudio.jarmemu {
     requires javafx.fxml;
 
     requires org.kordamp.ikonli.javafx;
-    requires org.kordamp.bootstrapfx.core;
+    requires org.kordamp.ikonli.material2;
     requires java.logging;
     requires org.jetbrains.annotations;
     requires org.apache.commons.lang3;
@@ -15,6 +15,7 @@ module fr.dwightstudio.jarmemu {
     requires java.desktop;
     requires org.controlsfx.controls;
     requires org.fxmisc.flowless;
+    requires atlantafx.base;
 
     exports fr.dwightstudio.jarmemu;
     exports fr.dwightstudio.jarmemu.gui;

@@ -26,7 +26,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
         if (!application.warnUnsaved()) return;
 
         logger.info("Opening a new file");
-        getController().onStop();
+        getSimulationMenuController().onStop();
         getEditorController().newFile();
         getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
         application.setNew();
@@ -99,7 +99,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
         if (!application.warnUnsaved()) return;
 
         logger.info("Reloading file from disk");
-        getController().onStop();
+        getSimulationMenuController().onStop();
         if (isValidFile(savePath)) {
             try {
                 getSourceParser().setSourceScanner(new SourceScanner(savePath));
