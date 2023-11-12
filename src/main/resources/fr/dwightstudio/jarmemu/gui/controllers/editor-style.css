@@ -5,6 +5,10 @@
     -fx-stroke: -color-fg-emphasis;
 }
 
+.code-area {
+    -fx-background-color: -color-bg-overlay;
+}
+
 .code-area .text {
     -fx-font-family: Monospaced;
     -fx-fill: -color-fg-default;
