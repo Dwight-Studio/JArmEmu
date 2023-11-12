@@ -2,7 +2,7 @@
     -fx-background-color: -color-bg-overlay;
 }
 .code-area .caret {
-    -fx-stroke: -color-fg-emphasis;
+    -fx-stroke: -color-fg-default;
 }
 
 .code-area {

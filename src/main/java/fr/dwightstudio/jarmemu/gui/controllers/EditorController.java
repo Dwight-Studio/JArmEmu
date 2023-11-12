@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.controls.Message;
+import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
@@ -158,20 +159,22 @@ public class EditorController extends AbstractJArmEmuModule {
 
         if (getController().notifications.getChildren().size() > 5) return;
 
-        Message message;
+        Notification notification;
 
         switch (classString) {
-            case Styles.ACCENT -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedAL.INFO));
-            case Styles.SUCCESS -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
-            case Styles.WARNING -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
-            case Styles.DANGER -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
+            case Styles.ACCENT -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedAL.INFO));
+            case Styles.SUCCESS -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
+            case Styles.WARNING -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
+            case Styles.DANGER -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
 
-            default -> message = new Message(titleString, contentString);
+            default -> notification = new Notification(titleString + ": " + contentString);
         }
 
-        message.getStyleClass().add(classString);
+        notification.getStyleClass().add(classString);
+        notification.setOnClose((event) -> getController().notifications.getChildren().remove(notification));
+        notification.setMouseTransparent(false);
 
-        getController().notifications.getChildren().add(message);
+        getController().notifications.getChildren().add(notification);
     }
 
     /**
@@ -200,11 +203,18 @@ public class EditorController extends AbstractJArmEmuModule {
         getController().notifications.getChildren().clear();
     }
 
+    /**
+     * Réinitialise l'éditeur à son état de base
+     */
     public void newFile() {
         getController().codeArea.clear();
         getController().codeArea.replaceText(0, 0, SAMPLE_CODE);
     }
 
+    /**
+     * @param line le numéro de la ligne
+     * @return vrai si la ligne contient un breakpoint, faux sinon
+     */
     public boolean hasBreakPoint(int line) {
         AtomicBoolean flag = new AtomicBoolean(false);
         lineFactory.breakpoints.forEach(ln -> {
@@ -213,6 +223,12 @@ public class EditorController extends AbstractJArmEmuModule {
         return flag.get();
     }
 
+    /**
+     * Marque une ligne comme étant éxécuté ou prévue
+     *
+     * @param line le numéro de la ligne
+     * @param status le nouveau statut
+     */
     public void markLine(int line, LineStatus status) {
         if (line >= 0) {
             if (status == LineStatus.SCHEDULED) {

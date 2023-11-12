@@ -1,15 +1,17 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.SafeAddressConverter;
 import fr.dwightstudio.jarmemu.util.SafeStringConverter;
-import javafx.scene.control.Alert;
-import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.*;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -25,16 +27,22 @@ public class SettingsController extends AbstractJArmEmuModule {
     private static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
     private static final String THEME_KEY = "theme";
 
-    private static final String[] SOURCE_PARSER_LABEL_DICT = new String[]{"Regex Parser (default)", "Legacy Parser"};
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
-    private static final String[] THEME_LABEL_DICT = new String[]{"Dark (default)", "Light"};
-
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private Preferences preferences;
+
+    // Spinners
     private SpinnerValueFactory<Integer> simIntervalValue;
     private SpinnerValueFactory<Integer> stackAddressValue;
     private SpinnerValueFactory<Integer> symbolsAddressValue;
+
+    // ToggleGroup
+    private ToggleGroup parserGroup;
+    private ToggleGroup themeGroup;
+
+    private ToggleButton[] parserToggles;
+    private ToggleButton[] themeToggles;
 
 
     public SettingsController(JArmEmuApplication application) {
@@ -43,6 +51,8 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        // Gestion des spinners
         simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.UPDATE_THRESHOLD, 50);
         stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
         symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
@@ -55,6 +65,25 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().settingsStackAddress.setValueFactory(stackAddressValue);
         getController().settingsSymbolsAddress.setValueFactory(symbolsAddressValue);
 
+        // Gestion des ToggleGroups
+        parserGroup = new ToggleGroup();
+        themeGroup = new ToggleGroup();
+
+        parserToggles = new ToggleButton[] {getController().settingsRegex, getController().settingsLegacy};
+        themeToggles = new ToggleButton[] {getController().settingsDark, getController().settingsLight};
+
+        parserGroup.getToggles().addAll(Arrays.asList(parserToggles));
+        themeGroup.getToggles().addAll(Arrays.asList(themeToggles));
+
+        // Gestion des ChoiceBoxes
+        getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
+
+        getController().settingsFormat.valueProperty().addListener((obs, oldVal, newVal) -> {
+            for (int i = 0 ; i < DATA_FORMAT_LABEL_DICT.length ; i++) {
+                if (DATA_FORMAT_LABEL_DICT[i].equals(newVal)) setDataFormat(i);
+            }
+        });
+
         preferences = Preferences.userRoot().node(getApplication().getClass().getPackage().getName());
 
         if (preferences.get("version", "").isEmpty()) {
@@ -63,6 +92,7 @@ public class SettingsController extends AbstractJArmEmuModule {
             updateGUI();
         }
 
+        // Listeners pour les spinners
         simIntervalValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSimulationInterval(newVal)));
         stackAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setStackAddress(newVal)));
         symbolsAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSymbolsAddress(newVal)));
@@ -72,12 +102,17 @@ public class SettingsController extends AbstractJArmEmuModule {
      * Met à jour les paramètres sur le GUI.
      */
     private void updateGUI() {
+        // Spinners
         simIntervalValue.setValue(getSimulationInterval());
-        getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[getSourceParserSetting()]);
-        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
-        getController().settingsTheme.setText(THEME_LABEL_DICT[getTheme()]);
         stackAddressValue.setValue(getStackAddress());
         symbolsAddressValue.setValue(getSymbolsAddress());
+
+        // Toggles
+        parserGroup.selectToggle(parserToggles[getSourceParserSetting()]);
+        themeGroup.selectToggle(themeToggles[getTheme()]);
+
+        // ChoiceBoxes
+        getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
     }
 
     /**
@@ -100,7 +135,6 @@ public class SettingsController extends AbstractJArmEmuModule {
      */
     protected void onSettingsRegex() {
         setSourceParser(0);
-        getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[0]);
     }
 
     /**
@@ -108,31 +142,6 @@ public class SettingsController extends AbstractJArmEmuModule {
      */
     protected void onSettingsLegacy() {
         setSourceParser(1);
-        getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[1]);
-    }
-
-    /**
-     * Méthode invoquée par JavaFX
-     */
-    protected void onSettingsHex() {
-        setDataFormat(0);
-        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[0]);
-    }
-
-    /**
-     * Méthode invoquée par JavaFX
-     */
-    protected void onSettingsDec() {
-        setDataFormat(1);
-        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[1]);
-    }
-
-    /**
-     * Méthode invoquée par JavaFX
-     */
-    protected void onSettingsUDec() {
-        setDataFormat(2);
-        getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[2]);
     }
 
     /**
@@ -140,7 +149,6 @@ public class SettingsController extends AbstractJArmEmuModule {
      */
     public void onSettingsDark() {
         setTheme(0);
-        getController().settingsTheme.setText(THEME_LABEL_DICT[0]);
     }
 
     /**
@@ -148,7 +156,6 @@ public class SettingsController extends AbstractJArmEmuModule {
      */
     protected void onSettingsLight() {
         setTheme(1);
-        getController().settingsTheme.setText(THEME_LABEL_DICT[1]);
     }
 
     private void setSimulationInterval(int nb) {

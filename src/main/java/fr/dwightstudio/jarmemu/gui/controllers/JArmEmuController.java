@@ -63,11 +63,13 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected Tab settingsTab;
     @FXML protected Spinner<Integer> settingsSimInterval;
-    @FXML protected SplitMenuButton settingsParser;
+    @FXML protected ToggleButton settingsRegex;
+    @FXML protected ToggleButton settingsLegacy;
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
-    @FXML protected SplitMenuButton settingsFormat;
-    @FXML protected SplitMenuButton settingsTheme;
+    @FXML protected ChoiceBox<String> settingsFormat;
+    @FXML protected ToggleButton settingsDark;
+    @FXML protected ToggleButton settingsLight;
 
     @FXML protected Tab stackTab;
     @FXML protected GridPane stackGrid;
@@ -184,21 +186,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML
     public void onResetSettings() {
         getMainMenuController().onResetSettings();
-    }
-
-    @FXML
-    public void onSettingsHex() {
-        getSettingsController().onSettingsHex();
-    }
-
-    @FXML
-    public void onSettingsDec() {
-        getSettingsController().onSettingsDec();
-    }
-
-    @FXML
-    public void onSettingsUDec() {
-        getSettingsController().onSettingsUDec();
     }
 
     @FXML
