@@ -13,3 +13,4 @@
 - RRX as an instruction is now fully supported
 - S condition now update all flags on ROR instruction
 - ASR carry flag should now work correctly
+- Enhancing settings menu
