@@ -1,9 +1,12 @@
 package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RRXExecutorTest extends JArmEmuTest {
 
@@ -18,6 +21,33 @@ public class RRXExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleRrxTest() {
+        Register r0 = stateContainer.registers[0];
+        r0.setData(25);
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(12, r0.getData());
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(6, r0.getData());
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(3, r0.getData());
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(1, r0.getData());
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(0, r0.getData());
+        r0.setData(25);
+        stateContainer.cpsr.setC(true);
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(-2147483636, r0.getData());
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(-1073741818, r0.getData());
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(-536870909, r0.getData());
+        stateContainer.cpsr.setC(false);
+        rrxExecutor.execute(stateContainer, false, null, null, r0, r0, null, null);
+        assertEquals(1879048193, r0.getData());
+    }
+
+    @Test
+    public void flagsTest() {
         //TODO: faire les tests de RRX
     }
 
