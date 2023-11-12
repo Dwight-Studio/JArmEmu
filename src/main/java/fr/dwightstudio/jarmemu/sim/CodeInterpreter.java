@@ -257,6 +257,7 @@ public class CodeInterpreter {
      * Réinitialise l'état actuel du simulateur
      */
     public void resetState(int stackAddress, int symbolsAddress) {
+        //TODO: AJouter la transformation des MOV avec des SHIFT (penser à l'update des flags)
         this.stateContainer = new StateContainer(stackAddress, symbolsAddress);
         applyDirectives();
         registerLabels();
@@ -284,7 +285,7 @@ public class CodeInterpreter {
     /**
      * Vérifie que la ligne suivante existe.
      *
-     * @return vrai si il y a une ligne, faux sinon
+     * @return vrai s'il y a une ligne, faux sinon
      */
     public boolean hasNextLine() {
         return lastLine > currentLine && !atTheEnd;

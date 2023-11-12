@@ -14,6 +14,7 @@ JArmEmu is powered by an ARMv7 interpreter made *Ex Nihilo* for this project.
 Currently, known limitations or differences with the real architecture:
 - Carry flag update for ASR may be inaccurate (no counter example found yet)
 - SWI instruction is not implemented
+- Shift doesn't perform flag update when used in MOV instruction
 
 ## Licence
 This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (independent
