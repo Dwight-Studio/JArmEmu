@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
@@ -25,7 +26,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().simulate.setDisable(true);
         getEditorController().clearNotifs();
 
-        getEditorController().addNotif("Parsing in progress...", "Please wait, this can take up to a few seconds.", "info");
+        getEditorController().addNotif("Parsing in progress...", "Please wait, this can take up to a few seconds.", Styles.ACCENT);
 
         getExecutionWorker().revive();
         getExecutionWorker().prepare();
@@ -41,7 +42,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         if (errors.length == 0) {
             if (getCodeInterpreter().getInstructionCount() == 0) {
                 getController().simulate.setDisable(false);
-                getEditorController().addNotif("Simulation error: ", "No instructions detected (did you forget '.text'?)", "danger");
+                getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?)", Styles.DANGER);
             } else {
                 getEditorController().clearLineMarking();
                 getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
@@ -71,7 +72,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      */
     public void abortSimulation() {
         getEditorController().clearNotifs();
-        getEditorController().addNotif("Parsing error: ", "Exceptions prevented the code from being parsed. See console for more details.", "danger");
+        getEditorController().addNotif("Parsing error", "Exceptions prevented the code from being parsed. See console for more details.", Styles.DANGER);
         getController().simulate.setDisable(false);
     }
 
@@ -146,6 +147,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().memoryPage.setDisable(true);
         getController().addressField.setDisable(true);
         getController().settingsTab.setDisable(false);
+        getEditorController().clearLineMarking();
         application.status = Status.EDITING;
     }
 

@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import org.fxmisc.flowless.VirtualizedScrollPane?>
-<?import org.fxmisc.richtext.CodeArea?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SplitMenuButton?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
@@ -218,7 +242,7 @@
                            <items>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="btn, btn-info" text="Simulate">
+                                    <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="accent" text="Simulate">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -227,7 +251,7 @@
                               </HBox>
                               <HBox>
                                  <children>
-                                    <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" styleClass="btn, btn-primary" text="Step Into">
+                                    <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" text="Step Into">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -236,7 +260,7 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" styleClass="btn, btn-primary" text="Step Over">
+                                    <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" text="Step Over">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -245,14 +269,14 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="btn, btn-success" text="Continue" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="success" text="Continue" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
                                     </Button>
                                     <HBox>
                                        <children>
-                                          <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="btn, btn-warning" text="Pause" HBox.hgrow="ALWAYS">
+                                          <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="accent" text="Pause" HBox.hgrow="ALWAYS">
                                              <HBox.margin>
                                                 <Insets left="10.0" right="10.0" />
                                              </HBox.margin>
@@ -263,7 +287,7 @@
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0">
                                  <children>
-                                    <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="btn, btn-danger" text="Stop">
+                                    <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="danger" text="Stop">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -272,7 +296,7 @@
                               </HBox>
                               <HBox layoutX="20.0" layoutY="20.0">
                                  <children>
-                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="btn, btn-warning" text="Restart" HBox.hgrow="ALWAYS">
+                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="danger" text="Restart" HBox.hgrow="ALWAYS">
                                        <HBox.margin>
                                           <Insets left="10.0" right="10.0" />
                                        </HBox.margin>
@@ -281,16 +305,11 @@
                               </HBox>
                            </items>
                         </ToolBar>
-                        <StackPane VBox.vgrow="ALWAYS">
+                        <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
                            <children>
-                              <VirtualizedScrollPane fx:id="editorScroll">
-                                  <content>
-                                <CodeArea fx:id="codeArea" prefHeight="200.0" prefWidth="200.0" styleClass="editor" />
-                                  </content>
-                              </VirtualizedScrollPane>
                               <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
                                  <StackPane.margin>
-                                    <Insets left="70.0" />
+                                    <Insets left="55.0" />
                                  </StackPane.margin>
                               </Separator>
                            </children>
@@ -411,9 +430,9 @@
                         <content>
                     <AnchorPane>
                            <children>
-                              <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                 <children>
-                                    <TitledPane animated="false" text="Simulation" VBox.vgrow="ALWAYS">
+                              <Accordion AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <panes>
+                                    <TitledPane text="Simulation">
                                       <content>
                                         <AnchorPane>
                                              <children>
@@ -442,7 +461,7 @@
                                                             <Insets bottom="20.0" />
                                                          </VBox.margin>
                                                          <children>
-                                                             <SplitMenuButton fx:id="settingsParser" styleClass="split-menu-btn, split-menu-btn-primary" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                             <SplitMenuButton fx:id="settingsParser" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                  <items>
                                                                      <MenuItem mnemonicParsing="false" onAction="#onSettingsRegex" text="Regex Parser (default)" />
                                                                      <MenuItem mnemonicParsing="false" onAction="#onSettingsLegacy" text="Legacy Parser" />
@@ -455,8 +474,11 @@
                                              </children>
                                           </AnchorPane>
                                       </content>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
                                     </TitledPane>
-                                    <TitledPane animated="false" layoutX="10.0" layoutY="10.0" text="Data management" VBox.vgrow="ALWAYS">
+                                    <TitledPane text="Data management">
                                        <content>
                                           <AnchorPane>
                                              <children>
@@ -498,7 +520,7 @@
                                                                <Insets bottom="20.0" />
                                                            </VBox.margin>
                                                            <children>
-                                                               <SplitMenuButton fx:id="settingsFormat" styleClass="split-menu-btn, split-menu-btn-primary" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                               <SplitMenuButton fx:id="settingsFormat" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                    <items>
                                                                        <MenuItem mnemonicParsing="false" onAction="#onSettingsHex" text="Hexadecimal (default)" />
                                                                        <MenuItem mnemonicParsing="false" onAction="#onSettingsDec" text="Signed Decimal" />
@@ -512,9 +534,45 @@
                                              </children>
                                           </AnchorPane>
                                        </content>
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
                                     </TitledPane>
-                                 </children>
-                              </VBox>
+                                     <TitledPane text="Appearance">
+                                         <content>
+                                             <AnchorPane>
+                                                 <children>
+                                                     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                             <Label text="Display theme">
+                                                                 <VBox.margin>
+                                                                     <Insets bottom="2.0" left="5.0" />
+                                                                 </VBox.margin>
+                                                             </Label>
+                                                             <AnchorPane>
+                                                                 <VBox.margin>
+                                                                     <Insets bottom="20.0" />
+                                                                 </VBox.margin>
+                                                                 <children>
+                                                                     <SplitMenuButton fx:id="settingsTheme" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                         <items>
+                                                                             <MenuItem mnemonicParsing="false" onAction="#onSettingsDark" text="Dark (default)" />
+                                                                             <MenuItem mnemonicParsing="false" onAction="#onSettingsLight" text="Light" />
+                                                                         </items>
+                                                                     </SplitMenuButton>
+                                                                 </children>
+                                                             </AnchorPane>
+                                                         </children>
+                                                     </VBox>
+                                                 </children>
+                                             </AnchorPane>
+                                         </content>
+                                         <font>
+                                             <Font size="14.0" />
+                                         </font>
+                                     </TitledPane>
+                                 </panes>
+                              </Accordion>
                            </children></AnchorPane>
                   </content>
                 </Tab>

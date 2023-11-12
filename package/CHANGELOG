@@ -7,4 +7,6 @@
 - Adding global directive logic (actually usable now)
 - Fixing the stack auto-scrolling for non-HDPI screens
 - Adding Fill directive
+- Adding AtlantaFx theme (instead of JavaFx Moderna with a bit of BootstrapFx)
+- Adding support for Dark & Light themes
 - Legacy Parser now works when selected in the drop down menu (its use is still not recommended nonetheless)

@@ -54,6 +54,6 @@ public class SyntaxASMException extends IllegalStateException {
     }
 
     public String getTitle() {
-        return "Syntax error:";
+        return "Syntax error";
     }
 }

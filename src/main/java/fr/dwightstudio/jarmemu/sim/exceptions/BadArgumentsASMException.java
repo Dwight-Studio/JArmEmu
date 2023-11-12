@@ -7,6 +7,6 @@ public class BadArgumentsASMException extends SyntaxASMException {
 
     @Override
     public String getTitle() {
-        return "Bad arguments:";
+        return "Bad arguments";
     }
 }

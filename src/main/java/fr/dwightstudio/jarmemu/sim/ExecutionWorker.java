@@ -1,9 +1,10 @@
 package fr.dwightstudio.jarmemu.sim;
 
+import atlantafx.base.theme.Styles;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -211,7 +212,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (application.getEditorController().hasBreakPoint(line)) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", "success");
+                    application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", Styles.SUCCESS);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
@@ -223,7 +224,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (application.getCodeInterpreter().isAtTheEnd()) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Warning", "The program reached the end of the file.", "warning");
+                    application.getEditorController().addNotif("Warning", "The program reached the end of the file.", Styles.WARNING);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;

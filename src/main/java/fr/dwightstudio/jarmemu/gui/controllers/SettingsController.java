@@ -23,9 +23,11 @@ public class SettingsController extends AbstractJArmEmuModule {
     private static final String DATA_FORMAT_KEY = "dataFormat";
     private static final String STACK_ADDRESS_KEY = "stackAddress";
     private static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
+    private static final String THEME_KEY = "theme";
 
     private static final String[] SOURCE_PARSER_LABEL_DICT = new String[]{"Regex Parser (default)", "Legacy Parser"};
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
+    private static final String[] THEME_LABEL_DICT = new String[]{"Dark (default)", "Light"};
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -73,6 +75,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         simIntervalValue.setValue(getSimulationInterval());
         getController().settingsParser.setText(SOURCE_PARSER_LABEL_DICT[getSourceParserSetting()]);
         getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
+        getController().settingsTheme.setText(THEME_LABEL_DICT[getTheme()]);
         stackAddressValue.setValue(getStackAddress());
         symbolsAddressValue.setValue(getSymbolsAddress());
     }
@@ -132,7 +135,23 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().settingsFormat.setText(DATA_FORMAT_LABEL_DICT[2]);
     }
 
-    public void setSimulationInterval(int nb) {
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    public void onSettingsDark() {
+        setTheme(0);
+        getController().settingsTheme.setText(THEME_LABEL_DICT[0]);
+    }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    protected void onSettingsLight() {
+        setTheme(1);
+        getController().settingsTheme.setText(THEME_LABEL_DICT[1]);
+    }
+
+    private void setSimulationInterval(int nb) {
         if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
             new Alert(Alert.AlertType.WARNING, "Setting the simulation interval below 50ms disables systematic GUI update to prevent glitches with the front-end. You may see steps being skipped (this is just visual, the back-end is still running as usual).").show();
         }
@@ -182,5 +201,14 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setDataFormat(int nb) {
         preferences.putInt(DATA_FORMAT_KEY, nb);
+    }
+
+    public int getTheme() {
+        return Math.max(Math.min(preferences.getInt(THEME_KEY, 0), 1), 0);
+    }
+
+    public void setTheme(int nb) {
+        preferences.putInt(THEME_KEY, nb);
+        getApplication().updateUserAgentStyle(nb);
     }
 }

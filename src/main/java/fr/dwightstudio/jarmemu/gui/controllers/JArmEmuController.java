@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -18,8 +19,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    @FXML protected CodeArea codeArea;
-    @FXML protected VirtualizedScrollPane editorScroll;
+    @FXML protected StackPane editorStackPane;
+    protected CodeArea codeArea;
+    protected VirtualizedScrollPane<CodeArea> editorScroll;
 
     @FXML protected VBox notifications;
     @FXML protected Button simulate;
@@ -65,6 +67,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
     @FXML protected SplitMenuButton settingsFormat;
+    @FXML protected SplitMenuButton settingsTheme;
 
     @FXML protected Tab stackTab;
     @FXML protected GridPane stackGrid;
@@ -77,6 +80,10 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        codeArea = new CodeArea();
+        editorScroll = new VirtualizedScrollPane(codeArea);
+        editorStackPane.getChildren().add(0, editorScroll);
 
         getEditorController().initialize(url, resourceBundle);
         getMainMenuController().initialize(url, resourceBundle);
@@ -192,5 +199,15 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML
     public void onSettingsUDec() {
         getSettingsController().onSettingsUDec();
+    }
+
+    @FXML
+    public void onSettingsDark() {
+        getSettingsController().onSettingsDark();
+    }
+
+    @FXML
+    public void onSettingsLight() {
+        getSettingsController().onSettingsLight();
     }
 }

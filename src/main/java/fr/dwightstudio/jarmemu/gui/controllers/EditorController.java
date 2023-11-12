@@ -1,5 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.controls.Message;
+import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
@@ -7,18 +9,18 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.gui.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
+import fr.dwightstudio.jarmemu.util.RichTextUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2OutlinedAL;
+import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 import org.reactfx.Subscription;
 
 import java.net.URL;
@@ -37,7 +39,7 @@ import java.util.regex.Pattern;
 
 import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
-public class EditorController implements Initializable {
+public class EditorController extends AbstractJArmEmuModule {
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
     private static final String[] KEYWORDS = ArrayUtils.addAll(getFromEnum(Directive.values(), false), getFromEnum(Section.values(), false));
     private static final String[] REGISTERS = getFromEnum(RegisterUtils.values(), false);
@@ -58,40 +60,37 @@ public class EditorController implements Initializable {
     private static final String COMMENT_PATTERN = "@[^\n]*";
     private static final String IMM_PATTERN = "=[^\n@]*|#[^\n\\]@]*";
     private static final Pattern PATTERN = Pattern.compile(
-            "(?<COMMENT>" + COMMENT_PATTERN + ")"
-                    + "|(?<STRING>" + STRING_PATTERN + ")"
-                    + "|(?<SHIFT>" + SHIFT_PATTERN + ")"
-                    + "|(?<LABEL>" + LABEL_PATTERN + ")"
-                    + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
-                    + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")"
-                    + "|(?<REGISTER>" + REGISTER_PATTERN + ")"
-                    + "|(?<IMM>" + IMM_PATTERN + ")"
-                    + "|(?<BRACE>" + BRACE_PATTERN + ")"
-                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
+            "(?<NEWLINE>\n)"
+            + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
+            + "|(?<STRING>" + STRING_PATTERN + ")"
+            + "|(?<SHIFT>" + SHIFT_PATTERN + ")"
+            + "|(?<LABEL>" + LABEL_PATTERN + ")"
+            + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
+            + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")"
+            + "|(?<REGISTER>" + REGISTER_PATTERN + ")"
+            + "|(?<IMM>" + IMM_PATTERN + ")"
+            + "|(?<BRACE>" + BRACE_PATTERN + ")"
+            + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
     );
-    private static final String sampleCode = String.join("\n", new String[]{".global _start", ".text", "_start:", "\t@ Beginning of the program"});
+    private static final String SAMPLE_CODE = String.join("\n", new String[]{".global _start", ".text", "_start:", "\t@ Beginning of the program"});
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private ExecutorService executor;
-    private JArmEmuApplication application;
-    private JArmEmuLineFactory lineFactory;
-    private Subscription cleanupWhenFinished;
+    private final ExecutorService executor;
+    private final JArmEmuApplication application;
+    private final JArmEmuLineFactory lineFactory;
+    private Subscription hightlightUpdateSubscription;
 
     public EditorController(JArmEmuApplication application) {
+        super(application);
         this.application = application;
         this.executor = Executors.newSingleThreadExecutor();
         this.lineFactory = new JArmEmuLineFactory();
     }
 
-    private JArmEmuController getController() {
-        return application.getController();
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         getController().codeArea = application.getController().codeArea;
-
         getController().codeArea.setParagraphGraphicFactory(lineFactory);
         getController().codeArea.setContextMenu(new EditorContextMenu(getController().codeArea));
 
@@ -131,10 +130,10 @@ public class EditorController implements Initializable {
             } );
         });
 
-        cleanupWhenFinished = getController().codeArea.multiPlainChanges()
+        hightlightUpdateSubscription = getController().codeArea.multiPlainChanges()
                 .successionEnds(Duration.ofMillis(50))
                 .retainLatestUntilLater(executor)
-                .supplyTask(this::computeHighlightingAsync)
+                .supplyTask(this::autoComputeHighlightingAsync)
                 .awaitLatest(getController().codeArea.multiPlainChanges())
                 .filterMap(t -> {
                     if (t.isSuccess()) {
@@ -146,7 +145,6 @@ public class EditorController implements Initializable {
                 }).subscribe((highlighting) -> getController().codeArea.setStyleSpans(0, highlighting));
 
         newFile();
-        getController().codeArea.getStyleClass().add("editor");
         getController().codeArea.getStylesheets().add(EditorController.class.getResource("editor-style.css").toExternalForm());
     }
 
@@ -161,20 +159,20 @@ public class EditorController implements Initializable {
 
         if (getController().notifications.getChildren().size() > 5) return;
 
-        TextFlow textFlow = new TextFlow();
-        textFlow.setMinHeight(32);
-        textFlow.getStyleClass().add("alert");
-        textFlow.getStyleClass().add("alert-" + classString);
+        Message message;
 
-        Text title = new Text(titleString);
-        title.getStyleClass().add("notif-title");
-        textFlow.getChildren().add(title);
+        switch (classString) {
+            case Styles.ACCENT -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedAL.INFO));
+            case Styles.SUCCESS -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
+            case Styles.WARNING -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
+            case Styles.DANGER -> message = new Message(titleString, contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
 
-        Text label = new Text(" " + contentString);
-        label.getStyleClass().add("notif-content");
-        textFlow.getChildren().add(label);
+            default -> message = new Message(titleString, contentString);
+        }
 
-        getController().notifications.getChildren().add(textFlow);
+        message.getStyleClass().add(classString);
+
+        getController().notifications.getChildren().add(message);
     }
 
     /**
@@ -190,23 +188,22 @@ public class EditorController implements Initializable {
         }
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
         if (exception.isLineSpecified()) {
-            addNotif(exception.getTitle(), exception.getMessage() + " at line " + exception.getLine(), "danger");
+            addNotif(exception.getTitle(), exception.getMessage() + " at line " + exception.getLine(), Styles.DANGER);
         } else {
-            addNotif(exception.getTitle(), exception.getMessage(), "danger");
+            addNotif(exception.getTitle(), exception.getMessage(), Styles.DANGER);
         }
     }
 
     /**
      * Supprime les notifications
      */
-    @FXML
     protected void clearNotifs() {
         getController().notifications.getChildren().clear();
     }
 
     public void newFile() {
         getController().codeArea.clear();
-        getController().codeArea.replaceText(0, 0, sampleCode);
+        getController().codeArea.replaceText(0, 0, SAMPLE_CODE);
     }
 
     public boolean hasBreakPoint(int line) {
@@ -222,54 +219,58 @@ public class EditorController implements Initializable {
             if (status == LineStatus.EXECUTED) {
                 getController().codeArea.moveTo(line, 0);
                 getController().codeArea.requestFollowCaret();
+
+                RichTextUtils.setExecuted(getController().codeArea, line, true);
+                RichTextUtils.setScheduled(getController().codeArea, line, false);
+
+            } else if (status == LineStatus.SCHEDULED) {
+                RichTextUtils.setExecuted(getController().codeArea, line, false);
+                RichTextUtils.setScheduled(getController().codeArea, line, true);
+            } else {
+                RichTextUtils.setExecuted(getController().codeArea, line, false);
+                RichTextUtils.setScheduled(getController().codeArea, line, false);
             }
-            lineFactory.nums.get(line).accept(status);
+            computeHighlightingAsync();
         }
     }
 
     public void clearLineMarking() {
-        lineFactory.nums.forEach((k, v) -> v.accept(LineStatus.NONE));
+        for (int i = 0 ; i < getController().codeArea.getParagraphs().size() ; i++) {
+            RichTextUtils.setExecuted(getController().codeArea, i, false);
+            RichTextUtils.setScheduled(getController().codeArea, i, false);
+        }
     }
 
-    private Task<StyleSpans<Collection<String>>> computeHighlightingAsync() {
+    /**
+     * Méthode utilisée pour automatiquement mettre à jour la colorimétrie
+     *
+     * @return la tache associée
+     */
+    private ComputeHightlightsTask autoComputeHighlightingAsync() {
         String text = getController().codeArea.getText();
-        Task<StyleSpans<Collection<String>>> task = new Task<StyleSpans<Collection<String>>>() {
-            @Override
-            protected StyleSpans<Collection<String>> call() {
-                Matcher matcher = PATTERN.matcher(text);
-                int lastKwEnd = 0;
-                StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
-                while (matcher.find()) {
-                    String styleClass = matcher.group("COMMENT") != null ? "comment"
-                            : matcher.group("STRING") != null ? "string"
-                            : matcher.group("SHIFT") != null ? "shift"
-                            : matcher.group("LABEL") != null ? "label"
-                            : matcher.group("KEYWORD") != null ? "keyword"
-                            : matcher.group("INSTRUCTION") != null ? "instruction"
-                            : matcher.group("REGISTER") != null ? "register"
-                            : matcher.group("BRACE") != null ? "brace"
-                            : matcher.group("BRACKET") != null ? "bracket"
-                            : matcher.group("IMM") != null ? "imm" : null;
-                    assert styleClass != null;
-                    spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-                    spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
-                    lastKwEnd = matcher.end();
-                }
-                spansBuilder.add(Collections.emptyList(), text.length() - lastKwEnd);
-                application.updateSaveState();
-                return spansBuilder.create();
-            }
-        };
+
+        ComputeHightlightsTask task = new ComputeHightlightsTask(text, false);
 
         executor.execute(task);
         return task;
     }
 
     /**
+     * Appel une mise à jour de la colorimétrie "manuellement"
+     */
+    private void computeHighlightingAsync() {
+        String text = getController().codeArea.getText();
+
+        ComputeHightlightsTask task = new ComputeHightlightsTask(text, true);
+
+        executor.execute(task);
+    }
+
+    /**
      * Nettoie l'espace de travail dans le cas ou on voudrait le réinitialiser
      */
     public void clean() {
-        cleanupWhenFinished.unsubscribe();
+        hightlightUpdateSubscription.unsubscribe();
         executor.shutdown();
     }
 
@@ -284,6 +285,53 @@ public class EditorController implements Initializable {
         int lineNum = getController().codeArea.getParagraphs().size();
         logger.info("Pre-generate " + lineNum + " lines");
         lineFactory.pregenAll(getController().codeArea.getParagraphs().size());
-        clearLineMarking();
+        Platform.runLater(this::clearLineMarking);
+    }
+
+    private class ComputeHightlightsTask extends Task<StyleSpans<Collection<String>>> {
+        private final String text;
+        private final boolean update;
+
+        public ComputeHightlightsTask(String text, boolean update) {
+            this.text = text;
+            this.update = update;
+        }
+
+        @Override
+        protected StyleSpans<Collection<String>> call() {
+            Matcher matcher = PATTERN.matcher(text);
+            int lastKwEnd = 0;
+            int line = 0;
+            StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+            while (matcher.find()) {
+                if (matcher.group("NEWLINE") != null) {
+                    line++;
+                    continue;
+                }
+
+                String styleClass = matcher.group("COMMENT") != null ? "comment"
+                        : matcher.group("STRING") != null ? "string"
+                        : matcher.group("SHIFT") != null ? "shift"
+                        : matcher.group("LABEL") != null ? "label"
+                        : matcher.group("KEYWORD") != null ? "keyword"
+                        : matcher.group("INSTRUCTION") != null ? "instruction"
+                        : matcher.group("REGISTER") != null ? "register"
+                        : matcher.group("BRACE") != null ? "brace"
+                        : matcher.group("BRACKET") != null ? "bracket"
+                        : matcher.group("IMM") != null ? "imm" : null;
+
+                spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
+                spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
+                lastKwEnd = matcher.end();
+            }
+
+            application.updateSaveState();
+            StyleSpans<Collection<String>> styleSpans = spansBuilder.create();
+
+            if (this.update) {
+                Platform.runLater(() -> getController().codeArea.setStyleSpans(0, styleSpans));
+            }
+            return styleSpans;
+        }
     }
 }
