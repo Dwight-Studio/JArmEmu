@@ -8,13 +8,13 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class ASRExecutor implements InstructionExecutor<Register, Register, Integer, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
+        int oldValue = arg2.getData() >> (arg3 - 1);
         arg1.setData(arg2.getData() >> arg3);
 
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
-            //TODO: Update carry flag
-            //stateContainer.cpsr.setC();
+            stateContainer.cpsr.setC(oldValue < 0 && oldValue % 2 != 0);
         }
     }
 }
