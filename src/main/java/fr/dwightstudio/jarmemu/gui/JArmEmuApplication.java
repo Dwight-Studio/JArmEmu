@@ -73,8 +73,7 @@ public class JArmEmuApplication extends Application {
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre, écriture dans RODATA etc...)
         // TODO: Ajouter le about dans help
         // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS ; vérifier que on initialise pas dans BSS)
-        // TODO: Refonte de l'interface
-        //          -> Remplacer les paramètres par des ChoiceBox ou ComboBox
+        // TODO: Revérifier la concurence
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
 
