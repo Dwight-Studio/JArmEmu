@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import atlantafx.base.controls.Message;
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.asm.*;

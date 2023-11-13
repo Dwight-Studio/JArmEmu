@@ -2,7 +2,6 @@ package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
-import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
@@ -19,7 +18,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -27,6 +25,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -103,7 +102,7 @@ public class JArmEmuApplication extends Application {
 
         scene = new Scene(fxmlLoader.load(), 1280, 720);
         updateUserAgentStyle(getSettingsController().getTheme());
-        scene.getStylesheets().add(getClass().getResource("jarmemu-style.css").toExternalForm());
+        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("jarmemu-style.css")).toExternalForm());
 
         scene.setOnKeyPressed(shortcutHandler::handle);
 
@@ -111,13 +110,13 @@ public class JArmEmuApplication extends Application {
 
         stage.setOnCloseRequest(this::onClosingRequest);
         stage.getIcons().addAll(
-                new Image(getClass().getResourceAsStream("medias/favicon@16.png")),
-                new Image(getClass().getResourceAsStream("medias/favicon@32.png")),
-                new Image(getClass().getResourceAsStream("medias/favicon@64.png")),
-                new Image(getClass().getResourceAsStream("medias/favicon@128.png")),
-                new Image(getClass().getResourceAsStream("medias/favicon@256.png")),
-                new Image(getClass().getResourceAsStream("medias/favicon@512.png")),
-                new Image(getClass().getResourceAsStream("medias/logo.png"))
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@16.png"))),
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@32.png"))),
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@64.png"))),
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@128.png"))),
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@256.png"))),
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@512.png"))),
+                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/logo.png")))
         );
         stage.setScene(scene);
         stage.show();
@@ -168,6 +167,7 @@ public class JArmEmuApplication extends Application {
             }
 
             logger.info("Loading SplashScreen: " + url);
+            assert url != null;
             splashScreen.setImageURL(url);
         } catch (Exception e) {
             logger.severe(ExceptionUtils.getStackTrace(e));

@@ -1,17 +1,18 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.SafeAddressConverter;
 import fr.dwightstudio.jarmemu.util.SafeStringConverter;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
