@@ -268,8 +268,6 @@ public class CodeInterpreter {
      * Réinitialise l'état actuel du simulateur
      */
     public void resetState(int stackAddress, int symbolsAddress) {
-        //TODO: AJouter la transformation des MOV avec des SHIFT (penser à l'update des flags)
-        //TODO: Ajouter les tests correspondants
         this.stateContainer = new StateContainer(stackAddress, symbolsAddress);
         replaceMovShifts();
         applyDirectives();
