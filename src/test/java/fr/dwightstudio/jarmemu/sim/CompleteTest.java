@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
@@ -19,8 +20,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class CompleteTest extends JArmEmuTest {
 
@@ -132,6 +132,7 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         codeInterpreter.load(parser);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
         codeInterpreter.restart();
 
         // Execution
@@ -152,6 +153,7 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         codeInterpreter.load(parserLegacy);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
         codeInterpreter.restart();
 
         // Execution
@@ -172,6 +174,7 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         codeInterpreter.load(parser);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
         codeInterpreter.restart();
 
         // Execution
@@ -192,6 +195,7 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         codeInterpreter.load(parserLegacy);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
         codeInterpreter.restart();
 
         // Execution
@@ -212,6 +216,7 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         codeInterpreter.load(parser);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
         codeInterpreter.restart();
 
         // Execution
@@ -232,6 +237,7 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         codeInterpreter.load(parserLegacy);
         codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
         codeInterpreter.restart();
 
         // Execution

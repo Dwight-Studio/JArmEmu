@@ -224,7 +224,7 @@ public class LegacySourceParser implements SourceParser {
                 }
 
                 if(currentLine.endsWith(":")){
-                    this.arguments.add(currentLine);
+                    this.arguments.add(currentLine.toUpperCase());
                 } else {
                     if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + instructionString + "'");
                 }
