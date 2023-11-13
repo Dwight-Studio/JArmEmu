@@ -204,7 +204,6 @@ public class LegacySourceParser implements SourceParser {
         currentLine = this.sourceScanner.nextLine();
         currentLine = this.removeComments(currentLine);
         currentLine = this.removeBlanks(currentLine);
-        currentLine = currentLine.toUpperCase();
 
         if (!currentLine.isEmpty()){
             Section section = this.legacySectionParser.parseOneLine(currentLine);
@@ -214,7 +213,7 @@ public class LegacySourceParser implements SourceParser {
             if (directives != null) this.directive = directives;
 
             if (currentSection == Section.TEXT){
-                instructionString = currentLine.split(" ")[0];
+                instructionString = currentLine.split(" ")[0].toUpperCase();
                 int instructionLength = instructionString.length();
                 instructionString = this.removeFlags(instructionString);
                 instructionString = this.removeCondition(instructionString);

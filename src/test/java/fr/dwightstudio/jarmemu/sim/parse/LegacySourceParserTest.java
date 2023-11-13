@@ -76,12 +76,12 @@ public class LegacySourceParserTest extends JArmEmuTest {
         parser.currentSection = Section.TEXT;
 
         assertEquals(
-                new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "R2", "R0", "R1", null),
+                new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "r2", "r0", "r1", null),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "R0", "R1", null, null),
+                new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "r0", "r1", null, null),
                 parser.parseOneLine()
         );
     }
@@ -94,37 +94,37 @@ public class LegacySourceParserTest extends JArmEmuTest {
         parser.currentSection = Section.TEXT;
 
         assertEquals(
-                new ParsedInstruction(Instruction.ADD, Condition.CC, true, null, null, "R0", "R9", "#2", null),
+                new ParsedInstruction(Instruction.ADD, Condition.CC, true, null, null, "r0", "r9", "#2", null),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.MLA, Condition.EQ, false, null, null, "R0", "R0", "R1", "R2"),
+                new ParsedInstruction(Instruction.MLA, Condition.EQ, false, null, null, "r0", "r0", "r1", "r2"),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.SMLAL, Condition.AL, true, null, null, "R4", "R5", "R6", "R7"),
+                new ParsedInstruction(Instruction.SMLAL, Condition.AL, true, null, null, "r4", "r5", "r6", "r7"),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.BIC, Condition.LO, false, null, null, "R5", "R6", "#5", null),
+                new ParsedInstruction(Instruction.BIC, Condition.LO, false, null, null, "r5", "r6", "#5", null),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, DataMode.BYTE, null, "R0", "=X", null, null),
+                new ParsedInstruction(Instruction.LDR, Condition.AL, false, DataMode.BYTE, null, "r0", "=x", null, null),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.STM, Condition.AL, false, null, UpdateMode.FD, "SP!", "{R0,R1,R2}", null, null),
+                new ParsedInstruction(Instruction.STM, Condition.AL, false, null, UpdateMode.FD, "sp!", "{r0,r1,r2}", null, null),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.B, Condition.AL, false, null, null, "ETIQUETTE", null, null, null),
+                new ParsedInstruction(Instruction.B, Condition.AL, false, null, null, "etiquette", null, null, null),
                 parser.parseOneLine()
         );
 
@@ -244,7 +244,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1", "=B", null, null),
+                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1", "=b", null, null),
                 parser.parseOneLine()
         );
 
