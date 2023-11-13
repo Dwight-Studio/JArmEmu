@@ -28,9 +28,9 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     public HBox generate(int line) {
         HBox rtn = new HBox();
 
-        rtn.setMaxWidth(70);
-        rtn.setMinWidth(70);
-        rtn.setPrefWidth(70);
+        rtn.setMaxWidth(80);
+        rtn.setMinWidth(80);
+        rtn.setPrefWidth(80);
 
         Text lineNo = new Text();
         Text breakpoint = new Text();
@@ -38,8 +38,8 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         lineNo.getStyleClass().add("lineno");
         breakpoint.getStyleClass().add("breakpoint");
 
-        lineNo.setText(String.format("%4d", line));
-        if (breakpoints.contains(line)) breakpoint.setText(" ⬤ "); else breakpoint.setText("   ");
+        lineNo.setText(String.format("%5d", line));
+        if (breakpoints.contains(line)) breakpoint.setText("  ⬤"); else breakpoint.setText("   ");
 
         breakpoint.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) toggle(line, breakpoint);
@@ -54,7 +54,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
     private void toggle(int id, Text label) {
         if (breakpoints.contains(id)) breakpoints.remove((Integer) id); else breakpoints.add(id);
-        if (breakpoints.contains(id)) label.setText(" ⬤ "); else label.setText("   ");
+        if (breakpoints.contains(id)) label.setText("  ⬤"); else label.setText("   ");
     }
 
     public void markLine(int line, LineStatus lineStatus) {

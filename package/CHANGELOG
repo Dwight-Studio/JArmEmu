@@ -2,6 +2,8 @@
 
 - ASR carry flag improved yet again (didn't work for positive values)
 - Convert MOV instruction to SHIFT instruction (in the backend only) for better use of update flags
+- Fixing a bug that prevented the leftest text of editor to be selected with mouse
+- Fixing Regex parser arguments parsing (strip whitespaces)
 
 
 0.1.1 -> 0.1.2

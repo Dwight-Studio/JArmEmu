@@ -28,7 +28,7 @@ public class ParsedLabel extends ParsedObject {
     public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer container = stateSupplier.get();
 
-        if (container.labels.get(this.name) == null) {
+        if (container.labels.get(this.name.toUpperCase()) == null) {
             throw new IllegalStateException("Unable to verify label (incorrectly registered in the StateContainer)");
         } else if (container.labels.get(this.name) != this.pos) {
             return new SyntaxASMException("Label '" + this.name + "' is already defined", line, this);

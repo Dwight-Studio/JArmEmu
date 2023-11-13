@@ -1,387 +1,262 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import atlantafx.base.controls.CustomTextField?>
+<?import atlantafx.base.controls.ModalPane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Accordion?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<?import org.kordamp.ikonli.javafx.FontIcon?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File">
-                  <graphic>
-                      <FontIcon iconLiteral="mdral-insert_drive_file" />
-                  </graphic>
-              </MenuItem>
-              <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open...">
-                  <graphic>
-                      <FontIcon iconLiteral="mdal-folder" />
-                  </graphic>
-              </MenuItem>
-              <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
-                  <graphic>
-                      <FontIcon iconLiteral="mdmz-save" />
-                  </graphic>
-              </MenuItem>
-              <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as...">
-                  <graphic>
-                      <FontIcon iconLiteral="mdmz-save" />
-                  </graphic>
-              </MenuItem>
-              <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
-                  <graphic>
-                      <FontIcon iconLiteral="mdsmz-refresh" />
-                  </graphic>
-              </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
-                    <graphic>
-                        <FontIcon iconLiteral="mdmz-settings_backup_restore" />
-                    </graphic>
-                </MenuItem>
-              <SeparatorMenuItem mnemonicParsing="false" />
-              <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
-                  <graphic>
-                      <FontIcon iconLiteral="mdoal-exit_to_app" />
-                  </graphic>
-              </MenuItem>
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Copy" onAction="#onCopy">
-                  <graphic>
-                      <FontIcon iconLiteral="mdsal-content_copy" />
-                  </graphic>
-              </MenuItem>
-                <MenuItem mnemonicParsing="false" text="Cut" onAction="#onCut">
-                    <graphic>
-                        <FontIcon iconLiteral="mdsal-content_cut" />
-                    </graphic>
-                </MenuItem>
-                <MenuItem mnemonicParsing="false" text="Paste" onAction="#onPaste">
-                    <graphic>
-                        <FontIcon iconLiteral="mdsal-content_paste" />
-                    </graphic>
-                </MenuItem>
-                <MenuItem mnemonicParsing="false" text="Delete" onAction="#onDelete">
-                    <graphic>
-                        <FontIcon iconLiteral="mdsal-delete" />
-                    </graphic>
-                </MenuItem>
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
-            <items>
-            <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
-                <graphic>
-                    <FontIcon iconLiteral="mdoal-clear_all" />
-                </graphic>
-            </MenuItem>
-            </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About">
-                  <graphic>
-                      <FontIcon iconLiteral="mdsal-info" />
-                  </graphic>
-              </MenuItem>
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-      <SplitPane dividerPositions="0.20657015590200445, 0.794543429844098" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-         <items>
-            <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-              <items>
-                  <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                      <Tab text="Registries">
-                           <content>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="223.0" prefViewportWidth="220.0" vbarPolicy="NEVER">
+      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0">
+         <children>
+            <MenuBar>
+              <menus>
+                <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File">
+                        <graphic>
+                            <FontIcon iconLiteral="mdral-insert_drive_file" />
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open...">
+                        <graphic>
+                            <FontIcon iconLiteral="mdal-folder" />
+                        </graphic>
+                    </MenuItem>
+                    <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
+                        <graphic>
+                            <FontIcon iconLiteral="mdmz-save" />
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as...">
+                        <graphic>
+                            <FontIcon iconLiteral="mdmz-save" />
+                        </graphic>
+                    </MenuItem>
+                    <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
+                        <graphic>
+                            <FontIcon iconLiteral="mdsmz-refresh" />
+                        </graphic>
+                    </MenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
+                          <graphic>
+                              <FontIcon iconLiteral="mdmz-settings_backup_restore" />
+                          </graphic>
+                      </MenuItem>
+                    <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
+                        <graphic>
+                            <FontIcon iconLiteral="mdoal-exit_to_app" />
+                        </graphic>
+                    </MenuItem>
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#onCopy" text="Copy">
+                        <graphic>
+                            <FontIcon iconLiteral="mdsal-content_copy" />
+                        </graphic>
+                    </MenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#onCut" text="Cut">
+                          <graphic>
+                              <FontIcon iconLiteral="mdsal-content_cut" />
+                          </graphic>
+                      </MenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#onPaste" text="Paste">
+                          <graphic>
+                              <FontIcon iconLiteral="mdsal-content_paste" />
+                          </graphic>
+                      </MenuItem>
+                      <MenuItem mnemonicParsing="false" onAction="#onDelete" text="Delete">
+                          <graphic>
+                              <FontIcon iconLiteral="mdsal-delete" />
+                          </graphic>
+                      </MenuItem>
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
+                  <items>
+                  <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
+                      <graphic>
+                          <FontIcon iconLiteral="mdoal-clear_all" />
+                      </graphic>
+                  </MenuItem>
+                  </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About">
+                        <graphic>
+                            <FontIcon iconLiteral="mdsal-info" />
+                        </graphic>
+                    </MenuItem>
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <SplitPane dividerPositions="0.20657015590200445, 0.794543429844098" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <items>
+                  <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                    <items>
+                        <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                          <tabs>
+                            <Tab text="Registries">
                                  <content>
-                                    <VBox>
-                                       <children>
-                                          <GridPane hgap="10.0">
-                                            <columnConstraints>
-                                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
-                                              <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
-                                            </columnConstraints>
-                                            <rowConstraints>
-                                              <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                            </rowConstraints>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" left="10.0" top="5.0" />
-                                             </VBox.margin>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="223.0" prefViewportWidth="220.0" vbarPolicy="NEVER">
+                                       <content>
+                                          <VBox>
                                              <children>
-                                                <Label text="Register" />
-                                                <Label text="Value" GridPane.columnIndex="1" />
-                                                <Label text="Flags" GridPane.columnIndex="2" />
-                                             </children>
-                                          </GridPane>
-                                          <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                                            <content>
-                                              <AnchorPane>
+                                                <GridPane hgap="10.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="10.0" top="5.0" />
+                                                   </VBox.margin>
                                                    <children>
-                                                      <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
-                                                        <columnConstraints>
-                                                          <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
-                                                          <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                          <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
-                                                        </columnConstraints>
-                                                        <rowConstraints>
-                                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                          <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                        </rowConstraints>
+                                                      <Label text="Register" />
+                                                      <Label text="Value" GridPane.columnIndex="1" />
+                                                      <Label text="Flags" GridPane.columnIndex="2" />
+                                                   </children>
+                                                </GridPane>
+                                                <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                                  <content>
+                                                    <AnchorPane>
                                                          <children>
-                                                            <Label text="R0" />
-                                                            <Label text="R1" GridPane.rowIndex="1" />
-                                                            <Label text="R2" GridPane.rowIndex="2" />
-                                                            <Label text="R3" GridPane.rowIndex="3" />
-                                                            <Label text="R4" GridPane.rowIndex="4" />
-                                                            <Label text="R5" GridPane.rowIndex="5" />
-                                                            <Label text="R6" GridPane.rowIndex="6" />
-                                                            <Label text="R7" GridPane.rowIndex="7" />
-                                                            <Label text="R8" GridPane.rowIndex="8" />
-                                                            <Label text="R9" GridPane.rowIndex="9" />
-                                                            <Label text="R10" GridPane.rowIndex="10" />
-                                                            <Label text="(FP) R11" GridPane.rowIndex="11" />
-                                                            <Label text="(IP) R12" GridPane.rowIndex="12" />
-                                                            <Label text="(SP) R13" GridPane.rowIndex="13" />
-                                                            <Label text="(LR) R14" GridPane.rowIndex="14" />
-                                                            <Label text="(PC) R15" GridPane.rowIndex="15" />
-                                                            <Label text="CPSR" GridPane.rowIndex="16" />
-                                                            <Label text="SPSR" GridPane.rowIndex="17" />
-                                                            <Text fx:id="R0" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" />
-                                                            <Text fx:id="R1" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <Text fx:id="R2" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                            <Text fx:id="R3" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                            <Text fx:id="R5" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                            <Text fx:id="R6" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                            <Text fx:id="R4" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                            <Text fx:id="R7" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                            <Text fx:id="R8" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                                                            <Text fx:id="R9" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                                                            <Text fx:id="R10" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-                                                            <Text fx:id="R11" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                                                            <Text fx:id="R12" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-                                                            <Text fx:id="R13" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-                                                            <Text fx:id="R15" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-                                                            <Text fx:id="R14" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-                                                            <Text fx:id="CPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
-                                                            <Text fx:id="SPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
-                                                            <Text fx:id="CPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
-                                                            <Text fx:id="SPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                                                            <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
+                                                                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <Label text="R0" />
+                                                                  <Label text="R1" GridPane.rowIndex="1" />
+                                                                  <Label text="R2" GridPane.rowIndex="2" />
+                                                                  <Label text="R3" GridPane.rowIndex="3" />
+                                                                  <Label text="R4" GridPane.rowIndex="4" />
+                                                                  <Label text="R5" GridPane.rowIndex="5" />
+                                                                  <Label text="R6" GridPane.rowIndex="6" />
+                                                                  <Label text="R7" GridPane.rowIndex="7" />
+                                                                  <Label text="R8" GridPane.rowIndex="8" />
+                                                                  <Label text="R9" GridPane.rowIndex="9" />
+                                                                  <Label text="R10" GridPane.rowIndex="10" />
+                                                                  <Label text="(FP) R11" GridPane.rowIndex="11" />
+                                                                  <Label text="(IP) R12" GridPane.rowIndex="12" />
+                                                                  <Label text="(SP) R13" GridPane.rowIndex="13" />
+                                                                  <Label text="(LR) R14" GridPane.rowIndex="14" />
+                                                                  <Label text="(PC) R15" GridPane.rowIndex="15" />
+                                                                  <Label text="CPSR" GridPane.rowIndex="16" />
+                                                                  <Label text="SPSR" GridPane.rowIndex="17" />
+                                                                  <Text fx:id="R0" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" />
+                                                                  <Text fx:id="R1" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <Text fx:id="R2" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Text fx:id="R3" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <Text fx:id="R5" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <Text fx:id="R6" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <Text fx:id="R4" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <Text fx:id="R7" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                  <Text fx:id="R8" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                  <Text fx:id="R9" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                                  <Text fx:id="R10" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                                  <Text fx:id="R11" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                                  <Text fx:id="R12" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                                  <Text fx:id="R13" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                                  <Text fx:id="R15" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                                  <Text fx:id="R14" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                                  <Text fx:id="CPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                                  <Text fx:id="SPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                                  <Text fx:id="CPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                                  <Text fx:id="SPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                                                               </children>
+                                                            </GridPane>
                                                          </children>
-                                                      </GridPane>
-                                                   </children>
-                                                </AnchorPane>
-                                            </content>
-                                          </ScrollPane>
-                                       </children>
-                                    </VBox>
-                                 </content>
-                              </ScrollPane>
-                           </content></Tab>
-                    </tabs>
-                  </TabPane>
-                  <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
-                     <tabs>
-                        <Tab fx:id="stackTab" text="Stack">
-                           <content>
-                              <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
-                                 <content>
-                                    <VBox>
-                                       <children>
-                                          <GridPane hgap="10.0">
-                                             <children>
-                                                <Label alignment="CENTER" text="SP" />
-                                                <Label alignment="CENTER" text="Address" GridPane.columnIndex="1" />
-                                                <Label alignment="CENTER" text="Value" GridPane.columnIndex="2" />
+                                                      </AnchorPane>
+                                                  </content>
+                                                </ScrollPane>
                                              </children>
-                                             <columnConstraints>
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                             </columnConstraints>
-                                             <rowConstraints>
-                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                             </rowConstraints>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" left="10.0" top="5.0" />
-                                             </VBox.margin>
-                                          </GridPane>
-                                          <ScrollPane fx:id="stackScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                                             <content>
-                                                <AnchorPane>
-                                                   <children>
-                                                      <GridPane fx:id="stackGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
-                                                         <columnConstraints>
-                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
-                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                             <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                         </columnConstraints>
-                                                      </GridPane>
-                                                   </children>
-                                                </AnchorPane>
-                                             </content>
-                                          </ScrollPane>
-                                       </children>
-                                    </VBox>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
                                  </content>
-                              </ScrollPane>
-                           </content>
-                        </Tab>
-                     </tabs>
-                  </TabPane>
-              </items>
-            </SplitPane>
-            <StackPane prefHeight="150.0" prefWidth="200.0">
-               <children>
-                  <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <ToolBar prefHeight="32.0" prefWidth="32.0" styleClass="btn-group-horizontal">
-                           <VBox.margin>
-                              <Insets />
-                           </VBox.margin>
-                           <opaqueInsets>
-                              <Insets />
-                           </opaqueInsets>
-                           <items>
-                              <HBox layoutX="10.0" layoutY="10.0">
-                                 <children>
-                                    <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="accent" text="Simulate">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <HBox>
-                                 <children>
-                                    <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" text="Step Into">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="10.0" layoutY="10.0">
-                                 <children>
-                                    <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" text="Step Over">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="20.0" layoutY="20.0">
-                                 <children>
-                                    <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="success" text="Continue" HBox.hgrow="ALWAYS">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                    <HBox>
-                                       <children>
-                                          <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="accent" text="Pause" HBox.hgrow="ALWAYS">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="10.0" layoutY="10.0">
-                                 <children>
-                                    <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="danger" text="Stop">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="20.0" layoutY="20.0">
-                                 <children>
-                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="danger" text="Restart" HBox.hgrow="ALWAYS">
-                                       <HBox.margin>
-                                          <Insets left="10.0" right="10.0" />
-                                       </HBox.margin>
-                                    </Button>
-                                 </children>
-                              </HBox>
-                           </items>
-                        </ToolBar>
-                        <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
-                           <children>
-                              <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
-                                 <StackPane.margin>
-                                    <Insets left="55.0" />
-                                 </StackPane.margin>
-                              </Separator>
-                           </children>
-                        </StackPane>
-                     </children>
-                  </VBox>
-                  <VBox fx:id="notifications" alignment="BOTTOM_CENTER" focusTraversable="true" pickOnBounds="false" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding></VBox>
-               </children>
-            </StackPane>
-            <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                  <Tab fx:id="memoryTab" text="Memory">
-                     <content>
-                        <VBox>
-                           <children>
-                              <HBox VBox.vgrow="ALWAYS">
-                                 <children>
-                                    <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
+                              </Tab>
+                          </tabs>
+                        </TabPane>
+                        <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                           <tabs>
+                              <Tab fx:id="stackTab" text="Stack">
+                                 <content>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
                                        <content>
                                           <VBox>
                                              <children>
                                                 <GridPane hgap="10.0">
                                                    <children>
-                                                      <Label alignment="CENTER" text="Address" />
-                                                       <Label alignment="CENTER" text="Value" GridPane.columnIndex="1" />
-                                                      <Label alignment="CENTER" text="Byte 0" GridPane.columnIndex="2" />
-                                                      <Label alignment="CENTER" text="Byte 1" GridPane.columnIndex="3" />
-                                                      <Label alignment="CENTER" text="Byte 2" GridPane.columnIndex="4" />
-                                                      <Label alignment="CENTER" text="Byte 3" GridPane.columnIndex="5" />
+                                                      <Label alignment="CENTER" text="SP" />
+                                                      <Label alignment="CENTER" text="Address" GridPane.columnIndex="1" />
+                                                      <Label alignment="CENTER" text="Value" GridPane.columnIndex="2" />
                                                    </children>
                                                    <columnConstraints>
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                       <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                    </columnConstraints>
                                                    <rowConstraints>
                                                       <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
@@ -390,22 +265,16 @@
                                                       <Insets bottom="5.0" left="10.0" top="5.0" />
                                                    </VBox.margin>
                                                 </GridPane>
-                                                <ScrollPane fx:id="memoryScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                                <ScrollPane fx:id="stackScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                                    <content>
-                                                      <AnchorPane fx:id="memoryPane">
+                                                      <AnchorPane>
                                                          <children>
-                                                            <GridPane fx:id="memoryGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                            <GridPane fx:id="stackGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
                                                                <columnConstraints>
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                  <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
+                                                                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
                                                                </columnConstraints>
-                                                               <rowConstraints>
-                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                               </rowConstraints>
                                                             </GridPane>
                                                          </children>
                                                       </AnchorPane>
@@ -415,220 +284,358 @@
                                           </VBox>
                                        </content>
                                     </ScrollPane>
-                                    <ScrollBar fx:id="memoryScrollBar" orientation="VERTICAL">
-                                       <HBox.margin>
-                                          <Insets right="1.0" />
-                                       </HBox.margin>
-                                    </ScrollBar>
-                                 </children>
-                              </HBox>
-                              <HBox fillHeight="false" />
-                              <GridPane>
-                                <columnConstraints>
-                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                  <ColumnConstraints hgrow="SOMETIMES" />
-                                </columnConstraints>
-                                <rowConstraints>
-                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                </rowConstraints>
+                                 </content>
+                              </Tab>
+                           </tabs>
+                        </TabPane>
+                    </items>
+                  </SplitPane>
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                     <children>
+                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                           <children>
+                              <ToolBar prefHeight="32.0" prefWidth="32.0" styleClass="btn-group-horizontal">
+                                 <items>
+                                    <HBox layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="accent" text="Simulate">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox>
+                                       <children>
+                                          <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" text="Step Into">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" text="Step Over">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox layoutX="20.0" layoutY="20.0">
+                                       <children>
+                                          <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="success" text="Continue" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                          <HBox>
+                                             <children>
+                                                <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="accent" text="Pause" HBox.hgrow="ALWAYS">
+                                                   <HBox.margin>
+                                                      <Insets left="10.0" right="10.0" />
+                                                   </HBox.margin>
+                                                </Button>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </HBox>
+                                    <HBox layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="danger" text="Stop">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                    <HBox layoutX="20.0" layoutY="20.0">
+                                       <children>
+                                          <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="danger" text="Restart" HBox.hgrow="ALWAYS">
+                                             <HBox.margin>
+                                                <Insets left="10.0" right="10.0" />
+                                             </HBox.margin>
+                                          </Button>
+                                       </children>
+                                    </HBox>
+                                 </items>
+                              </ToolBar>
+                              <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Label minWidth="60.0" text="Address :" textAlignment="CENTER">
-                                       <GridPane.margin>
-                                          <Insets left="10.0" />
-                                       </GridPane.margin>
-                                    </Label>
-                                    <TextField fx:id="addressField" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
-                                       <GridPane.margin>
-                                          <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
-                                       </GridPane.margin>
-                                       <font>
-                                          <Font size="10.0" />
-                                       </font>
-                                    </TextField>
+                                    <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT" mouseTransparent="true">
+                                       <StackPane.margin>
+                                          <Insets left="65.0" />
+                                       </StackPane.margin>
+                                    </Separator>
                                  </children>
-                                 <opaqueInsets>
-                                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                 </opaqueInsets>
-                                 <VBox.margin>
-                                    <Insets bottom="10.0" top="10.0" />
-                                 </VBox.margin>
-                              </GridPane>
-                              <Pagination fx:id="memoryPage" VBox.vgrow="NEVER" />
+                              </StackPane>
                            </children>
                         </VBox>
-                     </content>
-                  </Tab>
-                <Tab fx:id="settingsTab" text="Settings">
-                        <content>
-                    <AnchorPane>
-                           <children>
-                              <Accordion AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                 <panes>
-                                    <TitledPane text="Simulation">
-                                      <content>
-                                        <AnchorPane>
-                                             <children>
-                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <VBox fx:id="notifications" alignment="BOTTOM_CENTER" focusTraversable="true" pickOnBounds="false" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </StackPane>
+                  <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                        <Tab fx:id="memoryTab" text="Memory">
+                           <content>
+                              <VBox>
+                                 <children>
+                                    <HBox VBox.vgrow="ALWAYS">
+                                       <children>
+                                          <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
+                                             <content>
+                                                <VBox>
                                                    <children>
-                                                      <Label text="Simulation interval (ms)">
-                                                         <VBox.margin>
-                                                            <Insets bottom="2.0" left="5.0" />
-                                                         </VBox.margin>
-                                                      </Label>
-                                                      <AnchorPane>
+                                                      <GridPane hgap="10.0">
                                                          <children>
-                                                            <Spinner fx:id="settingsSimInterval" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                            <Label alignment="CENTER" text="Address" />
+                                                             <Label alignment="CENTER" text="Value" GridPane.columnIndex="1" />
+                                                            <Label alignment="CENTER" text="Byte 0" GridPane.columnIndex="2" />
+                                                            <Label alignment="CENTER" text="Byte 1" GridPane.columnIndex="3" />
+                                                            <Label alignment="CENTER" text="Byte 2" GridPane.columnIndex="4" />
+                                                            <Label alignment="CENTER" text="Byte 3" GridPane.columnIndex="5" />
                                                          </children>
+                                                         <columnConstraints>
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
                                                          <VBox.margin>
-                                                            <Insets bottom="20.0" />
+                                                            <Insets bottom="5.0" left="10.0" top="5.0" />
                                                          </VBox.margin>
-                                                      </AnchorPane>
-                                                       <Label text="Source Parser">
-                                                           <VBox.margin>
-                                                               <Insets bottom="2.0" left="5.0" />
-                                                           </VBox.margin>
-                                                       </Label>
-                                                      <AnchorPane>
-                                                         <children>
-                                                            <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                      </GridPane>
+                                                      <ScrollPane fx:id="memoryScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                                         <content>
+                                                            <AnchorPane fx:id="memoryPane">
                                                                <children>
-                                                                  <AnchorPane HBox.hgrow="ALWAYS">
-                                                                     <children>
-                                                                        <ToggleButton fx:id="settingsRegex" mnemonicParsing="false" onAction="#onSettingsRegex" styleClass="left-pill" text="Regex" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                                     </children>
-                                                                  </AnchorPane>
-                                                                  <AnchorPane HBox.hgrow="ALWAYS">
-                                                                     <children>
-                                                                        <ToggleButton fx:id="settingsLegacy" mnemonicParsing="false" onAction="#onSettingsLegacy" styleClass="right-pill" text="Legacy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                                     </children>
-                                                                  </AnchorPane>
+                                                                  <GridPane fx:id="memoryGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                                     <columnConstraints>
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
+                                                                     </columnConstraints>
+                                                                     <rowConstraints>
+                                                                        <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                     </rowConstraints>
+                                                                  </GridPane>
                                                                </children>
-                                                            </HBox>
-                                                         </children>
-                                                         <VBox.margin>
-                                                            <Insets bottom="20.0" />
-                                                         </VBox.margin>
-                                                      </AnchorPane>
+                                                            </AnchorPane>
+                                                         </content>
+                                                      </ScrollPane>
                                                    </children>
                                                 </VBox>
-                                             </children>
-                                          </AnchorPane>
-                                      </content>
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </TitledPane>
-                                    <TitledPane text="Data management">
-                                       <content>
-                                          <AnchorPane>
-                                             <children>
-                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             </content>
+                                          </ScrollPane>
+                                          <ScrollBar fx:id="memoryScrollBar" orientation="VERTICAL">
+                                             <HBox.margin>
+                                                <Insets right="1.0" />
+                                             </HBox.margin>
+                                          </ScrollBar>
+                                       </children>
+                                    </HBox>
+                                    <HBox fillHeight="false" />
+                                    <CustomTextField fx:id="addressField" promptText="Go to address">
+                                       <VBox.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </VBox.margin>
+                                        <left>
+                                            <FontIcon iconLiteral="mdmz-search" />
+                                        </left>
+                                    </CustomTextField>
+                                    <Pagination fx:id="memoryPage" styleClass="bullet" VBox.vgrow="NEVER" />
+                                 </children>
+                              </VBox>
+                           </content>
+                        </Tab>
+                      <Tab fx:id="settingsTab" text="Settings">
+                              <content>
+                          <AnchorPane>
+                                 <children>
+                                    <Accordion AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <panes>
+                                          <TitledPane text="Simulation">
+                                            <content>
+                                              <AnchorPane>
                                                    <children>
-                                                      <Label text="Stack address (Hex)">
-                                                         <VBox.margin>
-                                                            <Insets bottom="2.0" left="5.0" />
-                                                         </VBox.margin>
-                                                      </Label>
-                                                      <AnchorPane>
+                                                      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                          <children>
-                                                            <Spinner fx:id="settingsStackAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                         </children>
-                                                         <VBox.margin>
-                                                            <Insets bottom="20.0" />
-                                                         </VBox.margin>
-                                                      </AnchorPane>
-                                                      <Label layoutX="10.0" layoutY="10.0" text="Symbols address (Hex)">
-                                                         <VBox.margin>
-                                                            <Insets bottom="2.0" left="5.0" />
-                                                         </VBox.margin>
-                                                      </Label>
-                                                      <AnchorPane>
-                                                         <children>
-                                                            <Spinner fx:id="settingsSymbolsAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                         </children>
-                                                         <VBox.margin>
-                                                            <Insets bottom="20.0" />
-                                                         </VBox.margin>
-                                                      </AnchorPane>
-                                                       <Label text="Data display format">
-                                                           <VBox.margin>
-                                                               <Insets bottom="2.0" left="5.0" />
-                                                           </VBox.margin>
-                                                       </Label>
-                                                       <AnchorPane>
-                                                           <VBox.margin>
-                                                               <Insets bottom="20.0" />
-                                                           </VBox.margin>
-                                                           <children>
-                                                            <ChoiceBox fx:id="settingsFormat" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                           </children>
-                                                       </AnchorPane>
-                                                   </children>
-                                                </VBox>
-                                             </children>
-                                          </AnchorPane>
-                                       </content>
-                                       <font>
-                                          <Font size="14.0" />
-                                       </font>
-                                    </TitledPane>
-                                     <TitledPane text="Appearance">
-                                         <content>
-                                             <AnchorPane>
-                                                 <children>
-                                                     <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <children>
-                                                             <Label text="Display theme">
+                                                            <Label text="Simulation interval (ms)">
+                                                               <VBox.margin>
+                                                                  <Insets bottom="2.0" left="5.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <AnchorPane>
+                                                               <children>
+                                                                  <Spinner fx:id="settingsSimInterval" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="20.0" />
+                                                               </VBox.margin>
+                                                            </AnchorPane>
+                                                             <Label text="Source Parser">
                                                                  <VBox.margin>
                                                                      <Insets bottom="2.0" left="5.0" />
                                                                  </VBox.margin>
                                                              </Label>
-                                                      <AnchorPane>
-                                                         <children>
-                                                            <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                            <AnchorPane>
                                                                <children>
-                                                                  <AnchorPane HBox.hgrow="ALWAYS">
+                                                                  <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                                                      <children>
-                                                                        <ToggleButton fx:id="settingsDark" mnemonicParsing="false" onAction="#onSettingsDark" styleClass="left-pill" text="Dark" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                            <graphic>
-                                                                                <FontIcon iconLiteral="mdomz-wb_sunny"/>
-                                                                            </graphic>
-                                                                        </ToggleButton>
+                                                                        <AnchorPane HBox.hgrow="ALWAYS">
+                                                                           <children>
+                                                                              <ToggleButton fx:id="settingsRegex" mnemonicParsing="false" onAction="#onSettingsRegex" styleClass="left-pill" text="Regex" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                        <AnchorPane HBox.hgrow="ALWAYS">
+                                                                           <children>
+                                                                              <ToggleButton fx:id="settingsLegacy" mnemonicParsing="false" onAction="#onSettingsLegacy" styleClass="right-pill" text="Legacy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
                                                                      </children>
-                                                                  </AnchorPane>
-                                                                  <AnchorPane HBox.hgrow="ALWAYS">
-                                                                     <children>
-                                                                        <ToggleButton fx:id="settingsLight" mnemonicParsing="false" onAction="#onSettingsLight" styleClass="right-pill" text="Light" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                            <graphic>
-                                                                                <FontIcon iconLiteral="mdrmz-wb_sunny"/>
-                                                                            </graphic>
-                                                                        </ToggleButton>
-                                                                     </children>
-                                                                  </AnchorPane>
+                                                                  </HBox>
                                                                </children>
-                                                            </HBox>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="20.0" />
+                                                               </VBox.margin>
+                                                            </AnchorPane>
                                                          </children>
-                                                         <VBox.margin>
-                                                            <Insets bottom="20.0" />
-                                                         </VBox.margin>
-                                                      </AnchorPane>
+                                                      </VBox>
+                                                   </children>
+                                                </AnchorPane>
+                                            </content>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TitledPane>
+                                          <TitledPane text="Data management">
+                                             <content>
+                                                <AnchorPane>
+                                                   <children>
+                                                      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                         <children>
+                                                            <Label text="Stack address (Hex)">
+                                                               <VBox.margin>
+                                                                  <Insets bottom="2.0" left="5.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <AnchorPane>
+                                                               <children>
+                                                                  <Spinner fx:id="settingsStackAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="20.0" />
+                                                               </VBox.margin>
+                                                            </AnchorPane>
+                                                            <Label layoutX="10.0" layoutY="10.0" text="Symbols address (Hex)">
+                                                               <VBox.margin>
+                                                                  <Insets bottom="2.0" left="5.0" />
+                                                               </VBox.margin>
+                                                            </Label>
+                                                            <AnchorPane>
+                                                               <children>
+                                                                  <Spinner fx:id="settingsSymbolsAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="20.0" />
+                                                               </VBox.margin>
+                                                            </AnchorPane>
+                                                             <Label text="Data display format">
+                                                                 <VBox.margin>
+                                                                     <Insets bottom="2.0" left="5.0" />
+                                                                 </VBox.margin>
+                                                             </Label>
+                                                             <AnchorPane>
+                                                                 <VBox.margin>
+                                                                     <Insets bottom="20.0" />
+                                                                 </VBox.margin>
+                                                                 <children>
+                                                                  <ChoiceBox fx:id="settingsFormat" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                 </children>
+                                                             </AnchorPane>
                                                          </children>
-                                                     </VBox>
-                                                 </children>
-                                             </AnchorPane>
-                                         </content>
-                                         <font>
-                                             <Font size="14.0" />
-                                         </font>
-                                     </TitledPane>
-                                 </panes>
-                              </Accordion>
-                           </children></AnchorPane>
-                  </content>
-                </Tab>
-              </tabs>
-            </TabPane>
-         </items>
-      </SplitPane>
+                                                      </VBox>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                             <font>
+                                                <Font size="14.0" />
+                                             </font>
+                                          </TitledPane>
+                                           <TitledPane text="Appearance">
+                                               <content>
+                                                   <AnchorPane>
+                                                       <children>
+                                                           <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <children>
+                                                                   <Label text="Display theme">
+                                                                       <VBox.margin>
+                                                                           <Insets bottom="2.0" left="5.0" />
+                                                                       </VBox.margin>
+                                                                   </Label>
+                                                            <AnchorPane>
+                                                               <children>
+                                                                  <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                     <children>
+                                                                        <AnchorPane HBox.hgrow="ALWAYS">
+                                                                           <children>
+                                                                              <ToggleButton fx:id="settingsDark" mnemonicParsing="false" onAction="#onSettingsDark" styleClass="left-pill" text="Dark" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                                  <graphic>
+                                                                                      <FontIcon iconLiteral="mdomz-wb_sunny" />
+                                                                                  </graphic>
+                                                                              </ToggleButton>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                        <AnchorPane HBox.hgrow="ALWAYS">
+                                                                           <children>
+                                                                              <ToggleButton fx:id="settingsLight" mnemonicParsing="false" onAction="#onSettingsLight" styleClass="right-pill" text="Light" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                                  <graphic>
+                                                                                      <FontIcon iconLiteral="mdrmz-wb_sunny" />
+                                                                                  </graphic>
+                                                                              </ToggleButton>
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                     </children>
+                                                                  </HBox>
+                                                               </children>
+                                                               <VBox.margin>
+                                                                  <Insets bottom="20.0" />
+                                                               </VBox.margin>
+                                                            </AnchorPane>
+                                                               </children>
+                                                           </VBox>
+                                                       </children>
+                                                   </AnchorPane>
+                                               </content>
+                                               <font>
+                                                   <Font size="14.0" />
+                                               </font>
+                                           </TitledPane>
+                                       </panes>
+                                    </Accordion>
+                                 </children>
+                              </AnchorPane>
+                        </content>
+                      </Tab>
+                    </tabs>
+                  </TabPane>
+               </items>
+            </SplitPane>
+         </children>
+      </VBox>
+      <ModalPane fx:id="modalPane" StackPane.alignment="CENTER" />
    </children>
-</VBox>
+</StackPane>

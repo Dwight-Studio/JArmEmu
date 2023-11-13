@@ -1,13 +1,13 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.controls.CustomTextField;
+import atlantafx.base.controls.ModalPane;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.JArmEmuDialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
@@ -19,6 +19,8 @@ import java.util.logging.Logger;
 public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
+
+    @FXML protected ModalPane modalPane;
 
     @FXML protected StackPane editorStackPane;
     protected CodeArea codeArea;
@@ -60,7 +62,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected ScrollBar memoryScrollBar;
     @FXML protected AnchorPane memoryPane;
     @FXML protected Pagination memoryPage;
-    @FXML protected TextField addressField;
+    @FXML protected CustomTextField addressField;
 
     @FXML protected Tab settingsTab;
     @FXML protected Spinner<Integer> settingsSimInterval;
@@ -85,8 +87,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         codeArea = new CodeArea();
-        editorScroll = new VirtualizedScrollPane(codeArea);
-        editorStackPane.getChildren().add(0, editorScroll);
+        editorScroll = new VirtualizedScrollPane<>(codeArea);
+        editorStackPane.getChildren().addFirst(editorScroll);
 
         getEditorController().initialize(url, resourceBundle);
         getMainMenuController().initialize(url, resourceBundle);
@@ -102,6 +104,10 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
         getExecutionWorker().revive();
         getExecutionWorker().updateGUI();
+    }
+
+    public void openDialog(JArmEmuDialog dialog) {
+        modalPane.show(dialog.getModalBox());
     }
 
     @FXML

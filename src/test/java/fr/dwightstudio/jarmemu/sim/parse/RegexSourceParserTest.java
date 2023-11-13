@@ -118,7 +118,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.STM, Condition.AL, false, null, UpdateMode.FD, "sp!", "{ r0  ,    r1   , r 2}", null, null),
+                new ParsedInstruction(Instruction.STM, Condition.AL, false, null, UpdateMode.FD, "sp!", "{r0,r1,r2}", null, null),
                 parser.parseOneLine()
         );
 
@@ -133,12 +133,12 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[   R0      ,R 1    ,    L SL # 2    ]", null, null),
+                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[R0,R1,LSL#2]", null, null),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[ R0 ]", "R1" ,"LSL #2"),
+                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[R0]", "R1" ,"LSL#2"),
                 parser.parseOneLine()
         );
     }
