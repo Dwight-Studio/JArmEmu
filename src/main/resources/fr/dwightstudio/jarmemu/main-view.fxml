@@ -30,9 +30,11 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+
+<StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox>
          <children>
@@ -129,7 +131,112 @@
                     <items>
                         <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab text="Registers" />
+                            <Tab text="Registries">
+                                 <content>
+                                    <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="223.0" prefViewportWidth="220.0" vbarPolicy="NEVER">
+                                       <content>
+                                          <VBox>
+                                             <children>
+                                                <GridPane hgap="10.0">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
+                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <VBox.margin>
+                                                      <Insets bottom="5.0" left="10.0" top="5.0" />
+                                                   </VBox.margin>
+                                                   <children>
+                                                      <Label text="Register" />
+                                                      <Label text="Value" GridPane.columnIndex="1" />
+                                                      <Label text="Flags" GridPane.columnIndex="2" />
+                                                   </children>
+                                                </GridPane>
+                                                <ScrollPane hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                                  <content>
+                                                    <AnchorPane>
+                                                         <children>
+                                                            <GridPane alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                                <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
+                                                                <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" maxWidth="60.0" minWidth="60.0" prefWidth="60.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                                  <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <Label text="R0" />
+                                                                  <Label text="R1" GridPane.rowIndex="1" />
+                                                                  <Label text="R2" GridPane.rowIndex="2" />
+                                                                  <Label text="R3" GridPane.rowIndex="3" />
+                                                                  <Label text="R4" GridPane.rowIndex="4" />
+                                                                  <Label text="R5" GridPane.rowIndex="5" />
+                                                                  <Label text="R6" GridPane.rowIndex="6" />
+                                                                  <Label text="R7" GridPane.rowIndex="7" />
+                                                                  <Label text="R8" GridPane.rowIndex="8" />
+                                                                  <Label text="R9" GridPane.rowIndex="9" />
+                                                                  <Label text="R10" GridPane.rowIndex="10" />
+                                                                  <Label text="(FP) R11" GridPane.rowIndex="11" />
+                                                                  <Label text="(IP) R12" GridPane.rowIndex="12" />
+                                                                  <Label text="(SP) R13" GridPane.rowIndex="13" />
+                                                                  <Label text="(LR) R14" GridPane.rowIndex="14" />
+                                                                  <Label text="(PC) R15" GridPane.rowIndex="15" />
+                                                                  <Label text="CPSR" GridPane.rowIndex="16" />
+                                                                  <Label text="SPSR" GridPane.rowIndex="17" />
+                                                                  <Text fx:id="R0" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" />
+                                                                  <Text fx:id="R1" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                  <Text fx:id="R2" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                                  <Text fx:id="R3" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                  <Text fx:id="R5" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                  <Text fx:id="R6" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                                  <Text fx:id="R4" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                  <Text fx:id="R7" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                                                                  <Text fx:id="R8" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                                  <Text fx:id="R9" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                                  <Text fx:id="R10" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                                  <Text fx:id="R11" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                                                  <Text fx:id="R12" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                                                                  <Text fx:id="R13" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+                                                                  <Text fx:id="R15" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+                                                                  <Text fx:id="R14" styleClass="reg-data" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+                                                                  <Text fx:id="CPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+                                                                  <Text fx:id="SPSR" styleClass="reg-address" text="00000000" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+                                                                  <Text fx:id="CPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="16" />
+                                                                  <Text fx:id="SPSRT" styleClass="reg-data" text="NZCVIFT" GridPane.columnIndex="2" GridPane.rowIndex="17" />
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                  </content>
+                                                </ScrollPane>
+                                             </children>
+                                          </VBox>
+                                       </content>
+                                    </ScrollPane>
+                                 </content>
+                              </Tab>
                           </tabs>
                         </TabPane>
                         <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
@@ -183,7 +290,7 @@
                         </TabPane>
                     </items>
                   </SplitPane>
-                  <StackPane>
+                  <StackPane >
                      <children>
                         <VBox alignment="TOP_CENTER">
                            <children>
@@ -256,7 +363,7 @@
                               </ToolBar>
                               <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <Separator mouseTransparent="true" orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
+                                    <Separator orientation="VERTICAL" StackPane.alignment="CENTER_LEFT" mouseTransparent="true">
                                        <StackPane.margin>
                                           <Insets left="65.0" />
                                        </StackPane.margin>

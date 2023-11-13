@@ -1,11 +1,12 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.ModalDialog;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
-import fr.dwightstudio.jarmemu.util.SpinnerAddressConverter;
-import fr.dwightstudio.jarmemu.util.SpinnerStringConverter;
+import fr.dwightstudio.jarmemu.util.SafeAddressConverter;
+import fr.dwightstudio.jarmemu.util.SafeStringConverter;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
@@ -59,9 +60,9 @@ public class SettingsController extends AbstractJArmEmuModule {
         stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
         symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
 
-        simIntervalValue.setConverter(new SpinnerStringConverter(simIntervalValue));
-        stackAddressValue.setConverter(new SpinnerAddressConverter(stackAddressValue));
-        symbolsAddressValue.setConverter(new SpinnerAddressConverter(symbolsAddressValue));
+        simIntervalValue.setConverter(new SafeStringConverter(simIntervalValue));
+        stackAddressValue.setConverter(new SafeAddressConverter(stackAddressValue));
+        symbolsAddressValue.setConverter(new SafeAddressConverter(symbolsAddressValue));
 
         getController().settingsSimInterval.setValueFactory(simIntervalValue);
         getController().settingsStackAddress.setValueFactory(stackAddressValue);
