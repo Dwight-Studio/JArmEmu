@@ -33,6 +33,12 @@ public class ParsedDirectiveLabel extends ParsedObject {
         return null;
     }
 
+    /**
+     * Enregistre le label dans le conteneur d'état
+     *
+     * @param stateContainer le conteur d'état
+     * @param currentPos la position actuelle dans la mémoire
+     */
     public void register(StateContainer stateContainer, int currentPos) {
         stateContainer.data.put(name.strip().toUpperCase(), currentPos + stateContainer.getSymbolsAddress());
     }

@@ -37,6 +37,11 @@ public class ParsedLabel extends ParsedObject {
         return null;
     }
 
+    /**
+     * Enregistre le label dans le conteneur d'état
+     *
+     * @param stateContainer le conteneur d'état
+     */
     public void register(StateContainer stateContainer) {
         stateContainer.labels.put(name.strip().toUpperCase(), pos);
     }

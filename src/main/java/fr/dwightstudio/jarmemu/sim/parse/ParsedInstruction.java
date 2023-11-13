@@ -52,6 +52,12 @@ public class ParsedInstruction extends ParsedObject {
         return null;
     }
 
+    /**
+     * Exécute l'instruction sur le conteneur d'état
+     *
+     * @apiNote Si l'exécution échoue et que l'instruction possède un registre dominant, on essaye d'exécuter en décalant les arguments
+     * @param stateContainer le conteneur d'état sur lequel exécuter
+     */
     public void execute(StateContainer stateContainer) {
         if (instruction.hasDomReg()) {
             ArgumentParser[] argParsers = instruction.getArgParsers();
@@ -142,7 +148,7 @@ public class ParsedInstruction extends ParsedObject {
                     return false;
                 }
             } else {
-                if (!(pInst.processedArgs[i].equalsIgnoreCase(this.processedArgs[i]))) {
+                if (!(pInst.processedArgs[i].equals(this.processedArgs[i]))) {
                     if (VERBOSE) logger.info("Difference: Arg" + (1 + i));
                     return false;
                 }
@@ -155,6 +161,12 @@ public class ParsedInstruction extends ParsedObject {
         return instruction;
     }
 
+    /**
+     * Applique les pseudo-instructions en générant des processedArgs
+     *
+     * @param stateContainer le conteur d'état sur lequel appliquer les pseudo-instructions
+     * @return un pack de directive contenant les directives générées
+     */
     public ParsedDirectivePack convertValueToDirective(StateContainer stateContainer) {
         ParsedDirectivePack pack = new ParsedDirectivePack();
         for (int i = 0; i < originalArgs.length; i++) {

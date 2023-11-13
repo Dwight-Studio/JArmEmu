@@ -76,7 +76,10 @@ public class ParsedDirectivePack extends ParsedObject {
         return content.isEmpty();
     }
 
-    public boolean isGenerated() {
+    /**
+     * @return vrai si le pack contient une directive générée, faux sinon
+     */
+    public boolean containsGenerated() {
         boolean flag = false;
 
         for (ParsedObject object : content) {

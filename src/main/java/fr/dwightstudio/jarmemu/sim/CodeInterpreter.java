@@ -122,7 +122,7 @@ public class CodeInterpreter {
                         pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
                     }
                 } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                    if (!parsedDirectivePack.isGenerated()) {
+                    if (!parsedDirectivePack.containsGenerated()) {
                         pos = Math.max(parsedDirectivePack.apply(stateContainer, pos), pos);
                     }
                 } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
@@ -156,7 +156,7 @@ public class CodeInterpreter {
                         pos = parsedDirective.apply(stateContainer, pos);
                     }
                 } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                    if (parsedDirectivePack.isGenerated()) {
+                    if (parsedDirectivePack.containsGenerated()) {
                         pos = parsedDirectivePack.apply(stateContainer, pos);
                     }
                 }
