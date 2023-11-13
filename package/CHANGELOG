@@ -1,6 +1,7 @@
 0.1.2 -> 0.1.3
 
 - ASR carry flag improved yet again (didn't work for positive values)
+- Convert MOV instruction to SHIFT instruction (in the backend only) for better use of update flags
 
 
 0.1.1 -> 0.1.2
