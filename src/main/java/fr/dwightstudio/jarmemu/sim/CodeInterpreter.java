@@ -258,6 +258,7 @@ public class CodeInterpreter {
      */
     public void resetState(int stackAddress, int symbolsAddress) {
         //TODO: AJouter la transformation des MOV avec des SHIFT (penser à l'update des flags)
+        //TODO: Ajouter les tests correspondants
         this.stateContainer = new StateContainer(stackAddress, symbolsAddress);
         applyDirectives();
         registerLabels();
