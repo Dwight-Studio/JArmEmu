@@ -26,9 +26,11 @@ public class SettingsController extends AbstractJArmEmuModule {
     private static final String DATA_FORMAT_KEY = "dataFormat";
     private static final String STACK_ADDRESS_KEY = "stackAddress";
     private static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
-    private static final String THEME_KEY = "theme";
+    private static final String THEME_VARIATION_KEY = "theme";
+    private static final String THEME_FAMILY_KEY = "themeFamily";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
+    private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private Preferences preferences;
@@ -85,6 +87,14 @@ public class SettingsController extends AbstractJArmEmuModule {
             }
         });
 
+        getController().settingsFamily.getItems().addAll(Arrays.asList(THEME_FAMILY_LABEL_DICT));
+
+        getController().settingsFamily.valueProperty().addListener((obs, oldVal, newVal) -> {
+            for (int i = 0 ; i < THEME_FAMILY_LABEL_DICT.length ; i++) {
+                if (THEME_FAMILY_LABEL_DICT[i].equals(newVal)) setThemeFamily(i);
+            }
+        });
+
         preferences = Preferences.userRoot().node(getApplication().getClass().getPackage().getName());
 
         if (preferences.get("version", "").isEmpty()) {
@@ -110,10 +120,11 @@ public class SettingsController extends AbstractJArmEmuModule {
 
         // Toggles
         parserGroup.selectToggle(parserToggles[getSourceParserSetting()]);
-        themeGroup.selectToggle(themeToggles[getTheme()]);
+        themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
         // ChoiceBoxes
         getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
+        getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
     }
 
     /**
@@ -149,14 +160,14 @@ public class SettingsController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSettingsDark() {
-        setTheme(0);
+        setThemeVariation(0);
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     protected void onSettingsLight() {
-        setTheme(1);
+        setThemeVariation(1);
     }
 
     private void setSimulationInterval(int nb) {
@@ -211,12 +222,21 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.putInt(DATA_FORMAT_KEY, nb);
     }
 
-    public int getTheme() {
-        return Math.max(Math.min(preferences.getInt(THEME_KEY, 0), 1), 0);
+    public int getThemeVariation() {
+        return Math.max(Math.min(preferences.getInt(THEME_VARIATION_KEY, 0), 1), 0);
     }
 
-    public void setTheme(int nb) {
-        preferences.putInt(THEME_KEY, nb);
-        getApplication().updateUserAgentStyle(nb);
+    public void setThemeVariation(int nb) {
+        preferences.putInt(THEME_VARIATION_KEY, nb);
+        getApplication().updateUserAgentStyle(nb, this.getThemeFamily());
+    }
+
+    public int getThemeFamily() {
+        return Math.max(Math.min(preferences.getInt(THEME_FAMILY_KEY, 0), 2), 0);
+    }
+
+    public void setThemeFamily(int nb) {
+        preferences.putInt(THEME_FAMILY_KEY, nb);
+        getApplication().updateUserAgentStyle(this.getThemeVariation(), nb);
     }
 }

@@ -74,6 +74,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
     @FXML protected ChoiceBox<String> settingsFormat;
+    @FXML protected ChoiceBox<String> settingsFamily;
     @FXML protected ToggleButton settingsDark;
     @FXML protected ToggleButton settingsLight;
 

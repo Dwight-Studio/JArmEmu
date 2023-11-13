@@ -2,8 +2,10 @@ package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
-import atlantafx.base.theme.Dracula;
 import atlantafx.base.theme.NordDark;
+import atlantafx.base.theme.NordLight;
+import atlantafx.base.theme.CupertinoDark;
+import atlantafx.base.theme.CupertinoLight;
 import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
@@ -78,7 +80,6 @@ public class JArmEmuApplication extends Application {
         // TODO: Ajouter le about dans help
         // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS ; vérifier que on initialise pas dans BSS)
         // TODO: Revérifier la concurrence
-        // TODO: Ajouter le choix de la famille du thème
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
 
@@ -111,7 +112,7 @@ public class JArmEmuApplication extends Application {
         logger.info("Font " + Font.loadFont(getResourceAsStream("fonts/SourceCodePro/SourceCodePro-Regular.ttf"), 14).getFamily() + " loaded");
 
         scene = new Scene(fxmlLoader.load(), 1280, 720);
-        updateUserAgentStyle(getSettingsController().getTheme());
+        updateUserAgentStyle(getSettingsController().getThemeVariation(), getSettingsController().getThemeFamily());
         scene.getStylesheets().add(getResource("jarmemu-style.css").toExternalForm());
 
         scene.setOnKeyPressed(shortcutHandler::handle);
@@ -143,11 +144,13 @@ public class JArmEmuApplication extends Application {
         logger.info("Startup finished");
     }
 
-    public void updateUserAgentStyle(int nb) {
-        if (nb == 0) {
-            theme = new PrimerDark();
+    public void updateUserAgentStyle(int variation, int family) {
+        if (family == 0) {
+            theme = (variation == 0) ? new PrimerDark() : new PrimerLight();
+        } else if (family == 1) {
+            theme = (variation == 0) ? new NordDark() : new NordLight();
         } else {
-            theme = new PrimerLight();
+            theme = (variation == 0) ? new CupertinoDark() : new CupertinoLight();
         }
 
         Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());

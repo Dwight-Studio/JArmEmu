@@ -580,6 +580,19 @@
                                                    <AnchorPane>
                                                        <children>
                                                            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <Label text="Theme Family">
+                                                                   <VBox.margin>
+                                                                       <Insets bottom="2.0" left="5.0" />
+                                                                   </VBox.margin>
+                                                               </Label>
+                                                               <AnchorPane>
+                                                                   <VBox.margin>
+                                                                       <Insets bottom="20.0" />
+                                                                   </VBox.margin>
+                                                                   <children>
+                                                                       <ChoiceBox fx:id="settingsFamily" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                   </children>
+                                                               </AnchorPane>
                                                                <children>
                                                                    <Label text="Display theme">
                                                                        <VBox.margin>
