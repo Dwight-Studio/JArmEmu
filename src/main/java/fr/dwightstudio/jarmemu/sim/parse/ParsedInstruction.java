@@ -191,6 +191,7 @@ public class ParsedInstruction extends ParsedObject {
     public ParsedInstruction convertMovToShift(StateContainer stateContainer) {
         if (this.instruction == Instruction.MOV) {
             ArgumentParser[] argParsers = instruction.getArgParsers();
+            if (originalArgs[2] == null) return this;
             if (argParsers[2].parse(stateContainer, originalArgs[2].toUpperCase()) instanceof ShiftParser.ShiftFunction){
                 try {
                     return new ParsedInstruction(Instruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null);
