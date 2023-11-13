@@ -2,6 +2,8 @@ package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.PrimerLight;
+import atlantafx.base.theme.Dracula;
+import atlantafx.base.theme.NordDark;
 import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
@@ -76,6 +78,7 @@ public class JArmEmuApplication extends Application {
         // TODO: Ajouter le about dans help
         // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS ; vérifier que on initialise pas dans BSS)
         // TODO: Revérifier la concurrence
+        // TODO: Ajouter le choix de la famille du thème
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
 
