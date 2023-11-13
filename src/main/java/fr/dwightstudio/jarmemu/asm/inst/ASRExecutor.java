@@ -14,7 +14,7 @@ public class ASRExecutor implements InstructionExecutor<Register, Register, Inte
         if (updateFlags) {
             stateContainer.cpsr.setN(arg1.getData() < 0);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC(oldValue < 0 && oldValue % 2 != 0);
+            stateContainer.cpsr.setC(oldValue % 2 != 0);
         }
     }
 }
