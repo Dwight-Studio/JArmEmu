@@ -43,62 +43,66 @@ public class StackController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
-        if (stateContainer == null) return;
-        TreeMap<Integer, Integer> stack = new TreeMap<>();
+        if (stateContainer == null) {
+            clear();
+        } else {
 
-        dataFormat = getSettingsController().getDataFormat();
+            TreeMap<Integer, Integer> stack = new TreeMap<>();
 
-        stack.putAll(getLowerValues(stateContainer));
-        stack.putAll(getHigherValues(stateContainer));
+            dataFormat = getSettingsController().getDataFormat();
 
-        int i = 0;
-        int sp = stateContainer.registers[RegisterUtils.SP.getN()].getData();
-        spDisplayer = -1;
-        for (Map.Entry<Integer, Integer> entry : stack.entrySet()) {
-            boolean hasSp = entry.getKey().equals(sp);
-            if (stackTexts.size() <= i) {
-                create(entry, i, hasSp);
-            }
-            update(entry, i, hasSp);
-            if (hasSp) spDisplayer = i;
-            i++;
-        }
+            stack.putAll(getLowerValues(stateContainer));
+            stack.putAll(getHigherValues(stateContainer));
 
-        int s = stackTexts.size();
-        for (int j = i; j < s; j++) {
-            Text[] texts = stackTexts.remove(i);
-            stackTextProperties.remove(i);
-
-            Platform.runLater(() -> {
-                getController().stackGrid.getChildren().remove(texts[0]);
-                getController().stackGrid.getChildren().remove(texts[1]);
-                getController().stackGrid.getChildren().remove(texts[2]);
-            });
-        }
-
-        if (spDisplayer != -1) {
-            Platform.runLater(() -> {
-                try {
-                    final double current = getController().stackScroll.getVvalue();
-
-                    final double totalSize = getController().stackGrid.getLayoutBounds().getHeight();
-                    final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
-                    //final double lineSize = getController().stackGrid.getChildren().getLast().getLayoutBounds().getHeight() + getController().stackGrid.getVgap();
-                    final double lineSize = ROW_HEIGHT;
-                    final double linePos = spDisplayer * lineSize;
-
-                    final double currentViewTop = (totalSize - viewSize) * current;
-                    final double currentViewBottom = currentViewTop + viewSize;
-
-                    if (linePos < currentViewTop) {
-                        getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
-                    } else if ((linePos + lineSize) > currentViewBottom) {
-                        getController().stackScroll.setVvalue((linePos - viewSize + lineSize) / (totalSize - viewSize));
-                    }
-                } catch (Exception e) {
-                    logger.warning("Failed to calculate scroll value for StackScroll");
+            int i = 0;
+            int sp = stateContainer.registers[RegisterUtils.SP.getN()].getData();
+            spDisplayer = -1;
+            for (Map.Entry<Integer, Integer> entry : stack.entrySet()) {
+                boolean hasSp = entry.getKey().equals(sp);
+                if (stackTexts.size() <= i) {
+                    create(entry, i, hasSp);
                 }
-            });
+                update(entry, i, hasSp);
+                if (hasSp) spDisplayer = i;
+                i++;
+            }
+
+            int s = stackTexts.size();
+            for (int j = i; j < s; j++) {
+                Text[] texts = stackTexts.remove(i);
+                stackTextProperties.remove(i);
+
+                Platform.runLater(() -> {
+                    getController().stackGrid.getChildren().remove(texts[0]);
+                    getController().stackGrid.getChildren().remove(texts[1]);
+                    getController().stackGrid.getChildren().remove(texts[2]);
+                });
+            }
+
+            if (spDisplayer != -1) {
+                Platform.runLater(() -> {
+                    try {
+                        final double current = getController().stackScroll.getVvalue();
+
+                        final double totalSize = getController().stackGrid.getLayoutBounds().getHeight();
+                        final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
+                        //final double lineSize = getController().stackGrid.getChildren().getLast().getLayoutBounds().getHeight() + getController().stackGrid.getVgap();
+                        final double lineSize = ROW_HEIGHT;
+                        final double linePos = spDisplayer * lineSize;
+
+                        final double currentViewTop = (totalSize - viewSize) * current;
+                        final double currentViewBottom = currentViewTop + viewSize;
+
+                        if (linePos < currentViewTop) {
+                            getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
+                        } else if ((linePos + lineSize) > currentViewBottom) {
+                            getController().stackScroll.setVvalue((linePos - viewSize + lineSize) / (totalSize - viewSize));
+                        }
+                    } catch (Exception e) {
+                        logger.warning("Failed to calculate scroll value for StackScroll");
+                    }
+                });
+            }
         }
     }
 

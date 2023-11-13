@@ -115,6 +115,13 @@ public class MemoryController extends AbstractJArmEmuModule {
                 memoryStrings[i][3].set(MathUtils.toBinString(byte2));
                 memoryStrings[i][4].set(MathUtils.toBinString(byte1));
                 memoryStrings[i][5].set(MathUtils.toBinString(byte0));
+            } else {
+                memoryStrings[i][0].set("-");
+                memoryStrings[i][1].set("-");
+                memoryStrings[i][2].set("-");
+                memoryStrings[i][3].set("-");
+                memoryStrings[i][4].set("-");
+                memoryStrings[i][5].set("-");
             }
         }
     }

@@ -28,7 +28,7 @@ public class ModalDialog {
                 content
         );
 
-        HBox bodyBox = new HBox(10,
+        HBox bodyBox = new HBox(20,
                 graphic,
                 contentBox
         );
@@ -36,7 +36,7 @@ public class ModalDialog {
         HBox controlBox = new HBox(20, controls);
         controlBox.setAlignment(Pos.CENTER_RIGHT);
 
-        VBox mainBox = new VBox(10,
+        VBox mainBox = new VBox(20,
                 bodyBox,
                 controlBox
         );

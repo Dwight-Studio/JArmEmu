@@ -193,6 +193,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void openLastSave() {
         String path;
+        application.setNew();
 
         if (application.getArgSave() == null) {
             path = getSettingsController().getLastSavePath();
@@ -223,7 +224,6 @@ public class MainMenuController extends AbstractJArmEmuModule {
             logger.info("Empty last-save, aborting.");
         }
 
-        application.setNew();
         onNewFile();
     }
 

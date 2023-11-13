@@ -51,6 +51,10 @@ public class RegistersController extends AbstractJArmEmuModule {
             stringProperties[17].set(getApplication().getFormattedData(stateContainer.spsr.getData(), dataFormat));
             stringProperties[18].set(stateContainer.cpsr.toString());
             stringProperties[19].set(stateContainer.spsr.toString());
+        } else {
+            for (int i = 0; i < 20; i++) {
+                stringProperties[i].set("-");
+            }
         }
     }
 }

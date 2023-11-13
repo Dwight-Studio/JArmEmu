@@ -403,4 +403,8 @@ public class CodeInterpreter {
     public boolean hasJumped() {
         return jumped;
     }
+
+    public void clearState() {
+        stateContainer = null;
+    }
 }

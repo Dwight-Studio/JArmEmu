@@ -147,7 +147,9 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().memoryPage.setDisable(true);
         getController().addressField.setDisable(true);
         getController().settingsTab.setDisable(false);
+        getCodeInterpreter().clearState();
         getEditorController().clearLineMarking();
+        getExecutionWorker().updateGUI();
         application.status = Status.EDITING;
     }
 
