@@ -4,12 +4,12 @@ import javafx.application.Platform;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.util.StringConverter;
 
-public class SafeAddressConverter extends StringConverter<Integer> {
+public class SpinnerAddressConverter extends StringConverter<Integer> {
     protected static final String DATA_FORMAT = "%08x";
 
     private final SpinnerValueFactory<Integer> value;
 
-    public SafeAddressConverter(SpinnerValueFactory<Integer> value) {
+    public SpinnerAddressConverter(SpinnerValueFactory<Integer> value) {
         this.value = value;
     }
 
