@@ -1,38 +1,49 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Register {
 
-    private int data;
+    private final IntegerProperty dataProperty;
 
     public Register() {
-        this.data = 0;
+        this.dataProperty = new SimpleIntegerProperty();
     }
 
     public int getData() {
-        return data;
+        return dataProperty.get();
     }
 
     public void setData(int data) throws IllegalArgumentException {
-        this.data = data;
+        this.dataProperty.set(data);
     }
 
     public boolean get(int index) throws IllegalArgumentException {
         if (index >= 32) throw new IllegalArgumentException("Invalid index: " + index);
 
-        return ((data >> index) & 1) == 1;
+        return ((dataProperty.get() >> index) & 1) == 1;
     }
 
     public void set(int index, boolean value) {
         if (index >= 32) throw new IllegalArgumentException("Invalid index: " + index);
 
         if (value) {
-            data |= (1 << index); // set a bit to 1
+            dataProperty.set(dataProperty.get() | (1 << index)); // set a bit to 1
         } else {
-            data &= ~(1 << index); // set a bit to 0
+            dataProperty.set(dataProperty.get() & ~(1 << index)); // set a bit to 0
         }
     }
 
     public void add(int value) {
-        this.data += value;
+        this.dataProperty.add(value);
+    }
+
+    public boolean isPSR() {
+        return false;
+    }
+
+    public IntegerProperty getProperty() {
+        return dataProperty;
     }
 }
