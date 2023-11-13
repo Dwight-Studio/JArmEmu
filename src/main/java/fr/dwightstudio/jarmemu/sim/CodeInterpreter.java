@@ -167,6 +167,17 @@ public class CodeInterpreter {
     }
 
     /**
+     * Remplace les instructions de la forme MOV reg1, reg2, SHIFT en SHIFT reg1, reg2
+     */
+    private void replaceMovShifts() {
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
+                inst.setValue(parsedInstruction.convertMovToShift(stateContainer));
+            }
+        }
+    }
+
+    /**
      * Enregistre les labels dans le conteur d'états
      */
     public void registerLabels() {
@@ -260,6 +271,7 @@ public class CodeInterpreter {
         //TODO: AJouter la transformation des MOV avec des SHIFT (penser à l'update des flags)
         //TODO: Ajouter les tests correspondants
         this.stateContainer = new StateContainer(stackAddress, symbolsAddress);
+        replaceMovShifts();
         applyDirectives();
         registerLabels();
     }

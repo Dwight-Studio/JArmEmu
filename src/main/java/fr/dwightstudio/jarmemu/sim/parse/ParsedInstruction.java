@@ -3,9 +3,11 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.sim.parse.args.ShiftParser;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -184,6 +186,20 @@ public class ParsedInstruction extends ParsedObject {
         }
 
         return pack;
+    }
+
+    public ParsedInstruction convertMovToShift(StateContainer stateContainer) {
+        if (this.instruction == Instruction.MOV) {
+            ArgumentParser[] argParsers = instruction.getArgParsers();
+            if (argParsers[2].parse(stateContainer, originalArgs[2].toUpperCase()) instanceof ShiftParser.ShiftFunction){
+                try {
+                    return new ParsedInstruction(Instruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null);
+                } catch (Exception e) {
+                    logger.severe(e.getMessage());
+                }
+            }
+        }
+        return this;
     }
 
     @Override

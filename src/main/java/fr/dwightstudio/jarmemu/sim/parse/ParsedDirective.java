@@ -73,7 +73,7 @@ public class ParsedDirective extends ParsedObject {
     public boolean equals(Object obj) {
         if (!(obj instanceof ParsedDirective dir)) return false;
 
-        if (!(dir.args.equalsIgnoreCase(this.args))) {
+        if (!(dir.args.equals(this.args))) {
             if (VERBOSE) logger.info("Difference: Args");
             return false;
         }
