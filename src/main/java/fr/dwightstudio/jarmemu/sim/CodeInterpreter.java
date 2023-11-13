@@ -169,7 +169,7 @@ public class CodeInterpreter {
     /**
      * Remplace les instructions de la forme MOV reg1, reg2, SHIFT en SHIFT reg1, reg2
      */
-    private void replaceMovShifts() {
+    protected void replaceMovShifts() {
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
                 inst.setValue(parsedInstruction.convertMovToShift(stateContainer));
