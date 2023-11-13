@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.gui;
+package fr.dwightstudio.jarmemu.gui.enums;
 
 public enum LineStatus {
     NONE,

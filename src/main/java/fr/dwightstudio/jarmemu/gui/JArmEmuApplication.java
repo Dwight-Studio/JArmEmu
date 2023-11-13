@@ -17,8 +17,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
@@ -27,11 +25,11 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -60,6 +58,7 @@ public class JArmEmuApplication extends Application {
     private SourceParser sourceParser;
     private CodeInterpreter codeInterpreter;
     private ExecutionWorker executionWorker;
+    private JArmEmuDialogs dialogs;
 
 
     public Theme theme;
@@ -67,6 +66,7 @@ public class JArmEmuApplication extends Application {
     public Stage stage;
     public Scene scene;
     private String lastSave;
+    private File lastSavePath;
     private String argSave;
 
     @Override
@@ -89,6 +89,7 @@ public class JArmEmuApplication extends Application {
         settingsController = new SettingsController(this);
         simulationMenuController = new SimulationMenuController(this);
         stackController = new StackController(this);
+        dialogs = new JArmEmuDialogs(this);
 
         fxmlLoader.setController(new JArmEmuController(this));
         controller = fxmlLoader.getController();
@@ -106,8 +107,8 @@ public class JArmEmuApplication extends Application {
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
-        logger.info("Loaded " + Font.loadFont(getResourceAsStream("fonts/Cantarell/Cantarell-Regular.ttf"), 14).getFamily());
-        logger.info("Loaded " + Font.loadFont(getResourceAsStream("fonts/SourceCodePro/SourceCodePro-Regular.ttf"), 14).getFamily());
+        logger.info("Font " + Font.loadFont(getResourceAsStream("fonts/Cantarell/Cantarell-Regular.ttf"), 14).getFamily() + " loaded");
+        logger.info("Font " + Font.loadFont(getResourceAsStream("fonts/SourceCodePro/SourceCodePro-Regular.ttf"), 14).getFamily() + " loaded");
 
         scene = new Scene(fxmlLoader.load(), 1280, 720);
         updateUserAgentStyle(getSettingsController().getTheme());
@@ -209,6 +210,7 @@ public class JArmEmuApplication extends Application {
      */
     public void setSaved() {
         lastSave = String.valueOf(getEditorController().getText());
+        lastSavePath = getMainMenuController().getSavePath();
         setTitle(getMainMenuController().getSavePath().getName());
     }
 
@@ -218,21 +220,24 @@ public class JArmEmuApplication extends Application {
      * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
      */
     public void setNew() {
-        lastSave = null;
+        lastSave = EditorController.SAMPLE_CODE;
+        lastSavePath = null;
         setTitle("New File");
     }
 
     /**
      * Met à jour l'état de sauvegarde
+     *
+     * @return vrai si le fichier est sauvegardé
      */
     public boolean updateSaveState() {
         boolean saved = true;
 
-        if (getEditorController() != null && lastSave != null) {
+        if (getEditorController() != null) {
             saved = getEditorController().getText().equals(lastSave);
         }
 
-        String fileName = getMainMenuController().getSavePath() == null || lastSave == null ? "New File" : getMainMenuController().getSavePath().getName();
+        String fileName = lastSavePath == null ? "New File" : lastSavePath.getName();
 
         if (saved) {
             setTitle(fileName);
@@ -287,39 +292,24 @@ public class JArmEmuApplication extends Application {
         return simulationMenuController;
     }
 
-    private void onClosingRequest(WindowEvent event) {
-        if (!updateSaveState()) {
-            ButtonType saveAndQuit = new ButtonType("Save and Close");
-            ButtonType discardAndQuit = new ButtonType("Discard and Close");
-            ButtonType cancel = new ButtonType("Cancel");
-
-            Alert alert = new Alert(Alert.AlertType.WARNING, "The open file has unsaved changes. Changes will be permanently lost. Do you want to save the file?", saveAndQuit, discardAndQuit, cancel);
-
-            Optional<ButtonType> option = alert.showAndWait();
-
-            if (option.isPresent()) {
-                if (option.get() == saveAndQuit) {
-                    getMainMenuController().onSave();
-                } else if (option.get() == cancel) {
-                    event.consume();
-                }
-            } else {
-                event.consume();
-            }
-        }
+    public JArmEmuDialogs getDialogs() {
+        return dialogs;
     }
 
-    /**
-     * Affiche un avertissement lors de la fermeture d'un fichier
-     *
-     * @return vrai si on continue la fermeture, faux sinon
-     */
-    public boolean warnUnsaved() {
-        WindowEvent event = new WindowEvent(null, WindowEvent.WINDOW_CLOSE_REQUEST);
+    private void onClosingRequest(WindowEvent event) {
+        if (!updateSaveState()) {
+            getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        getMainMenuController().onSave();
+                        Platform.exit();
+                    }
+                    case DISCARD_AND_CONTINUE -> Platform.exit();
+                }
+            });
 
-        this.onClosingRequest(event);
-
-        return !event.isConsumed();
+            event.consume();
+        }
     }
 
     public void newSourceParser() {

@@ -3,8 +3,9 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.JArmEmuDialog;
+import fr.dwightstudio.jarmemu.gui.ModalDialog;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -20,7 +21,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    @FXML protected ModalPane modalPane;
+    @FXML protected ModalPane modalPaneBack;
+    @FXML protected ModalPane modalPaneMiddle;
+    @FXML protected ModalPane modalPaneFront;
 
     @FXML protected StackPane editorStackPane;
     protected CodeArea codeArea;
@@ -106,8 +109,12 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getExecutionWorker().updateGUI();
     }
 
-    public void openDialog(JArmEmuDialog dialog) {
-        modalPane.show(dialog.getModalBox());
+    public void openDialog(ModalDialog dialog) {
+        modalPaneFront.show(dialog.getModalBox());
+    }
+
+    public void closeDialog() {
+        modalPaneFront.hide();
     }
 
     @FXML

@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.gui;
 
+import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;

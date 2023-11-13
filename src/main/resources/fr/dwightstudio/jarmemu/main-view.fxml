@@ -636,6 +636,8 @@
             </SplitPane>
          </children>
       </VBox>
-      <ModalPane fx:id="modalPane" StackPane.alignment="CENTER" />
+      <ModalPane fx:id="modalPaneBack" StackPane.alignment="CENTER" />
+      <ModalPane fx:id="modalPaneMiddle" StackPane.alignment="CENTER" />
+      <ModalPane fx:id="modalPaneFront" StackPane.alignment="CENTER" />
    </children>
 </StackPane>

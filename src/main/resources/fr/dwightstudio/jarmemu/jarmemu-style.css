@@ -11,3 +11,7 @@
     -fx-font-family: "Source Code Pro";
     -fx-font-size: 14px;
 }
+
+.big-icon {
+    -fx-icon-size: 48;
+}

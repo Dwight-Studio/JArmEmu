@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
@@ -23,12 +24,33 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onNewFile() {
-        if (!application.warnUnsaved()) return;
+        if (getApplication().updateSaveState()) {
+            newFile();
+        } else {
+            getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        onSave();
+                        newFile();
+                    }
 
+                    case DISCARD_AND_CONTINUE -> newFile();
+
+                    default -> {}
+                }
+            });
+        }
+    }
+
+    /**
+     * Initie un nouveau fichier
+     */
+    public void newFile() {
         logger.info("Opening a new file");
         getSimulationMenuController().onStop();
         getEditorController().newFile();
         getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+        getSettingsController().setLastSavePath("");
         application.setNew();
     }
 
@@ -96,8 +118,25 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReload() {
-        if (!application.warnUnsaved()) return;
+        if (getApplication().updateSaveState()) {
+            reload();
+        } else {
+            getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        onSave();
+                        reload();
+                    }
 
+                    case DISCARD_AND_CONTINUE -> reload();
+
+                    default -> {}
+                }
+            });
+        }
+    }
+
+    public void reload() {
         logger.info("Reloading file from disk");
         getSimulationMenuController().onStop();
         if (isValidFile(savePath)) {
@@ -119,7 +158,20 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     protected void onExit() {
-        if (application.warnUnsaved()) Platform.exit();
+        getDialogs().unsavedAlert().thenAccept(rtn -> {
+            switch (rtn) {
+                case SAVE_AND_CONTINUE -> {
+                    onSave();
+                    Platform.exit();
+                }
+
+                case DISCARD_AND_CONTINUE -> {
+                    Platform.exit();
+                }
+
+                default -> {}
+            }
+        });
     }
 
     /**
@@ -171,6 +223,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
             logger.info("Empty last-save, aborting.");
         }
 
+        application.setNew();
         onNewFile();
     }
 
