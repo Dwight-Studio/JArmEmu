@@ -36,7 +36,7 @@
 
 <StackPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0">
+      <VBox>
          <children>
             <MenuBar>
               <menus>
@@ -290,11 +290,11 @@
                         </TabPane>
                     </items>
                   </SplitPane>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                  <StackPane >
                      <children>
-                        <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                        <VBox alignment="TOP_CENTER">
                            <children>
-                              <ToolBar prefHeight="32.0" prefWidth="32.0" styleClass="btn-group-horizontal">
+                              <ToolBar>
                                  <items>
                                     <HBox layoutX="10.0" layoutY="10.0">
                                        <children>

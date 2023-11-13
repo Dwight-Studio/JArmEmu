@@ -10,7 +10,7 @@
 }
 
 .code-area .text {
-    -fx-font-family: Monospaced;
+    -fx-font-family: "Source Code Pro";
     -fx-fill: -color-fg-default;
 }
 
