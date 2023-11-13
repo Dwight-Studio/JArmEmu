@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -196,5 +197,21 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML
     public void onSettingsLight() {
         getSettingsController().onSettingsLight();
+    }
+
+    @FXML void onCopy() {
+        getEditorController().getContextMenu().onCopy(new ActionEvent());
+    }
+
+    @FXML void onCut() {
+        getEditorController().getContextMenu().onCut(new ActionEvent());
+    }
+
+    @FXML void onPaste() {
+        getEditorController().getContextMenu().onPaste(new ActionEvent());
+    }
+
+    @FXML void onDelete() {
+        getEditorController().getContextMenu().onDelete(new ActionEvent());
     }
 }

@@ -1,0 +1,13 @@
+.root {
+    -fx-font-family: Cantarell;
+}
+
+.reg-data {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 14px;
+}
+
+.reg-address {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 14px;
+}

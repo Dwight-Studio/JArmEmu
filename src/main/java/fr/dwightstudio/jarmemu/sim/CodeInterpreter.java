@@ -176,7 +176,7 @@ public class CodeInterpreter {
             }
         }
 
-        stateContainer.labels.put("_END", getLineByte(getLastLine()) + 4);
+        if (!stateContainer.labels.containsKey("_END")) stateContainer.labels.put("_END", getLineByte(getLastLine()) + 4);
     }
 
     /**

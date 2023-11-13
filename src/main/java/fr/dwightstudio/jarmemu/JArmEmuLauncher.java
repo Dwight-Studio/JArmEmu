@@ -16,6 +16,6 @@ public class JArmEmuLauncher {
     }
 
     public static void setUpLogger() throws IOException {
-        LogManager.getLogManager().readConfiguration(JArmEmuLauncher.class.getResourceAsStream("logging.properties"));
+        LogManager.getLogManager().readConfiguration(JArmEmuApplication.getResourceAsStream("logging.properties"));
     }
 }

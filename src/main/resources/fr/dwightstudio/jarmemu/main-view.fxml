@@ -4,36 +4,94 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
           <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File" />
-                  <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open..." />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save" />
-                  <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as..." />
-                  <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk" />
-                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit" />
+              <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File">
+                  <graphic>
+                      <FontIcon iconLiteral="mdral-insert_drive_file" />
+                  </graphic>
+              </MenuItem>
+              <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open...">
+                  <graphic>
+                      <FontIcon iconLiteral="mdal-folder" />
+                  </graphic>
+              </MenuItem>
+              <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
+                  <graphic>
+                      <FontIcon iconLiteral="mdmz-save" />
+                  </graphic>
+              </MenuItem>
+              <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as...">
+                  <graphic>
+                      <FontIcon iconLiteral="mdmz-save" />
+                  </graphic>
+              </MenuItem>
+              <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
+                  <graphic>
+                      <FontIcon iconLiteral="mdsmz-refresh" />
+                  </graphic>
+              </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
+                    <graphic>
+                        <FontIcon iconLiteral="mdmz-settings_backup_restore" />
+                    </graphic>
+                </MenuItem>
+              <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
+                  <graphic>
+                      <FontIcon iconLiteral="mdoal-exit_to_app" />
+                  </graphic>
+              </MenuItem>
             </items>
           </Menu>
           <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" text="Copy" onAction="#onCopy">
+                  <graphic>
+                      <FontIcon iconLiteral="mdsal-content_copy" />
+                  </graphic>
+              </MenuItem>
+                <MenuItem mnemonicParsing="false" text="Cut" onAction="#onCut">
+                    <graphic>
+                        <FontIcon iconLiteral="mdsal-content_cut" />
+                    </graphic>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" text="Paste" onAction="#onPaste">
+                    <graphic>
+                        <FontIcon iconLiteral="mdsal-content_paste" />
+                    </graphic>
+                </MenuItem>
+                <MenuItem mnemonicParsing="false" text="Delete" onAction="#onDelete">
+                    <graphic>
+                        <FontIcon iconLiteral="mdsal-delete" />
+                    </graphic>
+                </MenuItem>
             </items>
           </Menu>
             <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
             <items>
-            <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications" />
+            <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
+                <graphic>
+                    <FontIcon iconLiteral="mdoal-clear_all" />
+                </graphic>
+            </MenuItem>
             </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" text="About">
+                  <graphic>
+                      <FontIcon iconLiteral="mdsal-info" />
+                  </graphic>
+              </MenuItem>
             </items>
           </Menu>
         </menus>
@@ -531,12 +589,20 @@
                                                                <children>
                                                                   <AnchorPane HBox.hgrow="ALWAYS">
                                                                      <children>
-                                                                        <ToggleButton fx:id="settingsDark" mnemonicParsing="false" onAction="#onSettingsDark" styleClass="left-pill" text="Dark" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <ToggleButton fx:id="settingsDark" mnemonicParsing="false" onAction="#onSettingsDark" styleClass="left-pill" text="Dark" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                            <graphic>
+                                                                                <FontIcon iconLiteral="mdomz-wb_sunny"/>
+                                                                            </graphic>
+                                                                        </ToggleButton>
                                                                      </children>
                                                                   </AnchorPane>
                                                                   <AnchorPane HBox.hgrow="ALWAYS">
                                                                      <children>
-                                                                        <ToggleButton fx:id="settingsLight" mnemonicParsing="false" onAction="#onSettingsLight" styleClass="right-pill" text="Light" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                        <ToggleButton fx:id="settingsLight" mnemonicParsing="false" onAction="#onSettingsLight" styleClass="right-pill" text="Light" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                            <graphic>
+                                                                                <FontIcon iconLiteral="mdrmz-wb_sunny"/>
+                                                                            </graphic>
+                                                                        </ToggleButton>
                                                                      </children>
                                                                   </AnchorPane>
                                                                </children>

@@ -18,12 +18,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.Optional;
@@ -72,9 +75,9 @@ public class JArmEmuApplication extends Application {
         // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre, écriture dans RODATA etc...)
         // TODO: Ajouter le about dans help
         // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS ; vérifier que on initialise pas dans BSS)
-        // TODO: Revérifier la concurence
+        // TODO: Revérifier la concurrence
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
 
         editorController = new EditorController(this);
         mainMenuController = new MainMenuController(this);
@@ -100,9 +103,12 @@ public class JArmEmuApplication extends Application {
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
+        logger.info("Loaded " + Font.loadFont(getResourceAsStream("fonts/Cantarell/Cantarell-Regular.ttf"), 14).getFamily());
+        logger.info("Loaded " + Font.loadFont(getResourceAsStream("fonts/SourceCodePro/SourceCodePro-Regular.ttf"), 14).getFamily());
+
         scene = new Scene(fxmlLoader.load(), 1280, 720);
         updateUserAgentStyle(getSettingsController().getTheme());
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("jarmemu-style.css")).toExternalForm());
+        scene.getStylesheets().add(getResource("jarmemu-style.css").toExternalForm());
 
         scene.setOnKeyPressed(shortcutHandler::handle);
 
@@ -110,13 +116,13 @@ public class JArmEmuApplication extends Application {
 
         stage.setOnCloseRequest(this::onClosingRequest);
         stage.getIcons().addAll(
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@16.png"))),
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@32.png"))),
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@64.png"))),
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@128.png"))),
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@256.png"))),
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/favicon@512.png"))),
-                new Image(Objects.requireNonNull(getClass().getResourceAsStream("medias/logo.png")))
+                new Image(getResourceAsStream("medias/favicon@16.png")),
+                new Image(getResourceAsStream("medias/favicon@32.png")),
+                new Image(getResourceAsStream("medias/favicon@64.png")),
+                new Image(getResourceAsStream("medias/favicon@128.png")),
+                new Image(getResourceAsStream("medias/favicon@256.png")),
+                new Image(getResourceAsStream("medias/favicon@512.png")),
+                new Image(getResourceAsStream("medias/logo.png"))
         );
         stage.setScene(scene);
         stage.show();
@@ -131,7 +137,6 @@ public class JArmEmuApplication extends Application {
         }
 
         logger.info("Startup finished");
-
     }
 
     public void updateUserAgentStyle(int nb) {
@@ -153,21 +158,20 @@ public class JArmEmuApplication extends Application {
             URL url;
             
             if (scale >= 125 && scale < 150) {
-                url = JArmEmuApplication.class.getResource("medias/splash@125pct.png");
+                url = getResource("medias/splash@125pct.png");
             } else if (scale >= 150 && scale < 200) {
-                url = JArmEmuApplication.class.getResource("medias/splash@150pct.png");
+                url = getResource("medias/splash@150pct.png");
             } else if (scale >= 200 && scale < 250) {
-                url = JArmEmuApplication.class.getResource("medias/splash@200pct.png");
+                url = getResource("medias/splash@200pct.png");
             } else if (scale >= 250 && scale < 300) {
-                url = JArmEmuApplication.class.getResource("medias/splash@250pct.png");
+                url = getResource("medias/splash@250pct.png");
             } else if (scale >= 300) {
-                url = JArmEmuApplication.class.getResource("medias/splash@300pct.png");
+                url = getResource("jarmemu/medias/splash@300pct.png");
             } else {
-                url = JArmEmuApplication.class.getResource("medias/splash.png");
+                url = getResource("medias/splash.png");
             }
 
             logger.info("Loading SplashScreen: " + url);
-            assert url != null;
             splashScreen.setImageURL(url);
         } catch (Exception e) {
             logger.severe(ExceptionUtils.getStackTrace(e));
@@ -342,5 +346,13 @@ public class JArmEmuApplication extends Application {
      */
     public String getArgSave() {
         return argSave;
+    }
+
+    public static @NotNull URL getResource(String name) {
+        return Objects.requireNonNull(JArmEmuApplication.class.getResource("/fr/dwightstudio/jarmemu/" + name));
+    }
+
+    public static @NotNull InputStream getResourceAsStream(String name) {
+        return Objects.requireNonNull(JArmEmuApplication.class.getResourceAsStream("/fr/dwightstudio/jarmemu/" + name));
     }
 }

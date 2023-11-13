@@ -78,6 +78,7 @@ public class EditorController extends AbstractJArmEmuModule {
     private final ExecutorService executor;
     private final JArmEmuApplication application;
     private final JArmEmuLineFactory lineFactory;
+    private EditorContextMenu contextMenu;
     private Subscription hightlightUpdateSubscription;
 
     public EditorController(JArmEmuApplication application) {
@@ -89,9 +90,10 @@ public class EditorController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        getController().codeArea = application.getController().codeArea;
+        contextMenu = new EditorContextMenu(getController().codeArea);
+
         getController().codeArea.setParagraphGraphicFactory(lineFactory);
-        getController().codeArea.setContextMenu(new EditorContextMenu(getController().codeArea));
+        getController().codeArea.setContextMenu(contextMenu);
 
         // auto-indent: insert previous line's indents on enter
         final Pattern whiteSpace = Pattern.compile( "^\\s+" );
@@ -144,7 +146,7 @@ public class EditorController extends AbstractJArmEmuModule {
                 }).subscribe((highlighting) -> getController().codeArea.setStyleSpans(0, highlighting));
 
         newFile();
-        getController().codeArea.getStylesheets().add(EditorController.class.getResource("editor-style.css").toExternalForm());
+        getController().codeArea.getStylesheets().add(EditorController.class.getResource("/fr/dwightstudio/jarmemu/editor-style.css").toExternalForm());
     }
 
     /**
@@ -290,6 +292,10 @@ public class EditorController extends AbstractJArmEmuModule {
         logger.info("Pre-generate " + lineNum + " lines");
         lineFactory.pregenAll(getController().codeArea.getParagraphs().size());
         Platform.runLater(this::clearLineMarking);
+    }
+
+    public EditorContextMenu getContextMenu() {
+        return this.contextMenu;
     }
 
     private class ComputeHightlightsTask extends Task<StyleSpans<Collection<String>>> {

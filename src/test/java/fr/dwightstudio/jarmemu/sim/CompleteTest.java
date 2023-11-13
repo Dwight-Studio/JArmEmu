@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
@@ -50,7 +51,7 @@ public class CompleteTest extends JArmEmuTest {
 
     public void load(String name) {
         try {
-            parser = new RegexSourceParser(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
+            parser = new RegexSourceParser(new SourceScanner(new File(JArmEmuApplication.getResource(name).toURI())));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -58,7 +59,7 @@ public class CompleteTest extends JArmEmuTest {
 
     public void loadLegacy(String name) {
         try {
-            parserLegacy = new LegacySourceParser(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
+            parserLegacy = new LegacySourceParser(new SourceScanner(new File(JArmEmuApplication.getResource(name).toURI())));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -69,7 +70,7 @@ public class CompleteTest extends JArmEmuTest {
 
         Scanner scanner;
         try {
-            scanner = new Scanner(new File(Objects.requireNonNull(getClass().getResource(memoryDumpFileName)).toURI()));
+            scanner = new Scanner(new File(JArmEmuApplication.getResource(memoryDumpFileName).toURI()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

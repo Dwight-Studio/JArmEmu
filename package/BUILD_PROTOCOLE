@@ -7,8 +7,13 @@ Pour build les packages :
 5 -> Compresser JArmEmu.jar et lib dans un fichier zip nommé JArmEmu-X.X.X-XXXXXX.zip
 6 -> Upload les fichiers sur Github et inclure le CHANGELOG
 7 -> Choisir le tag vX.X.X et le titre JArmEmu X.X.X-XXXXXX
-8 -> Incrémenter le numéro de version (Tip: utiliser Ctrl+Shift+F et chercher le nom de l'ancienne version et vérifier,
-    ne pas remplacer automatiquement cela peut poser des problèmes)
+8 -> Incrémenter le numéro de version et le type de build dans les fichiers :
+    -> pom.xml
+    -> package/linux/rpm/jarmemu.spec
+    -> package/linux/deb/control
+    -> package/windows/jarmemu.iss
+    -> scripts/build_rpm.sh
+    -> scripts/build_deb.sh
 
 Voici le template des releases :
 
