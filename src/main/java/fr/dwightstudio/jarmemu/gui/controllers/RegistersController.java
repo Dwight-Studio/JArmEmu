@@ -1,20 +1,35 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.view.RegisterView;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import javafx.beans.property.SimpleStringProperty;
+import fr.dwightstudio.jarmemu.util.ValueHexStringConverter;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.StringProperty;
-import javafx.scene.text.Text;
+import javafx.collections.ModifiableObservableListBase;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public class RegistersController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private StringProperty[] stringProperties;
     private int dataFormat;
+    private TableColumn<RegisterView, String> col0;
+    private TableColumn<RegisterView, Number> col1;
+    private TableColumn<RegisterView, String> col2;
+    private ObservableList<RegisterView> views;
 
     public RegistersController(JArmEmuApplication application) {
         super(application);
@@ -22,15 +37,40 @@ public class RegistersController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Text[] texts = new Text[]{getController().R0, getController().R1, getController().R2, getController().R3, getController().R4, getController().R5, getController().R6, getController().R7, getController().R8, getController().R9, getController().R10, getController().R11, getController().R12, getController().R13, getController().R14, getController().R15, getController().CPSR, getController().SPSR, getController().CPSRT, getController().SPSRT};
-        stringProperties = new StringProperty[texts.length];
+        col0 = new TableColumn<>("Register");
+        col0.setSortable(false);
+        col0.setEditable(false);
+        col0.setReorderable(false);
+        col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        col0.setCellValueFactory(c -> c.getValue().getNameProperty());
+        col0.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        for (int i = 0 ; i < texts.length ; i ++) {
-            StringProperty property = new SimpleStringProperty();
-            texts[i].textProperty().bind(property);
-            property.set("-");
-            stringProperties[i] = property;
-        }
+        col1 = new TableColumn<>("Value");
+        col1.setSortable(false);
+        col1.setReorderable(false);
+        col1.setMinWidth(100);
+        col1.getStyleClass().addAll(Tweaks.ALIGN_CENTER, "reg-data");
+        col1.setCellValueFactory(c -> c.getValue().getValueProperty());
+        col1.setCellFactory(TextFieldTableCell.forTableColumn(new ValueHexStringConverter(this::format)));
+
+        col2 = new TableColumn<>("Flags");
+        col2.setSortable(false);
+        col2.setEditable(false);
+        col2.setReorderable(false);
+        col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        col2.setCellValueFactory(c -> c.getValue().getFlagsProperty());
+        col2.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        TableView<RegisterView> registersTable = new TableView<>();
+        views = registersTable.getItems();
+        registersTable.getColumns().setAll(col0, col1, col2);
+        registersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        registersTable.getSelectionModel().selectFirst();
+
+        registersTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE);
+        registersTable.setEditable(true);
+
+        getController().registersTab.setContent(registersTable);
     }
 
     /**
@@ -40,21 +80,32 @@ public class RegistersController extends AbstractJArmEmuModule {
      * @param stateContainer le conteneur d'état
      */
     public void updateGUI(StateContainer stateContainer) {
-        dataFormat = getSettingsController().getDataFormat();
-
-        if (stateContainer != null) {
-            for (int i = 0; i < 16; i++) {
-                stringProperties[i].set(getApplication().getFormattedData(stateContainer.registers[i].getData(), dataFormat));
-            }
-
-            stringProperties[16].set(getApplication().getFormattedData(stateContainer.cpsr.getData(), dataFormat));
-            stringProperties[17].set(getApplication().getFormattedData(stateContainer.spsr.getData(), dataFormat));
-            stringProperties[18].set(stateContainer.cpsr.toString());
-            stringProperties[19].set(stateContainer.spsr.toString());
+        if (stateContainer == null) {
+            views.clear();
         } else {
-            for (int i = 0; i < 20; i++) {
-                stringProperties[i].set("-");
-            }
+            views.clear();
+            views.add(new RegisterView(stateContainer.registers[0], "R0"));
+            views.add(new RegisterView(stateContainer.registers[1], "R1"));
+            views.add(new RegisterView(stateContainer.registers[2], "R2"));
+            views.add(new RegisterView(stateContainer.registers[3], "R3"));
+            views.add(new RegisterView(stateContainer.registers[4], "R4"));
+            views.add(new RegisterView(stateContainer.registers[5], "R5"));
+            views.add(new RegisterView(stateContainer.registers[6], "R6"));
+            views.add(new RegisterView(stateContainer.registers[7], "R7"));
+            views.add(new RegisterView(stateContainer.registers[8], "R8"));
+            views.add(new RegisterView(stateContainer.registers[9], "R9"));
+            views.add(new RegisterView(stateContainer.registers[10], "R10"));
+            views.add(new RegisterView(stateContainer.registers[11], "R11 (FP)"));
+            views.add(new RegisterView(stateContainer.registers[12], "R12 (IP)"));
+            views.add(new RegisterView(stateContainer.registers[13], "R13 (SP)"));
+            views.add(new RegisterView(stateContainer.registers[14], "R14 (LR)"));
+            views.add(new RegisterView(stateContainer.registers[15], "R15 (PC)"));
+            views.add(new RegisterView(stateContainer.cpsr, "CPSR"));
+            views.add(new RegisterView(stateContainer.spsr, "SPSR"));
         }
+    }
+
+    private String format(int i) {
+        return getApplication().getFormattedData(i, dataFormat);
     }
 }

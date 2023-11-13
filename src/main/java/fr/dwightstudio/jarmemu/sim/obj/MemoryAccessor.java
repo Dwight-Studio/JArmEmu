@@ -1,19 +1,30 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class MemoryAccessor {
 
-    private final HashMap<Integer, Byte> memory;
+    private final HashMap<Integer, IntegerProperty> memory;
 
     public MemoryAccessor() {
         memory = new HashMap<>();
     }
 
     public byte getByte(int add) {
-        return memory.getOrDefault(add, (byte) 0);
-        //return (byte) (((add/4) >> ((3 - (add % 4)) * 8)) & 0xFF); // Retourne le numéro du Word, pour tester
+        int aAdd = Math.floorDiv(add, 4);
+        int rAdd = (add % 4) < 0 ? 4 + (add % 4) : (add % 4);
+
+        if (memory.containsKey(aAdd)) {
+            byte[] bytes = new byte[4];
+            ByteBuffer.wrap(bytes).putInt(0, memory.get(aAdd).get());
+            return bytes[rAdd];
+        } else {
+            return 0;
+        }
     }
 
     public short getHalf(int add) {
@@ -25,9 +36,25 @@ public class MemoryAccessor {
         byte[] bytes = new byte[]{getByte(add), getByte(add + 1), getByte(add + 2), getByte(add + 3)};
         return ByteBuffer.wrap(bytes).getInt();
     }
-
     public void putByte(int add, byte b) {
-        memory.put(add, b);
+        int aAdd = Math.floorDiv(add, 4);
+        int rAdd = (add % 4) < 0 ? 4 + (add % 4) : (add % 4);
+        byte[] bytes = new byte[4];
+        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        IntegerProperty property;
+
+        //System.out.println(add + " " + aAdd);
+
+        if (memory.containsKey(aAdd)) {
+            property = memory.get(aAdd);
+            buffer.putInt(0, property.get());
+        } else {
+            property = new SimpleIntegerProperty(0);
+            memory.put(aAdd, property);
+        }
+
+        buffer.put(rAdd, b);
+        property.set(buffer.getInt(0));
     }
 
     public void putHalf(int add, short s) {
@@ -35,7 +62,7 @@ public class MemoryAccessor {
         ByteBuffer.wrap(bytes).putShort(s);
 
         for (int i = 0; i < bytes.length; i++) {
-            memory.put(add + i, bytes[i]);
+            putByte(add + i, bytes[i]);
         }
     }
 
@@ -44,7 +71,7 @@ public class MemoryAccessor {
         ByteBuffer.wrap(bytes).putInt(i);
 
         for (int j = 0; j < bytes.length; j++) {
-            memory.put(add + j, bytes[j]);
+            putByte(add + j, bytes[j]);
         }
     }
 
@@ -53,14 +80,19 @@ public class MemoryAccessor {
     }
 
     public boolean isByteInitiated(int address) {
-        return memory.get(address) != null;
+        return memory.get(address - (address % 4)) != null;
     }
 
     public boolean isHalfInitiated(int address) {
-        return isByteInitiated(address) || isByteInitiated(address + 1);
+        return isByteInitiated(address - (address % 4)) || isByteInitiated(address - (address % 4) + 1);
     }
 
     public boolean isWordInitiated(int address) {
-        return isHalfInitiated(address) || isHalfInitiated(address + 2);
+        return isHalfInitiated(address - (address % 4)) || isHalfInitiated(address - (address % 4) + 2);
     }
+
+    public IntegerProperty getProperty(int address) {
+        return memory.get(address - (address % 4));
+    }
+
 }

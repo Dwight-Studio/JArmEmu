@@ -173,4 +173,27 @@ public class StateContainer {
     public void setGlobal(String global) {
         this.global = global;
     }
+
+    public Register[] getAllRegisters() {
+        return new Register[] {
+                registers[0],
+                registers[1],
+                registers[2],
+                registers[3],
+                registers[4],
+                registers[5],
+                registers[6],
+                registers[7],
+                registers[8],
+                registers[9],
+                registers[10],
+                registers[11],
+                registers[12],
+                registers[13],
+                registers[14],
+                registers[15],
+                cpsr,
+                spsr
+        };
+    }
 }

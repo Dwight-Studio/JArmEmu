@@ -129,7 +129,7 @@
                     <items>
                         <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab text="Registers" />
+                            <Tab text="Registers" fx:id="registersTab" />
                           </tabs>
                         </TabPane>
                         <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">

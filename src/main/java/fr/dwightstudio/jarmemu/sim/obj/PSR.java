@@ -68,4 +68,9 @@ public class PSR extends Register {
                 (getF() ? "F" : " ") +
                 (getT() ? "T" : " ");
     }
+
+    @Override
+    public boolean isPSR() {
+        return true;
+    }
 }
