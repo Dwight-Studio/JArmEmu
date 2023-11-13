@@ -4,11 +4,11 @@ import javafx.application.Platform;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.util.StringConverter;
 
-public class SafeStringConverter extends StringConverter<Integer> {
+public class SpinnerStringConverter extends StringConverter<Integer> {
 
     private final SpinnerValueFactory<Integer> value;
 
-    public SafeStringConverter(SpinnerValueFactory<Integer> value) {
+    public SpinnerStringConverter(SpinnerValueFactory<Integer> value) {
         this.value = value;
     }
 

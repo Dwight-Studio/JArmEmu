@@ -4,6 +4,7 @@ import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.ModalDialog;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -38,26 +39,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Button stop;
     @FXML protected Button restart;
 
-    @FXML protected Text R0;
-    @FXML protected Text R1;
-    @FXML protected Text R2;
-    @FXML protected Text R3;
-    @FXML protected Text R4;
-    @FXML protected Text R5;
-    @FXML protected Text R6;
-    @FXML protected Text R7;
-    @FXML protected Text R8;
-    @FXML protected Text R9;
-    @FXML protected Text R10;
-    @FXML protected Text R11;
-    @FXML protected Text R12;
-    @FXML protected Text R13;
-    @FXML protected Text R14;
-    @FXML protected Text R15;
-    @FXML protected Text CPSR;
-    @FXML protected Text CPSRT;
-    @FXML protected Text SPSR;
-    @FXML protected Text SPSRT;
+    @FXML protected Tab RegistersTab;
+    protected TableView<Register> registersTable;
 
     @FXML protected Tab memoryTab;
     @FXML protected GridPane memoryGrid;
