@@ -41,6 +41,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected Tab registersTab;
 
+    @FXML protected TabPane tabPane;
+
     @FXML protected Tab memoryTab;
     @FXML protected AnchorPane memoryAnchorPane;
     @FXML protected ScrollPane memoryScrollPane;

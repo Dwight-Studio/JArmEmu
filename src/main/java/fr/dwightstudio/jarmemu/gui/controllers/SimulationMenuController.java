@@ -58,6 +58,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().restart.setDisable(false);
                 getController().settingsTab.setDisable(true);
                 application.status = Status.SIMULATING;
+                getController().tabPane.getSelectionModel().select(getController().memoryTab);
             }
         } else {
             getController().simulate.setDisable(false);

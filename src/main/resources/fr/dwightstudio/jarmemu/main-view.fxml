@@ -227,7 +227,7 @@
                         </VBox>
                      </children>
                   </StackPane>
-                  <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                  <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE" fx:id="tabPane">
                     <tabs>
                         <Tab fx:id="memoryTab" text="Memory">
                            <content>

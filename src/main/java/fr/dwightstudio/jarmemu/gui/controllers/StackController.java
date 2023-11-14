@@ -63,7 +63,6 @@ public class StackController extends AbstractJArmEmuModule {
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col1.setCellFactory(AddressTableCell.factory());
-        col1.setComparator((x, y) -> Integer.compare((int) y, (int) x));
 
         col2 = new TableColumn<>("Value");
         col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
@@ -85,8 +84,11 @@ public class StackController extends AbstractJArmEmuModule {
         placeHolder.setAlignment(Pos.CENTER);
         stackTable.setPlaceholder(placeHolder);
 
+        // TODO: Corriger le problème du trie du stack
+
         stackTable.getColumns().setAll(col0, col1, col2);
-        stackTable.getSortOrder().setAll(col1);
+        stackTable.getSortOrder().clear();
+        stackTable.getSortOrder().add(col1);
         stackTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         stackTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
         stackTable.getSelectionModel().selectFirst();
@@ -153,11 +155,15 @@ public class StackController extends AbstractJArmEmuModule {
                 views.add(new MemoryWordView(stateContainer.memory, address, sp));
             }
 
-            AtomicInteger i = new AtomicInteger();
+            AtomicInteger i = new AtomicInteger(0);
 
             views.forEach(views -> {
                 if (views.getCursorProperty().get()) {
-                    Platform.runLater(() -> stackTable.scrollTo(i.get()));
+                    int finalI = i.get();
+                    Platform.runLater(() -> {
+                        stackTable.scrollTo(finalI);
+                        stackTable.getFocusModel().focus(finalI);
+                    });
                 }
                 i.getAndIncrement();
             });
