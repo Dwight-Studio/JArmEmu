@@ -6,14 +6,18 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class MemoryAccessor {
 
     private final HashMap<Integer, IntegerProperty> memory;
+    private final HashSet<Integer> initiationMap;
 
     public MemoryAccessor() {
         memory = new HashMap<>();
+        initiationMap = new HashSet<>();
     }
 
     public byte getByte(int add) {
@@ -45,8 +49,6 @@ public class MemoryAccessor {
         ByteBuffer buffer = ByteBuffer.wrap(bytes);
         IntegerProperty property;
 
-        //System.out.println(add + " " + aAdd);
-
         if (memory.containsKey(aAdd)) {
             property = memory.get(aAdd);
             buffer.putInt(0, property.get());
@@ -57,6 +59,7 @@ public class MemoryAccessor {
 
         buffer.put(rAdd, b);
         property.set(buffer.getInt(0));
+        initiationMap.add(add);
     }
 
     public void putHalf(int add, short s) {
@@ -82,7 +85,7 @@ public class MemoryAccessor {
     }
 
     public boolean isByteInitiated(int address) {
-        return memory.get(address - (address % 4)) != null;
+        return initiationMap.contains(address);
     }
 
     public boolean isHalfInitiated(int address) {
@@ -99,15 +102,7 @@ public class MemoryAccessor {
             return memory.get(aAdd);
         } else {
             IntegerProperty property = new SimpleIntegerProperty(0);
-            ChangeListener<? super Number> listener = new ChangeListener<>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                    memory.put(aAdd, property);
-                    property.removeListener(this);
-                }
-            };
-
-            property.addListener(listener);
+            memory.put(aAdd, property);
             return property;
         }
     }

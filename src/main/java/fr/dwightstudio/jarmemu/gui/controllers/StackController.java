@@ -3,6 +3,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.CursorTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
@@ -33,7 +34,7 @@ public class StackController extends AbstractJArmEmuModule {
     private TableColumn<MemoryWordView, Number> col1;
     private TableColumn<MemoryWordView, Number> col2;
     private ObservableList<MemoryWordView> views;
-    private TableView<MemoryWordView> registersTable;
+    private TableView<MemoryWordView> stackTable;
 
 
     public StackController(JArmEmuApplication application) {
@@ -61,7 +62,8 @@ public class StackController extends AbstractJArmEmuModule {
         col1.setPrefWidth(80);
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getAddressProperty());
-        col1.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
+        col1.setCellFactory(AddressTableCell.factory());
+        col1.setComparator((x, y) -> Integer.compare((int) y, (int) x));
 
         col2 = new TableColumn<>("Value");
         col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
@@ -71,26 +73,26 @@ public class StackController extends AbstractJArmEmuModule {
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col2.setCellFactory(ValueTableCell.factoryStaticBin());
+        col2.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
-        registersTable = new TableView<>();
-        views = registersTable.getItems();
+        stackTable = new TableView<>();
+        views = stackTable.getItems();
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");
         placeHolder.setAlignment(Pos.CENTER);
-        registersTable.setPlaceholder(placeHolder);
+        stackTable.setPlaceholder(placeHolder);
 
-        registersTable.getColumns().setAll(col0, col1, col2);
-        registersTable.getSortOrder().setAll(col1);
-        registersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        registersTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
-        registersTable.getSelectionModel().selectFirst();
-        registersTable.setEditable(true);
+        stackTable.getColumns().setAll(col0, col1, col2);
+        stackTable.getSortOrder().setAll(col1);
+        stackTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        stackTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
+        stackTable.getSelectionModel().selectFirst();
+        stackTable.setEditable(true);
 
-        getController().stackTab.setContent(registersTable);
+        getController().stackTab.setContent(stackTable);
     }
 
     private ArrayList<Integer> getLowerValues(StateContainer container) {
@@ -155,7 +157,7 @@ public class StackController extends AbstractJArmEmuModule {
 
             views.forEach(views -> {
                 if (views.getCursorProperty().get()) {
-                    Platform.runLater(() -> registersTable.scrollTo(i.get()));
+                    Platform.runLater(() -> stackTable.scrollTo(i.get()));
                 }
                 i.getAndIncrement();
             });

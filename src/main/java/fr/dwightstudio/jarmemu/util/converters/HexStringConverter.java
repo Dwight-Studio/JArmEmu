@@ -8,7 +8,7 @@ public class HexStringConverter extends StringConverter<Number> {
 
     @Override
     public String toString(Number number) {
-        return String.format(HEX_FORMAT, (int) number);
+        return String.format(HEX_FORMAT, (int) number).toUpperCase();
     }
 
     @Override
