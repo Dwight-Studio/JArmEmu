@@ -97,7 +97,7 @@ public class MemoryAccessor {
     }
 
     public IntegerProperty getProperty(int address) {
-        int aAdd = address - (address % 4);
+        int aAdd = Math.floorDiv(address, 4);
         if (memory.containsKey(aAdd)) {
             return memory.get(aAdd);
         } else {
