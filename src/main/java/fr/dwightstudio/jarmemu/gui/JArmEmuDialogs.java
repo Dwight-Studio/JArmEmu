@@ -26,7 +26,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         contentText.setWrappingWidth(500);
 
         Button confirm = new Button("Confirm");
-        confirm.getStyleClass().add(Styles.ACCENT);
+        confirm.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED);
         confirm.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
         confirm.setContentDisplay(ContentDisplay.RIGHT);
         confirm.setOnAction(event -> getController().closeDialog());
@@ -50,7 +50,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         icon.setIconSize(128);
 
         Button save = new Button("Save and continue");
-        save.getStyleClass().add(Styles.SUCCESS);
+        save.getStyleClass().addAll(Styles.SUCCESS, Styles.ROUNDED);
         save.setGraphic(new FontIcon(Material2OutlinedMZ.SAVE));
         save.setContentDisplay(ContentDisplay.RIGHT);
         save.setOnAction(event -> {
@@ -59,7 +59,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         });
 
         Button conti = new Button("Discard and continue");
-        conti.getStyleClass().add(Styles.DANGER);
+        conti.getStyleClass().addAll(Styles.DANGER, Styles.ROUNDED);
         conti.setGraphic(new FontIcon(Material2OutlinedAL.DELETE));
         conti.setContentDisplay(ContentDisplay.RIGHT);
         conti.setOnAction(event -> {

@@ -1,39 +1,132 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.factory.CursorTableCell;
+import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
+import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.scene.layout.RowConstraints;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
+import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2OutlinedAL;
+import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class StackController extends AbstractJArmEmuModule {
 
-    protected static final String HEX_FORMAT = "%08x";
     private static final int MAX_NUMBER = 500;
-    private static final int ROW_HEIGHT = 20;
-
-    protected int dataFormat;
-    private int spDisplayer;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    protected ArrayList<Text[]> stackTexts;
-    protected ArrayList<StringProperty[]> stackTextProperties;
+    private TableColumn<MemoryWordView, Boolean> col0;
+    private TableColumn<MemoryWordView, Number> col1;
+    private TableColumn<MemoryWordView, Number> col2;
+    private ObservableList<MemoryWordView> views;
+    private TableView<MemoryWordView> registersTable;
+
+
     public StackController(JArmEmuApplication application) {
         super(application);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        stackTexts = new ArrayList<>();
-        stackTextProperties = new ArrayList<>();
+        col0 = new TableColumn<>();
+        col0.setGraphic(new FontIcon(Material2OutlinedAL.LOCATION_SEARCHING));
+        col0.setSortable(false);
+        col0.setEditable(false);
+        col0.setReorderable(false);
+        col0.setMaxWidth(35);
+        col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        col0.setCellValueFactory(c -> c.getValue().getCursorProperty());
+        col0.setCellFactory(CursorTableCell.factory());
+
+        col1 = new TableColumn<>("Address");
+        col1.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
+        col1.setSortable(false);
+        col0.setEditable(false);
+        col1.setReorderable(false);
+        col1.setMinWidth(80);
+        col1.setPrefWidth(80);
+        col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        col1.setCellValueFactory(c -> c.getValue().getAddressProperty());
+        col1.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
+
+        col2 = new TableColumn<>("Value");
+        col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
+        col2.setSortable(false);
+        col2.setReorderable(false);
+        col2.setMinWidth(80);
+        col2.setPrefWidth(80);
+        col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        col2.setCellValueFactory(c -> c.getValue().getValueProperty());
+        col2.setCellFactory(ValueTableCell.factoryStaticBin());
+
+        registersTable = new TableView<>();
+        views = registersTable.getItems();
+
+        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        HBox placeHolder = new HBox(5, icon);
+
+        icon.getStyleClass().add("medium-icon");
+        placeHolder.setAlignment(Pos.CENTER);
+        registersTable.setPlaceholder(placeHolder);
+
+        registersTable.getColumns().setAll(col0, col1, col2);
+        registersTable.getSortOrder().setAll(col1);
+        registersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        registersTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
+        registersTable.getSelectionModel().selectFirst();
+        registersTable.setEditable(true);
+
+        getController().stackTab.setContent(registersTable);
+    }
+
+    private ArrayList<Integer> getLowerValues(StateContainer container) {
+        ArrayList<Integer> rtn = new ArrayList<>();
+        int address = container.getStackAddress() - 4;
+        int sp = container.registers[RegisterUtils.SP.getN()].getData();
+
+        int number = 0;
+        while (container.memory.isWordInitiated(address) || (sp < container.getStackAddress() && address >= sp)) {
+            if (number > MAX_NUMBER) {
+                break;
+            }
+            rtn.add(address);
+            address -= 4;
+            number++;
+        }
+
+        return rtn;
+    }
+
+    private ArrayList<Integer> getHigherValues(StateContainer container) {
+        ArrayList<Integer> rtn = new ArrayList<>();
+        int address = container.getStackAddress();
+        int sp = container.registers[RegisterUtils.SP.getN()].getData();
+
+        int number = 0;
+        while (container.memory.isWordInitiated(address) || (sp >= container.getStackAddress() && address <= sp)) {
+            if (number > MAX_NUMBER) {
+                break;
+            }
+            rtn.add(address);
+            address += 4;
+            number++;
+        }
+
+        return rtn;
     }
 
     /**
@@ -44,167 +137,27 @@ public class StackController extends AbstractJArmEmuModule {
      */
     public void updateGUI(StateContainer stateContainer) {
         if (stateContainer == null) {
-            clear();
+            views.clear();
         } else {
+            Register sp = stateContainer.registers[RegisterUtils.SP.getN()];
 
-            TreeMap<Integer, Integer> stack = new TreeMap<>();
+            ArrayList<Integer> stackValues = getLowerValues(stateContainer);
+            stackValues.addAll(getHigherValues(stateContainer));
 
-            dataFormat = getSettingsController().getDataFormat();
+            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()));
+            views.forEach(view -> stackValues.remove((Integer) view.getAddressProperty().get()));
 
-            stack.putAll(getLowerValues(stateContainer));
-            stack.putAll(getHigherValues(stateContainer));
+            for (int address : stackValues) {
+                views.add(new MemoryWordView(stateContainer.memory, address, sp));
+            }
 
-            int i = 0;
-            int sp = stateContainer.registers[RegisterUtils.SP.getN()].getData();
-            spDisplayer = -1;
-            for (Map.Entry<Integer, Integer> entry : stack.entrySet()) {
-                boolean hasSp = entry.getKey().equals(sp);
-                if (stackTexts.size() <= i) {
-                    create(entry, i, hasSp);
+            AtomicInteger i = new AtomicInteger();
+
+            views.forEach(views -> {
+                if (views.getCursorProperty().get()) {
+                    Platform.runLater(() -> registersTable.scrollTo(i.get()));
                 }
-                update(entry, i, hasSp);
-                if (hasSp) spDisplayer = i;
-                i++;
-            }
-
-            int s = stackTexts.size();
-            for (int j = i; j < s; j++) {
-                Text[] texts = stackTexts.remove(i);
-                stackTextProperties.remove(i);
-
-                Platform.runLater(() -> {
-                    getController().stackGrid.getChildren().remove(texts[0]);
-                    getController().stackGrid.getChildren().remove(texts[1]);
-                    getController().stackGrid.getChildren().remove(texts[2]);
-                });
-            }
-
-            if (spDisplayer != -1) {
-                Platform.runLater(() -> {
-                    try {
-                        final double current = getController().stackScroll.getVvalue();
-
-                        final double totalSize = getController().stackGrid.getLayoutBounds().getHeight();
-                        final double viewSize = getController().stackScroll.getViewportBounds().getHeight();
-                        //final double lineSize = getController().stackGrid.getChildren().getLast().getLayoutBounds().getHeight() + getController().stackGrid.getVgap();
-                        final double lineSize = ROW_HEIGHT;
-                        final double linePos = spDisplayer * lineSize;
-
-                        final double currentViewTop = (totalSize - viewSize) * current;
-                        final double currentViewBottom = currentViewTop + viewSize;
-
-                        if (linePos < currentViewTop) {
-                            getController().stackScroll.setVvalue(linePos / (totalSize - viewSize));
-                        } else if ((linePos + lineSize) > currentViewBottom) {
-                            getController().stackScroll.setVvalue((linePos - viewSize + lineSize) / (totalSize - viewSize));
-                        }
-                    } catch (Exception e) {
-                        logger.warning("Failed to calculate scroll value for StackScroll");
-                    }
-                });
-            }
-        }
-    }
-
-    private HashMap<Integer, Integer> getLowerValues(StateContainer container) {
-        HashMap<Integer, Integer> rtn = new HashMap<>();
-        int address = container.getStackAddress() - 4;
-        int sp = container.registers[RegisterUtils.SP.getN()].getData();
-
-        int number = 0;
-        while (container.memory.isWordInitiated(address) || (sp < container.getStackAddress() && address >= sp)) {
-            if (number > MAX_NUMBER) {
-                rtn.put(address, null);
-                break;
-            }
-            rtn.put(address, container.memory.getWord(address));
-            address -= 4;
-            number++;
-        }
-
-        return rtn;
-    }
-
-    private HashMap<Integer, Integer> getHigherValues(StateContainer container) {
-        HashMap<Integer, Integer> rtn = new HashMap<>();
-        int address = container.getStackAddress();
-        int sp = container.registers[RegisterUtils.SP.getN()].getData();
-
-        int number = 0;
-        while (container.memory.isWordInitiated(address) || (sp >= container.getStackAddress() && address <= sp)) {
-            if (number > MAX_NUMBER) {
-                rtn.put(address, null);
-                break;
-            }
-            rtn.put(address, container.memory.getWord(address));
-            address += 4;
-            number++;
-        }
-
-        return rtn;
-    }
-
-    private void create(Map.Entry<Integer, Integer> entry, int line, boolean sp) {
-        Text[] texts = new Text[3];
-        StringProperty[] stringProperties = new StringProperty[3];
-
-        for (int i = 0 ; i < 3 ; i++) {
-            Text text = new Text();
-            StringProperty textProperty = new SimpleStringProperty();
-
-            if (i == 1) {
-                text.getStyleClass().add("reg-address");
-            } else {
-                text.getStyleClass().add("reg-data");
-            }
-
-            text.setTextAlignment(TextAlignment.CENTER);
-            text.textProperty().bind(textProperty);
-
-            texts[i] = text;
-            stringProperties[i] = textProperty;
-        }
-
-        RowConstraints rowConstraints = new RowConstraints();
-        rowConstraints.setMinHeight(ROW_HEIGHT);
-        rowConstraints.setPrefHeight(ROW_HEIGHT);
-        rowConstraints.setMaxHeight(ROW_HEIGHT);
-
-        Platform.runLater(() -> {
-            if (getController().stackGrid.getRowConstraints().size() < line) getController().stackGrid.getRowConstraints().add(rowConstraints);
-
-            getController().stackGrid.add(texts[0], 0, line);
-            getController().stackGrid.add(texts[1], 1, line);
-            getController().stackGrid.add(texts[2], 2, line);
-        });
-
-        stackTexts.add(texts);
-        stackTextProperties.add(stringProperties);
-    }
-
-    private void update(Map.Entry<Integer, Integer> entry, int line, boolean sp) {
-        StringProperty[] property = stackTextProperties.get(line);
-
-        property[0].set(sp ? "➤" : "");
-        property[1].set(String.format(HEX_FORMAT, entry.getKey()).toUpperCase());
-
-        if (entry.getValue() == null) {
-            property[2].set("...");
-        } else {
-            property[2].set(getApplication().getFormattedData(entry.getValue(), dataFormat));
-        }
-    }
-
-    public void clear() {
-        int s = stackTexts.size();
-        for (int j = 0; j < s; j++) {
-            Text[] texts = stackTexts.remove(0);
-            stackTextProperties.remove(0);
-
-            Platform.runLater(() -> {
-                getController().stackGrid.getChildren().remove(texts[0]);
-                getController().stackGrid.getChildren().remove(texts[1]);
-                getController().stackGrid.getChildren().remove(texts[2]);
+                i.getAndIncrement();
             });
         }
     }

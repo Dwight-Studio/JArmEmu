@@ -1,4 +1,4 @@
-package fr.dwightstudio.jarmemu.gui;
+package fr.dwightstudio.jarmemu.gui.factory;
 
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import javafx.scene.Node;

@@ -11,7 +11,6 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
@@ -129,56 +128,12 @@
                     <items>
                         <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                           <tabs>
-                            <Tab text="Registers" fx:id="registersTab" />
+                            <Tab fx:id="registersTab" text="Registers" />
                           </tabs>
                         </TabPane>
                         <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                            <tabs>
-                              <Tab fx:id="stackTab" text="Stack">
-                                 <content>
-                                    <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="544.0" prefViewportWidth="401.0" vbarPolicy="NEVER">
-                                       <content>
-                                          <VBox>
-                                             <children>
-                                                <GridPane hgap="10.0">
-                                                   <children>
-                                                      <Label alignment="CENTER" text="SP" />
-                                                      <Label alignment="CENTER" text="Address" GridPane.columnIndex="1" />
-                                                      <Label alignment="CENTER" text="Value" GridPane.columnIndex="2" />
-                                                   </children>
-                                                   <columnConstraints>
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                      <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                   </columnConstraints>
-                                                   <rowConstraints>
-                                                      <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                   </rowConstraints>
-                                                   <VBox.margin>
-                                                      <Insets bottom="5.0" left="10.0" top="5.0" />
-                                                   </VBox.margin>
-                                                </GridPane>
-                                                <ScrollPane fx:id="stackScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                                                   <content>
-                                                      <AnchorPane>
-                                                         <children>
-                                                            <GridPane fx:id="stackGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
-                                                               <columnConstraints>
-                                                                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="20" minWidth="20" prefWidth="20" />
-                                                                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                   <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                               </columnConstraints>
-                                                            </GridPane>
-                                                         </children>
-                                                      </AnchorPane>
-                                                   </content>
-                                                </ScrollPane>
-                                             </children>
-                                          </VBox>
-                                       </content>
-                                    </ScrollPane>
-                                 </content>
-                              </Tab>
+                              <Tab fx:id="stackTab" text="Stack" disable="true" />
                            </tabs>
                         </TabPane>
                     </items>
@@ -278,69 +233,9 @@
                            <content>
                               <VBox>
                                  <children>
-                                    <HBox VBox.vgrow="ALWAYS">
-                                       <children>
-                                          <ScrollPane fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER">
-                                             <content>
-                                                <VBox>
-                                                   <children>
-                                                      <GridPane hgap="10.0">
-                                                         <children>
-                                                            <Label alignment="CENTER" text="Address" />
-                                                             <Label alignment="CENTER" text="Value" GridPane.columnIndex="1" />
-                                                            <Label alignment="CENTER" text="Byte 0" GridPane.columnIndex="2" />
-                                                            <Label alignment="CENTER" text="Byte 1" GridPane.columnIndex="3" />
-                                                            <Label alignment="CENTER" text="Byte 2" GridPane.columnIndex="4" />
-                                                            <Label alignment="CENTER" text="Byte 3" GridPane.columnIndex="5" />
-                                                         </children>
-                                                         <columnConstraints>
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                         </columnConstraints>
-                                                         <rowConstraints>
-                                                            <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                         </rowConstraints>
-                                                         <VBox.margin>
-                                                            <Insets bottom="5.0" left="10.0" top="5.0" />
-                                                         </VBox.margin>
-                                                      </GridPane>
-                                                      <ScrollPane fx:id="memoryScroll" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
-                                                         <content>
-                                                            <AnchorPane fx:id="memoryPane">
-                                                               <children>
-                                                                  <GridPane fx:id="memoryGrid" alignment="CENTER" hgap="10.0" AnchorPane.leftAnchor="10.0">
-                                                                     <columnConstraints>
-                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="80" minWidth="80" prefWidth="80" />
-                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                        <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" maxWidth="70.0" minWidth="70.0" prefWidth="70.0" />
-                                                                     </columnConstraints>
-                                                                     <rowConstraints>
-                                                                        <RowConstraints minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
-                                                                     </rowConstraints>
-                                                                  </GridPane>
-                                                               </children>
-                                                            </AnchorPane>
-                                                         </content>
-                                                      </ScrollPane>
-                                                   </children>
-                                                </VBox>
-                                             </content>
-                                          </ScrollPane>
-                                          <ScrollBar fx:id="memoryScrollBar" orientation="VERTICAL">
-                                             <HBox.margin>
-                                                <Insets right="1.0" />
-                                             </HBox.margin>
-                                          </ScrollBar>
-                                       </children>
-                                    </HBox>
-                                    <HBox fillHeight="false" />
+                                     <AnchorPane fx:id="memoryAnchorPane" VBox.vgrow="ALWAYS">
+                                         <ScrollPane fx:id="memoryScrollPane" fitToHeight="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                     </AnchorPane>
                                     <CustomTextField fx:id="addressField" promptText="Go to address">
                                        <VBox.margin>
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -487,7 +382,7 @@
                                                                    </children>
                                                                </AnchorPane>
                                                                <children>
-                                                                   <Label text="Display theme">
+                                                                   <Label text="Theme variation ">
                                                                        <VBox.margin>
                                                                            <Insets bottom="2.0" left="5.0" />
                                                                        </VBox.margin>

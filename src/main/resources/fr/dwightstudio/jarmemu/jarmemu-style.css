@@ -2,16 +2,24 @@
     -fx-font-family: Cantarell;
 }
 
-.reg-data {
+.data-address {
     -fx-font-family: "Source Code Pro";
     -fx-font-size: 14px;
 }
 
-.reg-address {
+.data-value {
     -fx-font-family: "Source Code Pro";
     -fx-font-size: 14px;
 }
 
 .big-icon {
     -fx-icon-size: 48;
+}
+
+.medium-icon {
+    -fx-icon-size: 32;
+}
+
+.medium-icon {
+    -fx-icon-size: 32;
 }

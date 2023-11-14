@@ -2,6 +2,8 @@ package fr.dwightstudio.jarmemu.sim.obj;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -92,7 +94,22 @@ public class MemoryAccessor {
     }
 
     public IntegerProperty getProperty(int address) {
-        return memory.get(address - (address % 4));
+        int aAdd = address - (address % 4);
+        if (memory.containsKey(aAdd)) {
+            return memory.get(aAdd);
+        } else {
+            IntegerProperty property = new SimpleIntegerProperty(0);
+            ChangeListener<? super Number> listener = new ChangeListener<>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                    memory.put(aAdd, property);
+                    property.removeListener(this);
+                }
+            };
+
+            property.addListener(listener);
+            return property;
+        }
     }
 
 }

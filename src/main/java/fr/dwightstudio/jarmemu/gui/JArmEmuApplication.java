@@ -338,6 +338,14 @@ public class JArmEmuApplication extends Application {
     }
 
     /**
+     * @param data les données
+     * @return une version formatée du nombre en données
+     */
+    public String getFormattedData(int data) {
+        return getFormattedData(data, getSettingsController().getDataFormat());
+    }
+
+    /**
      * @return le chemin vers le fichier passé en paramètre (ou null si rien n'est passé en paramètre)
      */
     public String getArgSave() {

@@ -34,6 +34,10 @@ public class CodeInterpreter {
         jumped = false;
     }
 
+    public StateContainer getStateContainer() {
+        return stateContainer;
+    }
+
     /**
      * Charge des instructions parsées dans l'exécuteur
      *

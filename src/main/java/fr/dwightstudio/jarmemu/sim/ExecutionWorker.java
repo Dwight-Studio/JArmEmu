@@ -296,6 +296,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             updateGUI();
 
+            application.getMemoryController().updatePage(application.getCodeInterpreter().stateContainer);
+
             logger.info("Done!");
         }
 
@@ -303,8 +305,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             if (application.getCodeInterpreter() != null) {
                 if (application.getCodeInterpreter().stateContainer == null)
                     logger.warning("Updating GUI on null StateContainer");
-                application.getMemoryController().updateGUI(application.getCodeInterpreter().stateContainer);
-                //application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
@@ -340,10 +340,10 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 line = next = last = 0;
                 application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
-                application.getRegistersController().updateGUI(application.getCodeInterpreter().stateContainer);
+                application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
+                application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
                 application.getCodeInterpreter().restart();
                 application.getEditorController().prepareSimulation();
-                application.getStackController().clear();
 
                 SyntaxASMException[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
@@ -369,6 +369,9 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             line = next = last = 0;
             updateGUI();
+
+            application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
+            application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
 
             logger.info("Done!");
         }
