@@ -4,13 +4,10 @@ import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.ModalDialog;
-import fr.dwightstudio.jarmemu.gui.view.RegisterView;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 
@@ -92,8 +89,16 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getExecutionWorker().revive();
     }
 
-    public void openDialog(ModalDialog dialog) {
+    public void openDialogFront(ModalDialog dialog) {
         modalPaneFront.show(dialog.getModalBox());
+    }
+
+    public void openDialogMiddle(ModalDialog dialog) {
+        modalPaneMiddle.show(dialog.getModalBox());
+    }
+
+    public void openDialogBack(ModalDialog dialog) {
+        modalPaneBack.show(dialog.getModalBox());
     }
 
     public void closeDialog() {

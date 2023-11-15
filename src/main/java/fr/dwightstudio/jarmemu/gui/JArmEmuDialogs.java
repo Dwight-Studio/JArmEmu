@@ -39,7 +39,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         confirm.setContentDisplay(ContentDisplay.RIGHT);
         confirm.setOnAction(event -> getController().closeDialog());
 
-        getController().openDialog(new ModalDialog(
+        getController().openDialogFront(new ModalDialog(
                 icon,
                 "Warning",
                 contentText,
@@ -96,7 +96,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
             getController().closeDialog();
         });
 
-        getController().openDialog(dialog);
+        getController().openDialogFront(dialog);
 
         return rtn;
     }
