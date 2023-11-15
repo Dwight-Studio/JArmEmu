@@ -4,12 +4,14 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.enums.UnsavedDialogChoice;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
@@ -102,11 +104,9 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
     }
 
     public void about() {
-        Text contentText = new Text("JArmEmu");
-        contentText.setWrappingWidth(200);
-
-        FontIcon icon = new FontIcon(Material2OutlinedAL.BIKE_SCOOTER);
-        icon.setIconSize(512);
+        Text title = new Text("JArmEmu");
+        title.setStyle("-fx-font-family: 'Inter Black';");
+        title.getStyleClass().addAll(Styles.TITLE_1);
 
         Button version = new Button(JArmEmuApplication.VERSION);
         version.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED);
@@ -117,28 +117,28 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         });
 
         Button website = new Button("Website");
-        website.getStyleClass().addAll(Styles.ROUNDED);
+        website.setPrefWidth(200);
         website.setGraphic(new FontIcon(Material2OutlinedAL.LAUNCH));
         website.setContentDisplay(ContentDisplay.RIGHT);
+        website.setAlignment(Pos.CENTER_LEFT);
         website.setOnAction(event -> {
             application.openURL("https://github.com/Dwight-Studio/JArmEmu");
-
             getController().closeDialogBack();
         });
 
-        VBox vBox = new VBox(contentText, version, website);
+        VBox vBox = new VBox(title, version, website);
+        vBox.setAlignment(Pos.CENTER);
         vBox.setSpacing(10);
-        vBox.setPadding(new Insets(50));
+        vBox.setPadding(new Insets(10));
+        vBox.setPrefWidth(200);
 
         ModalDialog dialog = new ModalDialog(
-                icon,
-                "",
-                vBox
+                vBox,
+                vBox.getPrefWidth(),
+                vBox.getPrefHeight()
         );
 
-        dialog.getModalBox().setOnClose(event -> {
-            getController().closeDialogBack();
-        });
+        dialog.getModalBox().setOnClose(event -> getController().closeDialogBack());
 
         getController().openDialogBack(dialog);
     }
