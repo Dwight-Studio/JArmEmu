@@ -19,6 +19,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -191,7 +192,6 @@ public class MemoryController extends AbstractJArmEmuModule {
                         getController().memoryPage.setCurrentPageIndex(page);
                     }
 
-                    hintPop.hide();
                     getController().addressField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
                 } catch (Exception e) {
                     logger.info(ExceptionUtils.getStackTrace(e));
@@ -200,14 +200,21 @@ public class MemoryController extends AbstractJArmEmuModule {
             }
         });
 
-        getController().addressField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
-            if (newVal) {
+        getController().addressField.textProperty().addListener(((observableValue, oldVal, newVal) -> {
+            if (getController().addressField.focusedProperty().get() && newVal.equalsIgnoreCase("")) {
                 Bounds bounds = getController().addressField.localToScreen(getController().addressField.getBoundsInLocal());
                 hintPop.show(getController().addressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
             } else {
                 hintPop.hide();
             }
         } ));
+
+        getController().addressField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
+            if (newVal && getController().addressField.getText().equalsIgnoreCase("")) {
+                Bounds bounds = getController().addressField.localToScreen(getController().addressField.getBoundsInLocal());
+                hintPop.show(getController().addressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
+            }
+        }));
     }
 
     /**
