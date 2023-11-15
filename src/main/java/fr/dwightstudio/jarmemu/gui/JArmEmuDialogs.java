@@ -149,7 +149,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
             getController().closeDialog();
         });
 
-        getController().openDialog(dialog);
+        getController().openDialogBack(dialog);
 
         return rtn;
     }
