@@ -83,8 +83,6 @@ public class StackController extends AbstractJArmEmuModule {
         placeHolder.setAlignment(Pos.CENTER);
         stackTable.setPlaceholder(placeHolder);
 
-        // TODO: Corriger le problème du trie du stack
-
         stackTable.getColumns().setAll(col0, col1, col2);
         stackTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         stackTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
