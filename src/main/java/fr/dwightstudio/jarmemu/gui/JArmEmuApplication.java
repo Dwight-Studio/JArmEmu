@@ -251,6 +251,10 @@ public class JArmEmuApplication extends Application {
         return saved;
     }
 
+    public void openURL(String url) {
+        getHostServices().showDocument(url);
+    }
+
     public JArmEmuController getController() {
         return controller;
     }

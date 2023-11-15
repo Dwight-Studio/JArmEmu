@@ -252,7 +252,6 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onAbout() {
-        getDialogs().about().thenAccept(rtn -> {
-        });
+        getDialogs().about();
     }
 }

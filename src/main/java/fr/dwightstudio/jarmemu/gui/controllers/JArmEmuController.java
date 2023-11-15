@@ -101,8 +101,16 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         modalPaneBack.show(dialog.getModalBox());
     }
 
-    public void closeDialog() {
+    public void closeDialogFront() {
         modalPaneFront.hide();
+    }
+
+    public void closeDialogMiddle() {
+        modalPaneMiddle.hide();
+    }
+
+    public void closeDialogBack() {
+        modalPaneBack.hide();
     }
 
     @FXML
