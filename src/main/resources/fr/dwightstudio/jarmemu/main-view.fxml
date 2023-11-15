@@ -113,7 +113,7 @@
                   </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="About">
+                    <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About">
                         <graphic>
                             <FontIcon iconLiteral="mdsal-info" />
                         </graphic>

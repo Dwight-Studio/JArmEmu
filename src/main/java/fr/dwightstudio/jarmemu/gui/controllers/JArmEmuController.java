@@ -171,6 +171,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     }
 
     @FXML
+    protected void onAbout() {getMainMenuController().onAbout();}
+
+    @FXML
     public void onSettingsRegex() {
         getSettingsController().onSettingsRegex();
     }
