@@ -6,6 +6,7 @@
 - Fixing Regex parser arguments parsing (strip whitespaces)
 - Two new themes (Nord & Cupertino) are now available
 - Reworking data viewing (Registers, Stack, Memory)
+- Adding dynamic settings
 
 
 0.1.1 -> 0.1.2
