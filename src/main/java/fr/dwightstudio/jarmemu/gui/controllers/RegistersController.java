@@ -8,12 +8,10 @@ import fr.dwightstudio.jarmemu.gui.view.RegisterView;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
@@ -29,6 +27,7 @@ public class RegistersController extends AbstractJArmEmuModule {
     private TableColumn<RegisterView, Number> col1;
     private TableColumn<RegisterView, String> col2;
     private ObservableList<RegisterView> views;
+    private TableView<RegisterView> registersTable;
 
     public RegistersController(JArmEmuApplication application) {
         super(application);
@@ -67,7 +66,7 @@ public class RegistersController extends AbstractJArmEmuModule {
         col2.setCellValueFactory(c -> c.getValue().getFlagsProperty());
         col2.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        TableView<RegisterView> registersTable = new TableView<>();
+        registersTable = new TableView<>();
         views = registersTable.getItems();
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
@@ -117,5 +116,9 @@ public class RegistersController extends AbstractJArmEmuModule {
             views.add(new RegisterView(stateContainer.cpsr, "CPSR"));
             views.add(new RegisterView(stateContainer.spsr, "SPSR"));
         }
+    }
+
+    public void refresh() {
+        registersTable.refresh();
     }
 }

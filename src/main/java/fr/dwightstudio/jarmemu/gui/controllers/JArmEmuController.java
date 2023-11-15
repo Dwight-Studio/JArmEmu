@@ -90,7 +90,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getRegistersController().attach(getCodeInterpreter().getStateContainer());
 
         getExecutionWorker().revive();
-        getExecutionWorker().updateGUI();
     }
 
     public void openDialog(ModalDialog dialog) {

@@ -22,7 +22,6 @@ import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class StackController extends AbstractJArmEmuModule {
@@ -169,5 +168,9 @@ public class StackController extends AbstractJArmEmuModule {
                 }
             });
         }
+    }
+
+    public void refresh() {
+        stackTable.refresh();
     }
 }

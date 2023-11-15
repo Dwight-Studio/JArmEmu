@@ -31,6 +31,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
     private final Logger logger = Logger.getLogger(getClass().getName());
+    private boolean initied;
 
     private Preferences preferences;
 
@@ -49,6 +50,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public SettingsController(JArmEmuApplication application) {
         super(application);
+        initied = false;
     }
 
     @Override
@@ -82,7 +84,10 @@ public class SettingsController extends AbstractJArmEmuModule {
 
         getController().settingsFormat.valueProperty().addListener((obs, oldVal, newVal) -> {
             for (int i = 0 ; i < DATA_FORMAT_LABEL_DICT.length ; i++) {
-                if (DATA_FORMAT_LABEL_DICT[i].equals(newVal)) setDataFormat(i);
+                if (DATA_FORMAT_LABEL_DICT[i].equals(newVal)) {
+                    setDataFormat(i);
+                    if (initied) getExecutionWorker().updateFormat();
+                }
             }
         });
 
@@ -106,6 +111,8 @@ public class SettingsController extends AbstractJArmEmuModule {
         simIntervalValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSimulationInterval(newVal)));
         stackAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setStackAddress(newVal)));
         symbolsAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSymbolsAddress(newVal)));
+
+        initied = true;
     }
 
     /**

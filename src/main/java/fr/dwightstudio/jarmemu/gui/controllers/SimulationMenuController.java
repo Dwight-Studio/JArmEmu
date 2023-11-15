@@ -56,7 +56,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().pause.setDisable(true);
                 getController().stop.setDisable(false);
                 getController().restart.setDisable(false);
-                getController().settingsTab.setDisable(true);
+                getController().settingsRegex.setDisable(true);
+                getController().settingsLegacy.setDisable(true);
                 getController().registersTab.setDisable(false);
                 application.status = Status.SIMULATING;
                 getController().tabPane.getSelectionModel().select(getController().memoryTab);
@@ -143,7 +144,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().restart.setDisable(true);
         getController().memoryTab.setDisable(true);
         getController().addressField.setDisable(true);
-        getController().settingsTab.setDisable(false);
+        getController().settingsRegex.setDisable(false);
+        getController().settingsLegacy.setDisable(false);
         getController().registersTab.setDisable(true);
         getController().stackTab.setDisable(true);
         getCodeInterpreter().clearState();

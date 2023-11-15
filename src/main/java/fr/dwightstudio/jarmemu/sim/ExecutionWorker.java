@@ -5,7 +5,6 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -24,6 +23,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     private static final int UPDATE_GUI = 4;
     private static final int PREPARE = 5;
     private static final int RESTART = 6;
+    private static final int UPDATE_FORMAT = 7;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
@@ -96,6 +96,17 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void restart() {
         checkTask(RESTART);
         this.daemon.nextTask.set(RESTART);
+        synchronized (this.daemon) {
+            this.daemon.notifyAll();
+        }
+    }
+
+    /**
+     * Met à jour le GUI
+     */
+    public void updateFormat() {
+        checkTask(UPDATE_FORMAT);
+        this.daemon.nextTask.set(UPDATE_FORMAT);
         synchronized (this.daemon) {
             this.daemon.notifyAll();
         }
@@ -192,6 +203,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         case UPDATE_GUI -> updateGUITask();
                         case PREPARE -> prepareTask();
                         case RESTART -> restartTask();
+                        case UPDATE_FORMAT -> updateFormatTask();
 
                         case IDLE -> {
                         }
@@ -258,8 +270,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 try {
                     synchronized (this) {
-                        if (application.getSettingsController().getSimulationInterval() != 0)
-                            wait(application.getSettingsController().getSimulationInterval());
+                        if (waitingPeriod != 0)
+                            wait(waitingPeriod);
                     }
                 } catch (InterruptedException ignored) {
                     doContinue = false;
@@ -374,6 +386,14 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
 
             logger.info("Done!");
+        }
+
+        private void updateFormatTask() {
+            nextTask.set(IDLE);
+
+            application.getRegistersController().refresh();
+            application.getStackController().refresh();
+            application.getMemoryController().refresh();
         }
 
         private boolean isIntervalTooShort() {

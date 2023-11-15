@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
-import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
@@ -171,7 +170,7 @@ public class MemoryController extends AbstractJArmEmuModule {
         getController().memoryPage.setCurrentPageIndex(PAGE_OFFSET);
         getController().memoryPage.currentPageIndexProperty().addListener((observableValue, number, t1) -> {
             if (number.intValue() != t1.intValue()) {
-                getExecutionWorker().updateGUI();
+                getExecutionWorker().updateFormat();
             }
         });
         
@@ -248,5 +247,9 @@ public class MemoryController extends AbstractJArmEmuModule {
                 doSearchQuery = false;
             });
         }
+    }
+
+    public void refresh() {
+        memoryTable.refresh();
     }
 }
