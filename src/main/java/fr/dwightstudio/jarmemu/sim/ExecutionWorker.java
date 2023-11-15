@@ -5,6 +5,7 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -303,8 +304,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
         private void updateGUI() {
             if (application.getCodeInterpreter() != null) {
-                if (application.getCodeInterpreter().stateContainer == null)
-                    logger.warning("Updating GUI on null StateContainer");
+
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {

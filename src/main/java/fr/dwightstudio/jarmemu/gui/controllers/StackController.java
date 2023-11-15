@@ -55,7 +55,6 @@ public class StackController extends AbstractJArmEmuModule {
 
         col1 = new TableColumn<>("Address");
         col1.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
-        col1.setSortable(false);
         col0.setEditable(false);
         col1.setReorderable(false);
         col1.setMinWidth(80);
@@ -63,6 +62,7 @@ public class StackController extends AbstractJArmEmuModule {
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col1.setCellFactory(AddressTableCell.factory());
+        col1.setSortType(TableColumn.SortType.ASCENDING);
 
         col2 = new TableColumn<>("Value");
         col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
@@ -87,12 +87,12 @@ public class StackController extends AbstractJArmEmuModule {
         // TODO: Corriger le problème du trie du stack
 
         stackTable.getColumns().setAll(col0, col1, col2);
-        stackTable.getSortOrder().clear();
-        stackTable.getSortOrder().add(col1);
         stackTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         stackTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
         stackTable.getSelectionModel().selectFirst();
         stackTable.setEditable(true);
+        stackTable.getSortOrder().clear();
+        stackTable.getSortOrder().add(col1);
 
         getController().stackTab.setContent(stackTable);
     }
@@ -155,17 +155,18 @@ public class StackController extends AbstractJArmEmuModule {
                 views.add(new MemoryWordView(stateContainer.memory, address, sp));
             }
 
-            AtomicInteger i = new AtomicInteger(0);
+            Platform.runLater(() -> {
+                col1.setSortable(true);
+                stackTable.sort();
+                col1.setSortable(false);
 
-            views.forEach(views -> {
-                if (views.getCursorProperty().get()) {
-                    int finalI = i.get();
-                    Platform.runLater(() -> {
-                        stackTable.scrollTo(finalI);
-                        stackTable.getFocusModel().focus(finalI);
-                    });
+                for (int i = 0 ; i < views.size() ; i++) {
+                    if (views.get(i).getCursorProperty().get()) {
+                        stackTable.scrollTo(i);
+                        stackTable.getFocusModel().focus(i);
+                        break;
+                    }
                 }
-                i.getAndIncrement();
             });
         }
     }

@@ -57,6 +57,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().stop.setDisable(false);
                 getController().restart.setDisable(false);
                 getController().settingsTab.setDisable(true);
+                getController().registersTab.setDisable(false);
                 application.status = Status.SIMULATING;
                 getController().tabPane.getSelectionModel().select(getController().memoryTab);
             }
@@ -104,8 +105,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().conti.setDisable(true);
         getController().pause.setDisable(false);
         getController().restart.setDisable(true);
-        getController().stackTab.setDisable(true);
-        getController().memoryTab.setDisable(true);
         getController().addressField.setDisable(true);
         getController().codeArea.setDisable(true);
         getController().editorScroll.setDisable(true);
@@ -121,8 +120,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().conti.setDisable(false);
         getController().pause.setDisable(true);
         getController().restart.setDisable(false);
-        getController().stackTab.setDisable(false);
-        getController().memoryTab.setDisable(false);
         getController().addressField.setDisable(false);
         getController().codeArea.setDisable(false);
         getController().editorScroll.setDisable(false);
@@ -147,11 +144,11 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().memoryTab.setDisable(true);
         getController().addressField.setDisable(true);
         getController().settingsTab.setDisable(false);
+        getController().registersTab.setDisable(true);
+        getController().stackTab.setDisable(true);
         getCodeInterpreter().clearState();
         getEditorController().clearLineMarking();
         getExecutionWorker().updateGUI();
-        application.getRegistersController().attach(null);
-        application.getMemoryController().attach(null);
         application.status = Status.EDITING;
     }
 

@@ -32,6 +32,7 @@ public class CodeInterpreter {
         this.currentLine = -1;
         this.atTheEnd = false;
         jumped = false;
+        stateContainer = new StateContainer();
     }
 
     public StateContainer getStateContainer() {
@@ -409,6 +410,6 @@ public class CodeInterpreter {
     }
 
     public void clearState() {
-        stateContainer = null;
+        stateContainer = new StateContainer();
     }
 }

@@ -68,6 +68,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         });
 
         Button cancel = new Button("Cancel");
+        cancel.getStyleClass().add(Styles.ROUNDED);
         cancel.setOnAction(event -> {
             rtn.complete(UnsavedDialogChoice.CANCEL);
             getController().closeDialog();

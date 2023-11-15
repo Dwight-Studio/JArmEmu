@@ -158,20 +158,25 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     protected void onExit() {
-        getDialogs().unsavedAlert().thenAccept(rtn -> {
-            switch (rtn) {
-                case SAVE_AND_CONTINUE -> {
-                    onSave();
-                    Platform.exit();
-                }
+        if (getApplication().updateSaveState()) {
+            Platform.exit();
+        } else {
+            getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        onSave();
+                        Platform.exit();
+                    }
 
-                case DISCARD_AND_CONTINUE -> {
-                    Platform.exit();
-                }
+                    case DISCARD_AND_CONTINUE -> {
+                        Platform.exit();
+                    }
 
-                default -> {}
-            }
-        });
+                    default -> {
+                    }
+                }
+            });
+        }
     }
 
     /**

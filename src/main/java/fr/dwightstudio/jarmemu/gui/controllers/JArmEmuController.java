@@ -86,6 +86,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
         getMainMenuController().openLastSave();
 
+        getMemoryController().attach(getCodeInterpreter().getStateContainer());
+        getRegistersController().attach(getCodeInterpreter().getStateContainer());
+
         getExecutionWorker().revive();
         getExecutionWorker().updateGUI();
     }
