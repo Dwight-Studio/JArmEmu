@@ -52,8 +52,13 @@ public class ModalDialog {
         box.setMaxSize(mainBox.getPrefWidth() + 40, mainBox.getPrefHeight() + 40);
     }
 
-    public ModalDialog(Node content) {
+    public ModalDialog(Node content, double h, double v) {
+        AnchorPane.setTopAnchor(content, 20.0);
+        AnchorPane.setRightAnchor(content, 20.0);
+        AnchorPane.setLeftAnchor(content, 20.0);
+        AnchorPane.setBottomAnchor(content, 20.0);
         box = new ModalBox(content);
+        box.setMaxSize(h + 40, v + 40);
     }
 
     public ModalBox getModalBox() {
