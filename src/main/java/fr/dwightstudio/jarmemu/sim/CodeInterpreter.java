@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SoftwareInterruptionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
@@ -232,13 +233,14 @@ public class CodeInterpreter {
     /**
      * Execute le code se trouvant sur la ligne courante
      */
-    public synchronized void executeCurrentLine() {
+    public synchronized void executeCurrentLine() throws ExecutionASMException {
         jumped = false;
 
         // Remise à zéro des drapeaux de ligne des parseurs
         AddressParser.reset(this.stateContainer);
 
         int oldPC = getCurrentLineFromPC();
+        ExecutionASMException executionException = null;
 
         if (parsedObjects.containsKey(currentLine)) {
             ParsedObject parsedObject = parsedObjects.get(currentLine);
@@ -246,10 +248,8 @@ public class CodeInterpreter {
             if (parsedObject instanceof ParsedInstruction instruction) {
                 try {
                     instruction.execute(stateContainer);
-                } catch (StuckExecutionASMException exception) {
-                    this.atTheEnd = true;
-                    jumped = true;
-                    return;
+                } catch (ExecutionASMException exception) {
+                    executionException = exception;
                 }
                 this.lastExecuted = instruction;
                 this.lastExecutedLine = currentLine;
@@ -268,6 +268,8 @@ public class CodeInterpreter {
         }
 
         this.atTheEnd = !hasNextLine();
+
+        if (executionException != null) throw executionException;
     }
 
     /**

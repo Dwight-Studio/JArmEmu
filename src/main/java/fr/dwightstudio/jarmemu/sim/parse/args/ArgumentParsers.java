@@ -11,6 +11,7 @@ public class ArgumentParsers {
 
     public static final ImmParser IMM = new ImmParser();
     public static final RotatedImmParser ROTATED_IMM = new RotatedImmParser();
+    public static final CodeParser CODE = new CodeParser();
 
     public static final LabelParser LABEL = new LabelParser();
     public static final ImmOrRegisterParser IMM_OR_REGISTER = new ImmOrRegisterParser();

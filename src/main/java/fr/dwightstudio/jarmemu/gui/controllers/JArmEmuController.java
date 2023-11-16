@@ -19,9 +19,10 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    @FXML protected ModalPane modalPaneBack;
-    @FXML protected ModalPane modalPaneMiddle;
-    @FXML protected ModalPane modalPaneFront;
+    @FXML protected StackPane mainPane;
+    protected ModalPane modalPaneBack;
+    protected ModalPane modalPaneMiddle;
+    protected ModalPane modalPaneFront;
 
     @FXML protected StackPane editorStackPane;
     protected CodeArea codeArea;
@@ -66,6 +67,11 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        modalPaneBack = new ModalPane();
+        modalPaneMiddle = new ModalPane();
+        modalPaneFront = new ModalPane();
+        mainPane.getChildren().addAll(modalPaneBack, modalPaneMiddle, modalPaneFront);
 
         codeArea = new CodeArea();
         editorScroll = new VirtualizedScrollPane<>(codeArea);

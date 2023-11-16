@@ -10,6 +10,6 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class SWIExecutor implements InstructionExecutor<Integer, Object, Object, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Integer arg1, Object arg2, Object arg3, Object arg4) {
-        throw new SoftwareInterruptionASMException();
+        throw new SoftwareInterruptionASMException(arg1);
     }
 }

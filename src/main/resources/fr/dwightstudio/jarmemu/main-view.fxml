@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import atlantafx.base.controls.CustomTextField?>
-<?import atlantafx.base.controls.ModalPane?>
+<?import atlantafx.base.controls.ToggleSwitch?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -29,416 +28,454 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <VBox>
-         <children>
-            <MenuBar>
-              <menus>
-                <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File">
-                        <graphic>
-                            <FontIcon iconLiteral="mdral-insert_drive_file" />
-                        </graphic>
-                    </MenuItem>
-                    <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open...">
-                        <graphic>
-                            <FontIcon iconLiteral="mdal-folder" />
-                        </graphic>
-                    </MenuItem>
-                    <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
-                        <graphic>
-                            <FontIcon iconLiteral="mdmz-save" />
-                        </graphic>
-                    </MenuItem>
-                    <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as...">
-                        <graphic>
-                            <FontIcon iconLiteral="mdmz-save" />
-                        </graphic>
-                    </MenuItem>
-                    <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
-                        <graphic>
-                            <FontIcon iconLiteral="mdsmz-refresh" />
-                        </graphic>
-                    </MenuItem>
-                      <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
-                          <graphic>
-                              <FontIcon iconLiteral="mdmz-settings_backup_restore" />
-                          </graphic>
-                      </MenuItem>
-                    <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
-                        <graphic>
-                            <FontIcon iconLiteral="mdoal-exit_to_app" />
-                        </graphic>
-                    </MenuItem>
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onCopy" text="Copy">
-                        <graphic>
-                            <FontIcon iconLiteral="mdsal-content_copy" />
-                        </graphic>
-                    </MenuItem>
-                      <MenuItem mnemonicParsing="false" onAction="#onCut" text="Cut">
-                          <graphic>
-                              <FontIcon iconLiteral="mdsal-content_cut" />
-                          </graphic>
-                      </MenuItem>
-                      <MenuItem mnemonicParsing="false" onAction="#onPaste" text="Paste">
-                          <graphic>
-                              <FontIcon iconLiteral="mdsal-content_paste" />
-                          </graphic>
-                      </MenuItem>
-                      <MenuItem mnemonicParsing="false" onAction="#onDelete" text="Delete">
-                          <graphic>
-                              <FontIcon iconLiteral="mdsal-delete" />
-                          </graphic>
-                      </MenuItem>
-                  </items>
-                </Menu>
-                  <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
-                  <items>
-                  <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
-                      <graphic>
-                          <FontIcon iconLiteral="mdoal-clear_all" />
-                      </graphic>
-                  </MenuItem>
-                  </items>
-                  </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About">
-                        <graphic>
-                            <FontIcon iconLiteral="mdsal-info" />
-                        </graphic>
-                    </MenuItem>
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-            <SplitPane dividerPositions="0.20657015590200445, 0.794543429844098" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-               <items>
-                  <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+<StackPane fx:id="mainPane" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <VBox>
+            <children>
+                <MenuBar>
+                    <menus>
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdral-insert_drive_file" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open...">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdal-folder" />
+                                    </graphic>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-save" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as...">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-save" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsmz-refresh" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-settings_backup_restore" />
+                                    </graphic>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdoal-exit_to_app" />
+                                    </graphic>
+                                </MenuItem>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onCopy" text="Copy">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsal-content_copy" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onCut" text="Cut">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsal-content_cut" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onPaste" text="Paste">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsal-content_paste" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onDelete" text="Delete">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsal-delete" />
+                                    </graphic>
+                                </MenuItem>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdoal-clear_all" />
+                                    </graphic>
+                                </MenuItem>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsal-info" />
+                                    </graphic>
+                                </MenuItem>
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+                <SplitPane dividerPositions="0.20657015590200445, 0.794543429844098" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                     <items>
-                        <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
-                          <tabs>
-                            <Tab fx:id="registersTab" text="Registers" disable="true" />
-                          </tabs>
-                        </TabPane>
-                        <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
-                           <tabs>
-                              <Tab fx:id="stackTab" text="Stack" disable="true" />
-                           </tabs>
+                        <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                            <items>
+                                <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                                    <tabs>
+                                        <Tab fx:id="registersTab" disable="true" text="Registers" />
+                                    </tabs>
+                                </TabPane>
+                                <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                                    <tabs>
+                                        <Tab fx:id="stackTab" disable="true" text="Stack" />
+                                    </tabs>
+                                </TabPane>
+                            </items>
+                        </SplitPane>
+                        <StackPane>
+                            <children>
+                                <VBox alignment="TOP_CENTER">
+                                    <children>
+                                        <ToolBar>
+                                            <items>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                    <children>
+                                                        <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="accent" text="Simulate">
+                                                            <HBox.margin>
+                                                                <Insets left="10.0" right="10.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                                <HBox>
+                                                    <children>
+                                                        <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" text="Step Into">
+                                                            <HBox.margin>
+                                                                <Insets left="10.0" right="10.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                    <children>
+                                                        <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" text="Step Over">
+                                                            <HBox.margin>
+                                                                <Insets left="10.0" right="10.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                                <HBox layoutX="20.0" layoutY="20.0">
+                                                    <children>
+                                                        <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="success" text="Continue" HBox.hgrow="ALWAYS">
+                                                            <HBox.margin>
+                                                                <Insets left="10.0" right="10.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                        <HBox>
+                                                            <children>
+                                                                <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="accent" text="Pause" HBox.hgrow="ALWAYS">
+                                                                    <HBox.margin>
+                                                                        <Insets left="10.0" right="10.0" />
+                                                                    </HBox.margin>
+                                                                </Button>
+                                                            </children>
+                                                        </HBox>
+                                                    </children>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                    <children>
+                                                        <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="danger" text="Stop">
+                                                            <HBox.margin>
+                                                                <Insets left="10.0" right="10.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                                <HBox layoutX="20.0" layoutY="20.0">
+                                                    <children>
+                                                        <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="danger" text="Restart" HBox.hgrow="ALWAYS">
+                                                            <HBox.margin>
+                                                                <Insets left="10.0" right="10.0" />
+                                                            </HBox.margin>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                            </items>
+                                        </ToolBar>
+                                        <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
+                                            <children>
+                                                <Separator mouseTransparent="true" orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
+                                                    <StackPane.margin>
+                                                        <Insets left="65.0" />
+                                                    </StackPane.margin>
+                                                </Separator>
+                                            </children>
+                                        </StackPane>
+                                    </children>
+                                </VBox>
+                                <VBox fx:id="notifications" alignment="BOTTOM_CENTER" focusTraversable="true" pickOnBounds="false" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
+                                    <padding>
+                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                    </padding>
+                                </VBox>
+                            </children>
+                        </StackPane>
+                        <TabPane fx:id="tabPane" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                            <tabs>
+                                <Tab fx:id="memoryTab" text="Memory">
+                                    <content>
+                                        <VBox>
+                                            <children>
+                                                <AnchorPane fx:id="memoryAnchorPane" VBox.vgrow="ALWAYS">
+                                                    <ScrollPane fx:id="memoryScrollPane" fitToHeight="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                </AnchorPane>
+                                                <CustomTextField fx:id="addressField" promptText="Go to address">
+                                                    <VBox.margin>
+                                                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                    </VBox.margin>
+                                                    <left>
+                                                        <FontIcon iconLiteral="mdmz-search" />
+                                                    </left>
+                                                </CustomTextField>
+                                                <Pagination fx:id="memoryPage" styleClass="bullet" VBox.vgrow="NEVER" />
+                                            </children>
+                                        </VBox>
+                                    </content>
+                                </Tab>
+                                <Tab fx:id="settingsTab" text="Settings">
+                                    <content>
+                                        <AnchorPane>
+                                            <children>
+                                                <Accordion AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                    <panes>
+                                                        <TitledPane text="Simulation">
+                                                            <content>
+                                                                <AnchorPane>
+                                                                    <children>
+                                                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <children>
+                                                                                <Text text="Simulation interval (ms)">
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="2.0" left="5.0" />
+                                                                                    </VBox.margin>
+                                                                                </Text>
+                                                                                <AnchorPane>
+                                                                                    <children>
+                                                                                        <Spinner fx:id="settingsSimInterval" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                    </children>
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="20.0" />
+                                                                                    </VBox.margin>
+                                                                                </AnchorPane>
+                                                                                <Text text="Source Parser">
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="2.0" left="5.0" />
+                                                                                    </VBox.margin>
+                                                                                </Text>
+                                                                                <AnchorPane>
+                                                                                    <children>
+                                                                                        <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                                            <children>
+                                                                                                <AnchorPane HBox.hgrow="ALWAYS">
+                                                                                                    <children>
+                                                                                                        <ToggleButton fx:id="settingsRegex" mnemonicParsing="false" onAction="#onSettingsRegex" styleClass="left-pill" text="Regex" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                                    </children>
+                                                                                                </AnchorPane>
+                                                                                                <AnchorPane HBox.hgrow="ALWAYS">
+                                                                                                    <children>
+                                                                                                        <ToggleButton fx:id="settingsLegacy" mnemonicParsing="false" onAction="#onSettingsLegacy" styleClass="right-pill" text="Legacy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                                    </children>
+                                                                                                </AnchorPane>
+                                                                                            </children>
+                                                                                        </HBox>
+                                                                                    </children>
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="20.0" />
+                                                                                    </VBox.margin>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </VBox>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font>
+                                                        </TitledPane>
+                                                        <TitledPane text="Automatic breakpoints">
+                                                            <content>
+                                                                <AnchorPane>
+                                                                    <VBox.margin>
+                                                                        <Insets bottom="20.0" />
+                                                                    </VBox.margin>
+                                                                    <children>
+                                                                        <GridPane alignment="CENTER" hgap="20.0" vgap="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                            <columnConstraints>
+                                                                                <ColumnConstraints hgrow="ALWAYS" />
+                                                                                <ColumnConstraints hgrow="SOMETIMES" />
+                                                                            </columnConstraints>
+                                                                            <rowConstraints>
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                                <RowConstraints vgrow="SOMETIMES" />
+                                                                            </rowConstraints>
+                                                                            <children>
+                                                                                <Text text="Automatic breakpoints" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
+                                                            <ToggleSwitch fx:id="autoBreakSwitch" alignment="CENTER_RIGHT" selected="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                                                            <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                <Text text="Watch memory access alignment" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                                            <ToggleSwitch fx:id="memoryAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                                            <Text text="Watch Stack pointer alignment" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                                                            <ToggleSwitch fx:id="StackAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                            </children>
+                                                                        </GridPane>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font>
+                                                        </TitledPane>
+                                                        <TitledPane text="Data management">
+                                                            <content>
+                                                                <AnchorPane>
+                                                                    <children>
+                                                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <children>
+                                                                                <Text text="Stack address (Hex)">
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="2.0" left="5.0" />
+                                                                                    </VBox.margin>
+                                                                                </Text>
+                                                                                <AnchorPane>
+                                                                                    <children>
+                                                                                        <Spinner fx:id="settingsStackAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                    </children>
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="20.0" />
+                                                                                    </VBox.margin>
+                                                                                </AnchorPane>
+                                                                                <Text layoutX="10.0" layoutY="10.0" text="Symbols address (Hex)">
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="2.0" left="5.0" />
+                                                                                    </VBox.margin>
+                                                                                </Text>
+                                                                                <AnchorPane>
+                                                                                    <children>
+                                                                                        <Spinner fx:id="settingsSymbolsAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                    </children>
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="20.0" />
+                                                                                    </VBox.margin>
+                                                                                </AnchorPane>
+                                                                                <Text text="Data display format">
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="2.0" left="5.0" />
+                                                                                    </VBox.margin>
+                                                                                </Text>
+                                                                                <AnchorPane>
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="20.0" />
+                                                                                    </VBox.margin>
+                                                                                    <children>
+                                                                                        <ChoiceBox fx:id="settingsFormat" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                    </children>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </VBox>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font>
+                                                        </TitledPane>
+                                                        <TitledPane text="Appearance">
+                                                            <content>
+                                                                <AnchorPane>
+                                                                    <children>
+                                                                        <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                            <Text text="Theme Family">
+                                                                                <VBox.margin>
+                                                                                    <Insets bottom="2.0" left="5.0" />
+                                                                                </VBox.margin>
+                                                                            </Text>
+                                                                            <AnchorPane>
+                                                                                <VBox.margin>
+                                                                                    <Insets bottom="20.0" />
+                                                                                </VBox.margin>
+                                                                                <children>
+                                                                                    <ChoiceBox fx:id="settingsFamily" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                                                                                </children>
+                                                                            </AnchorPane>
+                                                                            <children>
+                                                                                <Text text="Theme variation ">
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="2.0" left="5.0" />
+                                                                                    </VBox.margin>
+                                                                                </Text>
+                                                                                <AnchorPane>
+                                                                                    <children>
+                                                                                        <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                                            <children>
+                                                                                                <AnchorPane HBox.hgrow="ALWAYS">
+                                                                                                    <children>
+                                                                                                        <ToggleButton fx:id="settingsDark" mnemonicParsing="false" onAction="#onSettingsDark" styleClass="left-pill" text="Dark" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                                                            <graphic>
+                                                                                                                <FontIcon iconLiteral="mdomz-wb_sunny" />
+                                                                                                            </graphic>
+                                                                                                        </ToggleButton>
+                                                                                                    </children>
+                                                                                                </AnchorPane>
+                                                                                                <AnchorPane HBox.hgrow="ALWAYS">
+                                                                                                    <children>
+                                                                                                        <ToggleButton fx:id="settingsLight" mnemonicParsing="false" onAction="#onSettingsLight" styleClass="right-pill" text="Light" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                                                                                            <graphic>
+                                                                                                                <FontIcon iconLiteral="mdrmz-wb_sunny" />
+                                                                                                            </graphic>
+                                                                                                        </ToggleButton>
+                                                                                                    </children>
+                                                                                                </AnchorPane>
+                                                                                            </children>
+                                                                                        </HBox>
+                                                                                    </children>
+                                                                                    <VBox.margin>
+                                                                                        <Insets bottom="20.0" />
+                                                                                    </VBox.margin>
+                                                                                </AnchorPane>
+                                                                            </children>
+                                                                        </VBox>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </content>
+                                                            <font>
+                                                                <Font size="14.0" />
+                                                            </font>
+                                                        </TitledPane>
+                                                    </panes>
+                                                </Accordion>
+                                            </children>
+                                        </AnchorPane>
+                                    </content>
+                                </Tab>
+                            </tabs>
                         </TabPane>
                     </items>
-                  </SplitPane>
-                  <StackPane>
-                     <children>
-                        <VBox alignment="TOP_CENTER">
-                           <children>
-                              <ToolBar>
-                                 <items>
-                                    <HBox layoutX="10.0" layoutY="10.0">
-                                       <children>
-                                          <Button fx:id="simulate" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSimulate" styleClass="accent" text="Simulate">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <HBox>
-                                       <children>
-                                          <Button fx:id="stepInto" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepInto" text="Step Into">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <HBox layoutX="10.0" layoutY="10.0">
-                                       <children>
-                                          <Button fx:id="stepOver" contentDisplay="CENTER" disable="true" mnemonicParsing="false" onAction="#onStepOver" text="Step Over">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <HBox layoutX="20.0" layoutY="20.0">
-                                       <children>
-                                          <Button fx:id="conti" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onContinue" styleClass="success" text="Continue" HBox.hgrow="ALWAYS">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                          <HBox>
-                                             <children>
-                                                <Button fx:id="pause" contentDisplay="CENTER" disable="true" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#onPause" styleClass="accent" text="Pause" HBox.hgrow="ALWAYS">
-                                                   <HBox.margin>
-                                                      <Insets left="10.0" right="10.0" />
-                                                   </HBox.margin>
-                                                </Button>
-                                             </children>
-                                          </HBox>
-                                       </children>
-                                    </HBox>
-                                    <HBox layoutX="10.0" layoutY="10.0">
-                                       <children>
-                                          <Button fx:id="stop" contentDisplay="CENTER" disable="true" layoutX="20.0" layoutY="20.0" mnemonicParsing="false" onAction="#onStop" styleClass="danger" text="Stop">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                    <HBox layoutX="20.0" layoutY="20.0">
-                                       <children>
-                                          <Button fx:id="restart" contentDisplay="CENTER" disable="true" layoutX="160.0" layoutY="10.0" mnemonicParsing="false" onAction="#onRestart" styleClass="danger" text="Restart" HBox.hgrow="ALWAYS">
-                                             <HBox.margin>
-                                                <Insets left="10.0" right="10.0" />
-                                             </HBox.margin>
-                                          </Button>
-                                       </children>
-                                    </HBox>
-                                 </items>
-                              </ToolBar>
-                              <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
-                                 <children>
-                                    <Separator mouseTransparent="true" orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
-                                       <StackPane.margin>
-                                          <Insets left="65.0" />
-                                       </StackPane.margin>
-                                    </Separator>
-                                 </children>
-                              </StackPane>
-                           </children>
-                        </VBox>
-                        <VBox fx:id="notifications" alignment="BOTTOM_CENTER" focusTraversable="true" pickOnBounds="false" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </VBox>
-                     </children>
-                  </StackPane>
-                  <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE" fx:id="tabPane">
-                    <tabs>
-                        <Tab fx:id="memoryTab" text="Memory">
-                           <content>
-                              <VBox>
-                                 <children>
-                                     <AnchorPane fx:id="memoryAnchorPane" VBox.vgrow="ALWAYS">
-                                         <ScrollPane fx:id="memoryScrollPane" fitToHeight="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                     </AnchorPane>
-                                    <CustomTextField fx:id="addressField" promptText="Go to address">
-                                       <VBox.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </VBox.margin>
-                                        <left>
-                                            <FontIcon iconLiteral="mdmz-search" />
-                                        </left>
-                                    </CustomTextField>
-                                    <Pagination fx:id="memoryPage" styleClass="bullet" VBox.vgrow="NEVER" />
-                                 </children>
-                              </VBox>
-                           </content>
-                        </Tab>
-                      <Tab fx:id="settingsTab" text="Settings">
-                              <content>
-                          <AnchorPane>
-                                 <children>
-                                    <Accordion AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                       <panes>
-                                          <TitledPane text="Simulation">
-                                            <content>
-                                              <AnchorPane>
-                                                   <children>
-                                                      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <children>
-                                                            <Label text="Simulation interval (ms)">
-                                                               <VBox.margin>
-                                                                  <Insets bottom="2.0" left="5.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <AnchorPane>
-                                                               <children>
-                                                                  <Spinner fx:id="settingsSimInterval" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                               </children>
-                                                               <VBox.margin>
-                                                                  <Insets bottom="20.0" />
-                                                               </VBox.margin>
-                                                            </AnchorPane>
-                                                             <Label text="Source Parser">
-                                                                 <VBox.margin>
-                                                                     <Insets bottom="2.0" left="5.0" />
-                                                                 </VBox.margin>
-                                                             </Label>
-                                                            <AnchorPane>
-                                                               <children>
-                                                                  <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                     <children>
-                                                                        <AnchorPane HBox.hgrow="ALWAYS">
-                                                                           <children>
-                                                                              <ToggleButton fx:id="settingsRegex" mnemonicParsing="false" onAction="#onSettingsRegex" styleClass="left-pill" text="Regex" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                                           </children>
-                                                                        </AnchorPane>
-                                                                        <AnchorPane HBox.hgrow="ALWAYS">
-                                                                           <children>
-                                                                              <ToggleButton fx:id="settingsLegacy" mnemonicParsing="false" onAction="#onSettingsLegacy" styleClass="right-pill" text="Legacy" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                                           </children>
-                                                                        </AnchorPane>
-                                                                     </children>
-                                                                  </HBox>
-                                                               </children>
-                                                               <VBox.margin>
-                                                                  <Insets bottom="20.0" />
-                                                               </VBox.margin>
-                                                            </AnchorPane>
-                                                         </children>
-                                                      </VBox>
-                                                   </children>
-                                                </AnchorPane>
-                                            </content>
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </TitledPane>
-                                          <TitledPane text="Data management">
-                                             <content>
-                                                <AnchorPane>
-                                                   <children>
-                                                      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <children>
-                                                            <Label text="Stack address (Hex)">
-                                                               <VBox.margin>
-                                                                  <Insets bottom="2.0" left="5.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <AnchorPane>
-                                                               <children>
-                                                                  <Spinner fx:id="settingsStackAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                               </children>
-                                                               <VBox.margin>
-                                                                  <Insets bottom="20.0" />
-                                                               </VBox.margin>
-                                                            </AnchorPane>
-                                                            <Label layoutX="10.0" layoutY="10.0" text="Symbols address (Hex)">
-                                                               <VBox.margin>
-                                                                  <Insets bottom="2.0" left="5.0" />
-                                                               </VBox.margin>
-                                                            </Label>
-                                                            <AnchorPane>
-                                                               <children>
-                                                                  <Spinner fx:id="settingsSymbolsAddress" editable="true" styleClass="arrows-on-right-horizontal" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                               </children>
-                                                               <VBox.margin>
-                                                                  <Insets bottom="20.0" />
-                                                               </VBox.margin>
-                                                            </AnchorPane>
-                                                             <Label text="Data display format">
-                                                                 <VBox.margin>
-                                                                     <Insets bottom="2.0" left="5.0" />
-                                                                 </VBox.margin>
-                                                             </Label>
-                                                             <AnchorPane>
-                                                                 <VBox.margin>
-                                                                     <Insets bottom="20.0" />
-                                                                 </VBox.margin>
-                                                                 <children>
-                                                                  <ChoiceBox fx:id="settingsFormat" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                                 </children>
-                                                             </AnchorPane>
-                                                         </children>
-                                                      </VBox>
-                                                   </children>
-                                                </AnchorPane>
-                                             </content>
-                                             <font>
-                                                <Font size="14.0" />
-                                             </font>
-                                          </TitledPane>
-                                           <TitledPane text="Appearance">
-                                               <content>
-                                                   <AnchorPane>
-                                                       <children>
-                                                           <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                               <Label text="Theme Family">
-                                                                   <VBox.margin>
-                                                                       <Insets bottom="2.0" left="5.0" />
-                                                                   </VBox.margin>
-                                                               </Label>
-                                                               <AnchorPane>
-                                                                   <VBox.margin>
-                                                                       <Insets bottom="20.0" />
-                                                                   </VBox.margin>
-                                                                   <children>
-                                                                       <ChoiceBox fx:id="settingsFamily" prefWidth="150.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                                                                   </children>
-                                                               </AnchorPane>
-                                                               <children>
-                                                                   <Label text="Theme variation ">
-                                                                       <VBox.margin>
-                                                                           <Insets bottom="2.0" left="5.0" />
-                                                                       </VBox.margin>
-                                                                   </Label>
-                                                            <AnchorPane>
-                                                               <children>
-                                                                  <HBox AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                     <children>
-                                                                        <AnchorPane HBox.hgrow="ALWAYS">
-                                                                           <children>
-                                                                              <ToggleButton fx:id="settingsDark" mnemonicParsing="false" onAction="#onSettingsDark" styleClass="left-pill" text="Dark" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                                  <graphic>
-                                                                                      <FontIcon iconLiteral="mdomz-wb_sunny" />
-                                                                                  </graphic>
-                                                                              </ToggleButton>
-                                                                           </children>
-                                                                        </AnchorPane>
-                                                                        <AnchorPane HBox.hgrow="ALWAYS">
-                                                                           <children>
-                                                                              <ToggleButton fx:id="settingsLight" mnemonicParsing="false" onAction="#onSettingsLight" styleClass="right-pill" text="Light" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-                                                                                  <graphic>
-                                                                                      <FontIcon iconLiteral="mdrmz-wb_sunny" />
-                                                                                  </graphic>
-                                                                              </ToggleButton>
-                                                                           </children>
-                                                                        </AnchorPane>
-                                                                     </children>
-                                                                  </HBox>
-                                                               </children>
-                                                               <VBox.margin>
-                                                                  <Insets bottom="20.0" />
-                                                               </VBox.margin>
-                                                            </AnchorPane>
-                                                               </children>
-                                                           </VBox>
-                                                       </children>
-                                                   </AnchorPane>
-                                               </content>
-                                               <font>
-                                                   <Font size="14.0" />
-                                               </font>
-                                           </TitledPane>
-                                       </panes>
-                                    </Accordion>
-                                 </children>
-                              </AnchorPane>
-                        </content>
-                      </Tab>
-                    </tabs>
-                  </TabPane>
-               </items>
-            </SplitPane>
-         </children>
-      </VBox>
-      <ModalPane fx:id="modalPaneBack" StackPane.alignment="CENTER" />
-      <ModalPane fx:id="modalPaneMiddle" StackPane.alignment="CENTER" />
-      <ModalPane fx:id="modalPaneFront" StackPane.alignment="CENTER" />
-   </children>
+                </SplitPane>
+            </children>
+        </VBox>
+    </children>
 </StackPane>

@@ -61,7 +61,7 @@ public enum Instruction {
     B(B_EXECUTOR, false, LABEL, NULL, NULL, NULL),
     BL(BL_EXECUTOR, false, LABEL, NULL, NULL, NULL),
     BX(BX_EXECUTOR, false, REGISTER, NULL, NULL, NULL),
-    SWI(SWI_EXECUTOR, false, IMM_OR_REGISTER, NULL, NULL, NULL);
+    SWI(SWI_EXECUTOR, false, CODE, NULL, NULL, NULL);
 
     private final ArgumentParser[] args;
     private final InstructionExecutor executor;

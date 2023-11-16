@@ -4,6 +4,9 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
+import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.SoftwareInterruptionASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -231,13 +234,27 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 doContinue = false;
             }
 
-            application.getCodeInterpreter().executeCurrentLine();
+            ExecutionASMException executionException = null;
+
+            try {
+                application.getCodeInterpreter().executeCurrentLine();
+            } catch (ExecutionASMException exception) {
+                executionException = exception;
+            }
 
             next = application.getCodeInterpreter().getNextLine();
 
-            if (application.getCodeInterpreter().isAtTheEnd()) {
+            if (application.getCodeInterpreter().isAtTheEnd() || executionException instanceof StuckExecutionASMException) {
                 Platform.runLater(() -> {
                     application.getEditorController().addNotif("Warning", "The program reached the end of the file.", Styles.WARNING);
+                    application.getSimulationMenuController().onPause();
+                });
+                doContinue = false;
+            }
+
+            if (executionException instanceof SoftwareInterruptionASMException exception) {
+                Platform.runLater(() -> {
+                    application.getEditorController().addNotif("Software interrupt", "The program requested an interrupt with code " + exception.getCode(), Styles.WARNING);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;

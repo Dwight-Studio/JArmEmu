@@ -6,7 +6,9 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerAddressConverter;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerStringConverter;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
@@ -18,15 +20,21 @@ import java.util.prefs.Preferences;
 
 public class SettingsController extends AbstractJArmEmuModule {
 
-    private static final String VERSION_KEY = "version";
-    private static final String LAST_SAVE_PATH_KEY = "lastSavePath";
-    private static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
-    private static final String SOURCE_PARSER_KEY = "sourceParser";
-    private static final String DATA_FORMAT_KEY = "dataFormat";
-    private static final String STACK_ADDRESS_KEY = "stackAddress";
-    private static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
-    private static final String THEME_VARIATION_KEY = "theme";
-    private static final String THEME_FAMILY_KEY = "themeFamily";
+    public static final ChangeListener<Toggle> PREVENT_UNSELECTION = (obs, oldVal, newVal) -> {
+        if (newVal == null) {
+            oldVal.setSelected(true);
+        }
+    };
+
+    public static final String VERSION_KEY = "version";
+    public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
+    public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
+    public static final String SOURCE_PARSER_KEY = "sourceParser";
+    public static final String DATA_FORMAT_KEY = "dataFormat";
+    public static final String STACK_ADDRESS_KEY = "stackAddress";
+    public static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
+    public static final String THEME_VARIATION_KEY = "theme";
+    public static final String THEME_FAMILY_KEY = "themeFamily";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
@@ -78,6 +86,9 @@ public class SettingsController extends AbstractJArmEmuModule {
 
         parserGroup.getToggles().addAll(Arrays.asList(parserToggles));
         themeGroup.getToggles().addAll(Arrays.asList(themeToggles));
+
+        parserGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
+        themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
         // Gestion des ChoiceBoxes
         getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
