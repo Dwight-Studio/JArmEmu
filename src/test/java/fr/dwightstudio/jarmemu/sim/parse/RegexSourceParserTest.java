@@ -158,35 +158,35 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedDirective(Directive.GLOBAL, "ExEC"),
+                new ParsedDirective(Directive.GLOBAL, "ExEC", Section.DATA),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedDirectiveLabel("A"),
+                new ParsedDirectiveLabel("A", Section.DATA),
                 parser.parseOneLine()
         );
 
         parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirectiveLabel("b"));
-        parsedDirectivePack.add(new ParsedDirective(Directive.WORD, "3"));
-        parsedDirectivePack.add(new ParsedDirective(Directive.BYTE, "'x'"));
-        parsedDirectivePack.add(new ParsedDirective(Directive.GLOBAL, "Test"));
+        parsedDirectivePack.add(new ParsedDirectiveLabel("b", Section.DATA));
+        parsedDirectivePack.add(new ParsedDirective(Directive.WORD, "3", Section.DATA));
+        parsedDirectivePack.add(new ParsedDirective(Directive.BYTE, "'x'", Section.DATA));
+        parsedDirectivePack.add(new ParsedDirective(Directive.GLOBAL, "Test", Section.DATA));
         assertEquals(
                 parsedDirectivePack.close(),
                 parser.parseOneLine()
         );
 
         parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirective(Directive.ASCII, ""));
-        parsedDirectivePack.add(new ParsedDirective(Directive.ASCIZ, "\"\""));
+        parsedDirectivePack.add(new ParsedDirective(Directive.ASCII, "", Section.DATA));
+        parsedDirectivePack.add(new ParsedDirective(Directive.ASCIZ, "\"\"", Section.DATA));
         assertEquals(
                 parsedDirectivePack.close(),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedDirective(Directive.EQU, "laBEL, 'c'"),
+                new ParsedDirective(Directive.EQU, "laBEL, 'c'", Section.DATA),
                 parser.parseOneLine()
         );
 
@@ -205,7 +205,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedDirective(Directive.ASCII, "\"Hey\""),
+                new ParsedDirective(Directive.ASCII, "\"Hey\"", Section.COMMENT),
                 parser.parseOneLine()
         );
 

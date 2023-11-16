@@ -233,7 +233,16 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getMemoryAlignBreakSetting()) {
                     Platform.runLater(() -> {
                         application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned memory access attempt.", Styles.DANGER);
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                        application.getSimulationMenuController().onPause();
+                    });
+                    doContinue = false;
+                }
+            } catch (IllegalDataWritingASMException exception) {
+                if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getReadOnlyWritingBreakSetting()) {
+                    Platform.runLater(() -> {
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Read only data overwritten.", Styles.DANGER);
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -272,8 +281,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getProgramAlignBreakSetting()) {
                     if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.PC.getN()].getData() % 4 != 0) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter", Styles.DANGER);
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter.", Styles.DANGER);
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                             application.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
@@ -283,8 +292,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getStackAlignBreakSetting()) {
                     if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.SP.getN()].getData() % 4 != 0) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer", Styles.DANGER);
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer.", Styles.DANGER);
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -294,8 +303,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getFunctionNestingBreakSetting()) {
                     if (application.getCodeInterpreter().stateContainer.getNestingCount() > StateContainer.MAX_NESTING_COUNT) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Function nesting too deep (>1000 branches)", Styles.DANGER);
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Function nesting too deep (>1000 branches).", Styles.DANGER);
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                             application.getSimulationMenuController().onPause();
                         });
                         doContinue = false;

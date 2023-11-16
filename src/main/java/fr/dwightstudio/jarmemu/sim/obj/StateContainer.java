@@ -31,6 +31,7 @@ public class StateContainer {
     public final HashMap<String, Integer> labels; // HashMap des labels
     private String global; // Labels globaux
     private int nestingCount;
+    private int lastAddressROData;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -54,6 +55,7 @@ public class StateContainer {
         pseudoData = new HashMap<>();
         global = null;
         nestingCount = 0;
+        lastAddressROData = 0;
 
         // Initializing registers
         cpsr = new PSR();
@@ -222,5 +224,13 @@ public class StateContainer {
     public void merge() {
         this.nestingCount--;
         if (this.nestingCount < 0) this.nestingCount = 0;
+    }
+
+    public int getLastAddressROData() {
+        return lastAddressROData;
+    }
+
+    public void setLastAddressROData(int lastAddressROData) {
+        this.lastAddressROData = lastAddressROData;
     }
 }

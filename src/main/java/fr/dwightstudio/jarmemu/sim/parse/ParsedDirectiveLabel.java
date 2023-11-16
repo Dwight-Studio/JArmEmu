@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
@@ -8,11 +9,13 @@ import java.util.logging.Logger;
 
 public class ParsedDirectiveLabel extends ParsedObject {
 
-    private final String name;
     private final Logger logger = Logger.getLogger(getClass().getName());
+    private final String name;
+    private final Section section;
 
-    public ParsedDirectiveLabel(String name) {
+    public ParsedDirectiveLabel(String name, Section section) {
         this.name = name.toUpperCase();
+        this.section = section;
     }
 
     /**
@@ -64,6 +67,22 @@ public class ParsedDirectiveLabel extends ParsedObject {
             }
         }
 
+        if (label.section == null) {
+            if (this.section != null) {
+                if (VERBOSE) logger.info("Difference: Section (Null)");
+                return false;
+            }
+        } else {
+            if (!(label.section.equals(this.section))) {
+                if (VERBOSE) logger.info("Difference: Section");
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    public Section getSection() {
+        return section;
     }
 }

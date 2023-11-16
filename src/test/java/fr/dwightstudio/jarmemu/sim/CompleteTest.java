@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
@@ -136,9 +137,14 @@ public class CompleteTest extends JArmEmuTest {
 
         // Execution
         assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            while (codeInterpreter.hasNextLine()) {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
                 codeInterpreter.nextLine();
-                codeInterpreter.executeCurrentLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
             }
         });
 
@@ -157,9 +163,14 @@ public class CompleteTest extends JArmEmuTest {
 
         // Execution
         assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            while (codeInterpreter.hasNextLine()) {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
                 codeInterpreter.nextLine();
-                codeInterpreter.executeCurrentLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
             }
         });
 
@@ -178,9 +189,14 @@ public class CompleteTest extends JArmEmuTest {
 
         // Execution
         assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            while (codeInterpreter.hasNextLine()) {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
                 codeInterpreter.nextLine();
-                codeInterpreter.executeCurrentLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
             }
         });
 
@@ -199,9 +215,14 @@ public class CompleteTest extends JArmEmuTest {
 
         // Execution
         assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            while (codeInterpreter.hasNextLine()) {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
                 codeInterpreter.nextLine();
-                codeInterpreter.executeCurrentLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
             }
         });
 
@@ -220,9 +241,14 @@ public class CompleteTest extends JArmEmuTest {
 
         // Execution
         assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            while (codeInterpreter.hasNextLine()) {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
                 codeInterpreter.nextLine();
-                codeInterpreter.executeCurrentLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
             }
         });
 
@@ -241,9 +267,14 @@ public class CompleteTest extends JArmEmuTest {
 
         // Execution
         assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            while (codeInterpreter.hasNextLine()) {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
                 codeInterpreter.nextLine();
-                codeInterpreter.executeCurrentLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
             }
         });
 

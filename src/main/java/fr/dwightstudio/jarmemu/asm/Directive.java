@@ -7,25 +7,27 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public enum Directive {
     // Consts
-    SET(DirectiveExecutors.EQUIVALENT), EQU(DirectiveExecutors.EQUIVALENT), EQUIV(DirectiveExecutors.EQUIVALENT), EQV(DirectiveExecutors.EQUIVALENT), // Définir une constante
-    GLOBAL(DirectiveExecutors.GLOBAL), GLOBL(DirectiveExecutors.GLOBAL), // Inutile pour l'interpréteur
+    SET(DirectiveExecutors.EQUIVALENT, true), EQU(DirectiveExecutors.EQUIVALENT, true), EQUIV(DirectiveExecutors.EQUIVALENT, true), EQV(DirectiveExecutors.EQUIVALENT, true), // Définir une constante
+    GLOBAL(DirectiveExecutors.GLOBAL, true), GLOBL(DirectiveExecutors.GLOBAL, true), // Inutile pour l'interpréteur
 
     // Data
-    WORD(DirectiveExecutors.WORD), // Donnée sur 32bits
-    HALF(DirectiveExecutors.HALF), // Donnée sur 16bits
-    BYTE(DirectiveExecutors.BYTE), // Donnée sur 8bits
-    SPACE(DirectiveExecutors.SPACE), SKIP(DirectiveExecutors.SPACE), // Vide sur nbits
-    ASCII(DirectiveExecutors.ASCII), // Chaîne de caractères
-    ASCIZ(DirectiveExecutors.ASCIZ), // Chaîne de caractère finissant par '\0'
-    FILL(DirectiveExecutors.FILL), // Remplir n fois, un nombre de taille x, de valeur y
+    WORD(DirectiveExecutors.WORD, false), // Donnée sur 32bits
+    HALF(DirectiveExecutors.HALF, false), // Donnée sur 16bits
+    BYTE(DirectiveExecutors.BYTE, false), // Donnée sur 8bits
+    SPACE(DirectiveExecutors.SPACE, false), SKIP(DirectiveExecutors.SPACE, false), // Vide sur nbits
+    ASCII(DirectiveExecutors.ASCII, false), // Chaîne de caractères
+    ASCIZ(DirectiveExecutors.ASCIZ, false), // Chaîne de caractère finissant par '\0'
+    FILL(DirectiveExecutors.FILL, false), // Remplir n fois, un nombre de taille x, de valeur y
 
     // Other
-    ALIGN(DirectiveExecutors.ALIGN); // Alignement des données sur la grille des 4 bytes
+    ALIGN(DirectiveExecutors.ALIGN, false); // Alignement des données sur la grille des 4 bytes
 
     private final DirectiveExecutor executor;
+    private final boolean sectionIndifferent;
 
-    Directive(DirectiveExecutor executor) {
+    Directive(DirectiveExecutor executor, boolean sectionIndifferent) {
         this.executor = executor;
+        this.sectionIndifferent = sectionIndifferent;
     }
 
     /**
@@ -49,5 +51,9 @@ public enum Directive {
      */
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         executor.apply(stateContainer, args, currentPos);
+    }
+
+    public boolean isSectionIndifferent() {
+        return sectionIndifferent;
     }
 }

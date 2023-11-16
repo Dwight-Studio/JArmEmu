@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;
@@ -43,7 +44,7 @@ class WordExecutorTest {
 
     @Test
     void labelTest() {
-        ParsedDirectiveLabel l = new ParsedDirectiveLabel("TEST");
+        ParsedDirectiveLabel l = new ParsedDirectiveLabel("TEST", Section.NONE);
         l.register(container, 99);
         WORD.apply(container, "=TEST", 100);
         assertEquals(99, container.memory.getWord(100));

@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.sim.exceptions.IllegalDataWritingASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.MemoryAccessMisalignedASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -24,6 +25,7 @@ public class STRExecutor implements InstructionExecutor<Register, AddressParser.
             }
 
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
+            if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
         }
 
         switch (dataMode){

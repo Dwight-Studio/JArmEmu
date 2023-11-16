@@ -42,11 +42,11 @@ public class LegacyDirectiveParser {
             }
         }
 
-        if (labelString != null && !labelString.isEmpty() && section.shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase()));
+        if (labelString != null && !labelString.isEmpty() && section.shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase(), section));
         if (!directiveString.isEmpty()) {
             try {
                 Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip());
+                ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip(), section);
                 directives.add(parsedDirective);
             } catch (IllegalArgumentException exception) {
                 if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'", sourceScanner.getCurrentInstructionValue());

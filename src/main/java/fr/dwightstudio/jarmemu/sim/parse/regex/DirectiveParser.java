@@ -71,12 +71,12 @@ public class DirectiveParser {
                     throw new SyntaxASMException("Unknown section '" + sectionString + "'", sourceScanner.getCurrentInstructionValue());
                 }
             } else if (labelString != null && !labelString.isEmpty()) {
-                if (currentSection.getValue().shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase()));
+                if (currentSection.getValue().shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase(), currentSection.getValue()));
 
             } else if (directiveString != null && !directiveString.isEmpty()) {
                 try {
                     Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip());
+                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip(), currentSection.getValue());
                     directives.add(parsedDirective);
                 } catch (IllegalArgumentException exception) {
                     if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'", sourceScanner.getCurrentInstructionValue());

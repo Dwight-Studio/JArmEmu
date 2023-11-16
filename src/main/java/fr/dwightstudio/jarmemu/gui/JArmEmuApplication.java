@@ -73,8 +73,6 @@ public class JArmEmuApplication extends Application {
 
         logger.info("Starting up JArmEmu v" + VERSION);
         // TODO: Ajouter le about dans help
-        // TODO: Ajouter l'autobreakpoint écriture dans RODATA
-        // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS ; vérifier que on initialise pas dans BSS)
         // TODO: Ajouter les flags en gris lorsqu'ils sont false dans le gui des registres
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));

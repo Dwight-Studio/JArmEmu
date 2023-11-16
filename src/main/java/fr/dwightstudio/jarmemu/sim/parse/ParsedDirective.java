@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
@@ -11,15 +12,18 @@ import java.util.logging.Logger;
 
 public class ParsedDirective extends ParsedObject {
 
+    private final Logger logger = Logger.getLogger(getClass().getName());
+
     private final Directive directive;
     private final String args;
     private boolean generated;
     private String hash;
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Section section;
 
-    public ParsedDirective(@NotNull Directive directive, @NotNull String args) {
+    public ParsedDirective(@NotNull Directive directive, @NotNull String args, Section section) {
         this.directive = directive;
         this.args = args;
+        this.section = section;
     }
 
     @Override
@@ -100,6 +104,22 @@ public class ParsedDirective extends ParsedObject {
             }
         }
 
+        if (dir.section == null) {
+            if (this.section != null) {
+                if (VERBOSE) logger.info("Difference: Section (Null)");
+                return false;
+            }
+        } else {
+            if (!(dir.section.equals(this.section))) {
+                if (VERBOSE) logger.info("Difference: Section");
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    public Section getSection() {
+        return section;
     }
 }

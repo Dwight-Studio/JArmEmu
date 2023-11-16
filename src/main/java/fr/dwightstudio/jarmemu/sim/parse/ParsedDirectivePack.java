@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
@@ -65,6 +66,33 @@ public class ParsedDirectivePack extends ParsedObject {
             if (directive instanceof ParsedDirective dir) {
                 pos = dir.apply(stateContainer, pos);
             } else if (directive instanceof ParsedDirectiveLabel label) {
+                label.register(stateContainer, pos);
+            }
+        }
+
+        return pos;
+    }
+
+    /**
+     * Application des directives
+     *
+     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
+     */
+    public int applySectionIndifferent(StateContainer stateContainer, int pos) {
+        for (ParsedObject directive : content) {
+            if (directive instanceof ParsedDirective dir && dir.getDirective().isSectionIndifferent()) {
+                pos = dir.apply(stateContainer, pos);
+            }
+        }
+
+        return pos;
+    }
+
+    public int applySectionSensitive(StateContainer stateContainer, int pos, Section section) {
+        for (ParsedObject directive : content) {
+            if (directive instanceof ParsedDirective dir && !dir.getDirective().isSectionIndifferent() && dir.getSection() == section) {
+                pos = dir.apply(stateContainer, pos);
+            } else if (directive instanceof ParsedDirectiveLabel label && label.getSection() == section) {
                 label.register(stateContainer, pos);
             }
         }

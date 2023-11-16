@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SoftwareInterruptionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
@@ -117,21 +118,57 @@ public class CodeInterpreter {
         parsedObjects.replaceAll((k, v) -> {
             if (v instanceof ParsedDirective directive) {
                 if (directive.isGenerated()) return null;
+            } else if (v instanceof ParsedDirectivePack pack) {
+                if (pack.containsGenerated()) return null;
             }
             return v;
         });
 
-        // Application de toutes les directives
+        // Application de toutes les directives qui n'initialisent pas de données
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             try {
                 if (inst.getValue() instanceof ParsedDirective parsedDirective) {
-                    if (!parsedDirective.isGenerated()) {
+                    if (parsedDirective.getDirective().isSectionIndifferent()) {
                         pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
                     }
                 } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                    if (!parsedDirectivePack.containsGenerated()) {
-                        pos = Math.max(parsedDirectivePack.apply(stateContainer, pos), pos);
+                    pos = Math.max(parsedDirectivePack.applySectionIndifferent(stateContainer, pos), pos);
+                }
+            } catch (SyntaxASMException e) {
+                throw e.with(inst.getKey());
+            }
+        }
+
+        if (pos != 0) throw new IllegalStateException("Non-data initializer taking space in memory");
+
+        // Application de toutes les directives de RODATA
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            try {
+                if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                    if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.RODATA) {
+                        pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
                     }
+                } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                        pos = Math.max(parsedDirectivePack.applySectionSensitive(stateContainer, pos, Section.RODATA), pos);
+                } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
+                    label.register(stateContainer, pos);
+                }
+            } catch (SyntaxASMException e) {
+                throw e.with(inst.getKey());
+            }
+        }
+
+        stateContainer.setLastAddressROData(pos);
+
+        // Application de toutes les directives de DATA
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            try {
+                if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                    if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.DATA) {
+                        pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
+                    }
+                } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                    pos = Math.max(parsedDirectivePack.applySectionSensitive(stateContainer, pos, Section.DATA), pos);
                 } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
                     label.register(stateContainer, pos);
                 }
@@ -166,6 +203,23 @@ public class CodeInterpreter {
                     if (parsedDirectivePack.containsGenerated()) {
                         pos = parsedDirectivePack.apply(stateContainer, pos);
                     }
+                }
+            } catch (SyntaxASMException e) {
+                throw e.with(inst.getKey());
+            }
+        }
+
+        // Application de toutes les directives de BSS
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            try {
+                if (inst.getValue() instanceof ParsedDirective parsedDirective) {
+                    if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.BSS) {
+                        pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
+                    }
+                } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
+                    pos = Math.max(parsedDirectivePack.applySectionSensitive(stateContainer, pos, Section.BSS), pos);
+                } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
+                    label.register(stateContainer, pos);
                 }
             } catch (SyntaxASMException e) {
                 throw e.with(inst.getKey());
