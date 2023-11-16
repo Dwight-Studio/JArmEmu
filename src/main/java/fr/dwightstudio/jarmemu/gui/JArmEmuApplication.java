@@ -95,7 +95,6 @@ public class JArmEmuApplication extends Application {
         this.stage = stage;
 
         logger.info("Starting up JArmEmu v" + VERSION);
-        // TODO: Ajouter le about dans help
         // TODO: Ajouter les flags en gris lorsqu'ils sont false dans le gui des registres
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
