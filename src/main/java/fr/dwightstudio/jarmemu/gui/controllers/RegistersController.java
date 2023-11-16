@@ -1,10 +1,35 @@
+/*
+ *            ____           _       __    __     _____ __            ___
+ *           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
+ *          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
+ *         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
+ *        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
+ *                         /____/
+ *     Copyright (C) 2023 Dwight Studio
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.factory.FlagTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.RegisterView;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -25,7 +50,7 @@ public class RegistersController extends AbstractJArmEmuModule {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private TableColumn<RegisterView, String> col0;
     private TableColumn<RegisterView, Number> col1;
-    private TableColumn<RegisterView, String> col2;
+    private TableColumn<RegisterView, Register> col2;
     private ObservableList<RegisterView> views;
     private TableView<RegisterView> registersTable;
 
@@ -63,8 +88,8 @@ public class RegistersController extends AbstractJArmEmuModule {
         col2.setEditable(false);
         col2.setReorderable(false);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
-        col2.setCellValueFactory(c -> c.getValue().getFlagsProperty());
-        col2.setCellFactory(TextFieldTableCell.forTableColumn());
+        col2.setCellValueFactory(c -> c.getValue().getRegisterObservable());
+        col2.setCellFactory(FlagTableCell.factory());
 
         registersTable = new TableView<>();
         views = registersTable.getItems();
