@@ -27,7 +27,7 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.view.RegisterView;
 import fr.dwightstudio.jarmemu.sim.obj.PSR;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
-import javafx.scene.control.Cell;
+import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.HBox;
@@ -36,8 +36,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.Arrays;
 
 public class FlagTableCell extends TableCell<RegisterView, Register> {
 
@@ -56,6 +55,8 @@ public class FlagTableCell extends TableCell<RegisterView, Register> {
     Text f;
     Text t;
 
+    Text[] texts;
+
     public FlagTableCell() {
         text = new TextFlow();
         n = new Text("N");
@@ -65,10 +66,18 @@ public class FlagTableCell extends TableCell<RegisterView, Register> {
         i = new Text("I");
         f = new Text("F");
         t = new Text("T");
-        text.getChildren().addAll(n, z, c, v, i, f, t);
+
+        texts = new Text[]{n, z, c, v, i, f, t};
+
+        Arrays.stream(texts).forEach(t -> t.setTextAlignment(TextAlignment.CENTER));
+
+        text.getChildren().addAll(texts);
         text.setTextAlignment(TextAlignment.CENTER);
+
         box = new HBox(text);
-        box.setFillHeight(true);
+        box.setAlignment(Pos.CENTER);
+
+        setPrefHeight(20);
     }
 
     @Override
@@ -133,7 +142,6 @@ public class FlagTableCell extends TableCell<RegisterView, Register> {
 
             setGraphic(box);
             setText("");
-
         } else {
             setGraphic(null);
         }

@@ -133,8 +133,10 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
     }
 
     public void about() {
-        Image image = new Image(getResourceAsStream("medias/favicon@128.png"));
+        Image image = new Image(getResourceAsStream("medias/logo.png"));
         ImageView picture = new ImageView(image);
+        picture.setPreserveRatio(true);
+        picture.setFitHeight(128);
 
         Text title = new Text("JArmEmu");
         title.setStyle("-fx-font-family: 'Inter Black';");
@@ -839,14 +841,14 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         title.getStyleClass().addAll(Styles.TITLE_1);
 
         Text credits = new Text("""
-                JArmEmu is a project by Dwight Studio.
+                JArmEmu is a project of Dwight Studio.
                 Led by Tollemer Kévin and Leconte Alexandre.
 
                 JArmEmu is based on the work of the following projects:
-                 - Javafx by OpenJFX
-                 - Ikonli by Kordamp
-                 - RichTextFX by Tomas Mikula
-                 - AtlantaFX by mkpaz""");
+                 - Javafx by OpenJFX (GNU Public Licence)
+                 - Ikonli by Andres Almiray (Apache Licence 2.0)
+                 - RichTextFX by Tomas Mikula (BSD 2-Clause "Simplified" License)
+                 - AtlantaFX by mkpaz (MIT Licence)""");
 
         VBox vBox = new VBox(title, credits);
         vBox.setAlignment(Pos.CENTER);
