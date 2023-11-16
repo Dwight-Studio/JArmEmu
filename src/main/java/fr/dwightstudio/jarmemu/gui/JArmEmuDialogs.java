@@ -30,17 +30,23 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
+import javax.swing.text.Element;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
+
+import static fr.dwightstudio.jarmemu.gui.JArmEmuApplication.getResourceAsStream;
 
 public class JArmEmuDialogs extends AbstractJArmEmuModule {
 
@@ -127,12 +133,15 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
     }
 
     public void about() {
+        Image image = new Image(getResourceAsStream("medias/favicon@128.png"));
+        ImageView picture = new ImageView(image);
+
         Text title = new Text("JArmEmu");
         title.setStyle("-fx-font-family: 'Inter Black';");
         title.getStyleClass().addAll(Styles.TITLE_1);
 
         Button version = new Button(JArmEmuApplication.VERSION);
-        version.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED);
+        version.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED, Styles.SMALL);
         version.setOnAction(event -> {
             ClipboardContent content = new ClipboardContent();
             content.putString(JArmEmuApplication.VERSION);
@@ -143,17 +152,33 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         website.setPrefWidth(200);
         website.setGraphic(new FontIcon(Material2OutlinedAL.LAUNCH));
         website.setContentDisplay(ContentDisplay.RIGHT);
-        website.setAlignment(Pos.CENTER_LEFT);
+        website.setAlignment(Pos.CENTER);
         website.setOnAction(event -> {
             application.openURL("https://github.com/Dwight-Studio/JArmEmu");
             getController().closeDialogBack();
         });
 
-        VBox vBox = new VBox(title, version, website);
+        Button credits = new Button("Credits");
+        credits.setPrefWidth(200);
+        credits.setGraphic(new FontIcon(Material2OutlinedAL.INFO));
+        credits.setContentDisplay(ContentDisplay.RIGHT);
+        credits.setAlignment(Pos.CENTER);
+        credits.setOnAction(event -> credits());
+
+        Button license = new Button("License");
+        license.setPrefWidth(200);
+        license.setGraphic(new FontIcon(Material2OutlinedAL.INFO));
+        license.setContentDisplay(ContentDisplay.RIGHT);
+        license.setAlignment(Pos.CENTER);
+        license.setOnAction(event -> license());
+
+        VBox vBox = new VBox(picture, title, version, website, credits, license);
         vBox.setAlignment(Pos.CENTER);
-        vBox.setSpacing(10);
         vBox.setPadding(new Insets(10));
         vBox.setPrefWidth(200);
+        VBox.setMargin(title, new Insets(0, 0, 5, 0));
+        VBox.setMargin(version, new Insets(0, 0, 20, 0));
+        VBox.setMargin(website, new Insets(0, 0, 10, 0));
 
         ModalDialog dialog = new ModalDialog(
                 vBox,
@@ -164,5 +189,62 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         dialog.getModalBox().setOnClose(event -> getController().closeDialogBack());
 
         getController().openDialogBack(dialog);
+    }
+
+    private void license() {
+        Text title = new Text("License");
+        title.setStyle("-fx-font-family: 'Inter Black';");
+        title.getStyleClass().addAll(Styles.TITLE_1);
+
+        Text license = new Text("""
+                JArmEmu is a project by Dwight Studio.
+                Led by Tollemer Kévin and Leconte Alexandre.
+
+                JArmEmu is based on the work of the following projects:
+                 - Javafx by OpenJFX
+                 - Ikonli by Kordamp
+                 - RichTextFX by Tomas Mikula
+                 - AtlantaFX by mkpaz""");
+        license.setTextAlignment(TextAlignment.JUSTIFY);
+
+        VBox vBox = new VBox(title, license);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(10));
+        vBox.setPrefWidth(200);
+        VBox.setMargin(title, new Insets(0, 0, 10, 0));
+
+        ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
+
+        dialog.getModalBox().setOnClose(event -> getController().closeDialogMiddle());
+
+        getController().openDialogMiddle(dialog);
+    }
+
+    private void credits() {
+        Text title = new Text("Credits");
+        title.setStyle("-fx-font-family: 'Inter Black';");
+        title.getStyleClass().addAll(Styles.TITLE_1);
+
+        Text credits = new Text("""
+                JArmEmu is a project by Dwight Studio.
+                Led by Tollemer Kévin and Leconte Alexandre.
+
+                JArmEmu is based on the work of the following projects:
+                 - Javafx by OpenJFX
+                 - Ikonli by Kordamp
+                 - RichTextFX by Tomas Mikula
+                 - AtlantaFX by mkpaz""");
+
+        VBox vBox = new VBox(title, credits);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(10));
+        vBox.setPrefWidth(200);
+        VBox.setMargin(title, new Insets(0, 0, 10, 0));
+
+        ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
+
+        dialog.getModalBox().setOnClose(event -> getController().closeDialogMiddle());
+
+        getController().openDialogMiddle(dialog);
     }
 }
