@@ -169,7 +169,7 @@
                             <mainClass>fr.dwightstudio.jarmemu.JArmEmuLauncher</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <SplashScreen-Image>fr/dwightstudio/jarmemu/gui/medias/splash.png</SplashScreen-Image>
+                            <SplashScreen-Image>fr/dwightstudio/jarmemu/medias/splash.png</SplashScreen-Image>
                             <Application-Name>JArmEmu ${project.version}</Application-Name>
                         </manifestEntries>
                     </archive>
