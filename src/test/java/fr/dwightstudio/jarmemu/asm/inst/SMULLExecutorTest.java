@@ -68,6 +68,11 @@ public class SMULLExecutorTest extends JArmEmuTest {
         smullExecutor.execute(stateContainer, true, null, null, r0, r1, r2, r3);
         assertFalse(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
+        r2.setData(1);
+        r3.setData(1);
+        smullExecutor.execute(stateContainer, true, null, null, r0, r1, r2, r3);
+        assertFalse(stateContainer.cpsr.getN());
+        assertFalse(stateContainer.cpsr.getZ());
     }
 
 }

@@ -36,6 +36,16 @@ public class LDMExecutorTest extends JArmEmuTest {
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
         assertEquals(1000, sp.getData());
+        sp.setData(10988);
+        stateContainer.memory.putWord(10988, 54);
+        stateContainer.memory.putWord(10992, 12);
+        stateContainer.memory.putWord(10996, 65);
+        ldmExecutor.execute(stateContainer, false, null, DB, new RegisterWithUpdateParser.UpdatableRegister(sp, true, stateContainer), new Register[]{r0, r1, r2}, null, null);
+        assertEquals(65, r2.getData());
+        assertEquals(12, r1.getData());
+        assertEquals(54, r0.getData());
+        assertEquals(11000, sp.getData());
+
         sp.setData(2012);
         stateContainer.memory.putWord(2012, 54);
         stateContainer.memory.putWord(2008, 12);
@@ -45,6 +55,16 @@ public class LDMExecutorTest extends JArmEmuTest {
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
         assertEquals(2000, sp.getData());
+        sp.setData(12012);
+        stateContainer.memory.putWord(12012, 54);
+        stateContainer.memory.putWord(12008, 12);
+        stateContainer.memory.putWord(12004, 65);
+        ldmExecutor.execute(stateContainer, false, null, IB, new RegisterWithUpdateParser.UpdatableRegister(sp, true, stateContainer), new Register[]{r0, r1, r2}, null, null);
+        assertEquals(65, r2.getData());
+        assertEquals(12, r1.getData());
+        assertEquals(54, r0.getData());
+        assertEquals(12000, sp.getData());
+
         sp.setData(2988);
         stateContainer.memory.putWord(2992, 54);
         stateContainer.memory.putWord(2996, 12);
@@ -54,6 +74,16 @@ public class LDMExecutorTest extends JArmEmuTest {
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
         assertEquals(3000, sp.getData());
+        sp.setData(12988);
+        stateContainer.memory.putWord(12992, 54);
+        stateContainer.memory.putWord(12996, 12);
+        stateContainer.memory.putWord(13000, 65);
+        ldmExecutor.execute(stateContainer, false, null, DA, new RegisterWithUpdateParser.UpdatableRegister(sp, true, stateContainer), new Register[]{r0, r1, r2}, null, null);
+        assertEquals(65, r2.getData());
+        assertEquals(12, r1.getData());
+        assertEquals(54, r0.getData());
+        assertEquals(13000, sp.getData());
+
         sp.setData(4012);
         stateContainer.memory.putWord(4008, 54);
         stateContainer.memory.putWord(4004, 12);
@@ -63,5 +93,14 @@ public class LDMExecutorTest extends JArmEmuTest {
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
         assertEquals(4000, sp.getData());
+        sp.setData(14012);
+        stateContainer.memory.putWord(14008, 54);
+        stateContainer.memory.putWord(14004, 12);
+        stateContainer.memory.putWord(14000, 65);
+        ldmExecutor.execute(stateContainer, false, null, IA, new RegisterWithUpdateParser.UpdatableRegister(sp, true, stateContainer), new Register[]{r0, r1, r2}, null, null);
+        assertEquals(65, r2.getData());
+        assertEquals(12, r1.getData());
+        assertEquals(54, r0.getData());
+        assertEquals(14000, sp.getData());
     }
 }

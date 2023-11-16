@@ -12,7 +12,7 @@ public class LSRExecutor implements InstructionExecutor<Register, Register, Inte
         arg1.setData(arg2.getData() >>> arg3);
 
         if (updateFlags) {
-            stateContainer.cpsr.setN(arg1.getData() < 0);
+            stateContainer.cpsr.setN(false);
             stateContainer.cpsr.setZ(arg1.getData() == 0);
             stateContainer.cpsr.setC((oldValue & (1 << (arg3 - 1))) != 0);
         }
