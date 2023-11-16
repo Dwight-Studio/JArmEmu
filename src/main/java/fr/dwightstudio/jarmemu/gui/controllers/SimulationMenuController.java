@@ -42,7 +42,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         if (errors.length == 0) {
             if (getCodeInterpreter().getInstructionCount() == 0) {
                 getController().simulate.setDisable(false);
-                getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?)", Styles.DANGER);
+                getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?).", Styles.DANGER);
             } else {
                 getEditorController().clearLineMarking();
                 getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);

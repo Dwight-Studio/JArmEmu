@@ -25,11 +25,11 @@ public class MVNExecutorTest extends JArmEmuTest {
         Register r0 = stateContainer.registers[0];
         Register r1 = stateContainer.registers[1];
         Register r2 = stateContainer.registers[2];
-        mvnExecutor.execute(stateContainer, false, null, null, r0, Integer.MIN_VALUE, ArgumentParsers.SHIFT.none(), null);
+        mvnExecutor.execute(stateContainer, false, false, null, null, r0, Integer.MIN_VALUE, ArgumentParsers.SHIFT.none(), null);
         assertEquals(Integer.MAX_VALUE, r0.getData());
-        mvnExecutor.execute(stateContainer, false, null, null, r1, r0.getData(), ArgumentParsers.SHIFT.none(), null);
+        mvnExecutor.execute(stateContainer, false, false, null, null, r1, r0.getData(), ArgumentParsers.SHIFT.none(), null);
         assertEquals(Integer.MIN_VALUE, r1.getData());
-        mvnExecutor.execute(stateContainer, false, null, null, r2, 0b10101010101010101010010001000001, ArgumentParsers.SHIFT.none(), null);
+        mvnExecutor.execute(stateContainer, false, false, null, null, r2, 0b10101010101010101010010001000001, ArgumentParsers.SHIFT.none(), null);
         assertEquals(~0b10101010101010101010010001000001, r2.getData());
     }
 
@@ -38,14 +38,14 @@ public class MVNExecutorTest extends JArmEmuTest {
         Register r0 = stateContainer.registers[0];
         Register r1 = stateContainer.registers[1];
         Register r2 = stateContainer.registers[2];
-        mvnExecutor.execute(stateContainer, true, null, null, r0, 0, ArgumentParsers.SHIFT.none(), null);
+        mvnExecutor.execute(stateContainer, false, true, null, null, r0, 0, ArgumentParsers.SHIFT.none(), null);
         assertTrue(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
-        mvnExecutor.execute(stateContainer, true, null, null, r1, -2, ArgumentParsers.SHIFT.none(), null);
+        mvnExecutor.execute(stateContainer, false, true, null, null, r1, -2, ArgumentParsers.SHIFT.none(), null);
         assertFalse(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
         r1.setData(-1);
-        mvnExecutor.execute(stateContainer, true, null, null, r2, r1.getData(), ArgumentParsers.SHIFT.none(), null);
+        mvnExecutor.execute(stateContainer, false, true, null, null, r2, r1.getData(), ArgumentParsers.SHIFT.none(), null);
         assertFalse(stateContainer.cpsr.getN());
         assertTrue(stateContainer.cpsr.getZ());
     }

@@ -42,7 +42,7 @@ public class ParsedInstruction extends ParsedObject {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
-            execute(stateContainer);
+            execute(stateContainer, true);
         } catch (SyntaxASMException exception) {
             AddressParser.reset(stateContainer);
             return exception.with(line).with(this);
@@ -58,9 +58,11 @@ public class ParsedInstruction extends ParsedObject {
      * Exécute l'instruction sur le conteneur d'état
      *
      * @apiNote Si l'exécution échoue et que l'instruction possède un registre dominant, on essaye d'exécuter en décalant les arguments
+     *
      * @param stateContainer le conteneur d'état sur lequel exécuter
+     * @param forceExecution ignore les erreurs d'exécution non bloquantes
      */
-    public void execute(StateContainer stateContainer) {
+    public void execute(StateContainer stateContainer, boolean forceExecution) throws ExecutionASMException {
         if (instruction.hasDomReg()) {
             ArgumentParser[] argParsers = instruction.getArgParsers();
             Object[] parsedArgs = new Object[4];
@@ -88,7 +90,7 @@ public class ParsedInstruction extends ParsedObject {
                 }
             }
 
-            instruction.execute(stateContainer, condition, updateFlags, dataMode, updateMode, parsedArgs[0], parsedArgs[1], parsedArgs[2], parsedArgs[3]);
+            instruction.execute(stateContainer, forceExecution, condition, updateFlags, dataMode, updateMode, parsedArgs[0], parsedArgs[1], parsedArgs[2], parsedArgs[3]);
         } else {
             ArgumentParser[] argParsers = instruction.getArgParsers();
             Object[] parsedArgs = new Object[4];
@@ -101,7 +103,7 @@ public class ParsedInstruction extends ParsedObject {
                 }
             }
 
-            instruction.execute(stateContainer, condition, updateFlags, dataMode, updateMode, parsedArgs[0], parsedArgs[1], parsedArgs[2], parsedArgs[3]);
+            instruction.execute(stateContainer, forceExecution, condition, updateFlags, dataMode, updateMode, parsedArgs[0], parsedArgs[1], parsedArgs[2], parsedArgs[3]);
         }
     }
 

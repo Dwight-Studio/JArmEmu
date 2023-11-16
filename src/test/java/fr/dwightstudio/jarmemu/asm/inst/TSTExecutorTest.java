@@ -27,17 +27,17 @@ public class TSTExecutorTest extends JArmEmuTest {
         Register r1 = stateContainer.registers[1];
         r0.setData(0b110101);
         r1.setData(0b110101);
-        tstExecutor.execute(stateContainer, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
+        tstExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
         assertFalse(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
         r0.setData(0b0011);
         r1.setData(0b1100);
-        tstExecutor.execute(stateContainer, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
+        tstExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
         assertFalse(stateContainer.cpsr.getN());
         assertTrue(stateContainer.cpsr.getZ());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        tstExecutor.execute(stateContainer, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
+        tstExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
         assertTrue(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
     }

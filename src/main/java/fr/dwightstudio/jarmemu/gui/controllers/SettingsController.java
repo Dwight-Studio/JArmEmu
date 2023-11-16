@@ -26,15 +26,38 @@ public class SettingsController extends AbstractJArmEmuModule {
         }
     };
 
+    // Valeurs par défaut
+    public static final boolean DEFAULT_AUTO_BREAK = true;
+    public static final boolean DEFAULT_MEMORY_ALIGN_BREAK = false;
+    public static final boolean DEFAULT_STACK_ALIGN_BREAK = true;
+    public static final boolean DEFAULT_PROGRAM_ALIGN_BREAK = true;
+    public static final boolean DEFAULT_FUNCTION_NESTING_BREAK = true;
+    public static final boolean DEFAULT_READ_ONLY_WRITING_BREAK = true;
+
+    public static final int DEFAULT_DATA_FORMAT = 0;
+    public static final int DEFAULT_THEME_FAMILY = 0;
+    public static final int DEFAULT_THEME_VARIATION = 0;
+    public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
+
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
+
     public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
     public static final String SOURCE_PARSER_KEY = "sourceParser";
-    public static final String DATA_FORMAT_KEY = "dataFormat";
+
+    public static final String AUTO_BREAK_KEY = "automaticBreakpoints";
+    public static final String MEMORY_ALIGN_BREAK_KEY = "memoryAlignmentBreakpoint";
+    public static final String STACK_ALIGN_BREAK_KEY = "stackPointerAlignmentBreakpoint";
+    public static final String PROGRAM_ALIGN_BREAK_KEY = "programCounterAlignmentBreakpoint";
+    public static final String FUNCTION_NESTING_BREAK_KEY = "functionNestingBreakpoint";
+    public static final String READ_ONLY_WRITING_BREAK_KEY = "readOnlyDataOverwrittenBreakpoint";
+
     public static final String STACK_ADDRESS_KEY = "stackAddress";
     public static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
-    public static final String THEME_VARIATION_KEY = "theme";
+    public static final String DATA_FORMAT_KEY = "dataFormat";
+
     public static final String THEME_FAMILY_KEY = "themeFamily";
+    public static final String THEME_VARIATION_KEY = "theme";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
@@ -90,6 +113,14 @@ public class SettingsController extends AbstractJArmEmuModule {
         parserGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
         themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
+        // Gestion des ToggleSwitches
+        getController().autoBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoBreakSetting(newVal));
+        getController().memoryAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setMemoryAlignBreakSetting(newVal));
+        getController().stackAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setStackAlignBreakSetting(newVal));
+        getController().programAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setProgramAlignBreakSetting(newVal));
+        getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreakSetting(newVal));
+        getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreakSetting(newVal));
+
         // Gestion des ChoiceBoxes
         getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
 
@@ -114,9 +145,9 @@ public class SettingsController extends AbstractJArmEmuModule {
 
         if (preferences.get("version", "").isEmpty()) {
             setToDefaults();
-        } else {
-            updateGUI();
         }
+
+        updateGUI();
 
         // Listeners pour les spinners
         simIntervalValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSimulationInterval(newVal)));
@@ -129,7 +160,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     /**
      * Met à jour les paramètres sur le GUI.
      */
-    private void updateGUI() {
+    public void updateGUI() {
         // Spinners
         simIntervalValue.setValue(getSimulationInterval());
         stackAddressValue.setValue(getStackAddress());
@@ -139,9 +170,17 @@ public class SettingsController extends AbstractJArmEmuModule {
         parserGroup.selectToggle(parserToggles[getSourceParserSetting()]);
         themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
+        // ToggleSwitches
+        getController().autoBreakSwitch.setSelected(getAutoBreakSetting());
+        getController().memoryAlignBreakSwitch.setSelected(getMemoryAlignBreakSetting());
+        getController().stackAlignBreakSwitch.setSelected(getStackAlignBreakSetting());
+        getController().programAlignBreakSwitch.setSelected(getProgramAlignBreakSetting());
+        getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreakSetting());
+        getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreakSetting());
+
         // ChoiceBoxes
-        getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
+        getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
     }
 
     /**
@@ -151,12 +190,22 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.put(VERSION_KEY, JArmEmuApplication.VERSION);
         preferences.put(LAST_SAVE_PATH_KEY, "");
 
-        preferences.putInt(SIMULATION_INTERVAL_KEY, ExecutionWorker.UPDATE_THRESHOLD);
-        preferences.putInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER);
-        preferences.putInt(STACK_ADDRESS_KEY, StateContainer.DEFAULT_STACK_ADDRESS);
-        preferences.putInt(SYMBOLS_ADDRESS_KEY, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        preferences.putInt(DATA_FORMAT_KEY, JArmEmuApplication.DEFAULT_DATA_FORMAT);
-        updateGUI();
+        setSimulationInterval(ExecutionWorker.UPDATE_THRESHOLD);
+        setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
+
+        setAutoBreakSetting(DEFAULT_AUTO_BREAK);
+        setMemoryAlignBreakSetting(DEFAULT_MEMORY_ALIGN_BREAK);
+        setStackAlignBreakSetting(DEFAULT_STACK_ALIGN_BREAK);
+        setProgramAlignBreakSetting(DEFAULT_PROGRAM_ALIGN_BREAK);
+        setFunctionNestingBreakSetting(DEFAULT_FUNCTION_NESTING_BREAK);
+        setReadOnlyWritingBreakSetting(DEFAULT_READ_ONLY_WRITING_BREAK);
+
+        setStackAddress(StateContainer.DEFAULT_STACK_ADDRESS);
+        setSymbolsAddress(StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        setDataFormat(DEFAULT_DATA_FORMAT);
+
+        setThemeFamily(DEFAULT_THEME_FAMILY);
+        setThemeVariation(DEFAULT_THEME_VARIATION);
     }
 
     /**
@@ -232,7 +281,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getDataFormat() {
-        return Math.max(Math.min(preferences.getInt(DATA_FORMAT_KEY, JArmEmuApplication.DEFAULT_DATA_FORMAT), 2), 0);
+        return Math.max(Math.min(preferences.getInt(DATA_FORMAT_KEY, DEFAULT_DATA_FORMAT), DATA_FORMAT_LABEL_DICT.length-1), 0);
     }
 
     public void setDataFormat(int nb) {
@@ -240,7 +289,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getThemeVariation() {
-        return Math.max(Math.min(preferences.getInt(THEME_VARIATION_KEY, 0), 1), 0);
+        return Math.max(Math.min(preferences.getInt(THEME_VARIATION_KEY, DEFAULT_THEME_VARIATION), 1), 0);
     }
 
     public void setThemeVariation(int nb) {
@@ -249,11 +298,64 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public int getThemeFamily() {
-        return Math.max(Math.min(preferences.getInt(THEME_FAMILY_KEY, 0), 2), 0);
+        return Math.max(Math.min(preferences.getInt(THEME_FAMILY_KEY, DEFAULT_THEME_FAMILY), THEME_FAMILY_LABEL_DICT.length-1), 0);
     }
 
     public void setThemeFamily(int nb) {
         preferences.putInt(THEME_FAMILY_KEY, nb);
         getApplication().updateUserAgentStyle(this.getThemeVariation(), nb);
+    }
+
+    public boolean getAutoBreakSetting() {
+        return preferences.getBoolean(AUTO_BREAK_KEY, DEFAULT_AUTO_BREAK);
+    }
+
+    public void setAutoBreakSetting(boolean b) {
+        getController().memoryAlignBreakSwitch.setDisable(!b);
+        getController().stackAlignBreakSwitch.setDisable(!b);
+        getController().programAlignBreakSwitch.setDisable(!b);
+        getController().functionNestingBreakSwitch.setDisable(!b);
+        getController().readOnlyWritingBreakSwitch.setDisable(!b);
+        preferences.putBoolean(AUTO_BREAK_KEY, b);
+    }
+
+    public boolean getMemoryAlignBreakSetting() {
+        return preferences.getBoolean(MEMORY_ALIGN_BREAK_KEY, DEFAULT_MEMORY_ALIGN_BREAK);
+    }
+
+    public void setMemoryAlignBreakSetting(boolean b) {
+        preferences.putBoolean(MEMORY_ALIGN_BREAK_KEY, b);
+    }
+
+    public boolean getStackAlignBreakSetting() {
+        return preferences.getBoolean(STACK_ALIGN_BREAK_KEY, DEFAULT_STACK_ALIGN_BREAK);
+    }
+
+    public void setStackAlignBreakSetting(boolean b) {
+        preferences.putBoolean(STACK_ALIGN_BREAK_KEY, b);
+    }
+
+    public boolean getProgramAlignBreakSetting() {
+        return preferences.getBoolean(PROGRAM_ALIGN_BREAK_KEY, DEFAULT_PROGRAM_ALIGN_BREAK);
+    }
+
+    public void setProgramAlignBreakSetting(boolean b) {
+        preferences.putBoolean(PROGRAM_ALIGN_BREAK_KEY, b);
+    }
+
+    public boolean getFunctionNestingBreakSetting() {
+        return preferences.getBoolean(FUNCTION_NESTING_BREAK_KEY, DEFAULT_FUNCTION_NESTING_BREAK);
+    }
+
+    public void setFunctionNestingBreakSetting(boolean b) {
+        preferences.putBoolean(FUNCTION_NESTING_BREAK_KEY, b);
+    }
+
+    public boolean getReadOnlyWritingBreakSetting() {
+        return preferences.getBoolean(READ_ONLY_WRITING_BREAK_KEY, DEFAULT_READ_ONLY_WRITING_BREAK);
+    }
+
+    public void setReadOnlyWritingBreakSetting(boolean b) {
+        preferences.putBoolean(READ_ONLY_WRITING_BREAK_KEY, b);
     }
 }

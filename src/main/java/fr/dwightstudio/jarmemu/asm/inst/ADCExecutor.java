@@ -9,7 +9,7 @@ import fr.dwightstudio.jarmemu.util.MathUtils;
 
 public class ADCExecutor implements InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> {
     @Override
-    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, ShiftParser.ShiftFunction arg4) {
+    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, ShiftParser.ShiftFunction arg4) {
         int carry = stateContainer.cpsr.getC() ? 1 : 0;
         int shiftedValue = arg4.apply(arg3);
         int i1 = shiftedValue + carry;

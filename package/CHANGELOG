@@ -7,6 +7,8 @@
 - Two new themes (Nord & Cupertino) are now available
 - Reworking data viewing (Registers, Stack, Memory)
 - Adding dynamic settings
+- Adding automatic breakpoints
+- Fixing new file saving
 
 
 0.1.1 -> 0.1.2

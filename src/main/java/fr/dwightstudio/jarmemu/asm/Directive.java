@@ -7,27 +7,25 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public enum Directive {
     // Consts
-    SET(DirectiveExecutors.EQUIVALENT, false), EQU(DirectiveExecutors.EQUIVALENT, false), EQUIV(DirectiveExecutors.EQUIVALENT, false), EQV(DirectiveExecutors.EQUIVALENT, false), // Définir une constante
-    GLOBAL(DirectiveExecutors.GLOBAL, false), // Inutile pour l'interpréteur
+    SET(DirectiveExecutors.EQUIVALENT), EQU(DirectiveExecutors.EQUIVALENT), EQUIV(DirectiveExecutors.EQUIVALENT), EQV(DirectiveExecutors.EQUIVALENT), // Définir une constante
+    GLOBAL(DirectiveExecutors.GLOBAL), GLOBL(DirectiveExecutors.GLOBAL), // Inutile pour l'interpréteur
 
     // Data
-    WORD(DirectiveExecutors.WORD, true), // Donnée sur 32bits
-    HALF(DirectiveExecutors.HALF, true), // Donnée sur 16bits
-    BYTE(DirectiveExecutors.BYTE, true), // Donnée sur 8bits
-    SPACE(DirectiveExecutors.SPACE, false), SKIP(DirectiveExecutors.SPACE, false), // Vide sur nbits
-    ASCII(DirectiveExecutors.ASCII, true), // Chaîne de caractères
-    ASCIZ(DirectiveExecutors.ASCIZ, true), // Chaîne de caractère finissant par '\0'
-    FILL(DirectiveExecutors.FILL, false), // Remplir n fois, un nombre de taille x, de valeur y
+    WORD(DirectiveExecutors.WORD), // Donnée sur 32bits
+    HALF(DirectiveExecutors.HALF), // Donnée sur 16bits
+    BYTE(DirectiveExecutors.BYTE), // Donnée sur 8bits
+    SPACE(DirectiveExecutors.SPACE), SKIP(DirectiveExecutors.SPACE), // Vide sur nbits
+    ASCII(DirectiveExecutors.ASCII), // Chaîne de caractères
+    ASCIZ(DirectiveExecutors.ASCIZ), // Chaîne de caractère finissant par '\0'
+    FILL(DirectiveExecutors.FILL), // Remplir n fois, un nombre de taille x, de valeur y
 
     // Other
-    ALIGN(DirectiveExecutors.ALIGN, false); // Alignement des données sur la grille des 4 bytes
+    ALIGN(DirectiveExecutors.ALIGN); // Alignement des données sur la grille des 4 bytes
 
     private final DirectiveExecutor executor;
-    private final boolean dataInitializer;
 
-    Directive(DirectiveExecutor executor, boolean dataInitializer) {
+    Directive(DirectiveExecutor executor) {
         this.executor = executor;
-        this.dataInitializer = dataInitializer;
     }
 
     /**
@@ -51,9 +49,5 @@ public enum Directive {
      */
     public void apply(StateContainer stateContainer, String args, int currentPos) {
         executor.apply(stateContainer, args, currentPos);
-    }
-
-    public boolean isDataInitializer() {
-        return dataInitializer;
     }
 }

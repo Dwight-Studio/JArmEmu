@@ -7,7 +7,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class RORExecutor implements InstructionExecutor<Register, Register, Integer, Object> {
     @Override
-    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
+    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
         arg1.setData(Integer.rotateRight(arg2.getData(), arg3));
 
         if (updateFlags) {

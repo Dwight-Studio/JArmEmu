@@ -28,7 +28,7 @@ public class BExecutorTest extends JArmEmuTest {
         pc.setData(24);
         stateContainer.labels.put("COUCOU", 20);
         Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
-        bExecutor.execute(stateContainer, false, null, null, value, null, null, null);
+        bExecutor.execute(stateContainer, false, false, null, null, value, null, null, null);
         assertEquals(20, pc.getData());
     }
 
@@ -38,7 +38,7 @@ public class BExecutorTest extends JArmEmuTest {
         pc.setData(24);
         stateContainer.labels.put("COUCOU", 24);
         Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
-        assertThrows(StuckExecutionASMException.class, () -> bExecutor.execute(stateContainer, false, null, null, value, null, null, null));
+        assertThrows(StuckExecutionASMException.class, () -> bExecutor.execute(stateContainer, false, false, null, null, value, null, null, null));
     }
 
 }

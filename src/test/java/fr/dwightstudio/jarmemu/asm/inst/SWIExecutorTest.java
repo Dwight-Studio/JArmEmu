@@ -22,7 +22,7 @@ public class SWIExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleSwiTest() {
-        assertThrows(SoftwareInterruptionASMException.class, () -> swiExecutor.execute(stateContainer, false, null, null, 0, null, null, null));
+        assertThrows(SoftwareInterruptionASMException.class, () -> swiExecutor.execute(stateContainer, false, false, null, null, 0, null, null, null));
     }
 
 }

@@ -29,7 +29,7 @@ public class BLExecutorTest extends JArmEmuTest {
         pc.setData(24);
         stateContainer.labels.put("COUCOU", 20);
         Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
-        blExecutor.execute(stateContainer, false, null, null, value, null, null, null);
+        blExecutor.execute(stateContainer, false, false, null, null, value, null, null, null);
         assertEquals(20, pc.getData());
         assertEquals(28, lr.getData());
     }
@@ -40,6 +40,6 @@ public class BLExecutorTest extends JArmEmuTest {
         pc.setData(24);
         stateContainer.labels.put("COUCOU", 24);
         Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
-        assertThrows(StuckExecutionASMException.class, () -> blExecutor.execute(stateContainer, false, null, null, value, null, null, null));
+        assertThrows(StuckExecutionASMException.class, () -> blExecutor.execute(stateContainer, false, false, null, null, value, null, null, null));
     }
 }

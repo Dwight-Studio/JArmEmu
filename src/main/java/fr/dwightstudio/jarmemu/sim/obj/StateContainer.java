@@ -12,6 +12,7 @@ public class StateContainer {
 
     public static final int DEFAULT_STACK_ADDRESS = 65536;
     public static final int DEFAULT_SYMBOLS_ADDRESS = 0;
+    public static final int MAX_NESTING_COUNT = 1024;
     private static final Pattern SPECIAL_VALUE_PATTERN = Pattern.compile(
             "(?i)"
                     + "(?<VALUE>"
@@ -29,6 +30,7 @@ public class StateContainer {
     public final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
     public final HashMap<String, Integer> labels; // HashMap des labels
     private String global; // Labels globaux
+    private int nestingCount;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -51,6 +53,7 @@ public class StateContainer {
         data = new HashMap<>();
         pseudoData = new HashMap<>();
         global = null;
+        nestingCount = 0;
 
         // Initializing registers
         cpsr = new PSR();
@@ -197,5 +200,27 @@ public class StateContainer {
                 cpsr,
                 spsr
         };
+    }
+
+    /**
+     * @return le nombre de branches actives
+     */
+    public int getNestingCount() {
+        return nestingCount;
+    }
+
+    /**
+     * Met à jour le compteur de branche en ajoutant 1
+     */
+    public void branch() {
+        this.nestingCount++;
+    }
+
+    /**
+     * Met à jour le compteur de branche en retirant 1
+     */
+    public void merge() {
+        this.nestingCount--;
+        if (this.nestingCount < 0) this.nestingCount = 0;
     }
 }

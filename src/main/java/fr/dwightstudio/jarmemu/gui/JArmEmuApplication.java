@@ -40,10 +40,6 @@ public class JArmEmuApplication extends Application {
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
 
-    // Format Settings
-    public static final int DEFAULT_DATA_FORMAT = 0;
-    public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
-
     // Controllers
     private JArmEmuController controller;
 
@@ -76,8 +72,8 @@ public class JArmEmuApplication extends Application {
         this.stage = stage;
 
         logger.info("Starting up JArmEmu v" + VERSION);
-        // TODO: Ajouter les automatic breakpoints (lecture en dehors de la grille, stack bizarre, écriture dans RODATA etc...)
         // TODO: Ajouter le about dans help
+        // TODO: Ajouter l'autobreakpoint écriture dans RODATA
         // TODO: Bien organiser la mémoire (.RODATA avant le .DATA avant le .BSS ; vérifier que on initialise pas dans BSS)
         // TODO: Ajouter les flags en gris lorsqu'ils sont false dans le gui des registres
 
@@ -334,9 +330,9 @@ public class JArmEmuApplication extends Application {
      */
     public String getFormattedData(int data, int format) {
         if (format == 2) {
-            return String.format(DATA_FORMAT_DICT[format], (long) data & 0xFFFFFFFFL).toUpperCase();
+            return String.format(SettingsController.DATA_FORMAT_DICT[format], (long) data & 0xFFFFFFFFL).toUpperCase();
         } else {
-            return String.format(DATA_FORMAT_DICT[format], data).toUpperCase();
+            return String.format(SettingsController.DATA_FORMAT_DICT[format], data).toUpperCase();
 
         }
     }

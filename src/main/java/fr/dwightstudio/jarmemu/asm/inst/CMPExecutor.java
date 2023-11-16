@@ -9,7 +9,7 @@ import fr.dwightstudio.jarmemu.util.MathUtils;
 
 public class CMPExecutor implements InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> {
     @Override
-    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Integer arg2, ShiftParser.ShiftFunction arg3, Object arg4) {
+    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Integer arg2, ShiftParser.ShiftFunction arg3, Object arg4) {
         int i1 = arg3.apply(arg2);
 
         int result = arg1.getData() - i1; // result = arg1 - (arg3 SHIFT arg2)

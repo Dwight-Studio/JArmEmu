@@ -9,7 +9,7 @@ import fr.dwightstudio.jarmemu.util.MathUtils;
 
 public class RSBExecutor implements InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> {
     @Override
-    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, ShiftParser.ShiftFunction arg4) {
+    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, ShiftParser.ShiftFunction arg4) {
         int i1 = arg4.apply(arg3);
 
         arg1.setData(i1 - arg2.getData()); // arg1 = (arg4 SHIFT arg3) - arg2

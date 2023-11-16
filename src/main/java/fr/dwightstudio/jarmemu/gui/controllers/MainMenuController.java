@@ -1,7 +1,6 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Platform;
 import javafx.stage.FileChooser;
@@ -9,6 +8,7 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 public class MainMenuController extends AbstractJArmEmuModule {
@@ -36,7 +36,8 @@ public class MainMenuController extends AbstractJArmEmuModule {
 
                     case DISCARD_AND_CONTINUE -> newFile();
 
-                    default -> {}
+                    default -> {
+                    }
                 }
             });
         }
@@ -62,7 +63,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (isValid(savePath)) {
+        if (exists(savePath)) {
             fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
         }
         File file = fileChooser.showOpenDialog(application.stage);
@@ -77,7 +78,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSave() {
-        if (!isValid(savePath)) {
+        if (!exists(savePath)) {
             onSaveAs();
         } else {
             try {
@@ -102,15 +103,25 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (isValid(savePath)) {
+        if (exists(savePath)) {
             fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
         }
         File file = fileChooser.showSaveDialog(application.stage);
-        if (file != null && file.isFile()) {
-            if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
-            logger.info("File located: " + file.getAbsolutePath());
-            savePath = file;
-            onSave();
+        if (file != null && !file.isDirectory()) {
+            try {
+                if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
+                logger.info("File located: " + file.getAbsolutePath());
+                savePath = file;
+                logger.info("Saving file...");
+                getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+                getSourceParser().getSourceScanner().exportCodeToFile(savePath);
+                application.setSaved();
+                getSettingsController().setLastSavePath(savePath.getAbsolutePath());
+                logger.info("Saved at: " + savePath.getAbsolutePath());
+            } catch (Exception exception) {
+                new ExceptionDialog(exception).show();
+                logger.severe(ExceptionUtils.getStackTrace(exception));
+            }
         }
     }
 
@@ -130,7 +141,8 @@ public class MainMenuController extends AbstractJArmEmuModule {
 
                     case DISCARD_AND_CONTINUE -> reload();
 
-                    default -> {}
+                    default -> {
+                    }
                 }
             });
         }
@@ -191,6 +203,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void onResetSettings() {
         getSettingsController().setToDefaults();
+        getSettingsController().updateGUI();
     }
 
     /**
@@ -219,7 +232,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
                     } else {
                         logger.info("Wrong last-save file (not a file), aborting.");
                     }
-                } else  {
+                } else {
                     logger.info("Non existent last-save file, aborting.");
                 }
             } catch (Exception e) {
@@ -232,7 +245,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
         onNewFile();
     }
 
-    private boolean isValid(File file) {
+    private boolean exists(File file) {
         if (file != null) {
             return file.exists();
         } else {
@@ -241,7 +254,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
     }
 
     private boolean isValidFile(File file) {
-        if (isValid(file)) {
+        if (exists(file)) {
             return file.isFile();
         } else {
             return false;

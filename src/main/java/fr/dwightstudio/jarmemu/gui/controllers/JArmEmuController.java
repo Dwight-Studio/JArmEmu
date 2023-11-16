@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
+import atlantafx.base.controls.ToggleSwitch;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.ModalDialog;
 import javafx.event.ActionEvent;
@@ -51,6 +52,12 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Spinner<Integer> settingsSimInterval;
     @FXML protected ToggleButton settingsRegex;
     @FXML protected ToggleButton settingsLegacy;
+    @FXML protected ToggleSwitch autoBreakSwitch;
+    @FXML protected ToggleSwitch memoryAlignBreakSwitch;
+    @FXML protected ToggleSwitch stackAlignBreakSwitch;
+    @FXML protected ToggleSwitch programAlignBreakSwitch;
+    @FXML protected ToggleSwitch functionNestingBreakSwitch;
+    @FXML protected ToggleSwitch readOnlyWritingBreakSwitch;
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
     @FXML protected ChoiceBox<String> settingsFormat;

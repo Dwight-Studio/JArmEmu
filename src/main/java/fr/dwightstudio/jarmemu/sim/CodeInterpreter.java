@@ -232,8 +232,10 @@ public class CodeInterpreter {
 
     /**
      * Execute le code se trouvant sur la ligne courante
+     *
+     * @param forceExecution ignore les erreurs d'exécution non bloquantes
      */
-    public synchronized void executeCurrentLine() throws ExecutionASMException {
+    public synchronized void executeCurrentLine(boolean forceExecution) throws ExecutionASMException {
         jumped = false;
 
         // Remise à zéro des drapeaux de ligne des parseurs
@@ -247,7 +249,7 @@ public class CodeInterpreter {
 
             if (parsedObject instanceof ParsedInstruction instruction) {
                 try {
-                    instruction.execute(stateContainer);
+                    instruction.execute(stateContainer, forceExecution);
                 } catch (ExecutionASMException exception) {
                     executionException = exception;
                 }

@@ -28,12 +28,12 @@ public class MLSExecutorTest extends JArmEmuTest {
         r3.setData(100);
         r2.setData(4);
         r1.setData(5);
-        mlsExecutor.execute(stateContainer, false, null, null, r0, r1, r2, r3);
+        mlsExecutor.execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(80, r0.getData());
         r3.setData(65847685);
         r2.setData(456456);
         r1.setData(456456456);
-        mlsExecutor.execute(stateContainer, false, null, null, r0, r1, r2, r3);
+        mlsExecutor.execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(936264005, r0.getData());
     }
 

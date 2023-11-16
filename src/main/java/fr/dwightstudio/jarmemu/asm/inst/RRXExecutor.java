@@ -7,7 +7,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class RRXExecutor implements InstructionExecutor<Register, Register, Object, Object> {
     @Override
-    public void execute(StateContainer stateContainer, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Object arg3, Object arg4) {
+    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Object arg3, Object arg4) {
         int i = Integer.rotateRight(arg2.getData(), 1);
         boolean c = ((i >> 31) & 1) == 1;
         if (stateContainer.cpsr.getC()) {

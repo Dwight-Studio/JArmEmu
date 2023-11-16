@@ -122,7 +122,7 @@
                         </Menu>
                     </menus>
                 </MenuBar>
-                <SplitPane dividerPositions="0.20657015590200445, 0.794543429844098" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                <SplitPane dividerPositions="0.2, 0.75" VBox.vgrow="ALWAYS">
                     <items>
                         <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                             <items>
@@ -334,12 +334,18 @@
                                                                             </rowConstraints>
                                                                             <children>
                                                                                 <Text text="Automatic breakpoints" GridPane.halignment="LEFT" GridPane.valignment="CENTER" />
-                                                            <ToggleSwitch fx:id="autoBreakSwitch" alignment="CENTER_RIGHT" selected="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
-                                                            <Separator prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                                                <Text text="Watch memory access alignment" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                                                            <ToggleSwitch fx:id="memoryAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                                                            <Text text="Watch Stack pointer alignment" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
-                                                            <ToggleSwitch fx:id="StackAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                <ToggleSwitch fx:id="autoBreakSwitch" alignment="CENTER_RIGHT" selected="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.valignment="CENTER" />
+                                                                                <Separator GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                                                <Text text="Memory access misaligned" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                                                                <ToggleSwitch fx:id="memoryAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
+                                                                                <Text text="Stack pointer misaligned" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                                                                                <ToggleSwitch fx:id="stackAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                                                <Text text="Program counter misaligned" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
+                                                                                <ToggleSwitch fx:id="programAlignBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                                                <Text text="Function nesting too deep" GridPane.halignment="LEFT" GridPane.rowIndex="5" GridPane.valignment="CENTER" />
+                                                                                <ToggleSwitch fx:id="functionNestingBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                                                <Text text="Read only data overwritten" GridPane.halignment="LEFT" GridPane.rowIndex="6" GridPane.valignment="CENTER" />
+                                                                                <ToggleSwitch fx:id="readOnlyWritingBreakSwitch" selected="true" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                                                                             </children>
                                                                         </GridPane>
                                                                     </children>

@@ -100,6 +100,7 @@ public enum Instruction {
     /**
      * Execution de l'instruction sous condition
      * @param stateContainer Le conteneur d'état sur lequel effectuer l'exécution
+     * @param forceExecution ignore les erreurs d'exécution non bloquantes
      * @param condition La condition à verifier
      * @param updateFlags Doit-on mettre à jour les flags
      * @param dataMode Type de donnée (Byte, HalfWord, Word) si applicable
@@ -110,13 +111,14 @@ public enum Instruction {
      * @param arg4 Le quatrième argument
      */
     public <A,B,C,D> void execute(StateContainer stateContainer,
+                                    boolean forceExecution,
                                     Condition condition,
                                     boolean updateFlags,
                                     DataMode dataMode,
                                     UpdateMode updateMode,
                                     A arg1, B arg2, C arg3, D arg4) {
 
-        if (condition.eval(stateContainer)) executor.execute(stateContainer, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        if (condition.eval(stateContainer)) executor.execute(stateContainer, false, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
     public boolean hasDomReg() {

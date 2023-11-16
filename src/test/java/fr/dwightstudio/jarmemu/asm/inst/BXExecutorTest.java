@@ -4,7 +4,6 @@ import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.args.LabelParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,11 +26,11 @@ public class BXExecutorTest extends JArmEmuTest {
         Register pc = stateContainer.registers[15];
         lr.setData(24);
         pc.setData(48);
-        bxExecutor.execute(stateContainer, false, null, null, lr, null, null, null);
+        bxExecutor.execute(stateContainer, false, false, null, null, lr, null, null, null);
         assertEquals(24, pc.getData());
         assertFalse(stateContainer.cpsr.getT());
         lr.setData(45);
-        bxExecutor.execute(stateContainer, false, null, null, lr, null, null, null);
+        bxExecutor.execute(stateContainer, false, false, null, null, lr, null, null, null);
         assertEquals(45, pc.getData());
         assertTrue(stateContainer.cpsr.getT());
     }
@@ -39,7 +38,7 @@ public class BXExecutorTest extends JArmEmuTest {
     @Test
     public void BxExceptionTest() {
         Register pc = stateContainer.registers[15];
-        assertThrows(StuckExecutionASMException.class, () -> bxExecutor.execute(stateContainer, false, null, null, pc, null, null, null));
+        assertThrows(StuckExecutionASMException.class, () -> bxExecutor.execute(stateContainer, false, false, null, null, pc, null, null, null));
     }
 
 }

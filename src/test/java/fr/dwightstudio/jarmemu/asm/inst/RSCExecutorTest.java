@@ -31,23 +31,23 @@ public class RSCExecutorTest extends JArmEmuTest {
         r1.setData(20);
         Register r2 = stateContainerBis.registers[2];
         r2.setData(5);
-        rscExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(stateContainer.registers[0].getData(), r0.getData());
         stateContainer.registers[0].setData(0b01111111111111111111111111111110);
         r1.setData(1);
         r2.setData(0b10000000000000000000000000000000);
-        rscExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(stateContainer.registers[0].getData(), r0.getData());
         stateContainerBis.cpsr.setC(true);
         r1.setData(20);
         r2.setData(5);
         stateContainer.registers[0].setData(-15);
-        rscExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(stateContainer.registers[0].getData(), r0.getData());
         stateContainer.registers[0].setData(0b01111111111111111111111111111111);
         r1.setData(1);
         r2.setData(0b10000000000000000000000000000000);
-        rscExecutor.execute(stateContainerBis, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(stateContainer.registers[0].getData(), r0.getData());
     }
 
@@ -58,7 +58,7 @@ public class RSCExecutorTest extends JArmEmuTest {
         Register r2 = stateContainer.registers[2];
         r0.setData(1);
         r1.setData(0b10000000000000000000000000000000);
-        rscExecutor.execute(stateContainer, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(0b01111111111111111111111111111110, r2.getData());
         assertFalse(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
@@ -66,7 +66,7 @@ public class RSCExecutorTest extends JArmEmuTest {
         assertTrue(stateContainer.cpsr.getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        rscExecutor.execute(stateContainer, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.cpsr.getN());
         assertTrue(stateContainer.cpsr.getZ());
@@ -74,7 +74,7 @@ public class RSCExecutorTest extends JArmEmuTest {
         assertFalse(stateContainer.cpsr.getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b01111111111111111111111111111111);
-        rscExecutor.execute(stateContainer, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(0b10000000000000000000000000000000, r2.getData());
         assertTrue(stateContainer.cpsr.getN());
         assertFalse(stateContainer.cpsr.getZ());
@@ -82,7 +82,7 @@ public class RSCExecutorTest extends JArmEmuTest {
         assertTrue(stateContainer.cpsr.getV());
         r0.setData(-2);
         r1.setData(0b11111111111111111111111111111111);
-        rscExecutor.execute(stateContainer, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        rscExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.cpsr.getN());
         assertTrue(stateContainer.cpsr.getZ());

@@ -23,6 +23,6 @@ public class SWPExecutorTest extends JArmEmuTest {
     @Test
     public void simpleSwpTest() {
         Register r0 = stateContainer.registers[0];
-        assertThrows(SyntaxASMException.class, () -> swpExecutor.execute(stateContainer, false, null, null, r0, null, null, null));
+        assertThrows(SyntaxASMException.class, () -> swpExecutor.execute(stateContainer, false, false, null, null, r0, null, null, null));
     }
 }

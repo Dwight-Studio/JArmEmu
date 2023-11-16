@@ -4,10 +4,9 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
-import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SoftwareInterruptionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.exceptions.*;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -226,27 +225,36 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             last = application.getCodeInterpreter().getLastExecutedLine();
             line = application.getCodeInterpreter().nextLine();
 
-            if (application.getEditorController().hasBreakPoint(line)) {
-                Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", Styles.SUCCESS);
-                    application.getSimulationMenuController().onPause();
-                });
-                doContinue = false;
-            }
-
             ExecutionASMException executionException = null;
 
             try {
-                application.getCodeInterpreter().executeCurrentLine();
+                application.getCodeInterpreter().executeCurrentLine(false);
+            } catch (MemoryAccessMisalignedASMException exception) {
+                if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getMemoryAlignBreakSetting()) {
+                    Platform.runLater(() -> {
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned memory access attempt.", Styles.DANGER);
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                        application.getSimulationMenuController().onPause();
+                    });
+                    doContinue = false;
+                }
             } catch (ExecutionASMException exception) {
                 executionException = exception;
             }
 
             next = application.getCodeInterpreter().getNextLine();
 
+            if (application.getEditorController().hasBreakPoint(next)) {
+                Platform.runLater(() -> {
+                    application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", Styles.WARNING);
+                    application.getSimulationMenuController().onPause();
+                });
+                doContinue = false;
+            }
+
             if (application.getCodeInterpreter().isAtTheEnd() || executionException instanceof StuckExecutionASMException) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Warning", "The program reached the end of the file.", Styles.WARNING);
+                    application.getEditorController().addNotif("Warning", "The program reached the end of the file.", Styles.SUCCESS);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
@@ -254,10 +262,45 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (executionException instanceof SoftwareInterruptionASMException exception) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Software interrupt", "The program requested an interrupt with code " + exception.getCode(), Styles.WARNING);
+                    application.getEditorController().addNotif("Software interrupt", "The program requested an interrupt with code " + exception.getCode() + ".", Styles.WARNING);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
+            }
+
+            if (application.getSettingsController().getAutoBreakSetting()) {
+                if (application.getSettingsController().getProgramAlignBreakSetting()) {
+                    if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.PC.getN()].getData() % 4 != 0) {
+                        Platform.runLater(() -> {
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter", Styles.DANGER);
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                            application.getSimulationMenuController().onPause();
+                        });
+                        doContinue = false;
+                    }
+                }
+
+                if (application.getSettingsController().getStackAlignBreakSetting()) {
+                    if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.SP.getN()].getData() % 4 != 0) {
+                    Platform.runLater(() -> {
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer", Styles.DANGER);
+                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                        application.getSimulationMenuController().onPause();
+                    });
+                    doContinue = false;
+                    }
+                }
+
+                if (application.getSettingsController().getFunctionNestingBreakSetting()) {
+                    if (application.getCodeInterpreter().stateContainer.getNestingCount() > StateContainer.MAX_NESTING_COUNT) {
+                        Platform.runLater(() -> {
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Function nesting too deep (>1000 branches)", Styles.DANGER);
+                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings", Styles.ACCENT);
+                            application.getSimulationMenuController().onPause();
+                        });
+                        doContinue = false;
+                    }
+                }
             }
         }
 
