@@ -845,10 +845,10 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
                 Led by Tollemer Kévin and Leconte Alexandre.
 
                 JArmEmu is based on the work of the following projects:
-                 - Javafx by OpenJFX (GNU Public Licence)
-                 - Ikonli by Andres Almiray (Apache Licence 2.0)
+                 - Javafx by OpenJFX (GNU Public License)
+                 - Ikonli by Andres Almiray (Apache License 2.0)
                  - RichTextFX by Tomas Mikula (BSD 2-Clause "Simplified" License)
-                 - AtlantaFX by mkpaz (MIT Licence)""");
+                 - AtlantaFX by mkpaz (MIT License)""");
 
         VBox vBox = new VBox(title, credits);
         vBox.setAlignment(Pos.CENTER);
