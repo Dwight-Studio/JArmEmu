@@ -90,6 +90,9 @@ public class JArmEmuApplication extends Application {
     private File lastSavePath;
     private String argSave;
 
+    // TODO: Vérifier toutes les notifs (syntaxe, etc)
+    // TODO: Corriger le parcours de la mémoire qui demande une double entrée parfois
+
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
