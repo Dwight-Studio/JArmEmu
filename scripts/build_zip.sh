@@ -25,33 +25,24 @@
 
 # Aller à la racine du dépôt
 cd $(git rev-parse --show-toplevel) || exit 1
+CWD=$(pwd)
 
 # Constantes
 VER=0.1.3
 RELEASE=BETA
-BF=$HOME/debbuild/
-CPF=$BF/jarmemu/
-US=$CPF/usr/share/
 
-# Clean
-rm -r $BF
-rm ./target/JArmEmu-${VER}-${RELEASE}_all.deb
+rpmdev-setuptree
+TMP=$(mktemp -d -q)
+
+# Copie
+cp ./target/JArmEmu.jar $TMP
+cp -r ./target/lib/ $TMP
 
 # Compression
-mkdir -p $CPF/DEBIAN/
-mkdir -p $US/applications/
-mkdir -p $US/java/jarmemu/
-cp ./package/linux/deb/control $CPF/DEBIAN/
-cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $US/applications/
-cp -r ./package/linux/common/icons $US/
-cp -r ./package/linux/common/mime $US/
-cp ./target/JArmEmu.jar $US/java/jarmemu/
-cp -r ./target/lib/ $US/java/jarmemu/
+cd $TMP/ || exit 1
+zip -r JArmEmu *
 
-# Build
-dpkg-deb --root-owner-group --build $CPF
-
-# Clean et rendu
-cp $BF/jarmemu.deb ./target/JArmEmu-${VER}-${RELEASE}_all.deb
-rm -r $BF
-
+# Rendu et clean
+mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.portable.zip
+cd $CWD/ || exit 1
+rm -r $TMP

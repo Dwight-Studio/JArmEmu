@@ -20,9 +20,6 @@ JArmEmu is a simple simulator with a graphical interface that offers basic contr
 
 %install
 rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/java
-mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons
-
 cp -r java/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r icons/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r mime/ $RPM_BUILD_ROOT/%{_datadir}/

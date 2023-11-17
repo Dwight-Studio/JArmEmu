@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~            ____           _       __    __     _____ __            ___
+  ~           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
+  ~          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
+  ~         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
+  ~        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
+  ~                         /____/
+  ~     Copyright (C) 2023 Dwight Studio
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<component type="desktop-application">
+    <id>fr.dwightstudio.JArmEmu</id>
+    <launchable type="desktop-id">fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop</launchable>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0-only</project_license>
+    <developer_name>Dwight Studio</developer_name>
+    <name>JArmEmu</name>
+    <summary>Simple ARMv7 simulator written in Java, intended for educationnal purpose.</summary>
+    <description>
+        <p>
+            JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a simulated ARMv7 architecture.
+            You can write your program and include GNU Assembly directives (only the basic ones are implemented, refer to synthaxic colorimetry to see if it is implemented).
+            JArmEmu is powered by an ARMv7 interpreter made Ex Nihilo for this project.
+        </p>
+    </description>
+    <screenshots>
+        <screenshot type="default">
+            <image type="source">URL</image>
+            <caption>Main Screen</caption>
+        </screenshot>
+    </screenshots>
+    <url type="homepage">https://dwightstudio.fr/JArmEmu</url>
+    <update_contact>contact_AT_dwightstudio.fr</update_contact>
+    <content_rating type="oars-1.1"/>
+    <releases>
+        <release version="X.X.X" date="XXXX-XXX-XX">
+            <description>
+                <ul>
+                    <li>Text</li>
+                </ul>
+            </description>
+            <url>https://github.com/DwightStudio/JArmEmu/releases/tag/vX.X.X</url>
+        </release>
+    </releases>
+</component>
