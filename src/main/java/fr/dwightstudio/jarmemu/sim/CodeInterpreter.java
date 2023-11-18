@@ -248,23 +248,6 @@ public class CodeInterpreter {
                 throw e.with(inst.getKey());
             }
         }
-
-        // Application de toutes les directives de BSS
-        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
-            try {
-                if (inst.getValue() instanceof ParsedDirective parsedDirective) {
-                    if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.BSS) {
-                        pos = Math.max(parsedDirective.apply(stateContainer, pos), pos);
-                    }
-                } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
-                    pos = Math.max(parsedDirectivePack.applySectionSensitive(stateContainer, pos, Section.BSS), pos);
-                } else if (inst.getValue() instanceof ParsedDirectiveLabel label) {
-                    label.register(stateContainer, pos);
-                }
-            } catch (SyntaxASMException e) {
-                throw e.with(inst.getKey());
-            }
-        }
     }
 
     /**
