@@ -59,7 +59,6 @@ public class MemoryController extends AbstractJArmEmuModule {
     protected static final int ADDRESS_PER_PAGE = LINES_PER_PAGE * ADDRESS_PER_LINE;
     protected static final int PAGE_NUMBER = (int) (((long) Math.pow(2L, 32L)) / ADDRESS_PER_PAGE);
     protected static final int PAGE_OFFSET = PAGE_NUMBER/2;
-    protected static final int LINE_HEIGHT = 20;
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private Popover hintPop;
@@ -194,7 +193,7 @@ public class MemoryController extends AbstractJArmEmuModule {
         getController().memoryPage.setCurrentPageIndex(PAGE_OFFSET);
         getController().memoryPage.currentPageIndexProperty().addListener((observableValue, number, t1) -> {
             if (number.intValue() != t1.intValue()) {
-                getExecutionWorker().updateFormat();
+                getExecutionWorker().updateGUI();
             }
         });
         

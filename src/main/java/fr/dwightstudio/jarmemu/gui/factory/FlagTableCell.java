@@ -99,43 +99,43 @@ public class FlagTableCell extends TableCell<RegisterView, Register> {
             t.getStyleClass().clear();
 
             if (psr.getN()) {
-                n.getStyleClass().add(Styles.TEXT_BOLD);
+                n.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 n.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
             if (psr.getZ()) {
-                z.getStyleClass().add(Styles.TEXT_BOLD);
+                z.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 z.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
             if (psr.getC()) {
-                c.getStyleClass().add(Styles.TEXT_BOLD);
+                c.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 c.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
             if (psr.getV()) {
-                v.getStyleClass().add(Styles.TEXT_BOLD);
+                v.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 v.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
             if (psr.getI()) {
-                i.getStyleClass().add(Styles.TEXT_BOLD);
+                i.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 i.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
             if (psr.getF()) {
-                f.getStyleClass().add(Styles.TEXT_BOLD);
+                f.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 f.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
             if (psr.getT()) {
-                t.getStyleClass().add(Styles.TEXT_BOLD);
+                t.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 t.getStyleClass().add(Styles.TEXT_SUBTLE);
             }

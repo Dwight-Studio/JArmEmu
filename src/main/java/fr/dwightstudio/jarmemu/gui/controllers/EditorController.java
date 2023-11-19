@@ -186,10 +186,10 @@ public class EditorController extends AbstractJArmEmuModule {
         Notification notification;
 
         switch (classString) {
-            case Styles.ACCENT -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedAL.INFO));
-            case Styles.SUCCESS -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
-            case Styles.WARNING -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
-            case Styles.DANGER -> notification = new Notification(titleString + ": " + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
+            case Styles.ACCENT -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedAL.INFO));
+            case Styles.SUCCESS -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
+            case Styles.WARNING -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
+            case Styles.DANGER -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
 
             default -> notification = new Notification(titleString + ": " + contentString);
         }

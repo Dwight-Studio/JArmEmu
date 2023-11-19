@@ -286,7 +286,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (application.getCodeInterpreter().isAtTheEnd() || executionException instanceof StuckExecutionASMException) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Warning", "The program reached the end of the file.", Styles.SUCCESS);
+                    application.getEditorController().addNotif("Finished", "The program reached the end of the file.", Styles.SUCCESS);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
