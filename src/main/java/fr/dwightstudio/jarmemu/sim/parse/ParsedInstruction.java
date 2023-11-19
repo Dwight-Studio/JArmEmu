@@ -120,8 +120,11 @@ public class ParsedInstruction extends ParsedObject {
 
             for (int i = 0; i < 4; i++) {
                 if (processedArgs[i] != null) {
-                    // TODO: Fix this
-                    parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i].toUpperCase());
+                    if (processedArgs[i].contains("'")) {
+                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i]);
+                    } else {
+                        parsedArgs[i] = argParsers[i].parse(stateContainer, processedArgs[i].toUpperCase());
+                    }
                 } else {
                     parsedArgs[i] = argParsers[i].none(i + 1);
                 }
