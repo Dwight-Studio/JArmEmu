@@ -290,7 +290,6 @@ public class LegacySourceParser implements SourceParser {
                 } else if (!(currentLine.endsWith(":"))) {
                     this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
                     this.arguments.replaceAll(String::strip);
-                    this.arguments = this.joinStringArray(this.arguments);
                 }
 
                 if (arguments.size() > 4) throw new SyntaxASMException("Invalid instruction '" + currentLine + "' (too many arguments");
