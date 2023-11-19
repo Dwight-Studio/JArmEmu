@@ -91,7 +91,10 @@ public class JArmEmuApplication extends Application {
     private String argSave;
 
     // TODO: Vérifier qu'on ne supprime pas le char ' '
-
+    // TODO: Ajouter une colonne transcription en ASCII
+    // TODO: Activer le choix des colonnes
+    // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
+    
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
