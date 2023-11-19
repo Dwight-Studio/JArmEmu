@@ -90,7 +90,6 @@ public class JArmEmuApplication extends Application {
     private File lastSavePath;
     private String argSave;
 
-    // TODO: Corriger le parcours de la mémoire qui demande une double entrée parfois
     // TODO: Vérifier qu'on ne supprime pas le char ' '
 
     @Override
