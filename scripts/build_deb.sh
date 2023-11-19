@@ -27,7 +27,7 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.3
+VER=0.1.4
 RELEASE=BETA
 BF=$HOME/debbuild/
 CPF=$BF/jarmemu/
@@ -49,7 +49,7 @@ cp ./target/JArmEmu.jar $US/java/jarmemu/
 cp -r ./target/lib/ $US/java/jarmemu/
 
 # Build
-dpkg-deb --root-owner-group --build $CPF
+dpkg-deb --root-owner-group --build $CPF || exit 1
 
 # Clean et rendu
 cp $BF/jarmemu.deb ./target/JArmEmu-${VER}-${RELEASE}_all.deb

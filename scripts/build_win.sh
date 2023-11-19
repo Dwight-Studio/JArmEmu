@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #            ____           _       __    __     _____ __            ___
 #           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
@@ -23,26 +21,9 @@
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+RAC=$(git rev-parse --show-toplevel)
+
 # Aller à la racine du dépôt
-cd $(git rev-parse --show-toplevel) || exit 1
-CWD=$(pwd)
+cd $RAC || exit 1
 
-# Constantes
-VER=0.1.4
-RELEASE=BETA
-
-rpmdev-setuptree
-TMP=$(mktemp -d -q)
-
-# Copie
-cp ./target/JArmEmu.jar $TMP
-cp -r ./target/lib/ $TMP
-
-# Compression
-cd $TMP/ || exit 1
-zip -r JArmEmu *
-
-# Rendu et clean
-mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.portable.zip
-cd $CWD/ || exit 1
-rm -r $TMP
+docker run --rm -i -v "$RAC:/jarmemu" amake/innosetup /V Z:/jarmemu/package/windows/jarmemu.iss

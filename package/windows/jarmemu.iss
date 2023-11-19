@@ -2,14 +2,19 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "JArmEmu"
-#define MyAppVersion "0.1.3"
+#define MyAppVersion "0.1.4"
 #define MyAppRelease "BETA"
 #define MyAppPublisher "Dwight Studio"
-#define MyAppURL "https://dwightstudio.fr/"
+#define MyAppURL "https://dwightstudio.fr/jarmemu"
 #define MyAppExeName "launcher.exe"
 #define MyAppAssocName MyAppName + " Source File"
 #define MyAppAssocExt ".s"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
+
+; Pour GNU/Linux
+#define RepositoryPath "Z:\jarmemu"
+; Pour Windows
+; #define RepositoryPath "C:\Users\reaze\IdeaProjects\JArmEmu"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -26,12 +31,12 @@ DefaultDirName={autopf}\{#MyAppName}
 DisableDirPage=yes
 ChangesAssociations=yes
 DisableProgramGroupPage=yes
-LicenseFile=C:\Users\reaze\IdeaProjects\JArmEmu\LICENSE
+LicenseFile={#RepositoryPath}\LICENSE
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\reaze\IdeaProjects\JArmEmu\target
+OutputDir={#RepositoryPath}\target
 OutputBaseFilename={#MyAppName}-{#MyAppVersion}-{#MyAppRelease}
-SetupIconFile=C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\favicon.ico
+SetupIconFile={#RepositoryPath}\package\windows\favicon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -68,9 +73,9 @@ Name: "ukrainian"; MessagesFile: "compiler:Languages\Ukrainian.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\reaze\IdeaProjects\JArmEmu\package\windows\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\reaze\IdeaProjects\JArmEmu\target\JArmEmu.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\reaze\IdeaProjects\JArmEmu\target\lib\*"; DestDir: "{app}\lib\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#RepositoryPath}\package\windows\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#RepositoryPath}\target\JArmEmu.jar"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#RepositoryPath}\target\lib\*"; DestDir: "{app}\lib\"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

@@ -27,7 +27,7 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.3
+VER=0.1.4
 RELEASE=BETA
 BF=$HOME/rpmbuild
 
@@ -53,7 +53,7 @@ rm -r $TMP
 
 # Build
 cp ./package/linux/rpm/jarmemu.spec $BF/SPECS/
-rpmbuild -ba $BF/SPECS/jarmemu.spec
+rpmbuild -ba $BF/SPECS/jarmemu.spec || exit 1
 
 # Clean et rendu
 cp $BF/RPMS/noarch/jarmemu-$VER-$RELEASE.noarch.rpm ./target/JArmEmu-$VER-$RELEASE.noarch.rpm

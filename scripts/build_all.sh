@@ -1,5 +1,3 @@
-#!/bin/bash
-
 #
 #            ____           _       __    __     _____ __            ___
 #           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
@@ -25,24 +23,18 @@
 
 # Aller à la racine du dépôt
 cd $(git rev-parse --show-toplevel) || exit 1
-CWD=$(pwd)
 
-# Constantes
-VER=0.1.4
-RELEASE=BETA
+echo "Building RPM..."
+source ./scripts/build_rpm.sh || exit 1
 
-rpmdev-setuptree
-TMP=$(mktemp -d -q)
+echo "Building DEB..."
+source ./scripts/build_deb.sh || exit 1
 
-# Copie
-cp ./target/JArmEmu.jar $TMP
-cp -r ./target/lib/ $TMP
+echo "Building WIN..."
+source ./scripts/build_win.sh || exit 1
 
-# Compression
-cd $TMP/ || exit 1
-zip -r JArmEmu *
+echo "Building FLATPAK..."
+source ./scripts/build_flatpak.sh || exit 1
 
-# Rendu et clean
-mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.portable.zip
-cd $CWD/ || exit 1
-rm -r $TMP
+echo "Building ZIP..."
+source ./scripts/build_zip.sh || exit 1
