@@ -304,4 +304,108 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/pgcd-memory.d");
     }
 
+    @Test
+    public void helloworldIntTest() {
+        load("/complete/helloworldInt.s");
+
+        // Parse
+        codeInterpreter.load(parser);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
+                codeInterpreter.nextLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
+            }
+        });
+
+        assertEqualsMemory("/complete/helloworldInt-memory.d");
+    }
+
+    @Test
+    public void helloworldIntLegacyTest() {
+        loadLegacy("/complete/helloworldInt.s");
+
+        // Parse
+        codeInterpreter.load(parserLegacy);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
+                codeInterpreter.nextLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
+            }
+        });
+
+        assertEqualsMemory("/complete/helloworldInt-memory.d");
+    }
+
+    @Test
+    public void helloworldAsciiTest() {
+        load("/complete/helloworldAscii.s");
+
+        // Parse
+        codeInterpreter.load(parser);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
+                codeInterpreter.nextLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
+            }
+        });
+
+        assertEqualsMemory("/complete/helloworldAscii-memory.d");
+    }
+
+    @Test
+    public void helloworldAsciiLegacyTest() {
+        loadLegacy("/complete/helloworldAscii.s");
+
+        // Parse
+        codeInterpreter.load(parserLegacy);
+        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            boolean flag = true;
+            while (codeInterpreter.hasNextLine() && flag) {
+                codeInterpreter.nextLine();
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
+            }
+        });
+
+        assertEqualsMemory("/complete/helloworldAscii-memory.d");
+    }
+
 }
