@@ -93,6 +93,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Vérifier toutes les notifications (syntaxe, etc)
     // TODO: Corriger le parcours de la mémoire qui demande une double entrée parfois
     // TODO: Améliorer la visibilité des flags dans les registres
+    // TODO: Vérifier qu'on ne supprime pas le char ' '
 
     @Override
     public void start(Stage stage) throws IOException {
