@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +55,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, String.valueOf(r), 0);
+            FILL.apply(container, String.valueOf(r), 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 assertEquals((byte) 0, container.memory.getByte(j));
@@ -73,7 +74,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111, 1", 0);
+            FILL.apply(container, r + ", 0b00101111, 1", 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 assertEquals((byte) 0b00101111, container.memory.getByte(j));
@@ -92,7 +93,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b0010111100001010, 2", 0);
+            FILL.apply(container, r + ", 0b0010111100001010, 2", 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 2 == 0) assertEquals((byte) 0b00101111, container.memory.getByte(j));
@@ -112,7 +113,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b001011110000101011111111, 3", 0);
+            FILL.apply(container, r + ", 0b001011110000101011111111, 3", 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 3 == 0) assertEquals((byte) 0b00101111, container.memory.getByte(j));
@@ -133,7 +134,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 4", 0);
+            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 4", 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 4 == 0) assertEquals((byte) 0b00101111, container.memory.getByte(j));
@@ -155,7 +156,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 17", 0);
+            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 17", 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 17 == 13) assertEquals((byte) 0b00101111, container.memory.getByte(j));
@@ -178,7 +179,7 @@ class FillExecutorTest extends JArmEmuTest {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 123", 0);
+            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 123", 0, Section.DATA);
 
             for (int j = 0 ; j < r ; j++) {
                 assertEquals((byte) 0b00000000, container.memory.getByte(j));

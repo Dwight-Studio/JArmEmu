@@ -50,18 +50,18 @@ class WordExecutorTest {
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            WORD.apply(container, "" + r, i*4);
+            WORD.apply(container, "" + r, i*4, Section.DATA);
             assertEquals(r, container.memory.getWord(i*4));
         }
 
-        WORD.apply(container, "'c'", 32*4);
+        WORD.apply(container, "'c'", 32*4, Section.DATA);
         assertEquals(99, container.memory.getWord(32*4));
     }
 
     @Test
     void constTest() {
-        DirectiveExecutors.EQUIVALENT.apply(container, "N, 4", 0);
-        WORD.apply(container, "N", 100);
+        DirectiveExecutors.EQUIVALENT.apply(container, "N, 4", 0, Section.DATA);
+        WORD.apply(container, "N", 100, Section.DATA);
         assertEquals(4, container.memory.getWord(100));
     }
 
@@ -69,14 +69,14 @@ class WordExecutorTest {
     void labelTest() {
         ParsedDirectiveLabel l = new ParsedDirectiveLabel("TEST", Section.NONE);
         l.register(container, 99);
-        WORD.apply(container, "=TEST", 100);
+        WORD.apply(container, "=TEST", 100, Section.DATA);
         assertEquals(99, container.memory.getWord(100));
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> WORD.apply(container, "12 * 1 * 9^4", 0));
-        assertThrows(SyntaxASMException.class, () -> WORD.apply(container, "HIHI", 0));
+        assertDoesNotThrow(() -> WORD.apply(container, "12 * 1 * 9^4", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> WORD.apply(container, "HIHI", 0, Section.DATA));
     }
 
 }

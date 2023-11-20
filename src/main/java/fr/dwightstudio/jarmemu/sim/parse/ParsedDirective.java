@@ -69,13 +69,13 @@ public class ParsedDirective extends ParsedObject {
      */
     public int apply(StateContainer stateContainer, int currentPos) {
         int symbolAddress = stateContainer.getSymbolsAddress();
-        directive.apply(stateContainer, this.args, currentPos + symbolAddress);
+        directive.apply(stateContainer, this.args, currentPos + symbolAddress, section);
 
         if (generated) {
             stateContainer.pseudoData.put(hash, currentPos);
         }
 
-        return directive.computeDataLength(stateContainer, args, currentPos) + currentPos;
+        return directive.computeDataLength(stateContainer, args, currentPos, section) + currentPos;
     }
 
     public Directive getDirective() {

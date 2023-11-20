@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
@@ -33,9 +34,10 @@ public class GlobalExecutor implements DirectiveExecutor {
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle dans la mémoire
+     * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos) {
+    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
         if (args.matches("[A-Za-z_0-9]+")) {
             stateContainer.setGlobal(args.toUpperCase());
         } else {
@@ -49,10 +51,11 @@ public class GlobalExecutor implements DirectiveExecutor {
      * @param stateContainer Le conteneur d'état sur lequel calculer
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
+     * @param section
      * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
+    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
         return 0;
     }
 }

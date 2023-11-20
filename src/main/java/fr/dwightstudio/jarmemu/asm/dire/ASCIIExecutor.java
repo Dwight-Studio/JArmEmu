@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
@@ -33,15 +34,16 @@ public class ASCIIExecutor implements DirectiveExecutor {
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle dans la mémoire
+     * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos) {
+    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
             String del = String.valueOf(args.charAt(0));
             String str = args.substring(1, args.length()-1);
             if (str.contains(del)) throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
             for (char c : str.toCharArray()) {
-                DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), currentPos);
+                DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), currentPos, section);
                 currentPos++;
             }
         } else {
@@ -55,10 +57,11 @@ public class ASCIIExecutor implements DirectiveExecutor {
      * @param stateContainer Le conteneur d'état sur lequel calculer
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
+     * @param section
      * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
+    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
         String str = args.substring(1, args.length() - 1);
         return str.length();
     }

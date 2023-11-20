@@ -31,7 +31,7 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public enum Directive {
     // Consts
     SET(DirectiveExecutors.EQUIVALENT, true), EQU(DirectiveExecutors.EQUIVALENT, true), EQUIV(DirectiveExecutors.EQUIVALENT, true), EQV(DirectiveExecutors.EQUIVALENT, true), // Définir une constante
-    GLOBAL(DirectiveExecutors.GLOBAL, true), GLOBL(DirectiveExecutors.GLOBAL, true), // Inutile pour l'interpréteur
+    GLOBAL(DirectiveExecutors.GLOBAL, true), GLOBL(DirectiveExecutors.GLOBAL, true),
 
     // Data
     WORD(DirectiveExecutors.WORD, false), // Donnée sur 32bits
@@ -60,8 +60,8 @@ public enum Directive {
      * @param args la chaine d'arguments
      * @param currentPos la position actuelle dans la mémoire
      */
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos) throws SyntaxASMException {
-        return executor.computeDataLength(stateContainer, args, currentPos);
+    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) throws SyntaxASMException {
+        return executor.computeDataLength(stateContainer, args, currentPos, section);
     }
 
     /**
@@ -72,8 +72,8 @@ public enum Directive {
      * @param args la chaine d'arguments
      * @param currentPos     la position actuelle dans la mémoire
      */
-    public void apply(StateContainer stateContainer, String args, int currentPos) {
-        executor.apply(stateContainer, args, currentPos);
+    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+        executor.apply(stateContainer, args, currentPos, section);
     }
 
     public boolean isSectionIndifferent() {

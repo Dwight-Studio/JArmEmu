@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,15 +49,15 @@ class HalfExecutorTest {
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            HALF.apply(container, "" + (r & 0xFFFF), i*2);
+            HALF.apply(container, "" + (r & 0xFFFF), i*2, Section.DATA);
             assertEquals((short) (r & 0xFFFF), container.memory.getHalf(i*2));
         }
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> HALF.apply(container, "12", 0));
-        assertThrows(SyntaxASMException.class, () -> HALF.apply(container, "HIHI", 0));
+        assertDoesNotThrow(() -> HALF.apply(container, "12", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> HALF.apply(container, "HIHI", 0, Section.DATA));
     }
 
 }

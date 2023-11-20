@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.dire;
 
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +51,7 @@ class ByteExecutorTest {
             for (int j = 0; j < 32; j++) {
                 byte[] b = new byte[1];
                 random.nextBytes(b);
-                BYTE.apply(container, "" + (b[0] & 0xFF), j);
+                BYTE.apply(container, "" + (b[0] & 0xFF), j, Section.DATA);
                 assertEquals(b[0], container.memory.getByte(j));
             }
         }
@@ -58,12 +59,12 @@ class ByteExecutorTest {
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> BYTE.apply(container, "0", 0));
-        assertDoesNotThrow(() -> BYTE.apply(container, "127", 0));
-        assertDoesNotThrow(() -> BYTE.apply(container, "0b101", 0));
-        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "256", 0));
-        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "dq", 0));
-        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "0xFFF", 0));
+        assertDoesNotThrow(() -> BYTE.apply(container, "0", 0, Section.DATA));
+        assertDoesNotThrow(() -> BYTE.apply(container, "127", 0, Section.DATA));
+        assertDoesNotThrow(() -> BYTE.apply(container, "0b101", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "256", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "dq", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "0xFFF", 0, Section.DATA));
     }
 
 }

@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,15 +44,15 @@ class GlobalExecutorTest extends JArmEmuTest {
 
     @Test
     void normalTest() {
-        GLOBAL.apply(container, "ExEMpLE", 0);
+        GLOBAL.apply(container, "ExEMpLE", 0, Section.DATA);
         assertEquals("EXEMPLE", container.getGlobal());
-        assertEquals(0, GLOBAL.computeDataLength(container,"EXEMPLE", 0));
+        assertEquals(0, GLOBAL.computeDataLength(container,"EXEMPLE", 0, Section.DATA));
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> GLOBAL.apply(container, "AHHHHHHHHHHHHHHH", 0));
-        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "", 0));
-        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "/.", 0));
+        assertDoesNotThrow(() -> GLOBAL.apply(container, "AHHHHHHHHHHHHHHH", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "/.", 0, Section.DATA));
     }
 }

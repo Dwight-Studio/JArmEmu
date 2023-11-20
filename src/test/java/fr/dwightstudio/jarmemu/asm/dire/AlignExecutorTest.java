@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,13 +50,13 @@ class AlignExecutorTest extends JArmEmuTest {
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            assertEquals(0, (ALIGN.computeDataLength(container, "", r) + r) % 4);
+            assertEquals(0, (ALIGN.computeDataLength(container, "", r, Section.DATA) + r) % 4);
         }
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> ALIGN.apply(container, "", 0));
-        assertThrows(SyntaxASMException.class, () -> ALIGN.apply(container, "HIHI", 0));
+        assertDoesNotThrow(() -> ALIGN.apply(container, "", 0, Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> ALIGN.apply(container, "HIHI", 0, Section.DATA));
     }
 }

@@ -93,6 +93,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter une colonne transcription en ASCII
     // TODO: Activer le choix des colonnes
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
+    // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     
     @Override
     public void start(Stage stage) throws IOException {
