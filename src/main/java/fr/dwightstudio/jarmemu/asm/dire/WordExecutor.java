@@ -45,7 +45,7 @@ public class WordExecutor implements DirectiveExecutor {
                     int data = stateContainer.evalWithAll(string);
                     stateContainer.memory.putWord(currentPos, data);
                 } else {
-                    int data = stateContainer.evalWithConsts(string.strip());
+                    int data = stateContainer.evalWithAll(string.strip());
                     stateContainer.memory.putWord(currentPos, data);
                 }
                 currentPos += 4;
