@@ -26,6 +26,11 @@
 # Aller à la racine du dépôt
 cd $(git rev-parse --show-toplevel) || exit 1
 
+if [ "${EUID}" -ne 0 ]; then
+    sudo ./scripts/build_all.sh
+    exit 0
+fi
+
 echo "Building RPM..."
 source ./scripts/build_rpm.sh || exit 1
 

@@ -28,7 +28,7 @@ cd $(git rev-parse --show-toplevel) || exit 1
 CWD=$(pwd)
 
 # Constantes
-VER=0.1.4
+VER=0.1.5
 RELEASE=BETA
 
 rpmdev-setuptree
@@ -36,13 +36,13 @@ TMP=$(mktemp -d -q)
 CPF=$TMP/JArmEmu
 
 # Copie
-mkdir -p $CPF
+mkdir -p $CPF/java/JArmEmu/
 cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $CPF
 cp -r ./package/linux/common/icons $CPF/
 cp -r ./package/linux/common/mime $CPF/
 cp ./package/linux/common/jarmemu $CPF/
-cp ./target/JArmEmu.jar $CPF/java/
-cp -r ./target/lib/ $CPF/java/
+cp ./target/JArmEmu.jar $CPF/java/JArmEmu/
+cp -r ./target/lib/ $CPF/java/JArmEmu/
 
 # Compression
 cd $TMP/ || exit 1
