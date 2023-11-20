@@ -158,21 +158,25 @@ public class ASMParser {
 
         if (arg1 != null) {
             arg1 = arg1.replaceAll("\\s+","");
+            arg1 = arg1.replaceAll("''","' '");
             if (arg1.isEmpty()) arg1 = null;
         }
 
         if (arg2 != null) {
             arg2 = arg2.replaceAll("\\s+","");
+            arg2 = arg2.replaceAll("''","' '");
             if (arg2.isEmpty()) arg2 = null;
         }
 
         if (arg3 != null) {
             arg3 = arg3.replaceAll("\\s+","");
+            arg3 = arg3.replaceAll("''","' '");
             if (arg3.isEmpty()) arg3 = null;
         }
 
         if (arg4 != null) {
             arg4 = arg4.replaceAll("\\s+","");
+            arg4 = arg4.replaceAll("''","' '");
             if (arg4.isEmpty()) arg4 = null;
         }
 
