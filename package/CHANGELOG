@@ -6,6 +6,7 @@
 - Changed notifications format
 - Added FlatPaks
 - Added launching command ($jarmemu)
+- Fixed char parsing error (deleting whitespaces)
 
 
 0.1.2 -> 0.1.3
