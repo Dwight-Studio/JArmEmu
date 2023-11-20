@@ -27,7 +27,7 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.5
+VER=0.1.4
 RELEASE=BETA
 BF=$HOME/debbuild/
 CPF=$BF/jarmemu/
@@ -41,14 +41,15 @@ rm ./target/JArmEmu-${VER}-${RELEASE}_all.deb
 # Compression
 mkdir -p $CPF/DEBIAN/
 mkdir -p $US/applications/
-mkdir -p $US/java/jarmemu/
+mkdir -p $US/java/JArmEmu/
+mkdir -p $UB
 cp ./package/linux/deb/control $CPF/DEBIAN/
-cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $US/applications/
+cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $US/applications/
 cp -r ./package/linux/common/icons $US/
 cp -r ./package/linux/common/mime $US/
 cp ./package/linux/common/jarmemu $UB/
-cp ./target/JArmEmu.jar $US/java/jarmemu/
-cp -r ./target/lib/ $US/java/jarmemu/
+cp ./target/JArmEmu.jar $US/java/JArmEmu/
+cp -r ./target/lib/ $US/java/JArmEmu/
 
 # Build
 dpkg-deb --root-owner-group --build $CPF || exit 1

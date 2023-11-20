@@ -27,7 +27,7 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.5
+VER=0.1.4
 RELEASE=BETA
 BF=$HOME/rpmbuild
 
@@ -41,12 +41,12 @@ CPF=$TMP/jarmemu-$VER
 
 # Compression
 mkdir -p $CPF/java/jarmemu
-cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $CPF/
+cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $CPF/
 cp -r ./package/linux/common/icons $CPF/
 cp -r ./package/linux/common/mime $CPF/
 cp ./package/linux/common/jarmemu $CPF/
-cp ./target/JArmEmu.jar $CPF/java/jarmemu/
-cp -r ./target/lib/ $CPF/java/jarmemu/
+cp ./target/JArmEmu.jar $CPF/java/JArmEmu/
+cp -r ./target/lib/ $CPF/java/JArmEmu/
 
 tar -C $TMP/ -zcf $CPF.tar.gz jarmemu-$VER
 cp $CPF.tar.gz $BF/SOURCES/

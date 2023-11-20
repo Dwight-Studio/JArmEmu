@@ -28,7 +28,7 @@ cd $(git rev-parse --show-toplevel) || exit 1
 CWD=$(pwd)
 
 # Constantes
-VER=0.1.5
+VER=0.1.4
 RELEASE=BETA
 
 rpmdev-setuptree
@@ -37,7 +37,7 @@ CPF=$TMP/JArmEmu
 
 # Copie
 mkdir -p $CPF/java/JArmEmu/
-cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $CPF
+cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $CPF
 cp -r ./package/linux/common/icons $CPF/
 cp -r ./package/linux/common/mime $CPF/
 cp ./package/linux/common/jarmemu $CPF/
@@ -50,5 +50,6 @@ zip -r JArmEmu *
 
 # Rendu et clean
 mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-source.zip
+sha256sum $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-source.zip > $CWD/target/flatpak.checksum
 cd $CWD/ || exit 1
 rm -r $TMP

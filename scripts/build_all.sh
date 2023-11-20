@@ -45,3 +45,4 @@ source ./scripts/build_flatpak.sh || exit 1
 
 echo "Building ZIP..."
 source ./scripts/build_zip.sh || exit 1
+

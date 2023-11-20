@@ -1,5 +1,5 @@
 Name:           jarmemu
-Version:        0.1.5
+Version:        0.1.4
 Release:        BETA
 Summary:        JArmEmu
 Group:          Development/Tools
@@ -30,7 +30,7 @@ cp -r mime/ $RPM_BUILD_ROOT/%{_datadir}/
 
 install jarmemu $RPM_BUILD_ROOT/%{_bindir}/jarmemu
 
-desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ fr.dwightstudio.JArmEmu.desktop
 
 %post
 touch --no-create %{_datadir}/icons/hicolor
@@ -52,22 +52,22 @@ update-desktop-database &> /dev/null || :
 rm -rf $RPM_BUILD_ROOT
 
 %files
-%{_datadir}/java/jarmemu/*
+%{_datadir}/java/JArmEmu/*
 
-%{_datadir}/mime/packages/text-x-jarmemu-source.xml
+%{_datadir}/mime/packages/fr.dwightstudio.JArmEmu.xml
 
 %{_bindir}/jarmemu
 
-%{_datadir}/icons/hicolor/128x128/apps/jarmemu.png
-%{_datadir}/icons/hicolor/16x16/apps/jarmemu.png
-%{_datadir}/icons/hicolor/24x24/apps/jarmemu.png
-%{_datadir}/icons/hicolor/256x256/apps/jarmemu.png
-%{_datadir}/icons/hicolor/32x32/apps/jarmemu.png
-%{_datadir}/icons/hicolor/48x48/apps/jarmemu.png
-%{_datadir}/icons/hicolor/512x512/apps/jarmemu.png
-%{_datadir}/icons/hicolor/64x64/apps/jarmemu.png
+%{_datadir}/icons/hicolor/128x128/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/16x16/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/24x24/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/256x256/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/32x32/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/48x48/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/512x512/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/64x64/apps/fr.dwightstudio.JArmEmu.png
 
-%{_datadir}/applications/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop
+%{_datadir}/applications/fr.dwightstudio.JArmEmu.desktop
 
 %changelog
 * Wed Nov 8 2023 Alexandre Leconte <aleconte@insa-rennes.fr>
