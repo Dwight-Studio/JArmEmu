@@ -23,9 +23,8 @@
 
 package fr.dwightstudio.jarmemu.sim;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -35,10 +34,10 @@ public class SourceScanner {
     private int currentInstructionValue;
     private final ArrayList<String> code;
 
-    public SourceScanner(File file) throws FileNotFoundException {
+    public SourceScanner(File file) throws IOException {
         this.code = new ArrayList<>();
-        Scanner scanner = new Scanner(file);
-        while (scanner.hasNextLine()) code.add(scanner.nextLine());
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        code.addAll(reader.lines().toList());
         this.currentInstructionValue = -1;
     }
 

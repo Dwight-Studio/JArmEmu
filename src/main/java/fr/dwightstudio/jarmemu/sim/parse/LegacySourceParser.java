@@ -33,6 +33,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class LegacySourceParser implements SourceParser {
      * @param file Le fichier
      * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
      */
-    public LegacySourceParser(File file) throws FileNotFoundException {
+    public LegacySourceParser(File file) throws IOException {
 
         this.sourceScanner = new SourceScanner(file);
         this.legacySectionParser = new LegacySectionParser();
