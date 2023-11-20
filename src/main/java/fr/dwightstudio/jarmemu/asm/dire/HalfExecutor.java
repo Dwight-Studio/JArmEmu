@@ -36,16 +36,25 @@ public class HalfExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
+        if (args.isBlank()) {
+            return;
+        }
+
         try {
-            int data = stateContainer.evalWithConsts(args);
-            if (Integer.numberOfLeadingZeros(data) >= 16) {
-                short half = (short) data;
-                stateContainer.memory.putHalf(currentPos, half);
-            } else {
-                throw new SyntaxASMException("Overflowing Half value '" + args + "'");
+            String[] arg = args.split(",");
+
+            for (String string : arg) {
+                int data = stateContainer.evalWithAll(string.strip());
+                if (Integer.numberOfLeadingZeros(data) >= 16) {
+                    short half = (short) data;
+                    stateContainer.memory.putHalf(currentPos, half);
+                    currentPos += 2;
+                } else {
+                    throw new SyntaxASMException("Overflowing Half value '" + args + "'");
+                }
             }
         } catch (NumberFormatException exception) {
-            throw new SyntaxASMException("Invalid Half value '" + args + "'");
+            throw new SyntaxASMException("Invalid Word value '" + args + "'");
         }
     }
 
@@ -59,6 +68,8 @@ public class HalfExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
-        return 2;
+        if (args.isBlank()) return 2;
+        String[] arg = args.split(",");
+        return arg.length * 2;
     }
 }

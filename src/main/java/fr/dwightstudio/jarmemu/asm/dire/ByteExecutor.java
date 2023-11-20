@@ -36,16 +36,26 @@ public class ByteExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
+
+        if (args.isBlank()) {
+            return;
+        }
+
         try {
-            int data = stateContainer.evalWithAll(args);
-            if (Integer.numberOfLeadingZeros(data) >= 24) {
-                byte b = (byte) data;
-                stateContainer.memory.putByte(currentPos, b);
-            } else {
-                throw new SyntaxASMException("Overflowing byte value '" + args + "'");
+            String[] arg = args.split(",");
+
+            for (String string : arg) {
+                int data = stateContainer.evalWithAll(string.strip());
+                if (Integer.numberOfLeadingZeros(data) >= 24) {
+                    byte half = (byte) data;
+                    stateContainer.memory.putByte(currentPos, half);
+                    currentPos += 1;
+                } else {
+                    throw new SyntaxASMException("Overflowing Byte value '" + args + "'");
+                }
             }
         } catch (NumberFormatException exception) {
-            throw new SyntaxASMException("Invalid byte value '" + args + "'");
+            throw new SyntaxASMException("Invalid Byte value '" + args + "'");
         }
     }
 
@@ -59,6 +69,8 @@ public class ByteExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
-        return 1;
+        if (args.isBlank()) return 1;
+        String[] arg = args.split(",");
+        return arg.length;
     }
 }

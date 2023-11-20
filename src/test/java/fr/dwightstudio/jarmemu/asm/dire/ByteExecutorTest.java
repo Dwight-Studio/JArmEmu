@@ -64,7 +64,6 @@ class ByteExecutorTest {
         assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "256", 0));
         assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "dq", 0));
         assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "0xFFF", 0));
-        assertThrows(SyntaxASMException.class, () -> BYTE.apply(container, "", 0));
     }
 
 }

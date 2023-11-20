@@ -160,6 +160,8 @@ public class StateContainer {
 
     private String preEval(String s) {
 
+        if (s.startsWith("=") || s.startsWith("#")) s = s.substring(1);
+
         return SPECIAL_VALUE_PATTERN.matcher(s).replaceAll(matchResult -> {
             String valueString = matchResult.group("VALUE").toUpperCase();
             try {

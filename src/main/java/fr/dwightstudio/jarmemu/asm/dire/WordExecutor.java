@@ -36,18 +36,17 @@ public class WordExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos) {
+
+        if (args.isBlank()) {
+            return;
+        }
+
         try {
             String[] arg = args.split(",");
 
             for (String string : arg) {
-                if (string.startsWith("=")) {
-                    string = string.substring(1);
-                    int data = stateContainer.evalWithAll(string);
-                    stateContainer.memory.putWord(currentPos, data);
-                } else {
-                    int data = stateContainer.evalWithAll(string.strip());
-                    stateContainer.memory.putWord(currentPos, data);
-                }
+                int data = stateContainer.evalWithAll(string.strip());
+                stateContainer.memory.putWord(currentPos, data);
                 currentPos += 4;
             }
         } catch (NumberFormatException exception) {
@@ -65,6 +64,7 @@ public class WordExecutor implements DirectiveExecutor {
      */
     @Override
     public int computeDataLength(StateContainer stateContainer, String args, int currentPos) {
+        if (args.isBlank()) return 4;
         String[] arg = args.split(",");
         return arg.length * 4;
     }
