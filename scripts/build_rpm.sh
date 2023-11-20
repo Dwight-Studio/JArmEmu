@@ -44,6 +44,7 @@ mkdir -p $CPF/java/jarmemu
 cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $CPF/
 cp -r ./package/linux/common/icons $CPF/
 cp -r ./package/linux/common/mime $CPF/
+cp ./package/linux/common/jarmemu $CPF/
 cp ./target/JArmEmu.jar $CPF/java/jarmemu/
 cp -r ./target/lib/ $CPF/java/jarmemu/
 

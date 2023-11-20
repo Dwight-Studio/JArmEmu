@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #
 #            ____           _       __    __     _____ __            ___
@@ -23,32 +23,4 @@
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Aller à la racine du dépôt
-cd $(git rev-parse --show-toplevel) || exit 1
-CWD=$(pwd)
-
-# Constantes
-VER=0.1.4
-RELEASE=BETA
-
-rpmdev-setuptree
-TMP=$(mktemp -d -q)
-CPF=$TMP/JArmEmu
-
-# Copie
-mkdir -p $CPF
-cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $CPF
-cp -r ./package/linux/common/icons $CPF/
-cp -r ./package/linux/common/mime $CPF/
-cp ./package/linux/common/jarmemu $CPF/
-cp ./target/JArmEmu.jar $CPF/java/
-cp -r ./target/lib/ $CPF/java/
-
-# Compression
-cd $TMP/ || exit 1
-zip -r JArmEmu *
-
-# Rendu et clean
-mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-source.zip
-cd $CWD/ || exit 1
-rm -r $TMP
+java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/JArmEmu.jar "$@"

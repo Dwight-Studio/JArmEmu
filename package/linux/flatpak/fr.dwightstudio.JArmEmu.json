@@ -1,9 +1,9 @@
 {
   "id" : "fr.dwightstudio.JArmEmu",
   "runtime" : "org.freedesktop.Platform",
-  "runtime-version" : "22.08",
+  "runtime-version": "22.08",
   "sdk" : "org.freedesktop.Sdk",
-  "command": "java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/JArmEmu.jar",
+  "command": "jarmemu",
   "sdk-extensions" : [ "org.freedesktop.Sdk.Extension.openjdk" ],
   "finish-args": [
     "--env=PATH=/app/jre/bin:/app/bin:/usr/bin",
@@ -38,18 +38,26 @@
       "name": "jarmemu",
       "buildsystem": "simple",
       "build-commands": [
-        "cp -r java/ /usr/share/",
-        "cp -r icons/ /usr/share/",
-        "cp -r mime/ /usr/share/"
+        "/usr/lib/sdk/openjdk/install.sh",
+        "mkdir -p /app/share/java/JArmEmu/",
+        "cp -r java/* /app/share/java/JArmEmu/",
+        "cp -r icons/ /app/share/",
+        "cp -r mime/ /app/share/",
+        "install jarmemu /app/bin/jarmemu"
       ],
       "post-install": [
+        "install -Dm644 fr.dwightstudio.JArmEmu.metainfo.xml /app/share/metainfo/fr.dwightstudio.JArmEmu.metainfo.xml",
         "desktop-file-install --dir=/app/share/applications fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop"
       ],
       "sources": [
         {
           "type": "archive",
-          "url": "https://github.com/Dwight-Studio/JArmEmu/releases/download/v0.1.4/JArmEmu-0.1.4-BETA.flatpak-source.zip",
-          "sha256": "XXX"
+          "url": "https://github.com/Dwight-Studio/JArmEmu/releases/download/v0.1.3/JArmEmu-0.1.3-BETA.flatpak-source.zip",
+          "sha256": "d02dcce68ce7309f7ce73db646116c5abe841637019f3b9367c8f9d7f898a976"
+        },
+        {
+          "type": "file",
+          "path": "fr.dwightstudio.JArmEmu.metainfo.xml"
         }
       ]
     }

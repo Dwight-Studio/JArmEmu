@@ -32,6 +32,7 @@ RELEASE=BETA
 BF=$HOME/debbuild/
 CPF=$BF/jarmemu/
 US=$CPF/usr/share/
+UB=$CPF/usr/bin/
 
 # Clean
 rm -r $BF
@@ -45,6 +46,7 @@ cp ./package/linux/deb/control $CPF/DEBIAN/
 cp ./package/linux/common/fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop $US/applications/
 cp -r ./package/linux/common/icons $US/
 cp -r ./package/linux/common/mime $US/
+cp ./package/linux/common/jarmemu $UB/
 cp ./target/JArmEmu.jar $US/java/jarmemu/
 cp -r ./target/lib/ $US/java/jarmemu/
 

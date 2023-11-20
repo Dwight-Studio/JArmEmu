@@ -22,10 +22,13 @@ JArmEmu is a simple simulator with a graphical interface that offers basic contr
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/java
 mkdir -p $RPM_BUILD_ROOT/%{_datadir}/icons
+mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 
 cp -r java/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r icons/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r mime/ $RPM_BUILD_ROOT/%{_datadir}/
+
+install jarmemu $RPM_BUILD_ROOT/%{_bindir}/jarmemu
 
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ fr.dwightstudio.jarmemu.gui.JArmEmuApplication.desktop
 
@@ -52,6 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/java/jarmemu/*
 
 %{_datadir}/mime/packages/text-x-jarmemu-source.xml
+
+%{_bindir}/jarmemu
 
 %{_datadir}/icons/hicolor/128x128/apps/jarmemu.png
 %{_datadir}/icons/hicolor/16x16/apps/jarmemu.png
