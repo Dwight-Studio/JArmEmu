@@ -181,6 +181,15 @@ public class CodeInterpreter {
             }
         }
 
+        int generateDataPos = pos;
+
+        // Allocation de la place pour les directives générées
+        for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
+            if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
+                pos += parsedInstruction.isPseudoInstruction() ? 4 : 0;
+            }
+        }
+
         stateContainer.setLastAddressROData(pos);
 
         // Application de toutes les directives de DATA
@@ -237,11 +246,11 @@ public class CodeInterpreter {
             try {
                 if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                     if (parsedDirective.isGenerated()) {
-                        pos = parsedDirective.apply(stateContainer, pos);
+                        generateDataPos = parsedDirective.apply(stateContainer, generateDataPos);
                     }
                 } else if (inst.getValue() instanceof ParsedDirectivePack parsedDirectivePack) {
                     if (parsedDirectivePack.containsGenerated()) {
-                        pos = parsedDirectivePack.apply(stateContainer, pos);
+                        generateDataPos = parsedDirectivePack.apply(stateContainer, generateDataPos);
                     }
                 }
             } catch (SyntaxASMException e) {

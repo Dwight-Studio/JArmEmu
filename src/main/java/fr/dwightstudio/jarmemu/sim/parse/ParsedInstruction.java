@@ -202,10 +202,9 @@ public class ParsedInstruction extends ParsedObject {
         ParsedDirectivePack pack = new ParsedDirectivePack();
         for (int i = 0; i < originalArgs.length; i++) {
             if (originalArgs[i] != null) {
-                String valueString = originalArgs[i];
-                processedArgs[i] = PSEUDO_OP_PATTERN.matcher(valueString).replaceAll(matchResult -> {
+                processedArgs[i] = PSEUDO_OP_PATTERN.matcher(originalArgs[i]).replaceAll(matchResult -> {
                     int value = stateContainer.evalWithAll(matchResult.group("VALUE"));
-                    ParsedDirective dir = new ParsedDirective(Directive.WORD, Integer.toString(value), Section.TEXT);
+                    ParsedDirective dir = new ParsedDirective(Directive.WORD, Integer.toString(value), Section.RODATA);
                     String hash = RandomStringUtils.randomAlphabetic(10).toUpperCase();
                     dir.setGenerated(hash.strip());
                     pack.add(dir);
@@ -215,6 +214,21 @@ public class ParsedInstruction extends ParsedObject {
         }
 
         return pack;
+    }
+
+    /**
+     * Applique les pseudo-instructions en générant des processedArgs
+     *
+     * @return vrai si l'instruction est une pseudo-instruction
+     */
+    public boolean isPseudoInstruction() {
+        for (String originalArg : originalArgs) {
+            if (originalArg != null) {
+                return PSEUDO_OP_PATTERN.matcher(originalArg).find();
+            }
+        }
+
+        return false;
     }
 
     public ParsedInstruction convertMovToShift(StateContainer stateContainer) {
