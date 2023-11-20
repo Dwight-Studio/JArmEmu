@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SoftwareInterruptionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -43,22 +42,24 @@ import java.util.logging.Logger;
 
 public class CodeInterpreter {
     private static final Logger logger = Logger.getLogger(CodeInterpreter.class.getName());
+    private boolean stuck;
 
     protected StateContainer stateContainer;
     protected HashMap<Integer, ParsedObject> parsedObjects;
     protected ArrayList<Integer> instructionPositions;
     private int currentLine;
     private int lastLine;
-    private boolean atTheEnd;
+    private boolean reachEnd;
     private ParsedInstruction lastExecuted;
     private int lastExecutedLine;
     private boolean jumped;
 
     public CodeInterpreter() {
         this.currentLine = -1;
-        this.atTheEnd = false;
-        jumped = false;
-        stateContainer = new StateContainer();
+        this.reachEnd = false;
+        this.stuck = false;
+        this.jumped = false;
+        this.stateContainer = new StateContainer();
     }
 
     public StateContainer getStateContainer() {
@@ -81,7 +82,7 @@ public class CodeInterpreter {
         instructionPositions = computeInstructionsPositions();
         currentLine = 0;
         lastLine = getLastLine();
-        this.atTheEnd = false;
+        this.reachEnd = false;
         lastExecutedLine = -1;
 
         return null;
@@ -114,7 +115,7 @@ public class CodeInterpreter {
                         line = Math.max(line, inst.getKey());
                     }
                 } else if (inst.getValue() instanceof ParsedDirectivePack pack) {
-                    for (ParsedObject parsedObject : pack.getContent()) {
+                    for (ParsedObject ignored : pack.getContent()) {
                         if (inst.getValue() instanceof ParsedDirective directive) {
                             if (directive.getDirective() == Directive.GLOBAL) {
                                 line = Math.max(line, inst.getKey());
@@ -299,9 +300,12 @@ public class CodeInterpreter {
      * @return la prochaine ligne
      */
     public int getNextLine() {
+        if (doesReachEnd() || isStuck()) {
+            return currentLine;
+        }
         if (!hasNextLine()) {
             logger.info("Unable to find next line: program marked as having reached the end");
-            atTheEnd = true;
+            reachEnd = true;
             return currentLine;
         } else return getNextLineR(currentLine + 1);
     }
@@ -322,7 +326,7 @@ public class CodeInterpreter {
      * @param forceExecution ignore les erreurs d'exécution non bloquantes
      */
     public synchronized void executeCurrentLine(boolean forceExecution) throws ExecutionASMException {
-        jumped = false;
+        this.jumped = false;
 
         // Remise à zéro des drapeaux de ligne des parseurs
         AddressParser.reset(this.stateContainer);
@@ -350,12 +354,14 @@ public class CodeInterpreter {
 
         if (oldPC != newPC) {
             setCurrentLineFromPC();
-            jumped = true;
-        } else {
+            this.jumped = true;
+        } else if (executionException instanceof StuckExecutionASMException) {
+            this.stuck = true;
+        } else if (!this.reachEnd) {
             nextLineToPC();
         }
 
-        this.atTheEnd = !hasNextLine();
+        this.reachEnd = !hasNextLine();
 
         if (executionException != null) throw executionException;
     }
@@ -376,7 +382,7 @@ public class CodeInterpreter {
     public void restart() {
         currentLine = 0;
         lastLine = getLastLine();
-        this.atTheEnd = false;
+        this.reachEnd = false;
         lastExecutedLine = -1;
 
         if (stateContainer.getGlobal() != null) {
@@ -395,7 +401,7 @@ public class CodeInterpreter {
      * @return vrai s'il y a une ligne, faux sinon
      */
     public boolean hasNextLine() {
-        return lastLine > currentLine && !atTheEnd;
+        return lastLine > currentLine && !reachEnd;
     }
 
     /**
@@ -430,8 +436,15 @@ public class CodeInterpreter {
     /**
      * @return vrai si la dernière ligne exécutée était la dernière
      */
-    public boolean isAtTheEnd() {
-        return atTheEnd;
+    public boolean doesReachEnd() {
+        return reachEnd;
+    }
+
+    /**
+     * @return vrai si la dernière ligne exécutée renvoie sur elle-même
+     */
+    public boolean isStuck() {
+        return this.stuck;
     }
 
     /**

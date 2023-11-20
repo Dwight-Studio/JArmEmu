@@ -284,9 +284,17 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 doContinue = false;
             }
 
-            if (application.getCodeInterpreter().isAtTheEnd() || executionException instanceof StuckExecutionASMException) {
+            if (application.getCodeInterpreter().doesReachEnd()) {
                 Platform.runLater(() -> {
                     application.getEditorController().addNotif("Finished", "The program reached the end of the file.", Styles.SUCCESS);
+                    application.getSimulationMenuController().onPause();
+                });
+                doContinue = false;
+            }
+
+            if (executionException instanceof StuckExecutionASMException) {
+                Platform.runLater(() -> {
+                    application.getEditorController().addNotif("Finished", "The program reached a catch point.", Styles.SUCCESS);
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
