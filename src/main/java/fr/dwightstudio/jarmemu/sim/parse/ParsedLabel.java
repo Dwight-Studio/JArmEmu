@@ -57,6 +57,10 @@ public class ParsedLabel extends ParsedObject {
             return new SyntaxASMException("Label '" + this.name + "' is already defined", line, this);
         }
 
+        if (container.data.containsKey(this.name.toUpperCase())) {
+            return new SyntaxASMException("Symbol '" + this.name + "' is already defined", line, this);
+        }
+
         return null;
     }
 
