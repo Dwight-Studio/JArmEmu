@@ -4,7 +4,7 @@ Pour build les packages :
 2 -> Vérifier que le numéro de version est correct (voir le CHANGELOG)
 3 -> Build le jar (mvn clean package)
 4 -> Lancer les scripts de build (Soit /scripts/build_all.sh)
-5 -> (Autre repo) Mettre à jour les infos et le CHANGELOG du FlatPak (/package/linux/flatpak/fr.dwightstudio.JArmEmu.metainfo.xml)
+5 -> Mettre à jour les MetaInfo (/package/linux/common/metainfo/fr.dwightstudio.JArmEmu.metainfo.xml)
 6 -> (Autre repo) Mettre à jour les infos et les sources du FlatPak (/package/linux/flatpak/fr.dwightstudio.JArmEmu.json)
 7 -> Upload les fichiers sur Github et inclure le CHANGELOG
 8 -> Choisir le tag vX.X.X et le titre JArmEmu X.X.X-XXXXXX

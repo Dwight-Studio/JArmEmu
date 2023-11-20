@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #
 #            ____           _       __    __     _____ __            ___
@@ -23,40 +23,4 @@
 #     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-# Aller à la racine du dépôt
-cd $(git rev-parse --show-toplevel) || exit 1
-
-# Constantes
-VER=0.1.5
-RELEASE=BETA
-BF=$HOME/rpmbuild
-
-# Clean
-rm -r $BF
-rm ./target/jarmemu-$VER-$RELEASE.noarch.rpm
-
-rpmdev-setuptree
-TMP=$(mktemp -d -q)
-CPF=$TMP/jarmemu-$VER
-
-# Compression
-mkdir -p $CPF/java/jarmemu
-cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $CPF/
-cp -r ./package/linux/common/icons $CPF/
-cp -r ./package/linux/common/mime $CPF/
-cp -r ./package/linux/common/metainfo $CPF/
-cp ./package/linux/common/jarmemu $CPF/
-cp ./target/JArmEmu.jar $CPF/java/JArmEmu/
-cp -r ./target/lib/ $CPF/java/JArmEmu/
-
-tar -C $TMP/ -zcf $CPF.tar.gz jarmemu-$VER
-cp $CPF.tar.gz $BF/SOURCES/
-rm -r $TMP
-
-# Build
-cp ./package/linux/rpm/jarmemu.spec $BF/SPECS/
-rpmbuild -ba $BF/SPECS/jarmemu.spec || exit 1
-
-# Clean et rendu
-cp $BF/RPMS/noarch/jarmemu-$VER-$RELEASE.noarch.rpm ./target/JArmEmu-$VER-$RELEASE.noarch.rpm
-rm -r $BF
+java -Dprism.dirtyopts=false -jar /app/share/java/JArmEmu/JArmEmu.jar "$@"

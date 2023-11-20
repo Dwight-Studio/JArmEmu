@@ -27,6 +27,7 @@ mkdir -p $RPM_BUILD_ROOT/%{_bindir}
 cp -r java/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r icons/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r mime/ $RPM_BUILD_ROOT/%{_datadir}/
+cp -r metainfo/ $RPM_BUILD_ROOT/%{_datadir}/
 
 install jarmemu $RPM_BUILD_ROOT/%{_bindir}/jarmemu
 
@@ -55,6 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/java/JArmEmu/*
 
 %{_datadir}/mime/packages/fr.dwightstudio.JArmEmu.xml
+%{_datadir}/metainfo/packages/fr.dwightstudio.JArmEmu.metainfo.xml
 
 %{_bindir}/jarmemu
 

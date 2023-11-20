@@ -47,6 +47,7 @@ cp ./package/linux/deb/control $CPF/DEBIAN/
 cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $US/applications/
 cp -r ./package/linux/common/icons $US/
 cp -r ./package/linux/common/mime $US/
+cp -r ./package/linux/common/metainfo $US/
 cp ./package/linux/common/jarmemu $UB/
 cp ./target/JArmEmu.jar $US/java/JArmEmu/
 cp -r ./target/lib/ $US/java/JArmEmu/
