@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
@@ -49,7 +50,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
     }
 
     @Test
-    public void TestFormatLine() throws URISyntaxException, FileNotFoundException {
+    public void TestFormatLine() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/singleLine.s")).toURI());
 
         RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file));
@@ -67,7 +68,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
     }
 
     @Test
-    public void TestReadInstruction() throws URISyntaxException, FileNotFoundException {
+    public void TestReadInstruction() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
 
         RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file));
@@ -91,7 +92,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
     }
 
     @Test
-    public void TestReadInstructionSub() throws URISyntaxException, FileNotFoundException {
+    public void TestReadInstructionSub() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
 
         RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file));
@@ -109,7 +110,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
     }
 
     @Test
-    public void TestReadInstructionComplexer() throws URISyntaxException, FileNotFoundException {
+    public void TestReadInstructionComplexer() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
 
         RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file));
@@ -167,7 +168,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
     }
 
     @Test
-    public void TestReadDirectives() throws URISyntaxException, FileNotFoundException {
+    public void TestReadDirectives() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/directiveMultipleLines.s")).toURI());
 
         RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file));
