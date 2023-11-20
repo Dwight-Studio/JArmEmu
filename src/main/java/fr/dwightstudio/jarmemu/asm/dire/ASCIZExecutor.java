@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ASCIZExecutor implements DirectiveExecutor {
@@ -37,6 +38,11 @@ public class ASCIZExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+
+        if (!args.isBlank() && !section.allowDataInitialisation()) {
+            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+        }
+
         DirectiveExecutors.ASCII.apply(stateContainer, args, currentPos, section);
         DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) '\0'), currentPos + DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos, section), section);
     }

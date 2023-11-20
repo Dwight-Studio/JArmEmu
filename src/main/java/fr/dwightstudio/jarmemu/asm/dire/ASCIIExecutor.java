@@ -38,6 +38,11 @@ public class ASCIIExecutor implements DirectiveExecutor {
      */
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+
+        if (!args.isBlank() && !section.allowDataInitialisation()) {
+            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+        }
+
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
             String del = String.valueOf(args.charAt(0));
             String str = args.substring(1, args.length()-1);

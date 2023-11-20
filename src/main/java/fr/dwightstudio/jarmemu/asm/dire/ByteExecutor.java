@@ -41,6 +41,8 @@ public class ByteExecutor implements DirectiveExecutor {
 
         if (args.isBlank()) {
             return;
+        } else if (!section.allowDataInitialisation()) {
+            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
         try {

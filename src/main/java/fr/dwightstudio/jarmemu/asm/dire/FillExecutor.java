@@ -52,6 +52,10 @@ public class FillExecutor implements DirectiveExecutor {
                 int value = stateContainer.evalWithConsts(arg[1]);
                 int valueSize = stateContainer.evalWithConsts(arg[2]);
 
+                if (!section.allowDataInitialisation() && value != 0) {
+                    throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+                }
+
                 if (valueSize <= 0) throw new SyntaxASMException("Invalid value size '" + valueSize + "' (must be positive)");
 
                 byte[] bytes = new byte[valueSize];

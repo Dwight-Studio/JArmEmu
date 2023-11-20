@@ -40,6 +40,8 @@ public class HalfExecutor implements DirectiveExecutor {
     public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
         if (args.isBlank()) {
             return;
+        } else if (!section.allowDataInitialisation()) {
+            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
         try {
