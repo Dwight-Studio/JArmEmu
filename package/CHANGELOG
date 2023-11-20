@@ -5,6 +5,7 @@
 - Fixed memory search (GUI not updated when searched a address located on another page)
 - Changed notifications format
 - Added FlatPaks
+- Added launching command ($jarmemu)
 
 
 0.1.2 -> 0.1.3
