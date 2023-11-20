@@ -1,5 +1,5 @@
 Name:           jarmemu
-Version:        0.1.4
+Version:        0.1.5
 Release:        BETA
 Summary:        JArmEmu
 Group:          Development/Tools
