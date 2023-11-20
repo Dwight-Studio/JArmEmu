@@ -36,6 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParsedInstruction extends ParsedObject {
@@ -217,14 +218,14 @@ public class ParsedInstruction extends ParsedObject {
     }
 
     /**
-     * Applique les pseudo-instructions en générant des processedArgs
-     *
      * @return vrai si l'instruction est une pseudo-instruction
      */
     public boolean isPseudoInstruction() {
         for (String originalArg : originalArgs) {
             if (originalArg != null) {
-                return PSEUDO_OP_PATTERN.matcher(originalArg).find();
+                if (PSEUDO_OP_PATTERN.matcher(originalArg).matches()) {
+                    return true;
+                }
             }
         }
 
