@@ -48,8 +48,8 @@ public class RegisterArrayParser implements ArgumentParser<Register[]> {
                 if(regString.contains("-")){
                     String[] stringArray = regString.split("-");
                     if (stringArray.length!=2) throw new SyntaxASMException("Unexpected value '" + string + "' (expected a Register Array)");
-                    int registerFirst = Integer.parseInt(String.valueOf(stringArray[0].strip().charAt(1)));
-                    int registerSecond = Integer.parseInt(String.valueOf(stringArray[1].strip().charAt(1)));
+                    int registerFirst = Integer.parseInt(stringArray[0].strip().substring(1));
+                    int registerSecond = Integer.parseInt(stringArray[1].strip().substring(1));
                     for (int i = registerFirst; i <= registerSecond; i++) {
                         Register reg = ArgumentParsers.REGISTER.parse(stateContainer, "R" + i);
                         if (!rtn.contains(reg)) {
