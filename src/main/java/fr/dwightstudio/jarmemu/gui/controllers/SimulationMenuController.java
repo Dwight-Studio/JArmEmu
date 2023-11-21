@@ -68,7 +68,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?).", Styles.DANGER);
             } else {
                 getEditorController().clearLineMarking();
-                getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
+                getEditorController().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
                 getController().stackTab.setDisable(false);
                 getController().memoryTab.setDisable(false);
                 getController().addressField.setDisable(false);
@@ -171,7 +171,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().settingsLegacy.setDisable(false);
         getController().registersTab.setDisable(true);
         getController().stackTab.setDisable(true);
-        getCodeInterpreter().clearState();
         getEditorController().clearLineMarking();
         getExecutionWorker().updateGUI();
         application.status = Status.EDITING;
@@ -184,10 +183,10 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getEditorController().clearNotifs();
         getEditorController().clearLineMarking();
 
-        getCodeInterpreter().resetState(getSettingsController().getStackAddress(), getSettingsController().getSymbolsAddress());
+        getCodeInterpreter().resetState();
         getCodeInterpreter().restart();
 
-        getEditorController().markLine(getCodeInterpreter().getNextLine(), LineStatus.SCHEDULED);
+        getEditorController().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
         getExecutionWorker().restart();
     }
 }

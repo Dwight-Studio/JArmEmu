@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.sim.parse.regex.DirectiveParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public class RegexSourceParser implements SourceParser {
 
@@ -70,8 +71,8 @@ public class RegexSourceParser implements SourceParser {
      * Lecture du fichier et renvoie des objets parsés non vérifiés
      */
     @Override
-    public HashMap<Integer, ParsedObject> parse() {
-        HashMap<Integer, ParsedObject> rtn = new HashMap<>();
+    public TreeMap<Integer, ParsedObject> parse() {
+        TreeMap<Integer, ParsedObject> rtn = new TreeMap<>();
         asmParser = new ASMParser();
         directiveParser = new DirectiveParser();
 

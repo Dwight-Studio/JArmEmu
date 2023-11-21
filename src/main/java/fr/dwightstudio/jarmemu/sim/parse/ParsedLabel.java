@@ -32,7 +32,11 @@ import java.util.logging.Logger;
 public class ParsedLabel extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final String name;
-    private final int pos;
+    private int pos;
+
+    public ParsedLabel(String name) {
+        this.name = name;
+    }
 
     public ParsedLabel(String name, int pos) {
         this.name = name;
@@ -41,10 +45,6 @@ public class ParsedLabel extends ParsedObject {
 
     public String getName() {
         return name;
-    }
-
-    public int getPos() {
-        return pos;
     }
 
     @Override
@@ -69,8 +69,9 @@ public class ParsedLabel extends ParsedObject {
      *
      * @param stateContainer le conteneur d'état
      */
-    public void register(StateContainer stateContainer) {
+    public void register(StateContainer stateContainer, int pos) {
         stateContainer.labels.put(name.strip().toUpperCase(), pos);
+        this.pos = pos;
     }
 
     @Override
@@ -90,7 +91,7 @@ public class ParsedLabel extends ParsedObject {
         }
 
         if (label.pos != this.pos) {
-            if (VERBOSE) logger.info("Difference: Line");
+            if (VERBOSE) logger.info("Difference: Pos (" + label.pos + "/" + this.pos + ")");
             return false;
         }
 

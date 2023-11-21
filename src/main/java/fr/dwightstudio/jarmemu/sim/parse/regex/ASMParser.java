@@ -105,7 +105,7 @@ public class ASMParser {
         Matcher matcher = LABEL_PATTERN.matcher(line);
 
         if (matcher.find()) {
-            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase(), RegisterUtils.lineToPC(instructionPos));
+            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase());
         }
 
         matcher = INSTRUCTION_PATTERN.matcher(line);

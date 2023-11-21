@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
+import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -68,8 +69,7 @@ public class CompleteTest extends JArmEmuTest {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    RegexSourceParser parser;
-    LegacySourceParser parserLegacy;
+    SourceParser parser;
     CodeInterpreter codeInterpreter;
 
     public void load(String name) {
@@ -82,7 +82,7 @@ public class CompleteTest extends JArmEmuTest {
 
     public void loadLegacy(String name) {
         try {
-            parserLegacy = new LegacySourceParser(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
+            parser = new LegacySourceParser(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -143,6 +143,24 @@ public class CompleteTest extends JArmEmuTest {
         }
     }
 
+    private void execute() {
+        // Parse
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.load(parser, StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS));
+        codeInterpreter.restart();
+
+        // Execution
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+            boolean flag = true;
+            while (codeInterpreter.hasNext() && flag) {
+                try {
+                    codeInterpreter.executeCurrentLine(false);
+                } catch (StuckExecutionASMException e) {
+                    flag = false;
+                }
+            }
+        });
+    }
+
     @BeforeEach
     public void setUp() {
         codeInterpreter = new CodeInterpreter();
@@ -152,24 +170,7 @@ public class CompleteTest extends JArmEmuTest {
     public void factorialTest() {
         load("/complete/factorial.s");
 
-        // Parse
-        codeInterpreter.load(parser);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/factorial-memory.d");
     }
@@ -179,23 +180,7 @@ public class CompleteTest extends JArmEmuTest {
         loadLegacy("/complete/factorial.s");
 
         // Parse
-        codeInterpreter.load(parserLegacy);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/factorial-memory.d");
     }
@@ -205,23 +190,7 @@ public class CompleteTest extends JArmEmuTest {
         load("/complete/matrix.s");
 
         // Parse
-        codeInterpreter.load(parser);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/matrix-memory.d");
     }
@@ -231,23 +200,7 @@ public class CompleteTest extends JArmEmuTest {
         loadLegacy("/complete/matrix.s");
 
         // Parse
-        codeInterpreter.load(parserLegacy);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/matrix-memory.d");
     }
@@ -257,23 +210,7 @@ public class CompleteTest extends JArmEmuTest {
         load("/complete/pgcd.s");
 
         // Parse
-        codeInterpreter.load(parser);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/pgcd-memory.d");
     }
@@ -283,23 +220,7 @@ public class CompleteTest extends JArmEmuTest {
         loadLegacy("/complete/pgcd.s");
 
         // Parse
-        codeInterpreter.load(parserLegacy);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/pgcd-memory.d");
     }
@@ -309,23 +230,7 @@ public class CompleteTest extends JArmEmuTest {
         load("/complete/helloworldInt.s");
 
         // Parse
-        codeInterpreter.load(parser);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/helloworldInt-memory.d");
     }
@@ -335,23 +240,7 @@ public class CompleteTest extends JArmEmuTest {
         loadLegacy("/complete/helloworldInt.s");
 
         // Parse
-        codeInterpreter.load(parserLegacy);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/helloworldInt-memory.d");
     }
@@ -361,23 +250,7 @@ public class CompleteTest extends JArmEmuTest {
         load("/complete/helloworldAscii.s");
 
         // Parse
-        codeInterpreter.load(parser);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/helloworldAscii-memory.d");
     }
@@ -387,23 +260,7 @@ public class CompleteTest extends JArmEmuTest {
         loadLegacy("/complete/helloworldAscii.s");
 
         // Parse
-        codeInterpreter.load(parserLegacy);
-        codeInterpreter.resetState(StateContainer.DEFAULT_STACK_ADDRESS, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
-        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.verifyAll());
-        codeInterpreter.restart();
-
-        // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
-            boolean flag = true;
-            while (codeInterpreter.hasNextLine() && flag) {
-                codeInterpreter.nextLine();
-                try {
-                    codeInterpreter.executeCurrentLine(false);
-                } catch (StuckExecutionASMException e) {
-                    flag = false;
-                }
-            }
-        });
+        execute();
 
         assertEqualsMemory("/complete/helloworldAscii-memory.d");
     }

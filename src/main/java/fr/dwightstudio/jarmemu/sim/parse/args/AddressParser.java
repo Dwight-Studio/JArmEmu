@@ -42,7 +42,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
     @Override
     public UpdatableInteger parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         if (string.startsWith("*")) {
-            String symbol = string.substring(1).strip();
+            String symbol = string.substring(1).strip().toUpperCase();
             int rtn = stateContainer.pseudoData.get(symbol) + stateContainer.getSymbolsAddress();
             return new UpdatableInteger(rtn, stateContainer, false, false, null);
         } else if (!string.startsWith("[")) {

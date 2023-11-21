@@ -33,6 +33,7 @@ import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
+import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
@@ -94,8 +95,9 @@ public class JArmEmuApplication extends Application {
     // TODO: Activer le choix des colonnes
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
+    // TODO: Désactiver le réglage des adresses pendant la simulation
     // TODO: Impossible de lancer une seconde simulation
-    
+
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;

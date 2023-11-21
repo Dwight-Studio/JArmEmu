@@ -58,12 +58,4 @@ public enum RegisterUtils {
     public boolean isSpecial() {
         return (getN() > 15);
     }
-
-    public static int lineToPC(int line) {
-        return OFFSET_PC + line * 4;
-    }
-
-    public static int PCToLine(int pc) {
-        return (pc - OFFSET_PC)/4;
-    }
 }

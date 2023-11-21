@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public interface SourceParser {
 
@@ -46,7 +47,7 @@ public interface SourceParser {
      * Méthode principale
      * Lecture du fichier et renvoie des objets parsés non vérifiés
      */
-    public HashMap<Integer, ParsedObject> parse();
+    public TreeMap<Integer, ParsedObject> parse();
 
     /**
      * Lecture d'une ligne et teste de tous ses arguments

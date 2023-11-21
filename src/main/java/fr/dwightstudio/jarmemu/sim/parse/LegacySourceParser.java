@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class LegacySourceParser implements SourceParser {
@@ -199,8 +200,8 @@ public class LegacySourceParser implements SourceParser {
      * Méthode principale
      * Lecture du fichier et renvoie des instructions parsées à verifier
      */
-    public HashMap<Integer, ParsedObject> parse(){
-        HashMap<Integer, ParsedObject> rtn = new HashMap<>();
+    public TreeMap<Integer, ParsedObject> parse(){
+        TreeMap<Integer, ParsedObject> rtn = new TreeMap<>();
         this.currentLineText = 0;
 
         sourceScanner.goTo(-1);
@@ -353,7 +354,7 @@ public class LegacySourceParser implements SourceParser {
         if (this.instruction == null) {
             if (!arguments.isEmpty() && arguments.getFirst().strip().endsWith(":")) {
                 String str = arguments.getFirst();
-                return new ParsedLabel(str.substring(0, str.length()-1), RegisterUtils.lineToPC(this.currentLineText));
+                return new ParsedLabel(str.substring(0, str.length()-1));
             }
         }
 

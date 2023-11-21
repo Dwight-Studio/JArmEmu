@@ -39,7 +39,7 @@ public class GlobalExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
         if (args.matches("[A-Za-z_0-9]+")) {
-            stateContainer.setGlobal(args.toUpperCase());
+            stateContainer.setGlobal(args.toUpperCase().strip());
         } else {
             throw new SyntaxASMException("Invalid argument '" + args + "'");
         }

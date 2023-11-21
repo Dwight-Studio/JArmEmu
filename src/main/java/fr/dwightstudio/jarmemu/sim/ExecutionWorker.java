@@ -245,8 +245,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void step() {
-            last = application.getCodeInterpreter().getLastExecutedLine();
-            line = application.getCodeInterpreter().nextLine();
+            last = line;
+            line = application.getCodeInterpreter().getCurrentLine();
 
             ExecutionASMException executionException = null;
 
@@ -256,7 +256,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getMemoryAlignBreakSetting()) {
                     Platform.runLater(() -> {
                         application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned memory access attempt.", Styles.DANGER);
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                        application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -265,7 +265,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getReadOnlyWritingBreakSetting()) {
                     Platform.runLater(() -> {
                         application.getEditorController().addNotif("Simulator requested a breakpoint", "Read only data overwritten.", Styles.DANGER);
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                        application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -274,7 +274,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 executionException = exception;
             }
 
-            next = application.getCodeInterpreter().getNextLine();
+            next = application.getCodeInterpreter().getCurrentLine();
 
             if (application.getEditorController().hasBreakPoint(next)) {
                 Platform.runLater(() -> {
@@ -284,7 +284,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 doContinue = false;
             }
 
-            if (application.getCodeInterpreter().doesReachEnd()) {
+            if (!application.getCodeInterpreter().hasNext()) {
                 Platform.runLater(() -> {
                     application.getEditorController().addNotif("Finished", "The program reached the end of the file.", Styles.SUCCESS);
                     application.getSimulationMenuController().onPause();
@@ -313,7 +313,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.PC.getN()].getData() % 4 != 0) {
                         Platform.runLater(() -> {
                             application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter.", Styles.DANGER);
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                            application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                             application.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
@@ -324,7 +324,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.SP.getN()].getData() % 4 != 0) {
                     Platform.runLater(() -> {
                         application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer.", Styles.DANGER);
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                        application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -335,7 +335,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     if (application.getCodeInterpreter().stateContainer.getNestingCount() > StateContainer.MAX_NESTING_COUNT) {
                         Platform.runLater(() -> {
                             application.getEditorController().addNotif("Simulator requested a breakpoint", "Function nesting too deep (>1000 branches).", Styles.DANGER);
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                            application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
                             application.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
@@ -443,35 +443,27 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             }
 
             try {
-                SyntaxASMException error = application.getCodeInterpreter().load(application.getSourceParser());
+                SyntaxASMException[] errors = application.getCodeInterpreter().load(application.getSourceParser(), application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
 
-                if (error != null) {
-                    Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(new SyntaxASMException[]{error}));
-                    return;
+                if (errors.length == 0) {
+                    line = next = last = 0;
+                    application.getCodeInterpreter().restart();
+                    application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
+                    application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
+                    application.getEditorController().prepareSimulation();
+                    updateGUI();
                 }
 
-                line = next = last = 0;
-                application.getCodeInterpreter().resetState(application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
-                application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
-                application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
-                application.getCodeInterpreter().restart();
-                application.getEditorController().prepareSimulation();
-
-                SyntaxASMException[] errors = application.getCodeInterpreter().verifyAll();
                 Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors));
             } catch (SyntaxASMException exception) {
                 Platform.runLater(() -> Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(new SyntaxASMException[]{exception})));
-                return;
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     new ExceptionDialog(e).show();
                     logger.severe(ExceptionUtils.getStackTrace(e));
                     application.getSimulationMenuController().abortSimulation();
                 });
-                return;
             }
-
-            updateGUI();
 
             logger.info("Done!");
         }
