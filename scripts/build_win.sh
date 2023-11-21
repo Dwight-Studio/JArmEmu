@@ -28,4 +28,6 @@ RAC=$(git rev-parse --show-toplevel)
 # Aller à la racine du dépôt
 cd $RAC || exit 1
 
+sudo systemctl start docker
+
 docker run --rm -i -v "$RAC:/jarmemu" amake/innosetup /V Z:/jarmemu/package/windows/jarmemu.iss

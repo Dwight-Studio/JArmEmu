@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~            ____           _       __    __     _____ __            ___
+  ~           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
+  ~          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
+  ~         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
+  ~        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
+  ~                         /____/
+  ~     Copyright (C) 2023 Dwight Studio
+  ~
+  ~     This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
 <component type="desktop-application">
     <id>fr.dwightstudio.JArmEmu</id>
     <launchable type="desktop-id">fr.dwightstudio.JArmEmu.desktop</launchable>
@@ -30,6 +53,23 @@
     <update_contact>contact_AT_dwightstudio.fr</update_contact>
     <content_rating type="oars-1.1"/>
     <releases>
+        <release version="0.1.5" date="2023-21-11">
+            <description>
+                <p id="beta-stable-release-of-jarmemu">Beta stable release of JArmEmu</p>
+                <p id="changelog">Changelog:</p>
+                <ul>
+                    <li>Fixed a bug that prevented updating registers used in STR or LDR instructions</li>
+                    <li>Fixed a bug where you could only use in the stack the first 10 registers</li>
+                    <li>Fixed a bug that prevented declaring structures in a structure</li>
+                    <li>Refactored CodeInterpreter to completely use PC</li>
+                    <li>Fixing wrong memory management (Big to Little endian)</li>
+                    <li>Added ASCII column in memory viewing table</li>
+                    <li>Fixed Stack address and Symbol address settings (enabled during simulation)</li>
+                    <li>Fixed transparent line numbers in editor</li>
+                </ul>
+            </description>
+            <url>https://github.com/DwightStudio/JArmEmu/releases/tag/v0.1.5</url>
+        </release>
         <release version="0.1.4" date="2023-20-11">
             <description>
                 <p id="beta-stable-release-of-jarmemu">Beta stable release of JArmEmu</p>

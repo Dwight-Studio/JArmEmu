@@ -40,7 +40,7 @@ TMP=$(mktemp -d -q)
 CPF=$TMP/jarmemu-$VER
 
 # Compression
-mkdir -p $CPF/java/jarmemu
+mkdir -p $CPF/java/JArmEmu
 cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $CPF/
 cp -r ./package/linux/common/icons $CPF/
 cp -r ./package/linux/common/mime $CPF/
