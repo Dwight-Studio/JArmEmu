@@ -165,6 +165,11 @@ public class RegexSourceParserTest extends JArmEmuTest {
                 new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[R0]", "R1" ,"LSL#2"),
                 parser.parseOneLine()
         );
+
+        assertEquals(
+                new ParsedInstruction(Instruction.STR, Condition.AL, false, null, null, "fp","[sp,#-4]!", null ,null),
+                parser.parseOneLine()
+        );
     }
 
     @Test

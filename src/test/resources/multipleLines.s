@@ -8,3 +8,4 @@ bal etiquette
 ceciEstUneEtiquette:
 LDR        R1, [   R0      ,R 1    ,    L SL # 2    ]
 LDR        R1, [ R0 ],   R1 ,     LSL #2
+str     fp, [sp, #-4]!
