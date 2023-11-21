@@ -7,6 +7,7 @@
 - Fixing wrong memory management (Big to Little endian)
 - Added ASCII column in memory viewing table
 - Fixed Stack address and Symbol address settings (enabled during simulation)
+- Fixed transparent line numbers in editor
 
 
 0.1.3 -> 0.1.4

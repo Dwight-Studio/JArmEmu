@@ -35,11 +35,20 @@ public class ASCIIStringConverter  extends StringConverter<Number> {
         byte[] bytes = new byte[4];
         ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt((Integer) number);
 
-        return new String(bytes, StandardCharsets.US_ASCII);
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 
     @Override
     public Number fromString(String s) {
-        return ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8)).getInt();
+
+        switch (s.length()) {
+            case 0 -> s = "\0\0\0\0";
+            case 1 -> s = s + "\0\0\0";
+            case 2 -> s = s + "\0\0";
+            case 3 -> s = s + "\0";
+            default -> s = s.substring(0,4);
+        }
+
+        return ByteBuffer.wrap(s.getBytes(StandardCharsets.UTF_8)).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
 }

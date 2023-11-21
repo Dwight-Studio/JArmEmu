@@ -40,11 +40,13 @@
 .code-area .lineno {
     -fx-font-family: Monospaced;
     -fx-fill: -color-fg-muted;
+    -fx-background-color: -color-bg-overlay;
 }
 
 .code-area .breakpoint {
     -fx-font-family: Monospaced;
     -fx-fill: -color-danger-emphasis;
+    -fx-background-color: -color-bg-overlay;
 }
 
 .code-area .text.instruction {
@@ -89,6 +91,10 @@
 
 .scheduled {
     -fx-background-color: -color-warning-muted;
+}
+
+.none {
+    -fx-background-color: -color-bg-overlay;
 }
 
 /*

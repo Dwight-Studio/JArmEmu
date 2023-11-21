@@ -23,10 +23,13 @@
 
 package fr.dwightstudio.jarmemu.gui.factory;
 
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -59,6 +62,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         Text lineNo = new Text();
         Text breakpoint = new Text();
 
+        rtn.getStyleClass().add("box");
         lineNo.getStyleClass().add("lineno");
         breakpoint.getStyleClass().add("breakpoint");
 
@@ -78,7 +82,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
     private void toggle(int id, Text label) {
         if (breakpoints.contains(id)) breakpoints.remove((Integer) id); else breakpoints.add(id);
-        if (breakpoints.contains(id)) label.setText("  ⬤"); else label.setText("   ");
+        if (breakpoints.contains(id)) label.setText(" ⬤ "); else label.setText("   ");
     }
 
     public void markLine(int line, LineStatus lineStatus) {
@@ -88,6 +92,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
             switch (lineStatus) {
                 case EXECUTED -> hBox.getStyleClass().add("executed");
                 case SCHEDULED -> hBox.getStyleClass().add("scheduled");
+                case NONE -> hBox.getStyleClass().add("none");
             }
         }
     }
