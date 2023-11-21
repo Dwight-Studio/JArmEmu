@@ -94,6 +94,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Activer le choix des colonnes
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
+    // TODO: Impossible de lancer une seconde simulation
     
     @Override
     public void start(Stage stage) throws IOException {
