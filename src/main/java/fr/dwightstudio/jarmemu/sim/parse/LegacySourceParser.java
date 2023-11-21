@@ -270,6 +270,8 @@ public class LegacySourceParser implements SourceParser {
                     this.arguments.replaceAll(String::strip);
                 } else if (currentLine.contains("[")) {
                     StringBuilder argument = new StringBuilder(currentLine.split("\\[")[1]);
+                    boolean toUpdate = argument.toString().strip().charAt(argument.toString().strip().length() - 1) == '!';
+                    argument = new StringBuilder(argument.substring(0, argument.length() - 1));
                     if (argument.toString().split("]").length==2){
                         this.arguments.addAll(Arrays.asList(currentLine.substring(instructionLength).split(",")));
                         this.arguments.replaceAll(String::strip);
@@ -285,6 +287,7 @@ public class LegacySourceParser implements SourceParser {
                         }
                         argument.deleteCharAt(argument.length() - 1);
                         argument.append("]");
+                        if (toUpdate) argument.append("!");
                         this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
                         this.arguments.replaceAll(String::strip);
                     }
