@@ -256,9 +256,7 @@
                                     <content>
                                         <VBox>
                                             <children>
-                                                <AnchorPane fx:id="memoryAnchorPane" VBox.vgrow="ALWAYS">
-                                                    <ScrollPane fx:id="memoryScrollPane" fitToHeight="true" hbarPolicy="ALWAYS" vbarPolicy="NEVER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                                </AnchorPane>
+                                                <AnchorPane fx:id="memoryAnchorPane" VBox.vgrow="ALWAYS" />
                                                 <CustomTextField fx:id="addressField" promptText="Go to address">
                                                     <VBox.margin>
                                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

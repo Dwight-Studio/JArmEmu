@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.gui.factory;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.util.converters.ASCIIStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.ValueStringConverter;
@@ -56,5 +57,9 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
     public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticBin() {
         return (val) -> new ValueTableCell<>(new BinStringConverter());
+    }
+
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticASCII() {
+        return (val) -> new ValueTableCell<>(new ASCIIStringConverter());
     }
 }

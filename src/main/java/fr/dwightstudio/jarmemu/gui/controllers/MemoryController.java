@@ -39,10 +39,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.util.Duration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -68,6 +68,7 @@ public class MemoryController extends AbstractJArmEmuModule {
     private TableColumn<MemoryWordView, Number> col3;
     private TableColumn<MemoryWordView, Number> col4;
     private TableColumn<MemoryWordView, Number> col5;
+    private TableColumn<MemoryWordView, Number> col6;
     private ObservableList<MemoryWordView> views;
     private TableView<MemoryWordView> memoryTable;
     private int lastPageIndex;
@@ -123,18 +124,18 @@ public class MemoryController extends AbstractJArmEmuModule {
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
         col1.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
-        col2 = new TableColumn<>("Byte 0");
-        col2.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
+        col2 = new TableColumn<>("ASCII");
+        col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col2.setSortable(false);
-        col2.setEditable(false);
         col2.setReorderable(false);
         col2.setMinWidth(80);
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
-        col2.setCellValueFactory(c -> c.getValue().getByte0Property());
-        col2.setCellFactory(ValueTableCell.factoryStaticBin());
+        col2.setCellValueFactory(c -> c.getValue().getValueProperty());
+        col2.setCellFactory(ValueTableCell.factoryStaticASCII());
+        col2.setVisible(false);
 
-        col3 = new TableColumn<>("Byte 1");
+        col3 = new TableColumn<>("Byte 3");
         col3.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
         col3.setSortable(false);
         col3.setEditable(false);
@@ -142,7 +143,7 @@ public class MemoryController extends AbstractJArmEmuModule {
         col3.setMinWidth(80);
         col3.setPrefWidth(80);
         col3.getStyleClass().add(Tweaks.ALIGN_CENTER);
-        col3.setCellValueFactory(c -> c.getValue().getByte1Property());
+        col3.setCellValueFactory(c -> c.getValue().getByte0Property());
         col3.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col4 = new TableColumn<>("Byte 2");
@@ -153,10 +154,10 @@ public class MemoryController extends AbstractJArmEmuModule {
         col4.setMinWidth(80);
         col4.setPrefWidth(80);
         col4.getStyleClass().add(Tweaks.ALIGN_CENTER);
-        col4.setCellValueFactory(c -> c.getValue().getByte2Property());
+        col4.setCellValueFactory(c -> c.getValue().getByte1Property());
         col4.setCellFactory(ValueTableCell.factoryStaticBin());
 
-        col5 = new TableColumn<>("Byte 3");
+        col5 = new TableColumn<>("Byte 1");
         col5.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
         col5.setSortable(false);
         col5.setEditable(false);
@@ -164,19 +165,29 @@ public class MemoryController extends AbstractJArmEmuModule {
         col5.setMinWidth(80);
         col5.setPrefWidth(80);
         col5.getStyleClass().add(Tweaks.ALIGN_CENTER);
-        col5.setCellValueFactory(c -> c.getValue().getByte3Property());
+        col5.setCellValueFactory(c -> c.getValue().getByte2Property());
         col5.setCellFactory(ValueTableCell.factoryStaticBin());
+
+        col6 = new TableColumn<>("Byte 0");
+        col6.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
+        col6.setSortable(false);
+        col6.setEditable(false);
+        col6.setReorderable(false);
+        col6.setMinWidth(80);
+        col6.setPrefWidth(80);
+        col6.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        col6.setCellValueFactory(c -> c.getValue().getByte3Property());
+        col6.setCellFactory(ValueTableCell.factoryStaticBin());
 
         memoryTable = new TableView<>();
         views = memoryTable.getItems();
 
-        memoryTable.getColumns().setAll(col0, col1, col2, col3, col4, col5);
-        memoryTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        memoryTable.getColumns().setAll(col0, col1, col2, col3, col4, col5, col6);
+        memoryTable.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         memoryTable.getStyleClass().addAll(Styles.STRIPED, Styles.DENSE, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
         memoryTable.getSelectionModel().selectFirst();
+        memoryTable.setTableMenuButtonVisible(true);
         memoryTable.setEditable(true);
-        memoryTable.setMinWidth(100*6);
-        memoryTable.setPrefWidth(100*6);
         memoryTable.setMaxWidth(Double.POSITIVE_INFINITY);
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
@@ -186,7 +197,12 @@ public class MemoryController extends AbstractJArmEmuModule {
         placeHolder.setAlignment(Pos.CENTER);
         memoryTable.setPlaceholder(placeHolder);
 
-        getController().memoryScrollPane.setContent(memoryTable);
+        AnchorPane.setRightAnchor(memoryTable, 0d);
+        AnchorPane.setBottomAnchor(memoryTable, 0d);
+        AnchorPane.setLeftAnchor(memoryTable, 0d);
+        AnchorPane.setTopAnchor(memoryTable, 0d);
+
+        getController().memoryAnchorPane.getChildren().add(memoryTable);
 
         // Configuration du sélecteur de pages
         getController().memoryPage.setPageCount(PAGE_NUMBER);
