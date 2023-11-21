@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -126,7 +127,7 @@ public class CompleteTest extends JArmEmuTest {
                 int value = Integer.parseInt(matcher.group("VALUE"), 16);
 
                 byte[] bytes = new byte[4];
-                ByteBuffer.wrap(bytes).putInt(value);
+                ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(value);
 
                 for (int j = 0; j < bytes.length; j++) {
                     expectedMemory.put(address + j, bytes[j]);
