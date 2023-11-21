@@ -29,6 +29,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,7 +50,7 @@ public class MemoryAccessor {
 
         if (memory.containsKey(aAdd)) {
             byte[] bytes = new byte[4];
-            ByteBuffer.wrap(bytes).putInt(0, memory.get(aAdd).get());
+            ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(0, memory.get(aAdd).get());
             return bytes[rAdd];
         } else {
             return 0;
@@ -58,18 +59,18 @@ public class MemoryAccessor {
 
     public short getHalf(int add) {
         byte[] bytes = new byte[]{getByte(add), getByte(add + 1)};
-        return ByteBuffer.wrap(bytes).getShort();
+        return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getShort();
     }
 
     public int getWord(int add) {
         byte[] bytes = new byte[]{getByte(add), getByte(add + 1), getByte(add + 2), getByte(add + 3)};
-        return ByteBuffer.wrap(bytes).getInt();
+        return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
     public void putByte(int add, byte b) {
         int aAdd = Math.floorDiv(add, 4);
         int rAdd = (add % 4) < 0 ? 4 + (add % 4) : (add % 4);
         byte[] bytes = new byte[4];
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
+        ByteBuffer buffer = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN);
         IntegerProperty property;
 
         if (memory.containsKey(aAdd)) {
@@ -87,7 +88,7 @@ public class MemoryAccessor {
 
     public void putHalf(int add, short s) {
         byte[] bytes = new byte[2];
-        ByteBuffer.wrap(bytes).putShort(s);
+        ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putShort(s);
 
         for (int i = 0; i < bytes.length; i++) {
             putByte(add + i, bytes[i]);
@@ -96,7 +97,7 @@ public class MemoryAccessor {
 
     public void putWord(int add, int i) {
         byte[] bytes = new byte[4];
-        ByteBuffer.wrap(bytes).putInt(i);
+        ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(i);
 
         for (int j = 0; j < bytes.length; j++) {
             putByte(add + j, bytes[j]);
