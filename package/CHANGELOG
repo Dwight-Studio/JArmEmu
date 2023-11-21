@@ -1,6 +1,6 @@
 0.1.4 -> 0.1.5
 
-- Fixed a bug that prevented to update register used in STR or LDR instructions
+- Fixed a bug that prevented updating registers used in STR or LDR instructions
 - Fixed a bug where you could only use in the stack the first 10 registers
 - Fixed a bug that prevented declaring structures in a structure
 
