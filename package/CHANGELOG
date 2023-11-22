@@ -1,6 +1,7 @@
 0.1.5 -> 0.1.6
 
-- Nothing (yet!)
+- Fixed stack entry sync with current simulation data
+- Fixed unread instruction when placed in the same line as a label
 
 
 0.1.4 -> 0.1.5
