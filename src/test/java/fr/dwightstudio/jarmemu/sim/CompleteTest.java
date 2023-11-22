@@ -266,4 +266,25 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/helloworldAscii-memory.d");
     }
 
+    // TODO: ne pas faire passer les tests qui lancent des autobreaking points
+    @Test
+    public void pgcdDriveTest() {
+        load("/complete/pgcdDrive.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/pgcdDrive-memory.d");
+    }
+
+    @Test
+    public void pgcdDriveLegacyTest() {
+        loadLegacy("/complete/pgcdDrive.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/pgcdDrive-memory.d");
+    }
+
 }
