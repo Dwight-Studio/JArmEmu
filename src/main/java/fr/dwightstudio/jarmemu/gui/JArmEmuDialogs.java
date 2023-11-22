@@ -37,12 +37,10 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import org.jetbrains.annotations.NotNull;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
-import javax.swing.text.Element;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 

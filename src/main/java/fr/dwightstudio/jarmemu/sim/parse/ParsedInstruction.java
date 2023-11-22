@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
@@ -36,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ParsedInstruction extends ParsedObject {

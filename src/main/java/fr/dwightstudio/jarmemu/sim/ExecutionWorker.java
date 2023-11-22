@@ -25,8 +25,8 @@ package fr.dwightstudio.jarmemu.sim;
 
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
+import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;

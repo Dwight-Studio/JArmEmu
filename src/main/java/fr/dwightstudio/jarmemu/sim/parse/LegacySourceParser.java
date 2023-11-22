@@ -28,7 +28,6 @@ import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.parse.legacy.LegacyDirectiveParser;
 import fr.dwightstudio.jarmemu.sim.parse.legacy.LegacySectionParser;
-import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -36,7 +35,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 

@@ -23,13 +23,10 @@
 
 package fr.dwightstudio.jarmemu.gui.factory;
 
-import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;

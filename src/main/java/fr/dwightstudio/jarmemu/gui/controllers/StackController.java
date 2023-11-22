@@ -44,7 +44,8 @@ import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public class StackController extends AbstractJArmEmuModule {

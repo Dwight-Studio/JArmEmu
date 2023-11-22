@@ -31,7 +31,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.logging.Logger;
 
 public class MainMenuController extends AbstractJArmEmuModule {

@@ -33,7 +33,6 @@ import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
-import fr.dwightstudio.jarmemu.util.RegisterUtils;
 
 import java.util.Objects;
 import java.util.regex.Matcher;

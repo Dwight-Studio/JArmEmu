@@ -25,7 +25,6 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public interface SourceParser {

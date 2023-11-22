@@ -23,16 +23,9 @@
 
 package fr.dwightstudio.jarmemu.gui;
 
-import atlantafx.base.theme.PrimerDark;
-import atlantafx.base.theme.PrimerLight;
-import atlantafx.base.theme.NordDark;
-import atlantafx.base.theme.NordLight;
-import atlantafx.base.theme.CupertinoDark;
-import atlantafx.base.theme.CupertinoLight;
-import atlantafx.base.theme.Theme;
+import atlantafx.base.theme.*;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
-import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
@@ -93,6 +86,9 @@ public class JArmEmuApplication extends Application {
 
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
+    // TODO: Le sélecteur de colonne de la mémoire est trop dur à voir
+    // TODO: L'affichage de la première valeur du stack (0x00010000) s'arrête dès qu'on ne pointe plus dessus
+    // TODO: Gérer les lignes avec une instruction et un label
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;

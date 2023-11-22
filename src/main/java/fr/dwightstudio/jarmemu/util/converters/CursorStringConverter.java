@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.util.converters;
 
-import fr.dwightstudio.jarmemu.sim.obj.Register;
 import javafx.util.StringConverter;
 
 public class CursorStringConverter extends StringConverter<Boolean> {

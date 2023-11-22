@@ -29,7 +29,6 @@ import fr.dwightstudio.jarmemu.sim.parse.regex.ASMParser;
 import fr.dwightstudio.jarmemu.sim.parse.regex.DirectiveParser;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
 import java.util.TreeMap;
 
 public class RegexSourceParser implements SourceParser {

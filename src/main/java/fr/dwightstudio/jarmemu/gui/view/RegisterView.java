@@ -24,7 +24,10 @@
 package fr.dwightstudio.jarmemu.gui.view;
 
 import fr.dwightstudio.jarmemu.sim.obj.Register;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.beans.value.ObservableValueBase;
 
