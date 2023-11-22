@@ -87,8 +87,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     // TODO: Le sélecteur de colonne de la mémoire est trop dur à voir
-    // TODO: L'affichage de la première valeur du stack (0x00010000) s'arrête dès qu'on ne pointe plus dessus
-    // TODO: Gérer les lignes avec une instruction et un label
+    // TODO: Gérer les lignes avec une instruction et un label dans le legacy parser
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;

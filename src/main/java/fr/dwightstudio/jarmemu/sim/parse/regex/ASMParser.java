@@ -54,26 +54,32 @@ public class ASMParser {
     private static final String BRACKET_REGEX = "[^\n\\[\\]\\{\\}]+";
     private static final String ARG_REGEX = CONTENT_REGEX + "|\\[" + BRACKET_REGEX + "\\]!|\\[" + BRACKET_REGEX + "\\]|\\{" + BRACKET_REGEX + "\\}";
 
+    private static final String COMPLETE_INSTRUCTION_REGEX =
+            "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")"
+            + "(?<CONDITION>" + CONDITION_REGEX + ")"
+            + "("
+            + "(?<FLAG>" + FLAG_REGEX + ")"
+            + "|(?<DATA>" + DATA_REGEX + ")"
+            + "|(?<UPDATE>" + UPDATE_REGEX + ")"
+            + "|)"
+            + "[ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*"
+            + "((,[ \t]*(?<ARG2>" + ARG_REGEX + ")[ \t]*)|)"
+            + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
+            + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)";
+
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
-            "(?i)^[ \t]*"
-                    + "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")"
-                    + "(?<CONDITION>" + CONDITION_REGEX + ")"
-                    + "("
-                    + "(?<FLAG>" + FLAG_REGEX + ")"
-                    + "|(?<DATA>" + DATA_REGEX + ")"
-                    + "|(?<UPDATE>" + UPDATE_REGEX + ")"
-                    + "|)"
-                    + "[ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*"
-                    + "((,[ \t]*(?<ARG2>" + ARG_REGEX + ")[ \t]*)|)"
-                    + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
-                    + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)"
+            "(?i)[ \t]*"
+                    + COMPLETE_INSTRUCTION_REGEX
                     + "[ \t]*$(?-i)"
     );
 
     private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
 
     private static final Pattern LABEL_PATTERN = Pattern.compile(
-            "(?<LABEL>" + LABEL_REGEX + ")[ \t]*:"
+            "(?i)[ \t]*"
+            + "(?<LABEL>" + LABEL_REGEX + ")[ \t]*:[ \t]*"
+            + "((" + COMPLETE_INSTRUCTION_REGEX + ")|)"
+            + "[ \t]*$(?-i)"
     );
 
     private int instructionPos;
@@ -101,25 +107,20 @@ public class ASMParser {
         String arg3;
         String arg4;
 
-        Matcher matcher = LABEL_PATTERN.matcher(line);
+        Matcher matcherInst = INSTRUCTION_PATTERN.matcher(line);
+        Matcher matcherLabel = LABEL_PATTERN.matcher(line);
 
-        if (matcher.find()) {
-            return new ParsedLabel(matcher.group("LABEL").strip().toUpperCase());
-        }
+        if (matcherInst.find()) {
+            String instructionString = matcherInst.group("INSTRUCTION");
+            String conditionString = matcherInst.group("CONDITION");
+            String flagString = matcherInst.group("FLAG");
+            String dataString = matcherInst.group("DATA");
+            String updateString = matcherInst.group("UPDATE");
 
-        matcher = INSTRUCTION_PATTERN.matcher(line);
-
-        if (matcher.find()) {
-            String instructionString = matcher.group("INSTRUCTION");
-            String conditionString = matcher.group("CONDITION");
-            String flagString = matcher.group("FLAG");
-            String dataString = matcher.group("DATA");
-            String updateString = matcher.group("UPDATE");
-
-            arg1 = matcher.group("ARG1");
-            arg2 = matcher.group("ARG2");
-            arg3 = matcher.group("ARG3");
-            arg4 = matcher.group("ARG4");
+            arg1 = matcherInst.group("ARG1");
+            arg2 = matcherInst.group("ARG2");
+            arg3 = matcherInst.group("ARG3");
+            arg4 = matcherInst.group("ARG4");
 
             try {
                 instruction = Instruction.valueOf(instructionString.toUpperCase());
@@ -151,6 +152,8 @@ public class ASMParser {
             }
 
             instructionPos++;
+        } else if (matcherLabel.find()) {
+            return new ParsedLabel(matcherLabel.group("LABEL").strip().toUpperCase());
         } else {
             throw new SyntaxASMException("Unexpected statement '" + line + "', at line " + sourceScanner.getCurrentInstructionValue());
         }
@@ -179,6 +182,12 @@ public class ASMParser {
             if (arg4.isEmpty()) arg4 = null;
         }
 
-        return new ParsedInstruction(instruction, condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        ParsedInstruction parsedInstruction = new ParsedInstruction(instruction, condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+
+        if (matcherLabel.find()) {
+            return new ParsedLabel(matcherLabel.group("LABEL").strip().toUpperCase()).withInstruction(parsedInstruction);
+        } else {
+            return parsedInstruction;
+        }
     }
 }

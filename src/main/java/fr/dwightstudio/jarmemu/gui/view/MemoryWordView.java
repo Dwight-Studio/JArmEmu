@@ -40,11 +40,13 @@ public class MemoryWordView {
     private final MemoryByteProperty byte1;
     private final MemoryByteProperty byte2;
     private final MemoryByteProperty byte3;
+    private final Register sp;
 
     public MemoryWordView(MemoryAccessor memoryAccessor, int address) {
         this.memoryAccessor = memoryAccessor;
         this.addressProperty = new ReadOnlyIntegerWrapper(address);
         this.valueProperty = memoryAccessor.getProperty(address);
+        this.sp = null;
         this.byte0 = new MemoryByteProperty(valueProperty, 0);
         this.byte1 = new MemoryByteProperty(valueProperty, 1);
         this.byte2 = new MemoryByteProperty(valueProperty, 2);
@@ -56,13 +58,14 @@ public class MemoryWordView {
         this.memoryAccessor = memoryAccessor;
         this.addressProperty = new ReadOnlyIntegerWrapper(address);
         this.valueProperty = memoryAccessor.getProperty(address);
-        this.cursorProperty = new SimpleBooleanProperty(sp.getData() == address);
+        this.sp = sp;
+        this.cursorProperty = new SimpleBooleanProperty(this.sp.getData() == address);
         this.byte0 = new MemoryByteProperty(valueProperty, 0);
         this.byte1 = new MemoryByteProperty(valueProperty, 1);
         this.byte2 = new MemoryByteProperty(valueProperty, 2);
         this.byte3 = new MemoryByteProperty(valueProperty, 3);
 
-        sp.getDataProperty().addListener((obs, oldVal, newVal) -> this.cursorProperty.setValue((int) newVal == address));
+        this.sp.getDataProperty().addListener((obs, oldVal, newVal) -> this.cursorProperty.setValue((int) newVal == address));
     }
 
     public MemoryAccessor getMemoryAccessor() {
@@ -94,6 +97,10 @@ public class MemoryWordView {
     }
     public ReadOnlyIntegerProperty getByte3Property() {
         return byte3;
+    }
+
+    public Register getSP() {
+        return sp;
     }
 
 

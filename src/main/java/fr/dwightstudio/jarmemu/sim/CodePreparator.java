@@ -68,6 +68,11 @@ public class CodePreparator {
             if (obj.getValue() instanceof ParsedInstruction instruction) {
                 instructionMemory.add(instruction);
                 instructionPosition.add(obj.getKey());
+            } else if (obj.getValue() instanceof  ParsedLabel parsedLabel) {
+                if (parsedLabel.getInstruction() != null) {
+                    instructionMemory.add(parsedLabel.getInstruction());
+                    instructionPosition.add(obj.getKey());
+                }
             }
         }
 
@@ -252,6 +257,14 @@ public class CodePreparator {
                     temp.put(off, pack.close());
                     off--;
                 }
+            } else if (inst.getValue() instanceof ParsedLabel parsedLabel) {
+                if (parsedLabel.getInstruction() != null) {
+                    ParsedDirectivePack pack = parsedLabel.getInstruction().convertValueToDirective(stateContainer);
+                    if (!pack.isEmpty()) {
+                        temp.put(off, pack.close());
+                        off--;
+                    }
+                }
             }
         }
 
@@ -282,6 +295,10 @@ public class CodePreparator {
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
                 inst.setValue(parsedInstruction.convertMovToShift(stateContainer));
+            } else if (inst.getValue() instanceof ParsedLabel parsedLabel) {
+                if (parsedLabel.getInstruction() != null) {
+                    parsedLabel.setInstruction(parsedLabel.getInstruction().convertMovToShift(stateContainer));
+                }
             }
         }
     }
@@ -294,6 +311,9 @@ public class CodePreparator {
         for (Map.Entry<Integer, ParsedObject> inst : parsedObjects.entrySet()) {
             if (inst.getValue() instanceof ParsedLabel label) {
                 label.register(stateContainer, lastInstruction * 4);
+                if (label.getInstruction() != null) {
+                    lastInstruction++;
+                }
             }
             if (inst.getValue() instanceof ParsedInstruction) {
                 lastInstruction++;

@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 public class ParsedLabel extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final String name;
+    private ParsedInstruction instruction;
     private int pos;
 
     public ParsedLabel(String name) {
@@ -101,5 +102,18 @@ public class ParsedLabel extends ParsedObject {
     @Override
     public String toString() {
         return "Label";
+    }
+
+    public ParsedInstruction getInstruction() {
+        return instruction;
+    }
+
+    public void setInstruction(ParsedInstruction instruction) {
+        this.instruction = instruction;
+    }
+
+    public ParsedLabel withInstruction(ParsedInstruction instruction) {
+        this.instruction = instruction;
+        return this;
     }
 }

@@ -142,7 +142,7 @@ public class StackController extends AbstractJArmEmuModule {
         int sp = container.registers[RegisterUtils.SP.getN()].getData();
 
         int number = 0;
-        while (container.memory.isWordInitiated(address) || (sp >= container.getStackAddress() && address <= sp)) {
+        while (container.memory.isWordInitiated(address) || (sp > container.getStackAddress() && address <= sp)) {
             if (number > MAX_NUMBER) {
                 break;
             }
@@ -168,8 +168,9 @@ public class StackController extends AbstractJArmEmuModule {
 
             ArrayList<Integer> stackValues = getLowerValues(stateContainer);
             stackValues.addAll(getHigherValues(stateContainer));
+            stackValues.add(stateContainer.getStackAddress());
 
-            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()));
+            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.registers[RegisterUtils.SP.getN()]);
             views.forEach(view -> stackValues.remove((Integer) view.getAddressProperty().get()));
 
             for (int address : stackValues) {
