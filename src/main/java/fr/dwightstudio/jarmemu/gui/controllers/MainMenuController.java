@@ -24,11 +24,17 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Platform;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2OutlinedAL;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -288,5 +294,37 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void onAbout() {
         getDialogs().about();
+    }
+
+    /**
+     * Crée les boutons pour les colonnes du tableau de la mémoire.
+     * @param memoryTable le tableau de la mémoire
+     */
+    public void registerMemoryColumns(TableView<MemoryWordView> memoryTable) {
+        getController().memoryMenu.getItems().clear();
+
+
+        memoryTable.getColumns().forEach(column -> {
+            MenuItem item = new MenuItem(column.getText());
+
+            column.visibleProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                } else {
+                    item.setGraphic(null);
+                }
+            });
+
+            if (column.isVisible()) {
+                item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+            } else {
+                item.setGraphic(null);
+            }
+
+            item.setOnAction(event -> {
+                column.setVisible(!column.isVisible());
+            });
+            getController().memoryMenu.getItems().add(item);
+        });
     }
 }

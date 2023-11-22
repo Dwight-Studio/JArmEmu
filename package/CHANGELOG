@@ -2,6 +2,7 @@
 
 - Fixed stack entry sync with current simulation data
 - Fixed unread instruction when placed in the same line as a label
+- Added menu (in View) to control memory columns visibility
 
 
 0.1.4 -> 0.1.5

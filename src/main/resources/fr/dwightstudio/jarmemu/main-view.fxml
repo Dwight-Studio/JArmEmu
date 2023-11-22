@@ -102,6 +102,11 @@
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
                             <items>
+                                <Menu fx:id="memoryMenu" mnemonicParsing="false" styleClass="split-menu-btn-default" text="Memory">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-memory" />
+                                    </graphic>
+                                </Menu>
                                 <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
                                     <graphic>
                                         <FontIcon iconLiteral="mdoal-clear_all" />

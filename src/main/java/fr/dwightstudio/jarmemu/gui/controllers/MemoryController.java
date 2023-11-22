@@ -190,6 +190,8 @@ public class MemoryController extends AbstractJArmEmuModule {
         memoryTable.setEditable(true);
         memoryTable.setMaxWidth(Double.POSITIVE_INFINITY);
 
+        getMainMenuController().registerMemoryColumns(memoryTable);
+
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
