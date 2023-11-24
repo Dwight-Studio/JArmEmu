@@ -54,6 +54,9 @@ import java.util.prefs.Preferences;
 
 public class JArmEmuApplication extends Application {
 
+    public static final String OS_NAME = System.getProperty("os.name").toLowerCase();
+    public static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
+    public static final String OS_VERSION = System.getProperty("os.version").toLowerCase();
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
 
@@ -91,7 +94,7 @@ public class JArmEmuApplication extends Application {
     public void start(Stage stage) throws IOException {
         this.stage = stage;
 
-        logger.info("Starting up JArmEmu v" + VERSION);
+        logger.info("Starting up JArmEmu v" + VERSION + " on " + OS_NAME + " v" + OS_VERSION + " (" + OS_ARCH + ")");
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
 
@@ -143,6 +146,7 @@ public class JArmEmuApplication extends Application {
         );
         stage.setScene(scene);
         stage.show();
+        stage.setMaximized(true);
 
         SplashScreen splashScreen = SplashScreen.getSplashScreen();
 

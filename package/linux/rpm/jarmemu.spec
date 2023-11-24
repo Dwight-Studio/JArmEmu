@@ -56,7 +56,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/java/JArmEmu/*
 
 %{_datadir}/mime/packages/fr.dwightstudio.JArmEmu.xml
-%{_datadir}/metainfo/packages/fr.dwightstudio.JArmEmu.metainfo.xml
+%{_datadir}/metainfo/fr.dwightstudio.JArmEmu.metainfo.xml
 
 %{_bindir}/jarmemu
 
