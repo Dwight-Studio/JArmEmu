@@ -3,6 +3,7 @@
   <metadata>
     <id>JArmEmu</id>
     <version>0.1.6-beta</version>
+    <packageSourceUrl>https://github.com/Dwight-Studio/JArmEmu/tree/main/package/windows/chocolatey</packageSourceUrl>
     <owners>FoxYinx</owners>
     <title>JArmEmu</title>
     <authors>Dwight Studio</authors>
