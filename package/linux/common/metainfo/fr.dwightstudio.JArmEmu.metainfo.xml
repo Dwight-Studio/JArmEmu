@@ -59,6 +59,8 @@
                     <li>Fixed stack entry sync with current simulation data</li>
                     <li>Fixed unread instruction when placed in the same line as a label</li>
                     <li>Added menu (in View) to control memory columns visibility</li>
+                    <li>Fixed cross-platform compatibility</li>
+                    <li>Adding Chocolatey packaging</li>
                 </ul>
             </description>
         </release>
