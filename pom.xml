@@ -29,7 +29,7 @@
 
     <groupId>fr.dwightstudio.jarmemu</groupId>
     <artifactId>JArmEmu</artifactId>
-    <version>0.1.7</version>
+    <version>0.1.6</version>
 
     <scm>
         <connection>scm:git:https://github.com/Dwight-Studio/JArmEmu</connection>

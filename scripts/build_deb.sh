@@ -27,7 +27,7 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.7
+VER=0.1.6
 RELEASE=BETA
 BF=$HOME/debbuild/
 CPF=$BF/jarmemu/
