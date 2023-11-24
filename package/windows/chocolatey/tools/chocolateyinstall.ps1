@@ -1,10 +1,8 @@
 ﻿$ErrorActionPreference = 'Stop'
-$toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 $url        = 'https://github.com/Dwight-Studio/JArmEmu/releases/download/v0.1.3/JArmEmu-0.1.3-BETA.exe'
 
 $packageArgs = @{
   packageName   = $env:ChocolateyPackageName
-  unzipLocation = $toolsDir
   fileType      = 'EXE'
   url           = $url
 
