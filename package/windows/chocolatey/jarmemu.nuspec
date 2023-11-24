@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>fr.dwightstudio.JArmEmu</id>
+    <id>JArmEmu</id>
     <version>0.1.6-beta</version>
     <owners>FoxYinx</owners>
     <title>JArmEmu</title>
