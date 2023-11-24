@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>JArmEmu</id>
+    <id>fr.dwightstudio.JArmEmu</id>
     <version>0.1.6-beta</version>
     <packageSourceUrl>https://github.com/Dwight-Studio/JArmEmu/tree/main/package/windows/chocolatey</packageSourceUrl>
     <owners>FoxYinx</owners>
     <title>JArmEmu</title>
     <authors>Dwight Studio</authors>
-    <projectUrl>https://dwightstudio.fr/jarmemu</projectUrl>
+    <projectUrl>https://github.com/Dwight-Studio/JArmEmu/</projectUrl>
     <iconUrl>https://rawcdn.githack.com/Dwight-Studio/JArmEmu/5486f2940364e422ccbded111afd68ab0c4bc905/src/main/resources/fr/dwightstudio/jarmemu/medias/logo.png</iconUrl>
     <copyright>Copyright (C) 2023 Dwight Studio</copyright>
     <licenseUrl>https://github.com/Dwight-Studio/JArmEmu/blob/main/LICENSE</licenseUrl>
