@@ -12,7 +12,6 @@
     <licenseUrl>https://github.com/Dwight-Studio/JArmEmu/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <projectSourceUrl>https://github.com/Dwight-Studio/JArmEmu</projectSourceUrl>
-    <docsUrl>https://github.com/Dwight-Studio/JArmEmu</docsUrl>
     <bugTrackerUrl>https://github.com/Dwight-Studio/JArmEmu/issues</bugTrackerUrl>
     <tags>jarmemu simulator arm armv7 java educational</tags>
     <summary>Simple ARMv7 simulator written in Java, intended for educational purpose</summary>
