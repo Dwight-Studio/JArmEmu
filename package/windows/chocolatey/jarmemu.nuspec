@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
     <id>fr.dwightstudio.JArmEmu</id>
-    <version>0.1.3-beta</version>
+    <version>0.1.6-beta</version>
     <owners>FoxYinx</owners>
     <title>JArmEmu</title>
     <authors>Dwight Studio</authors>
@@ -32,7 +32,7 @@
 	
 	- SWI instruction is not implemented
 	]]></description>
-    <releaseNotes>https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.3</releaseNotes>
+    <releaseNotes>https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.6</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />

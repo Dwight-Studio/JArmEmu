@@ -3,6 +3,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 buildNumber.properties
+package/windows/chocolatey/fr.dwightstudio.JArmEmu.0.1.6-beta.nupkg
 
 ### IntelliJ IDEA ###
 .idea/
