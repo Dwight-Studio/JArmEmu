@@ -4,6 +4,11 @@
     <name>JArmEmu</name>
     <summary>Simple ARMv7 simulator written in Java, intended for educational purpose</summary>
     <developer_name>Dwight Studio</developer_name>
+    <launchable type="desktop-id">fr.dwightstudio.JArmEmu.desktop</launchable>
+    <project_license>GPL-3.0</project_license>
+    <metadata_license>CC0-1.0</metadata_license>
+    <content_rating type="oars-1.1"/>
+    <url type="homepage">https://github.com/Dwight-Studio/JArmEmu/</url>
     <description>
         <p>JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a
             simulated ARMv7 architecture.
@@ -20,7 +25,6 @@
             Rennes (independent project). It is distributed in open source under GPL3 (refer to the LICENCE file).
         </p>
     </description>
-    <icon type="stock">fr.dwightstudio.JArmEmu</icon>
     <categories>
         <category>Development</category>
         <category>IDE</category>
@@ -39,16 +43,12 @@
     <mimetypes>
         <mimetype>text/x-jarmemu-source</mimetype>
     </mimetypes>
-    <launchable type="desktop-id">fr.dwightstudio.JArmEmu.desktop</launchable>
-    <project_license>GPL-3.0</project_license>
-    <url type="homepage">https://github.com/Dwight-Studio/JArmEmu/</url>
     <screenshots>
         <screenshot type="default">
             <caption>Main Screen</caption>
             <image type="source">https://github.com/Dwight-Studio/JArmEmu/blob/main/medias/main.png?raw=true</image>
         </screenshot>
     </screenshots>
-    <content_rating type="oars-1.1"/>
     <releases>
         <release date="2023-11-23" version="0.1.6">
             <url type="details">https://github.com/DwightStudio/JArmEmu/releases/tag/v0.1.6</url>
