@@ -12,9 +12,9 @@
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
 
 ; Pour GNU/Linux
-; #define RepositoryPath "Z:\jarmemu"
+#define RepositoryPath "Z:\jarmemu"
 ; Pour Windows
-#define RepositoryPath "C:\Users\tolle\IdeaProjects\JArmEmu"
+; #define RepositoryPath "C:\Users\tolle\IdeaProjects\JArmEmu"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
