@@ -116,7 +116,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     }
 
     /**
-     * Réinitialise les indicateur du GUI pour le redémarrage
+     * Réinitialise les indicateurs du GUI pour le redémarrage
      */
     public void restart() {
         checkTask(RESTART);
