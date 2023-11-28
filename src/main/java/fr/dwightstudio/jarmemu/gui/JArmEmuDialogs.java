@@ -834,6 +834,11 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
     }
 
     private void credits() {
+        Image image = new Image(getResourceAsStream("medias/dwstd.png"));
+        ImageView picture = new ImageView(image);
+        picture.setPreserveRatio(true);
+        picture.setFitHeight(128);
+
         Text title = new Text("Credits");
         title.setStyle("-fx-font-family: 'Inter Black';");
         title.getStyleClass().addAll(Styles.TITLE_1);
@@ -841,17 +846,23 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         Text credits = new Text("""
                 JArmEmu is a project of Dwight Studio.
                 Led by Tollemer Kévin and Leconte Alexandre.
+                
+                The Splash screen was made using Origami from Computational Arts by JetBrains (Creative Commons Attribution-NonCommercial 3.0)
 
                 JArmEmu is based on the work of the following projects:
-                 - Javafx by OpenJFX (GNU Public License)
-                 - Ikonli by Andres Almiray (Apache License 2.0)
-                 - RichTextFX by Tomas Mikula (BSD 2-Clause "Simplified" License)
-                 - AtlantaFX by mkpaz (MIT License)""");
+                Javafx by OpenJFX (GNU Public License)
+                Ikonli by Andres Almiray (Apache License 2.0)
+                RichTextFX by Tomas Mikula (BSD 2-Clause "Simplified" License)
+                AtlantaFX by mkpaz (MIT License)""");
 
-        VBox vBox = new VBox(title, credits);
+        credits.setWrappingWidth(500);
+        credits.setTextAlignment(TextAlignment.CENTER);
+
+        VBox vBox = new VBox(title, picture, credits);
+        vBox.setSpacing(15);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));
-        vBox.setPrefWidth(200);
+        vBox.setPrefWidth(500);
         VBox.setMargin(title, new Insets(0, 0, 10, 0));
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());

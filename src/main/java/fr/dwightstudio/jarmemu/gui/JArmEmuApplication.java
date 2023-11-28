@@ -94,6 +94,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter la possibilité de charger plusieurs fichiers
     // TODO: Ajouter la possibilité de ne pas suivre le stack
     // TODO: Ajouter une vue compacte dans la mémoire
+    // TODO: Ajouter le logo Dwight Studio dans les crédits
 
     @Override
     public void start(Stage stage) throws IOException {
