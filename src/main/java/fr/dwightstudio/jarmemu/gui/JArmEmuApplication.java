@@ -235,7 +235,7 @@ public class JArmEmuApplication extends Application {
     public void setSaved() {
         lastSave = String.valueOf(getEditorController().getText());
         lastSavePath = getMainMenuController().getSavePath();
-        setTitle(getMainMenuController().getSavePath().getFirst().getName());
+        setTitle(getMainMenuController().getSavePath().getLast().getName());
     }
 
     /**
@@ -245,7 +245,7 @@ public class JArmEmuApplication extends Application {
      */
     public void setNew() {
         lastSave = EditorController.SAMPLE_CODE;
-        lastSavePath = null;
+        lastSavePath = new ArrayList<>();
         setTitle("New File");
     }
 
@@ -261,7 +261,7 @@ public class JArmEmuApplication extends Application {
             saved = getEditorController().getText().equals(lastSave);
         }
 
-        String fileName = lastSavePath == null ? "New File" : lastSavePath.getFirst().getName();
+        String fileName = lastSavePath.isEmpty() ? "New File" : lastSavePath.getLast().getName();
 
         if (saved) {
             setTitle(fileName);

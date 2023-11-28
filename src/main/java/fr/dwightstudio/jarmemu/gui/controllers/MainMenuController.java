@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 public class MainMenuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private ArrayList<File> savePath = null;
+    private ArrayList<File> savePath = new ArrayList<>();
 
     public MainMenuController(JArmEmuApplication application) {
         super(application);
@@ -94,18 +94,20 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (exists(savePath.getFirst())) {
+        if (!savePath.isEmpty() && exists(savePath.getFirst())) {
             fileChooser.setInitialDirectory(savePath.getFirst().isDirectory() ? savePath.getFirst() : savePath.getFirst().getParentFile());
         }
         List<File> fichier = fileChooser.showOpenMultipleDialog(application.stage);
-        if (!fichier.isEmpty()) savePath.clear();
-        for (File file:fichier) {
-            if (isValidFile(file)) {
-                logger.info("File located: " + file.getAbsolutePath());
-                savePath.add(file);
+        if (fichier != null && !fichier.isEmpty()){
+            savePath.clear();
+            for (File file:fichier) {
+                if (isValidFile(file)) {
+                    logger.info("File located: " + file.getAbsolutePath());
+                    savePath.add(file);
+                }
             }
+            onReload();
         }
-        if (!fichier.isEmpty()) onReload();
     }
 
     /**
