@@ -157,6 +157,7 @@ public class JArmEmuApplication extends Application {
 
         int scale = (int) (stage.getOutputScaleY() * 100);
         Preferences.userRoot().node(getClass().getPackage().getName()).putInt("scale", scale);
+        logger.info("Computing scale: " + scale + "%");
 
         if (splashScreen != null) {
             splashScreen.close();
