@@ -837,6 +837,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         Image image = new Image(getResourceAsStream("medias/dwstd.png"));
         ImageView picture = new ImageView(image);
         picture.setPreserveRatio(true);
+        picture.setSmooth(true);
         picture.setFitHeight(128);
 
         Text title = new Text("Credits");
