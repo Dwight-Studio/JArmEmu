@@ -48,6 +48,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -84,7 +85,7 @@ public class JArmEmuApplication extends Application {
     public Stage stage;
     public Scene scene;
     private String lastSave;
-    private File lastSavePath;
+    private ArrayList<File> lastSavePath;
     private String argSave;
 
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
@@ -234,7 +235,7 @@ public class JArmEmuApplication extends Application {
     public void setSaved() {
         lastSave = String.valueOf(getEditorController().getText());
         lastSavePath = getMainMenuController().getSavePath();
-        setTitle(getMainMenuController().getSavePath().getName());
+        setTitle(getMainMenuController().getSavePath().getFirst().getName());
     }
 
     /**
@@ -260,7 +261,7 @@ public class JArmEmuApplication extends Application {
             saved = getEditorController().getText().equals(lastSave);
         }
 
-        String fileName = lastSavePath == null ? "New File" : lastSavePath.getName();
+        String fileName = lastSavePath == null ? "New File" : lastSavePath.getFirst().getName();
 
         if (saved) {
             setTitle(fileName);

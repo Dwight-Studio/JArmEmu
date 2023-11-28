@@ -37,12 +37,15 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class MainMenuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private File savePath = null;
+    private ArrayList<File> savePath = null;
 
     public MainMenuController(JArmEmuApplication application) {
         super(application);
@@ -91,34 +94,39 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (exists(savePath)) {
-            fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
+        if (exists(savePath.getFirst())) {
+            fileChooser.setInitialDirectory(savePath.getFirst().isDirectory() ? savePath.getFirst() : savePath.getFirst().getParentFile());
         }
-        File file = fileChooser.showOpenDialog(application.stage);
-        if (isValidFile(file)) {
-            logger.info("File located: " + file.getAbsolutePath());
-            savePath = file;
-            onReload();
+        List<File> fichier = fileChooser.showOpenMultipleDialog(application.stage);
+        if (!fichier.isEmpty()) savePath.clear();
+        for (File file:fichier) {
+            if (isValidFile(file)) {
+                logger.info("File located: " + file.getAbsolutePath());
+                savePath.add(file);
+            }
         }
+        if (!fichier.isEmpty()) onReload();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onSave() {
-        if (!exists(savePath)) {
-            onSaveAs();
-        } else {
-            try {
-                logger.info("Saving file...");
-                getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
-                getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                application.setSaved();
-                getSettingsController().setLastSavePath(savePath.getAbsolutePath());
-                logger.info("Saved at: " + savePath.getAbsolutePath());
-            } catch (Exception exception) {
-                new ExceptionDialog(exception).show();
-                logger.severe(ExceptionUtils.getStackTrace(exception));
+        for (File savePath:savePath){
+            if (!exists(savePath)) {
+                onSaveAs(savePath);
+            } else {
+                try {
+                    logger.info("Saving file...");
+                    getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+                    getSourceParser().getSourceScanner().exportCodeToFile(savePath);
+                    application.setSaved();
+                    getSettingsController().setLastSavePath(savePath.getAbsolutePath());
+                    logger.info("Saved at: " + savePath.getAbsolutePath());
+                } catch (Exception exception) {
+                    new ExceptionDialog(exception).show();
+                    logger.severe(ExceptionUtils.getStackTrace(exception));
+                }
             }
         }
     }
@@ -127,6 +135,35 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSaveAs() {
+        for (File savePath:savePath) {
+            logger.info("Locating a new file to save...");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Source File");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
+            if (exists(savePath)) {
+                fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
+            }
+            File file = fileChooser.showSaveDialog(application.stage);
+            if (file != null && !file.isDirectory()) {
+                try {
+                    if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
+                    logger.info("File located: " + file.getAbsolutePath());
+                    savePath = file;
+                    logger.info("Saving file...");
+                    getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+                    getSourceParser().getSourceScanner().exportCodeToFile(savePath);
+                    application.setSaved();
+                    getSettingsController().setLastSavePath(savePath.getAbsolutePath());
+                    logger.info("Saved at: " + savePath.getAbsolutePath());
+                } catch (Exception exception) {
+                    new ExceptionDialog(exception).show();
+                    logger.severe(ExceptionUtils.getStackTrace(exception));
+                }
+            }
+        }
+    }
+
+    public void onSaveAs(File savePath) {
         logger.info("Locating a new file to save...");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Source File");
@@ -179,17 +216,19 @@ public class MainMenuController extends AbstractJArmEmuModule {
     public void reload() {
         logger.info("Reloading file from disk");
         getSimulationMenuController().onStop();
-        if (isValidFile(savePath)) {
-            try {
-                getSourceParser().setSourceScanner(new SourceScanner(savePath));
-                getController().codeArea.clear();
-                getController().codeArea.insertText(0, application.getSourceParser().getSourceScanner().exportCode());
-                application.setSaved();
-                getSettingsController().setLastSavePath(savePath.getAbsolutePath());
-                logger.info("File reloaded: " + savePath.getAbsolutePath());
-            } catch (Exception exception) {
-                new ExceptionDialog(exception).show();
-                logger.severe(ExceptionUtils.getStackTrace(exception));
+        for (File savePath:savePath) {
+            if (isValidFile(savePath)) {
+                try {
+                    getSourceParser().setSourceScanner(new SourceScanner(savePath));
+                    getController().codeArea.clear();
+                    getController().codeArea.insertText(0, application.getSourceParser().getSourceScanner().exportCode());
+                    application.setSaved();
+                    getSettingsController().setLastSavePath(savePath.getAbsolutePath());
+                    logger.info("File reloaded: " + savePath.getAbsolutePath());
+                } catch (Exception exception) {
+                    new ExceptionDialog(exception).show();
+                    logger.severe(ExceptionUtils.getStackTrace(exception));
+                }
             }
         }
     }
@@ -222,7 +261,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
     /**
      * @return le fichier représentant le chemin d'accès de la sauvegarde courante
      */
-    public File getSavePath() {
+    public ArrayList<File> getSavePath() {
         return savePath;
     }
 
@@ -250,11 +289,11 @@ public class MainMenuController extends AbstractJArmEmuModule {
         logger.info("Trying to open last save...");
         if (!path.isEmpty()) {
             try {
-                savePath = new File(path);
+                savePath.addFirst(new File(path));
 
-                if (savePath.exists()) {
-                    if (savePath.isFile()) {
-                        logger.info("Last-save file located: " + savePath.getAbsolutePath());
+                if (savePath.getFirst().exists()) {
+                    if (savePath.getFirst().isFile()) {
+                        logger.info("Last-save file located: " + savePath.getFirst().getAbsolutePath());
                         onReload();
                         return;
                     } else {
