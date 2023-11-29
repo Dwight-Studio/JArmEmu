@@ -34,8 +34,6 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.TreeMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class CodePreparatorTest {
 
     CodePreparator codePreparator;
