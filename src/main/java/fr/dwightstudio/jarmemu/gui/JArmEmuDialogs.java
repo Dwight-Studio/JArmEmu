@@ -24,7 +24,6 @@
 package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.Styles;
-import fr.dwightstudio.jarmemu.gui.controllers.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.enums.UnsavedDialogChoice;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

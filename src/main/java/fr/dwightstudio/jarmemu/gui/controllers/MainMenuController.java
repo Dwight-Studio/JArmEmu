@@ -23,11 +23,11 @@
 
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Platform;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
@@ -38,7 +38,6 @@ import org.kordamp.ikonli.material2.Material2OutlinedAL;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 

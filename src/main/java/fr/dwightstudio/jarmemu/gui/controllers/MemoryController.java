@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
+import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;

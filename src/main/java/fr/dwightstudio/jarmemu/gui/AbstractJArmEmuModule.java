@@ -21,10 +21,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.gui.controllers;
+package fr.dwightstudio.jarmemu.gui;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.JArmEmuDialogs;
+import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;

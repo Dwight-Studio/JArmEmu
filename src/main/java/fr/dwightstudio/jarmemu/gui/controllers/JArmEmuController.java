@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.ToggleSwitch;
+import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.ModalDialog;
 import javafx.event.ActionEvent;
@@ -37,7 +38,6 @@ import javafx.scene.layout.VBox;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
