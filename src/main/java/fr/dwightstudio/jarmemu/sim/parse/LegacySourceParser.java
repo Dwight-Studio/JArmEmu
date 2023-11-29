@@ -207,7 +207,7 @@ public class LegacySourceParser implements SourceParser {
             if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
         }
 
-        return rtn;
+        return new ParsedFile(sourceScanner, rtn).getParsedObjects();
     }
 
     /**

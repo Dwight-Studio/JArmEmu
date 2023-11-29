@@ -84,7 +84,7 @@ public class RegexSourceParser implements SourceParser {
             }
         }
 
-        return rtn;
+        return new ParsedFile(sourceScanner, rtn).getParsedObjects();
     }
 
     /**
