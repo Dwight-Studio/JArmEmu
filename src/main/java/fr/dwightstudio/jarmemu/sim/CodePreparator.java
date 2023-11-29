@@ -367,4 +367,8 @@ public class CodePreparator {
 
         return line == null ? new int[]{-1, -1} : line;
     }
+
+    public ArrayList<ParsedFile> getParsedFiles() {
+        return parsedFiles;
+    }
 }
