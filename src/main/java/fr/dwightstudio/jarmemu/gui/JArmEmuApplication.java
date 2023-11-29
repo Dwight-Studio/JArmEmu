@@ -92,7 +92,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     // TODO: Ajouter une coloration lors de l'update d'un élément
     // TODO: Ajouter la possibilité de charger plusieurs fichiers
-    // TODO: Ajouter la possibilité de ne pas suivre le stack
     // TODO: Ajouter une vue compacte dans la mémoire
 
     @Override
@@ -157,6 +156,7 @@ public class JArmEmuApplication extends Application {
 
         int scale = (int) (stage.getOutputScaleY() * 100);
         Preferences.userRoot().node(getClass().getPackage().getName()).putInt("scale", scale);
+        logger.info("Computing scale: " + scale + "%");
 
         if (splashScreen != null) {
             splashScreen.close();

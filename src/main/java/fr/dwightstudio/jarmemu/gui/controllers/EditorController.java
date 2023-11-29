@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;

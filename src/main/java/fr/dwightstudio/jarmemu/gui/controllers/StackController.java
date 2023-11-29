@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
+import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.CursorTableCell;
@@ -182,11 +183,13 @@ public class StackController extends AbstractJArmEmuModule {
                 stackTable.sort();
                 col1.setSortable(false);
 
-                for (int i = 0 ; i < views.size() ; i++) {
-                    if (views.get(i).getCursorProperty().get()) {
-                        stackTable.scrollTo(i);
-                        stackTable.getFocusModel().focus(i);
-                        break;
+                if (getSettingsController().getFollowSPSetting()) {
+                    for (int i = 0; i < views.size(); i++) {
+                        if (views.get(i).getCursorProperty().get()) {
+                            stackTable.scrollTo(i);
+                            stackTable.getFocusModel().focus(i);
+                            break;
+                        }
                     }
                 }
             });

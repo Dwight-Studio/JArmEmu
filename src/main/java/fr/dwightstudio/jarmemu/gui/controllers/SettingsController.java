@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -36,7 +37,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -61,7 +61,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final int DEFAULT_DATA_FORMAT = 0;
     public static final int DEFAULT_THEME_FAMILY = 0;
     public static final int DEFAULT_THEME_VARIATION = 0;
-    public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
+    public static final boolean DEFAULT_FOLLOW_SP = true;
 
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
@@ -79,12 +79,14 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final String STACK_ADDRESS_KEY = "stackAddress";
     public static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
     public static final String DATA_FORMAT_KEY = "dataFormat";
+    public static final String FOLLOW_SP_KEY = "followSP";
 
     public static final String THEME_FAMILY_KEY = "themeFamily";
     public static final String THEME_VARIATION_KEY = "theme";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
+    public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
     private final Logger logger = Logger.getLogger(getClass().getName());
     private boolean initied;
 
@@ -144,6 +146,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().programAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setProgramAlignBreakSetting(newVal));
         getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreakSetting(newVal));
         getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreakSetting(newVal));
+        getController().followSPSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFollowSPSetting(newVal));
 
         // Gestion des ChoiceBoxes
         getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
@@ -201,6 +204,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().programAlignBreakSwitch.setSelected(getProgramAlignBreakSetting());
         getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreakSetting());
         getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreakSetting());
+        getController().followSPSwitch.setSelected(getFollowSPSetting());
 
         // ChoiceBoxes
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
@@ -223,6 +227,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         setProgramAlignBreakSetting(DEFAULT_PROGRAM_ALIGN_BREAK);
         setFunctionNestingBreakSetting(DEFAULT_FUNCTION_NESTING_BREAK);
         setReadOnlyWritingBreakSetting(DEFAULT_READ_ONLY_WRITING_BREAK);
+        setFollowSPSetting(DEFAULT_FOLLOW_SP);
 
         setStackAddress(StateContainer.DEFAULT_STACK_ADDRESS);
         setSymbolsAddress(StateContainer.DEFAULT_SYMBOLS_ADDRESS);
@@ -381,5 +386,13 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setReadOnlyWritingBreakSetting(boolean b) {
         preferences.putBoolean(READ_ONLY_WRITING_BREAK_KEY, b);
+    }
+
+    public boolean getFollowSPSetting() {
+        return preferences.getBoolean(FOLLOW_SP_KEY, DEFAULT_FOLLOW_SP);
+    }
+
+    public void setFollowSPSetting(boolean b) {
+        preferences.putBoolean(FOLLOW_SP_KEY, b);
     }
 }
