@@ -70,7 +70,7 @@ public class RegexSourceParser implements SourceParser {
      * Lecture du fichier et renvoie des objets parsés non vérifiés
      */
     @Override
-    public TreeMap<Integer, ParsedObject> parse() {
+    public ParsedFile parse() {
         TreeMap<Integer, ParsedObject> rtn = new TreeMap<>();
         asmParser = new ASMParser();
         directiveParser = new DirectiveParser();
@@ -84,7 +84,7 @@ public class RegexSourceParser implements SourceParser {
             }
         }
 
-        return new ParsedFile(sourceScanner, rtn).getParsedObjects();
+        return new ParsedFile(sourceScanner, rtn);
     }
 
     /**

@@ -198,7 +198,7 @@ public class LegacySourceParser implements SourceParser {
      * Méthode principale
      * Lecture du fichier et renvoie des instructions parsées à verifier
      */
-    public TreeMap<Integer, ParsedObject> parse(){
+    public ParsedFile parse(){
         TreeMap<Integer, ParsedObject> rtn = new TreeMap<>();
 
         sourceScanner.goTo(-1);
@@ -207,7 +207,7 @@ public class LegacySourceParser implements SourceParser {
             if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
         }
 
-        return new ParsedFile(sourceScanner, rtn).getParsedObjects();
+        return new ParsedFile(sourceScanner, rtn);
     }
 
     /**

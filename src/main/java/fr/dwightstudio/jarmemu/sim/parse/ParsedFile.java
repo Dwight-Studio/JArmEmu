@@ -5,7 +5,6 @@ import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import java.util.TreeMap;
 
 public class ParsedFile{
-    //TODO:ce que doivent renvoyer les Parsers (legacy ou regex)
 
     private final TreeMap<Integer, ParsedObject> parsedObjects;
     private SourceScanner sourceScanner;

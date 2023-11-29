@@ -46,7 +46,7 @@ public interface SourceParser {
      * Méthode principale
      * Lecture du fichier et renvoie des objets parsés non vérifiés
      */
-    public TreeMap<Integer, ParsedObject> parse();
+    public ParsedFile parse();
 
     /**
      * Lecture d'une ligne et teste de tous ses arguments

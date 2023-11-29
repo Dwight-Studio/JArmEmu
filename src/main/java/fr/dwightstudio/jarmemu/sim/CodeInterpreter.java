@@ -153,7 +153,8 @@ public class CodeInterpreter {
     }
 
     public int getCurrentLine() {
-        return codePreparator.getLineNumber(getCurrentPosition());
+        //FIXME: ne prends pas en compte les fichiers multiples
+        return codePreparator.getLineNumber(getCurrentPosition())[1];
     }
 
     public int getCurrentPosition() {
