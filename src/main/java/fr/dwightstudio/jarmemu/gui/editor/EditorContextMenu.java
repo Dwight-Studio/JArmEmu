@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.gui;
+package fr.dwightstudio.jarmemu.gui.editor;
 
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;

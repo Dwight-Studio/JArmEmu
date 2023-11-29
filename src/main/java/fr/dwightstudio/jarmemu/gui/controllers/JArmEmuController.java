@@ -35,8 +35,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.fxmisc.flowless.VirtualizedScrollPane;
-import org.fxmisc.richtext.CodeArea;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -52,9 +50,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     protected ModalPane modalPaneFront;
 
     @FXML protected StackPane editorStackPane;
-    protected CodeArea codeArea;
-    protected VirtualizedScrollPane<CodeArea> editorScroll;
-
+    @FXML protected TabPane filesTabPane;
     @FXML protected VBox notifications;
     @FXML protected Button simulate;
     @FXML protected Button stepInto;
@@ -66,7 +62,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected Tab registersTab;
 
-    @FXML protected TabPane tabPane;
+    @FXML protected TabPane memorySettingsTab;
 
     @FXML protected Tab memoryTab;
     @FXML protected Menu memoryMenu;
@@ -106,10 +102,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         modalPaneMiddle = new ModalPane();
         modalPaneFront = new ModalPane();
         mainPane.getChildren().addAll(modalPaneBack, modalPaneMiddle, modalPaneFront);
-
-        codeArea = new CodeArea();
-        editorScroll = new VirtualizedScrollPane<>(codeArea);
-        editorStackPane.getChildren().addFirst(editorScroll);
 
         getEditorController().initialize(url, resourceBundle);
         getMainMenuController().initialize(url, resourceBundle);
@@ -252,18 +244,18 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     }
 
     @FXML void onCopy() {
-        getEditorController().getContextMenu().onCopy(new ActionEvent());
+        getEditorController().currentFileEditor().getContextMenu().onCopy(new ActionEvent());
     }
 
     @FXML void onCut() {
-        getEditorController().getContextMenu().onCut(new ActionEvent());
+        getEditorController().currentFileEditor().getContextMenu().onCut(new ActionEvent());
     }
 
     @FXML void onPaste() {
-        getEditorController().getContextMenu().onPaste(new ActionEvent());
+        getEditorController().currentFileEditor().getContextMenu().onPaste(new ActionEvent());
     }
 
     @FXML void onDelete() {
-        getEditorController().getContextMenu().onDelete(new ActionEvent());
+        getEditorController().currentFileEditor().getContextMenu().onDelete(new ActionEvent());
     }
 }

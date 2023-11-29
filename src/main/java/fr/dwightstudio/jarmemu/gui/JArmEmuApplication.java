@@ -84,7 +84,6 @@ public class JArmEmuApplication extends Application {
     public Status status;
     public Stage stage;
     public Scene scene;
-    private String lastSave;
     private ArrayList<File> lastSavePath;
     private String argSave;
 
@@ -208,7 +207,6 @@ public class JArmEmuApplication extends Application {
 
     @Override
     public void stop() {
-        editorController.clean();
 
     }
 
@@ -223,19 +221,8 @@ public class JArmEmuApplication extends Application {
         JArmEmuApplication.launch(args);
     }
 
-    private void setTitle(String title) {
-        Platform.runLater(() -> this.stage.setTitle("JArmEmu v" + VERSION +" - " + title));
-    }
-
-    /**
-     * Défini le contenu de la dernière sauvegarde
-     *
-     * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
-     */
-    public void setSaved() {
-        lastSave = String.valueOf(getEditorController().getText());
-        lastSavePath = getMainMenuController().getSavePath();
-        setTitle(getMainMenuController().getSavePath().getLast().getName());
+    private void setTitle() {
+        Platform.runLater(() -> this.stage.setTitle("JArmEmu v" + VERSION));
     }
 
     /**
@@ -243,33 +230,15 @@ public class JArmEmuApplication extends Application {
      *
      * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
      */
-    public void setNew() {
-        lastSave = EditorController.SAMPLE_CODE;
+    public void newFile() {
         lastSavePath = new ArrayList<>();
-        setTitle("New File");
     }
 
     /**
-     * Met à jour l'état de sauvegarde
-     *
-     * @return vrai si le fichier est sauvegardé
+     * @return vrai si tous les fichiers ont été sauvés
      */
-    public boolean updateSaveState() {
-        boolean saved = true;
-
-        if (getEditorController() != null) {
-            saved = getEditorController().getText().equals(lastSave);
-        }
-
-        String fileName = lastSavePath.isEmpty() ? "New File" : lastSavePath.getLast().getName();
-
-        if (saved) {
-            setTitle(fileName);
-        } else {
-            setTitle(fileName + "*");
-        }
-
-        return saved;
+    public boolean getSaveState() {
+        return true;
     }
 
     public void openURL(String url) {
@@ -325,7 +294,7 @@ public class JArmEmuApplication extends Application {
     }
 
     private void onClosingRequest(WindowEvent event) {
-        if (!updateSaveState()) {
+        if (getSaveState()) {
             getDialogs().unsavedAlert().thenAccept(rtn -> {
                 switch (rtn) {
                     case SAVE_AND_CONTINUE -> {

@@ -214,11 +214,7 @@
                                         </ToolBar>
                                         <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <Separator mouseTransparent="true" orientation="VERTICAL" StackPane.alignment="CENTER_LEFT">
-                                                    <StackPane.margin>
-                                                        <Insets left="65.0" />
-                                                    </StackPane.margin>
-                                                </Separator>
+                                    <TabPane fx:id="filesTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="ALL_TABS" />
                                             </children>
                                         </StackPane>
                                     </children>
@@ -230,7 +226,7 @@
                                 </VBox>
                             </children>
                         </StackPane>
-                        <TabPane fx:id="tabPane" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
+                        <TabPane fx:id="memorySettingsTab" side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                             <tabs>
                                 <Tab fx:id="memoryTab" text="Memory">
                                     <content>

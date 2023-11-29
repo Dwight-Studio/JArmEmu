@@ -276,7 +276,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             next = application.getCodeInterpreter().getCurrentLine();
 
-            if (application.getEditorController().hasBreakPoint(next)) {
+            if (application.getEditorController().currentFileEditor().hasBreakPoint(next)) {
                 Platform.runLater(() -> {
                     application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", Styles.WARNING);
                     application.getSimulationMenuController().onPause();
@@ -420,7 +420,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
-                    if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearLineMarking());
+                    if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearLineMarkings());
                     Platform.runLater(() -> {
                         if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
                         application.getEditorController().markLine(line, LineStatus.EXECUTED);
@@ -434,7 +434,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
         private void prepareTask() {
             nextTask.set(IDLE);
-            application.getSourceParser().setSourceScanner(new SourceScanner(application.getEditorController().getText()));
+            application.getSourceParser().setSourceScanner(new SourceScanner(application.getEditorController().currentFileEditor().getCodeArea().getText()));
 
             synchronized (this) {
                 try {
@@ -450,7 +450,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     application.getCodeInterpreter().restart();
                     application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
                     application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
-                    application.getEditorController().prepareSimulation();
+                    application.getEditorController().currentFileEditor().prepareSimulation();
                     updateGUI();
                 }
 

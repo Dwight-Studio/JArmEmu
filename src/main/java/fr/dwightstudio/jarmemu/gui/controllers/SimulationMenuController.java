@@ -68,12 +68,12 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().simulate.setDisable(false);
                 getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?).", Styles.DANGER);
             } else {
-                getEditorController().clearLineMarking();
-                getEditorController().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
+                getEditorController().clearLineMarkings();
+                getEditorController().currentFileEditor().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
                 getController().stackTab.setDisable(false);
                 getController().memoryTab.setDisable(false);
                 getController().addressField.setDisable(false);
-                getController().codeArea.setEditable(false);
+                getEditorController().onLaunch();
                 getController().stepInto.setDisable(false);
                 getController().stepOver.setDisable(false);
                 getController().conti.setDisable(false);
@@ -86,7 +86,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().settingsStackAddress.setDisable(true);
                 getController().settingsSymbolsAddress.setDisable(true);
                 application.status = Status.SIMULATING;
-                getController().tabPane.getSelectionModel().select(getController().memoryTab);
+                getController().memorySettingsTab.getSelectionModel().select(getController().memoryTab);
             }
         } else {
             getController().simulate.setDisable(false);
@@ -133,8 +133,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(false);
         getController().restart.setDisable(true);
         getController().addressField.setDisable(true);
-        getController().codeArea.setDisable(true);
-        getController().editorScroll.setDisable(true);
+        getEditorController().onContinue();
     }
 
     /**
@@ -148,8 +147,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(true);
         getController().restart.setDisable(false);
         getController().addressField.setDisable(false);
-        getController().codeArea.setDisable(false);
-        getController().editorScroll.setDisable(false);
+        getEditorController().onPause();
     }
 
     /**
@@ -158,9 +156,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
     public void onStop() {
         getEditorController().clearNotifs();
         getExecutionWorker().pause();
-        getController().codeArea.setDisable(false);
-        getController().codeArea.setEditable(true);
-        getController().editorScroll.setDisable(false);
+        getEditorController().onStop();
         getController().simulate.setDisable(false);
         getController().stepInto.setDisable(true);
         getController().stepOver.setDisable(true);
@@ -176,7 +172,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().stackTab.setDisable(true);
         getController().settingsStackAddress.setDisable(false);
         getController().settingsSymbolsAddress.setDisable(false);
-        getEditorController().clearLineMarking();
+        getEditorController().clearLineMarkings();
         getExecutionWorker().updateGUI();
         application.status = Status.EDITING;
     }
@@ -186,7 +182,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      */
     public void onRestart() {
         getEditorController().clearNotifs();
-        getEditorController().clearLineMarking();
+        getEditorController().clearLineMarkings();
 
         getCodeInterpreter().resetState();
         getCodeInterpreter().restart();

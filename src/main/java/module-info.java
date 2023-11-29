@@ -34,4 +34,6 @@ module fr.dwightstudio.jarmemu {
     opens fr.dwightstudio.jarmemu.gui.enums to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui.factory;
     opens fr.dwightstudio.jarmemu.gui.factory to javafx.fxml;
+    exports fr.dwightstudio.jarmemu.gui.editor;
+    opens fr.dwightstudio.jarmemu.gui.editor to javafx.fxml;
 }

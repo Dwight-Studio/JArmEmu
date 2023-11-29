@@ -54,7 +54,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onNewFile() {
-        if (getApplication().updateSaveState()) {
+        if (getApplication().getSaveState()) {
             newFile();
         } else {
             getDialogs().unsavedAlert().thenAccept(rtn -> {
@@ -80,9 +80,9 @@ public class MainMenuController extends AbstractJArmEmuModule {
         logger.info("Opening a new file");
         getSimulationMenuController().onStop();
         getEditorController().newFile();
-        getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+        getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
         getSettingsController().setLastSavePath("");
-        application.setNew();
+        application.newFile();
     }
 
     /**
@@ -119,9 +119,9 @@ public class MainMenuController extends AbstractJArmEmuModule {
             } else {
                 try {
                     logger.info("Saving file...");
-                    getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+                    getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
                     getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                    application.setSaved();
+                    getEditorController().currentFileEditor().setSaved();
                     getSettingsController().setLastSavePath(savePath.getAbsolutePath());
                     logger.info("Saved at: " + savePath.getAbsolutePath());
                 } catch (Exception exception) {
@@ -151,9 +151,9 @@ public class MainMenuController extends AbstractJArmEmuModule {
                     logger.info("File located: " + file.getAbsolutePath());
                     savePath = file;
                     logger.info("Saving file...");
-                    getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+                    getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
                     getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                    application.setSaved();
+                    getEditorController().currentFileEditor().setSaved();
                     getSettingsController().setLastSavePath(savePath.getAbsolutePath());
                     logger.info("Saved at: " + savePath.getAbsolutePath());
                 } catch (Exception exception) {
@@ -179,9 +179,9 @@ public class MainMenuController extends AbstractJArmEmuModule {
                 logger.info("File located: " + file.getAbsolutePath());
                 savePath = file;
                 logger.info("Saving file...");
-                getSourceParser().setSourceScanner(new SourceScanner(getController().codeArea.getText()));
+                getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
                 getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                application.setSaved();
+                getEditorController().currentFileEditor().setSaved();
                 getSettingsController().setLastSavePath(savePath.getAbsolutePath());
                 logger.info("Saved at: " + savePath.getAbsolutePath());
             } catch (Exception exception) {
@@ -195,7 +195,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReload() {
-        if (getApplication().updateSaveState()) {
+        if (getApplication().getSaveState()) {
             reload();
         } else {
             getDialogs().unsavedAlert().thenAccept(rtn -> {
@@ -221,9 +221,8 @@ public class MainMenuController extends AbstractJArmEmuModule {
             if (isValidFile(savePath)) {
                 try {
                     getSourceParser().setSourceScanner(new SourceScanner(savePath));
-                    getController().codeArea.clear();
-                    getController().codeArea.insertText(0, application.getSourceParser().getSourceScanner().exportCode());
-                    application.setSaved();
+                    getEditorController().open(savePath.getName(), application.getSourceParser().getSourceScanner().exportCode());
+                    getEditorController().currentFileEditor().setSaved();
                     getSettingsController().setLastSavePath(savePath.getAbsolutePath());
                     logger.info("File reloaded: " + savePath.getAbsolutePath());
                 } catch (Exception exception) {
@@ -238,7 +237,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     protected void onExit() {
-        if (getApplication().updateSaveState()) {
+        if (getApplication().getSaveState()) {
             Platform.exit();
         } else {
             getDialogs().unsavedAlert().thenAccept(rtn -> {
@@ -279,7 +278,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void openLastSave() {
         String path;
-        application.setNew();
+        application.newFile();
 
         if (application.getArgSave() == null) {
             path = getSettingsController().getLastSavePath();
