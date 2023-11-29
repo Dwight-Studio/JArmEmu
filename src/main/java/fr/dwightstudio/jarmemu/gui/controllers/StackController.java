@@ -183,11 +183,13 @@ public class StackController extends AbstractJArmEmuModule {
                 stackTable.sort();
                 col1.setSortable(false);
 
-                for (int i = 0 ; i < views.size() ; i++) {
-                    if (views.get(i).getCursorProperty().get()) {
-                        stackTable.scrollTo(i);
-                        stackTable.getFocusModel().focus(i);
-                        break;
+                if (getSettingsController().getFollowSPSetting()) {
+                    for (int i = 0; i < views.size(); i++) {
+                        if (views.get(i).getCursorProperty().get()) {
+                            stackTable.scrollTo(i);
+                            stackTable.getFocusModel().focus(i);
+                            break;
+                        }
                     }
                 }
             });
