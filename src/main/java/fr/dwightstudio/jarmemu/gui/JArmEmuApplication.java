@@ -92,6 +92,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter une coloration lors de l'update d'un élément
     // TODO: Ajouter la possibilité de charger plusieurs fichiers
     // TODO: Ajouter une vue compacte dans la mémoire
+    // TODO: Réparer le .deb
 
     @Override
     public void start(Stage stage) throws IOException {
