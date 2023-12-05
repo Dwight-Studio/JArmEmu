@@ -48,12 +48,12 @@ public class LDRExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleLdrTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        stateContainer.memory.putWord(100, 54);
-        stateContainer.memory.putHalf(104, (short) 54);
-        stateContainer.memory.putByte(106, (byte) 54);
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        stateContainer.getMemory().putWord(100, 54);
+        stateContainer.getMemory().putHalf(104, (short) 54);
+        stateContainer.getMemory().putByte(106, (byte) 54);
         ldrExecutor.execute(stateContainer, false, false, null, null, r0, new AddressParser.UpdatableInteger(100, stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
         assertEquals(54, r0.getData());
         ldrExecutor.execute(stateContainer, false, false, HALF_WORD, null, r1, new AddressParser.UpdatableInteger(104, stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());

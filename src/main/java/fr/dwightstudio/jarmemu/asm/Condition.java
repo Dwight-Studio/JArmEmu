@@ -30,22 +30,22 @@ import java.util.function.Function;
 public enum Condition {
 
     AL((state) -> true),
-    EQ((state) -> state.cpsr.getZ()),
-    NE((state) -> !state.cpsr.getZ()),
-    CS((state) -> state.cpsr.getC()),
-    CC((state) -> !state.cpsr.getC()),
-    MI((state) -> state.cpsr.getN()),
-    PL((state) -> !state.cpsr.getN()),
-    VS((state) -> state.cpsr.getV()),
-    VC((state) -> !state.cpsr.getV()),
-    HS((state) -> state.cpsr.getC()),
-    LO((state) -> !state.cpsr.getC()),
-    HI((state) -> state.cpsr.getC() && !state.cpsr.getZ()),
-    LS((state) -> !state.cpsr.getC() || state.cpsr.getZ()),
-    GE((state) -> state.cpsr.getN() == state.cpsr.getV()),
-    LT((state) -> state.cpsr.getN() != state.cpsr.getV()),
-    GT((state) -> !state.cpsr.getZ() && (state.cpsr.getN() == state.cpsr.getV())),
-    LE((state) -> state.cpsr.getZ() || (state.cpsr.getN() != state.cpsr.getV()));
+    EQ((state) -> state.getCPSR().getZ()),
+    NE((state) -> !state.getCPSR().getZ()),
+    CS((state) -> state.getCPSR().getC()),
+    CC((state) -> !state.getCPSR().getC()),
+    MI((state) -> state.getCPSR().getN()),
+    PL((state) -> !state.getCPSR().getN()),
+    VS((state) -> state.getCPSR().getV()),
+    VC((state) -> !state.getCPSR().getV()),
+    HS((state) -> state.getCPSR().getC()),
+    LO((state) -> !state.getCPSR().getC()),
+    HI((state) -> state.getCPSR().getC() && !state.getCPSR().getZ()),
+    LS((state) -> !state.getCPSR().getC() || state.getCPSR().getZ()),
+    GE((state) -> state.getCPSR().getN() == state.getCPSR().getV()),
+    LT((state) -> state.getCPSR().getN() != state.getCPSR().getV()),
+    GT((state) -> !state.getCPSR().getZ() && (state.getCPSR().getN() == state.getCPSR().getV())),
+    LE((state) -> state.getCPSR().getZ() || (state.getCPSR().getN() != state.getCPSR().getV()));
 
     private final Function<StateContainer, Boolean> tester;
 

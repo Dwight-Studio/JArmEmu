@@ -44,10 +44,10 @@ public class MLAExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleMlaTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        Register r3 = stateContainer.registers[3];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
         r1.setData(10);
         r2.setData(6);
         r3.setData(-15);
@@ -62,28 +62,28 @@ public class MLAExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        Register r3 = stateContainer.registers[3];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
         r1.setData(10);
         r2.setData(-15);
         r3.setData(6);
         mlaExecutor.execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(10);
         r2.setData(15);
         r3.setData(-6);
         mlaExecutor.execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(10);
         r2.setData(1);
         r3.setData(-10);
         mlaExecutor.execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
     }
 
 }

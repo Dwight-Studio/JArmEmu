@@ -36,7 +36,7 @@ public class TSTExecutor implements InstructionExecutor<Register, Integer, Shift
 
         int result = arg1.getData() & i1; // result = arg1 & (arg3 SHIFT arg2)
 
-        stateContainer.cpsr.setN(result < 0);
-        stateContainer.cpsr.setZ(result == 0);
+        stateContainer.getCPSR().setN(result < 0);
+        stateContainer.getCPSR().setZ(result == 0);
     }
 }

@@ -39,13 +39,13 @@ public class ShiftParser implements ArgumentParser<ShiftParser.ShiftFunction> {
                     Function<Integer, Integer> func = (i -> {
                         i = Integer.rotateRight(i, 1);
                         boolean c = ((i >> 31) & 1) == 1;
-                        if (stateContainer.cpsr.getC()) {
+                        if (stateContainer.getCPSR().getC()) {
                             i |= (1 << 31); // set a bit to 1
                         } else {
                             i &= ~(1 << 31); // set a bit to 0
                         }
 
-                        stateContainer.cpsr.setC(c);
+                        stateContainer.getCPSR().setC(c);
 
                         return i;
                     });

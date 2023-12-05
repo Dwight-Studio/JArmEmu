@@ -50,7 +50,7 @@ class HalfExecutorTest {
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
             HALF.apply(container, "" + (r & 0xFFFF), i*2, Section.DATA);
-            assertEquals((short) (r & 0xFFFF), container.memory.getHalf(i*2));
+            assertEquals((short) (r & 0xFFFF), container.getMemory().getHalf(i*2));
         }
     }
 

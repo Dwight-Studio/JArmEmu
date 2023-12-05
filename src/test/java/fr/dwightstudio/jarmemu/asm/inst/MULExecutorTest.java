@@ -45,9 +45,9 @@ public class MULExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleMulTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
         r0.setData(16);
         r1.setData(16);
         mulExecutor.execute(stateContainer, false, false, null, null, r2, r1, r0, ArgumentParsers.SHIFT.none());
@@ -63,21 +63,21 @@ public class MULExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
         r0.setData(16);
         r1.setData(16);
         mulExecutor.execute(stateContainer, false, true, null, null, r1, r1, r0, ArgumentParsers.SHIFT.none());
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(-1);
         mulExecutor.execute(stateContainer, false, true, null, null, r1, r1, r0, ArgumentParsers.SHIFT.none());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(0);
         mulExecutor.execute(stateContainer, false, true, null, null, r1, r1, r0, ArgumentParsers.SHIFT.none());
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
     }
 
 }

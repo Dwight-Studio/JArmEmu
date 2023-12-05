@@ -48,7 +48,7 @@ public class EquivalentExecutor implements DirectiveExecutor {
             } else {
                 int val = stateContainer.evalWithConsts(arg[1]);
 
-                stateContainer.consts.put(symbol, val);
+                stateContainer.getConsts().put(symbol, val);
             }
         } else {
             throw new SyntaxASMException("Invalid arguments '" + args + "' for Equivalent directive");

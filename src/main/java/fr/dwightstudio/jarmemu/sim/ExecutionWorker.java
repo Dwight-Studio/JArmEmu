@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.sim;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -310,7 +311,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (application.getSettingsController().getAutoBreakSetting()) {
                 if (application.getSettingsController().getProgramAlignBreakSetting()) {
-                    if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.PC.getN()].getData() % 4 != 0) {
+                    if (application.getCodeInterpreter().stateContainer.getRegister(RegisterUtils.PC.getN()).getData() % 4 != 0) {
                         Platform.runLater(() -> {
                             application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter.", Styles.DANGER);
                             application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
@@ -321,7 +322,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
 
                 if (application.getSettingsController().getStackAlignBreakSetting()) {
-                    if (application.getCodeInterpreter().stateContainer.registers[RegisterUtils.SP.getN()].getData() % 4 != 0) {
+                    if (application.getCodeInterpreter().stateContainer.getRegister(RegisterUtils.SP.getN()).getData() % 4 != 0) {
                     Platform.runLater(() -> {
                         application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer.", Styles.DANGER);
                         application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
@@ -420,7 +421,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != 0 && line != next || line != 0 && next != 0) {
-                    if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearLineMarkings());
+                    if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearAllLineMarkings());
                     Platform.runLater(() -> {
                         if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
                         application.getEditorController().markLine(line, LineStatus.EXECUTED);
@@ -434,7 +435,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
         private void prepareTask() {
             nextTask.set(IDLE);
-            application.getSourceParser().setSourceScanner(new SourceScanner(application.getEditorController().currentFileEditor().getCodeArea().getText()));
 
             synchronized (this) {
                 try {
@@ -443,7 +443,12 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             }
 
             try {
-                SyntaxASMException[] errors = application.getCodeInterpreter().load(application.getSourceParser(), application.getSettingsController().getStackAddress(), application.getSettingsController().getSymbolsAddress());
+                SyntaxASMException[] errors = application.getCodeInterpreter().load(
+                        application.getSourceParser(),
+                        application.getSettingsController().getStackAddress(),
+                        application.getSettingsController().getSymbolsAddress(),
+                        application.getEditorController().getSources()
+                );
 
                 if (errors.length == 0) {
                     line = next = last = 0;

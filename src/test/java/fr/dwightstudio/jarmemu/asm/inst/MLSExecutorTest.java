@@ -44,10 +44,10 @@ public class MLSExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleMlsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        Register r3 = stateContainer.registers[3];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
         r3.setData(100);
         r2.setData(4);
         r1.setData(5);

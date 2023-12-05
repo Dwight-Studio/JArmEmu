@@ -79,7 +79,7 @@ public class FillExecutor implements DirectiveExecutor {
                 }
 
                 for (int i = currentPos ; i < currentPos + totalNum ; i++) {
-                    stateContainer.memory.putByte(currentPos + i, bytes[i % valueSize]);
+                    stateContainer.getMemory().putByte(currentPos + i, bytes[i % valueSize]);
                 }
             }
 

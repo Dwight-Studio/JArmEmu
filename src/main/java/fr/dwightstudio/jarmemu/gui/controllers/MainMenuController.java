@@ -27,6 +27,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
@@ -44,45 +45,21 @@ import java.util.logging.Logger;
 public class MainMenuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private ArrayList<File> savePath = new ArrayList<>();
+
+    private File lastFile;
 
     public MainMenuController(JArmEmuApplication application) {
         super(application);
     }
 
     /**
-     * Méthode invoquée par JavaFX
-     */
-    public void onNewFile() {
-        if (getApplication().getSaveState()) {
-            newFile();
-        } else {
-            getDialogs().unsavedAlert().thenAccept(rtn -> {
-                switch (rtn) {
-                    case SAVE_AND_CONTINUE -> {
-                        onSave();
-                        newFile();
-                    }
-
-                    case DISCARD_AND_CONTINUE -> newFile();
-
-                    default -> {
-                    }
-                }
-            });
-        }
-    }
-
-    /**
      * Initie un nouveau fichier
      */
-    public void newFile() {
+    public void onNewFile() {
         logger.info("Opening a new file");
         getSimulationMenuController().onStop();
         getEditorController().newFile();
-        getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
         getSettingsController().setLastSavePath("");
-        application.newFile();
     }
 
     /**
@@ -93,100 +70,65 @@ public class MainMenuController extends AbstractJArmEmuModule {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (!savePath.isEmpty() && exists(savePath.getFirst())) {
-            fileChooser.setInitialDirectory(savePath.getFirst().isDirectory() ? savePath.getFirst() : savePath.getFirst().getParentFile());
+        if (FileUtils.exists(lastFile)) {
+            fileChooser.setInitialDirectory(lastFile.isDirectory() ? lastFile : lastFile.getParentFile());
         }
-        List<File> fichier = fileChooser.showOpenMultipleDialog(application.stage);
-        if (fichier != null && !fichier.isEmpty()){
-            savePath.clear();
-            for (File file:fichier) {
-                if (isValidFile(file)) {
+        List<File> files = fileChooser.showOpenMultipleDialog(application.stage);
+        if (files != null && !files.isEmpty()){
+            for (File file:files) {
+                if (FileUtils.isValidFile(file)) {
                     logger.info("File located: " + file.getAbsolutePath());
-                    savePath.add(file);
+                    getEditorController().open(file);
+                    lastFile = file;
                 }
             }
-            onReload();
         }
+    }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    public void onSaveAll() {
+        getEditorController().saveAll();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onSave() {
-        for (File savePath:savePath){
-            if (!exists(savePath)) {
-                onSaveAs(savePath);
-            } else {
-                try {
-                    logger.info("Saving file...");
-                    getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
-                    getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                    getEditorController().currentFileEditor().setSaved();
-                    getSettingsController().setLastSavePath(savePath.getAbsolutePath());
-                    logger.info("Saved at: " + savePath.getAbsolutePath());
-                } catch (Exception exception) {
-                    new ExceptionDialog(exception).show();
-                    logger.severe(ExceptionUtils.getStackTrace(exception));
-                }
-            }
-        }
+        getEditorController().currentFileEditor().save();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onSaveAs() {
-        for (File savePath:savePath) {
-            logger.info("Locating a new file to save...");
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save Source File");
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-            if (exists(savePath)) {
-                fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
-            }
-            File file = fileChooser.showSaveDialog(application.stage);
-            if (file != null && !file.isDirectory()) {
-                try {
-                    if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
-                    logger.info("File located: " + file.getAbsolutePath());
-                    savePath = file;
-                    logger.info("Saving file...");
-                    getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
-                    getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                    getEditorController().currentFileEditor().setSaved();
-                    getSettingsController().setLastSavePath(savePath.getAbsolutePath());
-                    logger.info("Saved at: " + savePath.getAbsolutePath());
-                } catch (Exception exception) {
-                    new ExceptionDialog(exception).show();
-                    logger.severe(ExceptionUtils.getStackTrace(exception));
-                }
-            }
-        }
+        getEditorController().currentFileEditor().saveAs();
     }
 
-    public void onSaveAs(File savePath) {
-        logger.info("Locating a new file to save...");
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Source File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
-        if (exists(savePath)) {
-            fileChooser.setInitialDirectory(savePath.isDirectory() ? savePath : savePath.getParentFile());
-        }
-        File file = fileChooser.showSaveDialog(application.stage);
-        if (file != null && !file.isDirectory()) {
-            try {
-                if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
-                logger.info("File located: " + file.getAbsolutePath());
-                savePath = file;
-                logger.info("Saving file...");
-                getSourceParser().setSourceScanner(new SourceScanner(getEditorController().currentFileEditor().getCodeArea().getText())); // FIXME: Prendre en compte les fichiers multiples
-                getSourceParser().getSourceScanner().exportCodeToFile(savePath);
-                getEditorController().currentFileEditor().setSaved();
-                getSettingsController().setLastSavePath(savePath.getAbsolutePath());
-                logger.info("Saved at: " + savePath.getAbsolutePath());
-            } catch (Exception exception) {
-                new ExceptionDialog(exception).show();
-                logger.severe(ExceptionUtils.getStackTrace(exception));
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    public void onReloadAll() {
+        if (getEditorController().getSaveState()) {
+            if (getEditorController().getSaveState()) {
+                getEditorController().reloadAll();
+            } else {
+                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                    switch (rtn) {
+                        case SAVE_AND_CONTINUE -> {
+                            onSaveAll();
+                            getEditorController().reloadAll();
+                        }
+
+                        case DISCARD_AND_CONTINUE -> {
+                            getEditorController().reloadAll();
+                        }
+
+                        default -> {
+                        }
+                    }
+                });
             }
         }
     }
@@ -195,40 +137,32 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReload() {
-        if (getApplication().getSaveState()) {
-            reload();
-        } else {
-            getDialogs().unsavedAlert().thenAccept(rtn -> {
-                switch (rtn) {
-                    case SAVE_AND_CONTINUE -> {
-                        onSave();
-                        reload();
-                    }
-
-                    case DISCARD_AND_CONTINUE -> reload();
-
-                    default -> {
-                    }
-                }
-            });
-        }
+        getEditorController().currentFileEditor().reload();
     }
 
-    public void reload() {
-        logger.info("Reloading file from disk");
-        getSimulationMenuController().onStop();
-        for (File savePath:savePath) {
-            if (isValidFile(savePath)) {
-                try {
-                    getSourceParser().setSourceScanner(new SourceScanner(savePath));
-                    getEditorController().open(savePath.getName(), application.getSourceParser().getSourceScanner().exportCode());
-                    getEditorController().currentFileEditor().setSaved();
-                    getSettingsController().setLastSavePath(savePath.getAbsolutePath());
-                    logger.info("File reloaded: " + savePath.getAbsolutePath());
-                } catch (Exception exception) {
-                    new ExceptionDialog(exception).show();
-                    logger.severe(ExceptionUtils.getStackTrace(exception));
-                }
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    public void onCloseAll() {
+        if (getEditorController().getSaveState()) {
+            if (getEditorController().getSaveState()) {
+                getEditorController().closeAll();
+            } else {
+                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                    switch (rtn) {
+                        case SAVE_AND_CONTINUE -> {
+                            onSaveAll();
+                            getEditorController().closeAll();
+                        }
+
+                        case DISCARD_AND_CONTINUE -> {
+                            getEditorController().closeAll();
+                        }
+
+                        default -> {
+                        }
+                    }
+                });
             }
         }
     }
@@ -236,14 +170,43 @@ public class MainMenuController extends AbstractJArmEmuModule {
     /**
      * Méthode invoquée par JavaFX
      */
-    protected void onExit() {
-        if (getApplication().getSaveState()) {
+    public void onClose() {
+        if (getEditorController().currentFileEditor().getSaveState()) {
+            if (getEditorController().getSaveState()) {
+                getEditorController().currentFileEditor().close();
+            } else {
+                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                    switch (rtn) {
+                        case SAVE_AND_CONTINUE -> {
+                            onSaveAll();
+                            getEditorController().currentFileEditor().close();
+                            getEditorController().cleanClosedEditors();
+                        }
+
+                        case DISCARD_AND_CONTINUE -> {
+                            getEditorController().currentFileEditor().close();
+                            getEditorController().cleanClosedEditors();
+                        }
+
+                        default -> {
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Méthode invoquée par JavaFX
+     */
+    public void onExit() {
+        if (getEditorController().getSaveState()) {
             Platform.exit();
         } else {
             getDialogs().unsavedAlert().thenAccept(rtn -> {
                 switch (rtn) {
                     case SAVE_AND_CONTINUE -> {
-                        onSave();
+                        onSaveAll();
                         Platform.exit();
                     }
 
@@ -259,13 +222,6 @@ public class MainMenuController extends AbstractJArmEmuModule {
     }
 
     /**
-     * @return le fichier représentant le chemin d'accès de la sauvegarde courante
-     */
-    public ArrayList<File> getSavePath() {
-        return savePath;
-    }
-
-    /**
      * Méthode invoquée par JavaFX
      */
     public void onResetSettings() {
@@ -277,55 +233,44 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Tente de lire la dernière sauvegarde, ouvre un nouveau fichier sinon.
      */
     public void openLastSave() {
-        String path;
-        application.newFile();
+        String[] paths;
 
         if (application.getArgSave() == null) {
-            path = getSettingsController().getLastSavePath();
+            paths = getSettingsController().getLastSavePath().split(";");
         } else {
-            path = application.getArgSave();
+            paths = application.getArgSave().split(";");
         }
 
-        logger.info("Trying to open last save...");
-        if (!path.isEmpty()) {
-            try {
-                savePath.addFirst(new File(path));
+        logger.info("Trying to open last saves...");
+        boolean flag = false;
 
-                if (savePath.getFirst().exists()) {
-                    if (savePath.getFirst().isFile()) {
-                        logger.info("Last-save file located: " + savePath.getFirst().getAbsolutePath());
-                        onReload();
-                        return;
+        for (String path : paths) {
+            if (!path.isEmpty()) {
+                logger.info("Trying to open " + path + "...");
+                try {
+                    File file = new File(path);
+
+                    if (file.exists()) {
+                        if (file.isFile()) {
+                            getEditorController().open(file);
+                            flag = true;
+                        } else {
+                            logger.info("Wrong last-save file (not a file), aborting.");
+                        }
                     } else {
-                        logger.info("Wrong last-save file (not a file), aborting.");
+                        logger.info("Non existent last-save file, aborting.");
                     }
-                } else {
-                    logger.info("Non existent last-save file, aborting.");
+                } catch (Exception e) {
+                    logger.severe(ExceptionUtils.getStackTrace(e));
                 }
-            } catch (Exception e) {
-                logger.severe(ExceptionUtils.getStackTrace(e));
+            } else {
+                logger.info("Empty last-save, aborting.");
             }
-        } else {
-            logger.info("Empty last-save, aborting.");
         }
+
+        if (flag) return;
 
         onNewFile();
-    }
-
-    private boolean exists(File file) {
-        if (file != null) {
-            return file.exists();
-        } else {
-            return false;
-        }
-    }
-
-    private boolean isValidFile(File file) {
-        if (exists(file)) {
-            return file.isFile();
-        } else {
-            return false;
-        }
     }
 
     /**

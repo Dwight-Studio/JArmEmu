@@ -41,11 +41,11 @@ public class ImmRegisterParserTest extends JArmEmuTest {
         stateContainer = new StateContainer();
 
         for (int i = 0 ; i < 16 ; i++) {
-            stateContainer.registers[i].setData(i);
+            stateContainer.getRegister(i).setData(i);
         }
 
-        stateContainer.cpsr.setData(16);
-        stateContainer.spsr.setData(17);
+        stateContainer.getCPSR().setData(16);
+        stateContainer.getSPSR().setData(17);
     }
 
     @Test

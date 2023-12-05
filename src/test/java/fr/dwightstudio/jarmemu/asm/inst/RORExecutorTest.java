@@ -44,8 +44,8 @@ public class RORExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleRorTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
         r0.setData(25);
         r1.setData(-25);
         rorExecutor.execute(stateContainer, false, false, null, null, r0, r0, 3, null);
@@ -60,35 +60,35 @@ public class RORExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
         r0.setData(-25);
         r1.setData(25);
         rorExecutor.execute(stateContainer, false, true, null, null, r1, r1, 3, null);
         assertEquals(536870915, r1.getData());
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
         rorExecutor.execute(stateContainer, false, true, null, null, r0, r0, 4, null);
         assertEquals(2147483646, r0.getData());
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
         rorExecutor.execute(stateContainer, false, true, null, null, r0, r0, 27, null);
         assertEquals(-49, r0.getData());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
         rorExecutor.execute(stateContainer, false, true, null, null, r0, r0, 1, null);
         assertEquals(-25, r0.getData());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
         rorExecutor.execute(stateContainer, false, true, null, null, r0, r0, 1, null);
         assertEquals(-13, r0.getData());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
     }
 
 }

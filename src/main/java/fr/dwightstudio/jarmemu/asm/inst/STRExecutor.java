@@ -52,9 +52,9 @@ public class STRExecutor implements InstructionExecutor<Register, AddressParser.
         }
 
         switch (dataMode){
-            case null -> stateContainer.memory.putWord(address, arg1.getData());
-            case HALF_WORD -> stateContainer.memory.putHalf(address, (short) arg1.getData());
-            case BYTE -> stateContainer.memory.putByte(address, (byte) arg1.getData());
+            case null -> stateContainer.getMemory().putWord(address, arg1.getData());
+            case HALF_WORD -> stateContainer.getMemory().putHalf(address, (short) arg1.getData());
+            case BYTE -> stateContainer.getMemory().putByte(address, (byte) arg1.getData());
         }
 
         arg2.update();

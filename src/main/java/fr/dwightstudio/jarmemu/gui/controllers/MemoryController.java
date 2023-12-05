@@ -274,7 +274,7 @@ public class MemoryController extends AbstractJArmEmuModule {
             for (int i = 0; i < LINES_PER_PAGE; i++) {
                 int add = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
 
-                views.add(new MemoryWordView(stateContainer.memory, add));
+                views.add(new MemoryWordView(stateContainer.getMemory(), add));
             }
         }
     }

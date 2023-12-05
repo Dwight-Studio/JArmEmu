@@ -37,9 +37,9 @@ public class CMPExecutor implements InstructionExecutor<Register, Integer, Shift
 
         int result = arg1.getData() - i1; // result = arg1 - (arg3 SHIFT arg2)
 
-        stateContainer.cpsr.setN(result < 0);
-        stateContainer.cpsr.setZ(result == 0);
-        stateContainer.cpsr.setC(MathUtils.hasCarry(arg1.getData(), -i1));
-        stateContainer.cpsr.setV(MathUtils.hasOverflow(arg1.getData(), -i1));
+        stateContainer.getCPSR().setN(result < 0);
+        stateContainer.getCPSR().setZ(result == 0);
+        stateContainer.getCPSR().setC(MathUtils.hasCarry(arg1.getData(), -i1));
+        stateContainer.getCPSR().setV(MathUtils.hasOverflow(arg1.getData(), -i1));
     }
 }

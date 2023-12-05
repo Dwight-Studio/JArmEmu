@@ -38,8 +38,8 @@ public class SMULLExecutor implements InstructionExecutor<Register, Register, Re
         arg2.setData((int) (result >>> 32)); // arg1 = result[63..32]
 
         if (updateFlags) {
-            stateContainer.cpsr.setN(arg2.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0 && arg2.getData() == 0);
+            stateContainer.getCPSR().setN(arg2.getData() < 0);
+            stateContainer.getCPSR().setZ(arg1.getData() == 0 && arg2.getData() == 0);
         }
     }
 }

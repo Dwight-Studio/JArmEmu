@@ -45,10 +45,10 @@ class RegisterWithUpdateParserTest extends JArmEmuTest {
 
     @Test
     public void normalTest() {
-        stateContainer.registers[0].setData(404);
+        stateContainer.getRegister(0).setData(404);
 
         RegisterWithUpdateParser.UpdatableRegister reg = REGISTER_WITH_UPDATE.parse(stateContainer, "R0");
-        assertEquals(stateContainer.registers[0].getData(), reg.getData());
+        assertEquals(stateContainer.getRegister(0).getData(), reg.getData());
 
         REGISTER_ARRAY.parse(stateContainer, "{R0,R1,R2}");
         reg.update(0);
@@ -58,10 +58,10 @@ class RegisterWithUpdateParserTest extends JArmEmuTest {
 
     @Test
     public void updateTest() {
-        stateContainer.registers[0].setData(404);
+        stateContainer.getRegister(0).setData(404);
 
         RegisterWithUpdateParser.UpdatableRegister reg = REGISTER_WITH_UPDATE.parse(stateContainer, "R0!");
-        assertEquals(stateContainer.registers[0].getData(), reg.getData());
+        assertEquals(stateContainer.getRegister(0).getData(), reg.getData());
 
         REGISTER_ARRAY.parse(stateContainer, "{R0,R1,R2}");
         reg.update(-12);

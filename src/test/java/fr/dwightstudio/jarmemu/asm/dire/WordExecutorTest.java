@@ -51,18 +51,18 @@ class WordExecutorTest {
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
             WORD.apply(container, "" + r, i*4, Section.DATA);
-            assertEquals(r, container.memory.getWord(i*4));
+            assertEquals(r, container.getMemory().getWord(i*4));
         }
 
         WORD.apply(container, "'c'", 32*4, Section.DATA);
-        assertEquals(99, container.memory.getWord(32*4));
+        assertEquals(99, container.getMemory().getWord(32*4));
     }
 
     @Test
     void constTest() {
         DirectiveExecutors.EQUIVALENT.apply(container, "N, 4", 0, Section.DATA);
         WORD.apply(container, "N", 100, Section.DATA);
-        assertEquals(4, container.memory.getWord(100));
+        assertEquals(4, container.getMemory().getWord(100));
     }
 
     @Test
@@ -70,7 +70,7 @@ class WordExecutorTest {
         ParsedDirectiveLabel l = new ParsedDirectiveLabel("TEST", Section.NONE);
         l.register(container, 99);
         WORD.apply(container, "=TEST", 100, Section.DATA);
-        assertEquals(99, container.memory.getWord(100));
+        assertEquals(99, container.getMemory().getWord(100));
     }
 
     @Test

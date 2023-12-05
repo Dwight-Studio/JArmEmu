@@ -50,9 +50,9 @@ public class LDRExecutor implements InstructionExecutor<Register, AddressParser.
         }
 
         switch (dataMode) {
-            case null -> arg1.setData(stateContainer.memory.getWord(address));
-            case HALF_WORD -> arg1.setData(stateContainer.memory.getHalf(address));
-            case BYTE -> arg1.setData(stateContainer.memory.getByte(address));
+            case null -> arg1.setData(stateContainer.getMemory().getWord(address));
+            case HALF_WORD -> arg1.setData(stateContainer.getMemory().getHalf(address));
+            case BYTE -> arg1.setData(stateContainer.getMemory().getByte(address));
         }
 
         arg2.update();

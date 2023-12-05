@@ -52,7 +52,7 @@ public class ByteExecutor implements DirectiveExecutor {
                 int data = stateContainer.evalWithAll(string.strip());
                 if (Integer.numberOfLeadingZeros(data) >= 24) {
                     byte half = (byte) data;
-                    stateContainer.memory.putByte(currentPos, half);
+                    stateContainer.getMemory().putByte(currentPos, half);
                     currentPos += 1;
                 } else {
                     throw new SyntaxASMException("Overflowing Byte value '" + args + "'");

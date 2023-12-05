@@ -47,84 +47,84 @@ public class ADDExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleAddTest() {
-        stateContainer.registers[0].setData(25);
-        Register r0 = stateContainerBis.registers[0];
+        stateContainer.getRegister(0).setData(25);
+        Register r0 = stateContainerBis.getRegister(0);
         r0.setData(99);
-        Register r1 = stateContainerBis.registers[1];
+        Register r1 = stateContainerBis.getRegister(1);
         r1.setData(5);
-        Register r2 = stateContainerBis.registers[2];
+        Register r2 = stateContainerBis.getRegister(2);
         r2.setData(20);
         addExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
-        assertEquals(stateContainer.registers[0].getData(), r0.getData());
+        assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
     @Test
     public void shiftRegisterTest() {
-        stateContainer.registers[0].setData(560);
-        Register r0 = stateContainerBis.registers[0];
+        stateContainer.getRegister(0).setData(560);
+        Register r0 = stateContainerBis.getRegister(0);
         r0.setData(99);
-        Register r1 = stateContainerBis.registers[1];
+        Register r1 = stateContainerBis.getRegister(1);
         r1.setData(13);
-        Register r2 = stateContainerBis.registers[2];
+        Register r2 = stateContainerBis.getRegister(2);
         r2.setData(456);
         addExecutor.execute(stateContainerBis, false, false, null, null, r0, r2, r1.getData(), ArgumentParsers.SHIFT.parse(stateContainerBis, "LSL#3"));
-        assertEquals(stateContainer.registers[0].getData(), r0.getData());
+        assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
     @Test
     public void instantValueAddTest() {
-        stateContainer.registers[0].setData(65736);
-        Register r0 = stateContainerBis.registers[0];
+        stateContainer.getRegister(0).setData(65736);
+        Register r0 = stateContainerBis.getRegister(0);
         r0.setData(99);
-        Register r1 = stateContainerBis.registers[1];
+        Register r1 = stateContainerBis.getRegister(1);
         r1.setData(456);
         addExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, 0xFF00, ArgumentParsers.SHIFT.none());
-        assertEquals(stateContainer.registers[0].getData(), r0.getData());
+        assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
+        Register r0 = stateContainer.getRegister(0);
         r0.setData(-55);
-        Register r1 = stateContainer.registers[1];
+        Register r1 = stateContainer.getRegister(1);
         r1.setData(45);
-        Register r2 = stateContainer.registers[2];
+        Register r2 = stateContainer.getRegister(2);
         addExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         addExecutor.execute(stateContainer, false, false, null, null, r2, r2, 10, ArgumentParsers.SHIFT.none());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         addExecutor.execute(stateContainer, false, true, null, null, r2, r2, 0, ArgumentParsers.SHIFT.none());
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(1);
         addExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertTrue(stateContainer.cpsr.getV());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
         addExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b10000000000000000000000000000000);
         r1.setData(0b10000000000000000000000000000000);
         addExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
-        assertTrue(stateContainer.cpsr.getV());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
+        assertTrue(stateContainer.getCPSR().getV());
     }
 
 }

@@ -37,8 +37,8 @@ public class MOVExecutor implements InstructionExecutor<Register, Integer, Shift
         arg1.setData(i1); // arg1 = (arg3 SHIFT arg2)
 
         if(updateFlags){
-            stateContainer.cpsr.setN(arg1.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0);
+            stateContainer.getCPSR().setN(arg1.getData() < 0);
+            stateContainer.getCPSR().setZ(arg1.getData() == 0);
         }
     }
 }

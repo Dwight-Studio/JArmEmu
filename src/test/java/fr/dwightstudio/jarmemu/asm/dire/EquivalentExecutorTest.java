@@ -51,7 +51,7 @@ class EquivalentExecutorTest extends JArmEmuTest {
             int r = random.nextInt();
             String s = RandomStringUtils.randomAlphabetic(i+1).toUpperCase();
             EQUIVALENT.apply(container, s + ", " + r, 0, Section.DATA);
-            assertEquals(r, container.consts.get(s));
+            assertEquals(r, container.getConsts().get(s));
         }
 
         assertEquals(0, EQUIVALENT.computeDataLength(container, "HEY, 31", 0, Section.DATA));

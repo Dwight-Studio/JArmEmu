@@ -50,9 +50,9 @@ class ASCIZExecutorTest {
             ASCIZ.apply(container, "\"" + string + "\"", 0, Section.DATA);
 
             for (int j = 0; j < 32; j++) {
-                assertEquals(string.charAt(j), container.memory.getByte(j));
+                assertEquals(string.charAt(j), container.getMemory().getByte(j));
             }
-            assertEquals('\0', container.memory.getByte(32));
+            assertEquals('\0', container.getMemory().getByte(32));
         }
     }
 

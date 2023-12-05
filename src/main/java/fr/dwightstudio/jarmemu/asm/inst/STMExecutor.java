@@ -47,7 +47,7 @@ public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser
             case FD, DB -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() - 4 * (i + 1);
-                    stateContainer.memory.putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = - 4 * length;
@@ -55,7 +55,7 @@ public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser
             case FA, IB -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * (i + 1);
-                    stateContainer.memory.putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = 4 * length;
@@ -63,7 +63,7 @@ public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser
             case ED, DA -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() - 4 * i;
-                    stateContainer.memory.putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = - 4 * length;
@@ -71,7 +71,7 @@ public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser
             case EA, IA -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * i;
-                    stateContainer.memory.putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = 4 * length;

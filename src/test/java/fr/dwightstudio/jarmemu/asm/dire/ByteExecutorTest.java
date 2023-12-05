@@ -52,7 +52,7 @@ class ByteExecutorTest {
                 byte[] b = new byte[1];
                 random.nextBytes(b);
                 BYTE.apply(container, "" + (b[0] & 0xFF), j, Section.DATA);
-                assertEquals(b[0], container.memory.getByte(j));
+                assertEquals(b[0], container.getMemory().getByte(j));
             }
         }
     }

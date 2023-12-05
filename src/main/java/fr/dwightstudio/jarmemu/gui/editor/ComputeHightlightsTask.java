@@ -74,16 +74,14 @@ public class ComputeHightlightsTask extends Task<StyleSpans<Collection<String>>>
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
     );
 
-    private final JArmEmuApplication application;
+    private final FileEditor fileEditor;
 
-    public ComputeHightlightsTask(JArmEmuApplication application) {
-        this.application = application;
+    public ComputeHightlightsTask(FileEditor fileEditor) {
+        this.fileEditor = fileEditor;
     }
 
     @Override
     protected StyleSpans<Collection<String>> call() {
-        FileEditor fileEditor = application.getEditorController().currentFileEditor();
-
         Matcher matcher = PATTERN.matcher(fileEditor.getCodeArea().getText());
         int lastKwEnd = 0;
         int line = 0;

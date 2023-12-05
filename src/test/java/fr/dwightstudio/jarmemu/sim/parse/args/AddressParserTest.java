@@ -45,11 +45,11 @@ class AddressParserTest extends JArmEmuTest {
         stateContainer = new StateContainer();
 
         for (int i = 0 ; i < 16 ; i++) {
-            stateContainer.registers[i].setData(i);
+            stateContainer.getRegister(i).setData(i);
         }
 
-        stateContainer.cpsr.setData(16);
-        stateContainer.spsr.setData(17);
+        stateContainer.getCPSR().setData(16);
+        stateContainer.getSPSR().setData(17);
     }
 
     private void testAllRegister(Function<Integer, String> repFunc, Function<Integer, Integer> testFunc, BiConsumer<Integer, AddressParser.UpdatableInteger> beforeFunc, BiConsumer<Integer, AddressParser.UpdatableInteger> afterFunc) {
@@ -67,36 +67,36 @@ class AddressParserTest extends JArmEmuTest {
     public void simpleTest() {
         testAllRegister(
                 i -> "[R" + i + "]",
-                i -> stateContainer.registers[i].getData(),
+                i -> stateContainer.getRegister(i).getData(),
                 (i, in) -> {},
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i && in.toInt() == i));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == i));
     }
 
     @Test
     public void constOffsetTest() {
         testAllRegister(
                 i -> "[R" + i + ",#4]",
-                i -> stateContainer.registers[i].getData()+4,
+                i -> stateContainer.getRegister(i).getData()+4,
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i && in.toInt() == i + 4));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == i + 4));
     }
 
     @Test
     public void varOffsetTest() {
         testAllRegister(
                 i -> "[R" + i + ",R4]",
-                i -> stateContainer.registers[i].getData() + stateContainer.registers[4].getData(),
+                i -> stateContainer.getRegister(i).getData() + stateContainer.getRegister(4).getData(),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i && in.toInt() == stateContainer.registers[i].getData() + stateContainer.registers[4].getData()));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == stateContainer.getRegister(i).getData() + stateContainer.getRegister(4).getData()));
     }
 
     @Test
     public void shiftedOffsetTest() {
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]",
-                i -> stateContainer.registers[i].getData() + (stateContainer.registers[4].getData() << 1),
+                i -> stateContainer.getRegister(i).getData() + (stateContainer.getRegister(4).getData() << 1),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i && in.toInt() == stateContainer.registers[i].getData() + (stateContainer.registers[4].getData() << 1)));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == stateContainer.getRegister(i).getData() + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
@@ -105,7 +105,7 @@ class AddressParserTest extends JArmEmuTest {
                 i -> "[R" + i + ",#4]!",
                 i -> i+4,
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i+4 && in.toInt() == i + 4));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i+4 && in.toInt() == i + 4));
     }
 
     @Test
@@ -113,9 +113,9 @@ class AddressParserTest extends JArmEmuTest {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4]!",
-                i -> i + stateContainer.registers[4].getData(),
+                i -> i + stateContainer.getRegister(4).getData(),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i + stateContainer.registers[4].getData() && in.toInt() == i + stateContainer.registers[4].getData()));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + stateContainer.getRegister(4).getData() && in.toInt() == i + stateContainer.getRegister(4).getData()));
     }
 
     @Test
@@ -123,9 +123,9 @@ class AddressParserTest extends JArmEmuTest {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
-                i -> i + (stateContainer.registers[4].getData() << 1),
+                i -> i + (stateContainer.getRegister(4).getData() << 1),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i + (stateContainer.registers[4].getData() << 1) && in.toInt() == i + (stateContainer.registers[4].getData() << 1)));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
@@ -133,9 +133,9 @@ class AddressParserTest extends JArmEmuTest {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
-                i -> i + (stateContainer.registers[4].getData() << 1),
+                i -> i + (stateContainer.getRegister(4).getData() << 1),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i + (stateContainer.registers[4].getData() << 1) && in.toInt() == i + (stateContainer.registers[4].getData() << 1)));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
@@ -143,9 +143,9 @@ class AddressParserTest extends JArmEmuTest {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
-                i -> i + (stateContainer.registers[4].getData() << 1),
+                i -> i + (stateContainer.getRegister(4).getData() << 1),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i + (stateContainer.registers[4].getData() << 1) && in.toInt() == i + (stateContainer.registers[4].getData() << 1)));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
@@ -153,8 +153,8 @@ class AddressParserTest extends JArmEmuTest {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
-                i -> i + (stateContainer.registers[4].getData() << 1),
+                i -> i + (stateContainer.getRegister(4).getData() << 1),
                 (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
-                (i, in) -> assertTrue(stateContainer.registers[i].getData() == i + (stateContainer.registers[4].getData() << 1) && in.toInt() == i + (stateContainer.registers[4].getData() << 1)));
+                (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 }

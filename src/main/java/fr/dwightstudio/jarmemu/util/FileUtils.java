@@ -21,23 +21,24 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm.inst;
+package fr.dwightstudio.jarmemu.util;
 
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import java.io.File;
 
-public class ASRExecutor implements InstructionExecutor<Register, Register, Integer, Object> {
-    @Override
-    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
-        int oldValue = arg2.getData() >> (arg3 - 1);
-        arg1.setData(arg2.getData() >> arg3);
+public class FileUtils {
+    public static boolean exists(File file) {
+        if (file != null) {
+            return file.exists();
+        } else {
+            return false;
+        }
+    }
 
-        if (updateFlags) {
-            stateContainer.getCPSR().setN(arg1.getData() < 0);
-            stateContainer.getCPSR().setZ(arg1.getData() == 0);
-            stateContainer.getCPSR().setC((oldValue & 1) == 1);
+    public static boolean isValidFile(File file) {
+        if (exists(file)) {
+            return file.isFile();
+        } else {
+            return false;
         }
     }
 }

@@ -38,31 +38,26 @@ public class RegexSourceParser implements SourceParser {
     private ASMParser asmParser;
     private DirectiveParser directiveParser;
 
-    public RegexSourceParser(SourceScanner sourceScanner) {
-        this.sourceScanner = sourceScanner;
+    public RegexSourceParser() {
         currentSection= new CurrentSection();
 
         asmParser = new ASMParser();
         directiveParser = new DirectiveParser();
     }
 
-    /**
-     * @return le CodeScanner utilisé par le parseur
-     */
-    @Override
-    public SourceScanner getSourceScanner() {
-        return sourceScanner;
+    public RegexSourceParser(SourceScanner sourceScanner) {
+        this();
+        this.sourceScanner = sourceScanner;
     }
 
     /**
-     * Définie le CodeScanner à utiliser par le parseur
+     * Définie la liste des fichiers
      *
-     * @param sourceScanner le CodeScanner à utiliser
+     * @param source le SourceScanner utilisé
      */
     @Override
-    public void setSourceScanner(SourceScanner sourceScanner) {
-        this.sourceScanner = sourceScanner;
-        currentSection = new CurrentSection();
+    public void setSource(SourceScanner source) {
+        this.sourceScanner = source;
     }
 
     /**

@@ -48,20 +48,20 @@ public class STRExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleStrTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        Register r3 = stateContainer.registers[3];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
         r0.setData(100);
         r1.setData(104);
         r2.setData(106);
         r3.setData(54);
         strExecutor.execute(stateContainer, false, false, null, null, r3, new AddressParser.UpdatableInteger(r0.getData(), stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
-        assertEquals(54, stateContainer.memory.getWord(100));
+        assertEquals(54, stateContainer.getMemory().getWord(100));
         strExecutor.execute(stateContainer, false, false, HALF_WORD, null, r3, new AddressParser.UpdatableInteger(r1.getData(), stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
-        assertEquals(54, stateContainer.memory.getHalf(104));
+        assertEquals(54, stateContainer.getMemory().getHalf(104));
         strExecutor.execute(stateContainer, false, false, BYTE, null, r3, new AddressParser.UpdatableInteger(r2.getData(), stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
-        assertEquals(54, stateContainer.memory.getByte(106));
+        assertEquals(54, stateContainer.getMemory().getByte(106));
     }
 
 }

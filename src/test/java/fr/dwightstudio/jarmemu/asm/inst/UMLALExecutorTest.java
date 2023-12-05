@@ -44,10 +44,10 @@ public class UMLALExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleUmlalTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        Register r3 = stateContainer.registers[3];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
         r2.setData(4);
         r3.setData(5);
         umlalExecutor.execute(stateContainer, false, false, null, null, r1, r0, r2, r3);
@@ -90,35 +90,35 @@ public class UMLALExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
-        Register r2 = stateContainer.registers[2];
-        Register r3 = stateContainer.registers[3];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
         r2.setData(4);
         r3.setData(5);
         umlalExecutor.execute(stateContainer, false, true, null, null, r1, r0, r2, r3);
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         r2.setData(4);
         r3.setData(-5);
         umlalExecutor.execute(stateContainer, false, true, null, null, r1, r0, r2, r3);
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         r0.setData(0);
         r1.setData(0);
         r2.setData(4);
         r3.setData(0);
         umlalExecutor.execute(stateContainer, false, true, null, null, r1, r0, r2, r3);
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
         r2.setData(-1);
         r3.setData(-456);
         umlalExecutor.execute(stateContainer, false, true, null, null, r1, r0, r2, r3);
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
         umlalExecutor.execute(stateContainer, false, true, null, null, r1, r0, r2, r3);
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
     }
 
 }

@@ -44,7 +44,7 @@ public class LabelParserTest extends JArmEmuTest {
 
     @Test
     public void parseTest(){
-        stateContainer.labels.put("COUCOU", 23);
+        stateContainer.getLabels().put("COUCOU", 23);
 
         assertEquals(23, LABEL.parse(stateContainer, "COUCOU"));
         assertThrows(SyntaxASMException.class, () -> LABEL.parse(stateContainer, "PASCOUCOU:"));

@@ -48,6 +48,11 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="Save all">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-save" />
+                                    </graphic>
+                                </MenuItem>
                                 <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save" />
@@ -58,11 +63,29 @@
                                         <FontIcon iconLiteral="mdmz-save" />
                                     </graphic>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="Reload all from disk">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsmz-refresh" />
+                                    </graphic>
+                                </MenuItem>
                                 <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh" />
                                     </graphic>
                                 </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false" />
+                                <MenuItem mnemonicParsing="false" onAction="#onCloseAll" text="Close all">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdal-close" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onClose" text="Close">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdal-close" />
+                                    </graphic>
+                                </MenuItem>
+                                <SeparatorMenuItem mnemonicParsing="false" />
                                 <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-settings_backup_restore" />

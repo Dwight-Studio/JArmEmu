@@ -32,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class LabelParser implements ArgumentParser<Integer> {
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        Integer value = stateContainer.labels.get(string);
+        Integer value = stateContainer.getLabels().get(string);
 
         if (value == null) throw new SyntaxASMException("Unknown label '" + string +"'");
 

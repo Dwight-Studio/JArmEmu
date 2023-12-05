@@ -59,13 +59,9 @@ public class LegacySourceParser implements SourceParser {
     protected String label;
 
     /**
-     * Création du lecteur de code du fichier *.s
-     * @param file Le fichier
-     * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
+     * Création d'un parseur vide
      */
-    public LegacySourceParser(File file) throws IOException {
-
-        this.sourceScanner = new SourceScanner(file);
+    public LegacySourceParser() {
         this.legacySectionParser = new LegacySectionParser();
         this.legacyDirectiveParser = new LegacyDirectiveParser();
 
@@ -80,6 +76,17 @@ public class LegacySourceParser implements SourceParser {
         this.currentSection = Section.NONE;
         this.directive = null;
         this.label = "";
+    }
+
+    /**
+     * Création du lecteur de code du fichier *.s
+     * @param file Le fichier
+     * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
+     */
+    public LegacySourceParser(File file) throws IOException {
+        this();
+
+        this.sourceScanner = new SourceScanner(file);
     }
 
     /**
@@ -87,40 +94,19 @@ public class LegacySourceParser implements SourceParser {
      * @param sourceScanner le lecteur de source utilisé
      */
     public LegacySourceParser(SourceScanner sourceScanner) {
+        this();
 
         this.sourceScanner = sourceScanner;
-        this.legacySectionParser = new LegacySectionParser();
-        this.legacyDirectiveParser = new LegacyDirectiveParser();
-
-        this.instruction = null;
-        this.updateFlags = false;
-        this.updateMode = null;
-        this.conditionExec = Condition.AL;
-        this.currentLine = "";
-        this.instructionString = "";
-        this.arguments = new ArrayList<>();
-        this.section = null;
-        this.currentSection = Section.NONE;
-        this.directive = null;
-        this.label = "";
     }
 
     /**
-     * @return le CodeScanner utilisé par le parseur
-     */
-    @Override
-    public SourceScanner getSourceScanner() {
-        return sourceScanner;
-    }
-
-    /**
-     * Définie le CodeScanner à utiliser par le parseur
+     * Définie la liste des fichiers
      *
-     * @param sourceScanner le CodeScanner à utiliser
+     * @param source le SourceScanner utilisé
      */
     @Override
-    public void setSourceScanner(SourceScanner sourceScanner) {
-        this.sourceScanner = sourceScanner;
+    public void setSource(SourceScanner source) {
+        this.sourceScanner = source;
     }
 
     /**

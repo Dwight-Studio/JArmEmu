@@ -154,6 +154,10 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     protected void onOpen() {
         getMainMenuController().onOpen();
     }
+    @FXML
+    protected void onSaveAll() {
+        getMainMenuController().onSaveAll();
+    }
 
     @FXML
     protected void onSave() {
@@ -166,8 +170,23 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     }
 
     @FXML
+    protected void onReloadAll() {
+        getMainMenuController().onReloadAll();
+    }
+
+    @FXML
     protected void onReload() {
         getMainMenuController().onReload();
+    }
+
+    @FXML
+    protected void onCloseAll() {
+        getMainMenuController().onCloseAll();
+    }
+
+    @FXML
+    protected void onClose() {
+        getMainMenuController().onClose();
     }
 
     @FXML

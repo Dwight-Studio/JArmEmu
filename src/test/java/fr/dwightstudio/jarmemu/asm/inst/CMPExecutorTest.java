@@ -46,43 +46,43 @@ public class CMPExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
         r0.setData(5);
         r1.setData(3);
         cmpExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         r0.setData(5);
         r1.setData(5);
         cmpExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         r0.setData(3);
         r1.setData(5);
         cmpExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
         cmpExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertTrue(stateContainer.cpsr.getV());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertTrue(stateContainer.getCPSR().getV());
         r0.setData(5);
         r1.setData(-3);
         cmpExecutor.execute(stateContainer, false, false, null, null, r0, r1.getData(), ArgumentParsers.SHIFT.none(), null);
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
-        assertFalse(stateContainer.cpsr.getV());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
+        assertFalse(stateContainer.getCPSR().getV());
     }
 
 }

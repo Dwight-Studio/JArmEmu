@@ -84,7 +84,6 @@ public class JArmEmuApplication extends Application {
     public Status status;
     public Stage stage;
     public Scene scene;
-    private ArrayList<File> lastSavePath;
     private String argSave;
 
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
@@ -148,6 +147,7 @@ public class JArmEmuApplication extends Application {
                 new Image(getResourceAsStream("medias/favicon@512.png")),
                 new Image(getResourceAsStream("medias/logo.png"))
         );
+        stage.setTitle("JArmEmu v" + VERSION);
         stage.setScene(scene);
         stage.show();
         stage.setMaximized(true);
@@ -222,26 +222,6 @@ public class JArmEmuApplication extends Application {
         JArmEmuApplication.launch(args);
     }
 
-    private void setTitle() {
-        Platform.runLater(() -> this.stage.setTitle("JArmEmu v" + VERSION));
-    }
-
-    /**
-     * Défini le contenu de la dernière sauvegarde à rien
-     *
-     * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
-     */
-    public void newFile() {
-        lastSavePath = new ArrayList<>();
-    }
-
-    /**
-     * @return vrai si tous les fichiers ont été sauvés
-     */
-    public boolean getSaveState() {
-        return true;
-    }
-
     public void openURL(String url) {
         getHostServices().showDocument(url);
     }
@@ -295,19 +275,8 @@ public class JArmEmuApplication extends Application {
     }
 
     private void onClosingRequest(WindowEvent event) {
-        if (getSaveState()) {
-            getDialogs().unsavedAlert().thenAccept(rtn -> {
-                switch (rtn) {
-                    case SAVE_AND_CONTINUE -> {
-                        getMainMenuController().onSave();
-                        Platform.exit();
-                    }
-                    case DISCARD_AND_CONTINUE -> Platform.exit();
-                }
-            });
-
-            event.consume();
-        }
+        event.consume();
+        getMainMenuController().onExit();
     }
 
     public void newSourceParser() {

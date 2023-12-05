@@ -150,7 +150,7 @@ public enum Instruction {
         if (condition.eval(stateContainer)) {
             executor.execute(stateContainer, false, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
         } else if (this.doModifyPC()) {
-            stateContainer.registers[RegisterUtils.PC.getN()].add(4);
+            stateContainer.getRegister(RegisterUtils.PC.getN()).add(4);
         }
     }
 

@@ -25,20 +25,18 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 
+import java.util.List;
+
 public interface SourceParser {
 
     int DEFAULT_SOURCE_PARSER = 0;
 
     /**
-     * @return le CodeScanner utilisé par le parseur
+     * Définie la liste des fichiers
+     *
+     * @param source le SourceScanner utilisé
      */
-    SourceScanner getSourceScanner();
-
-    /**
-     * Définie le CodeScanner à utiliser par le parseur
-     * @param sourceScanner le CodeScanner à utiliser
-     */
-    void setSourceScanner(SourceScanner sourceScanner);
+    void setSource(SourceScanner source);
 
     /**
      * Méthode principale

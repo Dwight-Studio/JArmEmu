@@ -54,7 +54,7 @@ class RegisterArrayParserTest extends JArmEmuTest {
         for (int i = 0 ; i < 16 ; i++) {
             if (i != 0) stringBuilder.append(",");
             stringBuilder.append("R").append(i);
-            registers[i] = stateContainer.registers[i];
+            registers[i] = stateContainer.getRegister(i);
         }
 
         stringBuilder.append("}");
@@ -67,7 +67,7 @@ class RegisterArrayParserTest extends JArmEmuTest {
         String string = "{R0-R3, R4}";
         Register[] registers = new Register[5];
 
-        System.arraycopy(stateContainer.registers, 0, registers, 0, 5);
+        System.arraycopy(stateContainer.getRegisters(), 0, registers, 0, 5);
 
         assertArrayEquals(registers, REGISTER_ARRAY.parse(stateContainer, string));
     }
@@ -82,7 +82,7 @@ class RegisterArrayParserTest extends JArmEmuTest {
         for (int i = 0 ; i < 64 ; i++) {
             if (i != 0) stringBuilder.append(",");
             stringBuilder.append("R").append(i % 16);
-            if (i < 16) registers[i] = stateContainer.registers[i];
+            if (i < 16) registers[i] = stateContainer.getRegister(i);
         }
 
         stringBuilder.append("}");

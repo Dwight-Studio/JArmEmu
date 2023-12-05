@@ -45,7 +45,7 @@ class GlobalExecutorTest extends JArmEmuTest {
     @Test
     void normalTest() {
         GLOBAL.apply(container, "ExEMpLE", 0, Section.DATA);
-        assertEquals("EXEMPLE", container.getGlobal());
+        assertEquals("EXEMPLE", container.getGlobals().getFirst());
         assertEquals(0, GLOBAL.computeDataLength(container,"EXEMPLE", 0, Section.DATA));
     }
 

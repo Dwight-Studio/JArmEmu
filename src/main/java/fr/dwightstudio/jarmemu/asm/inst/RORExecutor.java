@@ -34,9 +34,9 @@ public class RORExecutor implements InstructionExecutor<Register, Register, Inte
         arg1.setData(Integer.rotateRight(arg2.getData(), arg3));
 
         if (updateFlags) {
-            stateContainer.cpsr.setN(arg1.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC(((arg1.getData() >> 31) & 1) == 1);
+            stateContainer.getCPSR().setN(arg1.getData() < 0);
+            stateContainer.getCPSR().setZ(arg1.getData() == 0);
+            stateContainer.getCPSR().setC(((arg1.getData() >> 31) & 1) == 1);
         }
     }
 }

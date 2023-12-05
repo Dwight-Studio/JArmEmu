@@ -38,10 +38,10 @@ public class RSBExecutor implements InstructionExecutor<Register, Register, Inte
         arg1.setData(i1 - arg2.getData()); // arg1 = (arg4 SHIFT arg3) - arg2
 
         if (updateFlags){
-            stateContainer.cpsr.setN(arg1.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC(MathUtils.hasCarry(i1, -arg2.getData()));
-            stateContainer.cpsr.setV(MathUtils.hasOverflow(i1, -arg2.getData()));
+            stateContainer.getCPSR().setN(arg1.getData() < 0);
+            stateContainer.getCPSR().setZ(arg1.getData() == 0);
+            stateContainer.getCPSR().setC(MathUtils.hasCarry(i1, -arg2.getData()));
+            stateContainer.getCPSR().setV(MathUtils.hasOverflow(i1, -arg2.getData()));
         }
     }
 }

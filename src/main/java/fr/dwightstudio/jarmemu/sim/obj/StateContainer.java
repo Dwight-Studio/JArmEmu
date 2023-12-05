@@ -28,7 +28,9 @@ import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class StateContainer {
@@ -48,22 +50,22 @@ public class StateContainer {
     );
 
     // ASM
-    public final HashMap<String, Integer> consts; // HashMap des constantes
-    public final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
-    public final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
-    public final HashMap<String, Integer> labels; // HashMap des labels
-    private String global; // Labels globaux
+    private final HashMap<String, Integer> consts; // HashMap des constantes
+    private final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
+    private final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
+    private final HashMap<String, Integer> labels; // HashMap des labels
+    private final ArrayList<String> global; // Labels globaux
     private int nestingCount;
     private int lastAddressROData;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
-    public final Register[] registers;
-    public final PSR cpsr;
-    public final PSR spsr;
+    private final Register[] registers;
+    private final PSR cpsr;
+    private final PSR spsr;
 
     // Memory
-    public final MemoryAccessor memory;
+    private final MemoryAccessor memory;
     private final int stackAddress;
     private final int symbolsAddress;
 
@@ -76,7 +78,7 @@ public class StateContainer {
         consts = new HashMap<>();
         data = new HashMap<>();
         pseudoData = new HashMap<>();
-        global = null;
+        global = new ArrayList<>();
         nestingCount = 0;
         lastAddressROData = 0;
 
@@ -97,16 +99,16 @@ public class StateContainer {
 
     public StateContainer(StateContainer stateContainer) {
         this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
-        this.consts.putAll(stateContainer.consts);
-        this.data.putAll(stateContainer.data);
-        this.labels.putAll(stateContainer.labels);
-        this.pseudoData.putAll(stateContainer.pseudoData);
+        this.getConsts().putAll(stateContainer.consts);
+        this.getData().putAll(stateContainer.data);
+        this.getLabels().putAll(stateContainer.labels);
+        this.getPseudoData().putAll(stateContainer.pseudoData);
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
-            registers[i].setData(stateContainer.registers[i].getData());
+            registers[i].setData(stateContainer.getRegister(i).getData());
         }
 
-        cpsr.setData(stateContainer.cpsr.getData());
+        cpsr.setData(stateContainer.getCPSR().getData());
         spsr.setData(stateContainer.spsr.getData());
     }
 
@@ -196,12 +198,16 @@ public class StateContainer {
         return symbolsAddress;
     }
 
-    public String getGlobal() {
+    public List<String> getGlobals() {
         return global;
     }
 
     public void setGlobal(String global) {
-        this.global = global;
+        this.global.add(global);
+    }
+
+    public void clearGlobals() {
+        this.global.clear();
     }
 
     public Register[] getAllRegisters() {
@@ -255,5 +261,45 @@ public class StateContainer {
 
     public void setLastAddressROData(int lastAddressROData) {
         this.lastAddressROData = lastAddressROData;
+    }
+
+    public HashMap<String, Integer> getConsts() {
+        return consts;
+    }
+
+    public HashMap<String, Integer> getData() {
+        return data;
+    }
+
+    public HashMap<String, Integer> getPseudoData() {
+        return pseudoData;
+    }
+
+    public HashMap<String, Integer> getLabels() {
+        return labels;
+    }
+
+    public ArrayList<String> getGlobal() {
+        return global;
+    }
+
+    public Register getRegister(int i) {
+        return registers[i];
+    }
+
+    public PSR getCPSR() {
+        return cpsr;
+    }
+
+    public PSR getSPSR() {
+        return spsr;
+    }
+
+    public MemoryAccessor getMemory() {
+        return memory;
+    }
+
+    public Register[] getRegisters() {
+        return registers;
     }
 }

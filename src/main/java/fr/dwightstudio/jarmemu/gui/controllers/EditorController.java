@@ -28,20 +28,19 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import javafx.beans.property.SimpleListProperty;
+import fr.dwightstudio.jarmemu.util.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -110,17 +109,27 @@ public class EditorController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Supprime les notifications
+     * Supprime les notifications.
      */
     protected void clearNotifs() {
         getController().notifications.getChildren().clear();
     }
 
     /**
-     * @return l'éditeur actuellement ouvert
+     * @return l'éditeur actuellement ouvert.
      */
     public FileEditor currentFileEditor() {
         return fileEditors.get(getController().filesTabPane.getSelectionModel().getSelectedIndex());
+    }
+
+    public List<SourceScanner> getSources() {
+        ArrayList<SourceScanner> rtn = new ArrayList<>();
+
+        for (FileEditor editor : fileEditors) {
+            rtn.add(editor.getSourceScanner());
+        }
+
+        return rtn;
     }
 
     public List<FileEditor> getFileEditors() {
@@ -128,32 +137,116 @@ public class EditorController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Ouvre un nouvel éditeur vide
+     * Ouvre un nouvel éditeur vide.
      */
     public void newFile() {
         open("New File", SAMPLE_CODE);
     }
 
     /**
-     * Ouvre un éditeur
+     * Ouvre un éditeur sans fichier.
      *
      * @param fileName le nom du fichier
-     * @param content le contenu du fichier
+     * @param content  le contenu du fichier
      */
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(application, fileName, content));
     }
 
-    public void clearLineMarkings() {
-        // TODO: Faire le nettoyage des marquages
+    /**
+     * Ouvre un éditeur à partir d'un fichier.
+     *
+     * @param path le chemin du fichier
+     */
+    public void open(File path) {
+        FileEditor editor = new FileEditor(application, path);
+        fileEditors.add(editor);
     }
 
+    /**
+     * Nettoie tous les marquages.
+     */
+    public void clearAllLineMarkings() {
+        for (FileEditor editor : fileEditors) {
+            editor.clearLineMarking();
+        }
+    }
+
+    /**
+     * Marque une ligne en utilisant le numéro de ligne des fichiers concaténés.
+     *
+     * @param currentLine la ligne à marquer
+     * @param lineStatus le status de marquage
+     */
     public void markLine(int currentLine, LineStatus lineStatus) {
         // TODO: Faire le marquage entre les fichiers
     }
 
     /**
-     * Méthode appelée lors de la reprise de l'exécution
+     * Sauvegarde tous les fichiers.
+     */
+    public void saveAll() {
+        for (FileEditor editor : fileEditors) {
+            editor.save();
+        }
+    }
+
+    /**
+     * Recharge tous les fichiers.
+     */
+    public void reloadAll() {
+        for (FileEditor editor : fileEditors) {
+            editor.reload();
+        }
+    }
+
+    /**
+     * Ferme tous les fichiers.
+     */
+    public void closeAll() {
+        for (FileEditor editor : fileEditors) {
+            editor.close();
+        }
+        cleanClosedEditors();
+    }
+
+    /**
+     * Enlève les fichiers fermés de la liste des fichiers
+     */
+    public void cleanClosedEditors() {
+        fileEditors.removeIf(FileEditor::isClosed);
+    }
+
+    /**
+     * @return l'état de sauvegarde globale (tous les fichiers ouverts).
+     */
+    public boolean getSaveState() {
+        for (FileEditor editor : fileEditors) {
+            if (!editor.getSaveState()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Calcule tous les chemins d'accès et actualise les préférences.
+     *
+     * @return les chemin d'accès de la sauvegarde courante
+     */
+    public ArrayList<File> getSavePaths() {
+        ArrayList<File> rtn = new ArrayList<>();
+
+        for (FileEditor editor : fileEditors) {
+            if (FileUtils.isValidFile(editor.getPath())) rtn.add(editor.getPath());
+        }
+
+        return rtn;
+    }
+
+    /**
+     * Méthode appelée lors de la reprise de l'exécution.
      */
     public void onLaunch() {
         if (!fileEditors.isEmpty()) {
@@ -164,7 +257,7 @@ public class EditorController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Méthode appelée lors de la reprise de l'exécution
+     * Méthode appelée lors de la reprise de l'exécution.
      */
     public void onContinue() {
         if (!fileEditors.isEmpty()) {
@@ -176,7 +269,7 @@ public class EditorController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Méthode appelée lors de la pause de l'exécution
+     * Méthode appelée lors de la pause de l'exécution.
      */
     public void onPause() {
         if (!fileEditors.isEmpty()) {
@@ -188,7 +281,7 @@ public class EditorController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Méthode appelée lors de l'arrêt de la simulation
+     * Méthode appelée lors de l'arrêt de la simulation.
      */
     public void onStop() {
         if (!fileEditors.isEmpty()) {

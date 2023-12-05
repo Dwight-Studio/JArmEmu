@@ -49,7 +49,7 @@ public class WordExecutor implements DirectiveExecutor {
 
             for (String string : arg) {
                 int data = stateContainer.evalWithAll(string.strip());
-                stateContainer.memory.putWord(currentPos, data);
+                stateContainer.getMemory().putWord(currentPos, data);
                 currentPos += 4;
             }
         } catch (NumberFormatException exception) {

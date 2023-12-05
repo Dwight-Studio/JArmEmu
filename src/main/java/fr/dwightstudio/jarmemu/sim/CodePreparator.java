@@ -52,14 +52,23 @@ public class CodePreparator {
      * Charge un nouveau programme dans le préparateur d'état
      *
      * @param sourceParser l'analyseur de source
+     * @param fileSources les scanneurs de sources
      * @return la liste des erreurs
      */
-    public SyntaxASMException[] load(SourceParser sourceParser) {
-        try {
-            this.parsedFiles.add(sourceParser.parse());
-        } catch (SyntaxASMException exception) {
-            return new SyntaxASMException[] {exception};
+    public SyntaxASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
+        ArrayList<SyntaxASMException> exceptions = new ArrayList<>();
+
+        for (SourceScanner source : fileSources) {
+            try {
+                source.goTo(0);
+                sourceParser.setSource(source);
+                this.parsedFiles.add(sourceParser.parse());
+            } catch(SyntaxASMException exception){
+                exceptions.add(exception);
+            }
         }
+
+        if (!exceptions.isEmpty()) return exceptions.toArray(new SyntaxASMException[0]);
 
         instructionMemory = new ArrayList<>();
         instructionPosition = new ArrayList<>();
@@ -111,8 +120,9 @@ public class CodePreparator {
 
         int line = -1;
         try {
-            if (stateContainer.getGlobal() != null) {
-                ArgumentParsers.LABEL.parse(stateContainer, stateContainer.getGlobal());
+            if (!stateContainer.getGlobals().isEmpty()) {
+                for (String global : stateContainer.getGlobals())
+                    ArgumentParsers.LABEL.parse(stateContainer, global);
             }
         } catch (SyntaxASMException exception) {
 
@@ -353,7 +363,7 @@ public class CodePreparator {
         }
 
 
-        if (!stateContainer.labels.containsKey("_END")) stateContainer.labels.put("_END", lastInstruction * 4);
+        if (!stateContainer.getLabels().containsKey("_END")) stateContainer.getLabels().put("_END", lastInstruction * 4);
     }
 
     /**

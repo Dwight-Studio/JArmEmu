@@ -34,8 +34,8 @@ public class MULExecutor implements InstructionExecutor<Register, Register, Regi
         arg1.setData(arg2.getData() * arg3.getData()); // arg1 = arg2 * arg3
 
         if (updateFlags) {
-            stateContainer.cpsr.setN(arg1.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0);
+            stateContainer.getCPSR().setN(arg1.getData() < 0);
+            stateContainer.getCPSR().setZ(arg1.getData() == 0);
         }
     }
 }

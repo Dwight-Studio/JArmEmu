@@ -24,20 +24,27 @@
 package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.ComputeHightlightsTask;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
-import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.reactfx.Subscription;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -52,15 +59,20 @@ public class FileEditor extends AbstractJArmEmuModule {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 
+    // GUI
     private final CodeArea codeArea;
     private final VirtualizedScrollPane<CodeArea> editorScroll;
     private final Tab fileTab;
     private final EditorContextMenu contextMenu;
     private final JArmEmuLineFactory lineFactory;
-    private final String fileName;
-    private String lastSave;
     private final ExecutorService executor;
-    private Subscription hightlightUpdateSubscription;
+    private final Subscription hightlightUpdateSubscription;
+
+    // Propriétés du fichier
+    private File path;
+    private String lastSaveContent;
+    private boolean saved;
+    private boolean closed;
 
 
     public FileEditor(JArmEmuApplication application, String fileName, String content) {
@@ -69,7 +81,6 @@ public class FileEditor extends AbstractJArmEmuModule {
         codeArea = new CodeArea();
         editorScroll = new VirtualizedScrollPane<>(codeArea);
         fileTab = new Tab(fileName, editorScroll);
-        this.fileName = fileName;
 
         hightlightUpdateSubscription = codeArea.plainTextChanges().successionEnds(Duration.ofMillis(50))
                 .retainLatestUntilLater(executor)
@@ -86,16 +97,20 @@ public class FileEditor extends AbstractJArmEmuModule {
 
         fileTab.setOnCloseRequest(event -> {
             getController().filesTabPane.getSelectionModel().select(fileTab);
-            if (!getApplication().getSaveState()) {
+            if (!getSaveState()) {
                 event.consume();
                 getDialogs().unsavedAlert().thenAccept(rtn -> {
                     switch (rtn) {
                         case SAVE_AND_CONTINUE -> {
-                            getMainMenuController().onSave();
+                            save();
                             close();
+                            getEditorController().cleanClosedEditors();
                         }
 
-                        case DISCARD_AND_CONTINUE -> close();
+                        case DISCARD_AND_CONTINUE -> {
+                            close();
+                            getEditorController().cleanClosedEditors();
+                        }
 
                         default -> {}
                     }
@@ -149,6 +164,15 @@ public class FileEditor extends AbstractJArmEmuModule {
                 }
             } );
         });
+
+        setSaved();
+        closed = false;
+    }
+
+    public FileEditor(JArmEmuApplication application, @NotNull File path) {
+        this(application, path.getName(), "");
+        this.path = path;
+        reload();
     }
 
     public CodeArea getCodeArea() {
@@ -208,6 +232,11 @@ public class FileEditor extends AbstractJArmEmuModule {
         getController().filesTabPane.getTabs().remove(fileTab);
         hightlightUpdateSubscription.unsubscribe();
         executor.close();
+        this.closed = true;
+    }
+
+    public boolean isClosed() {
+        return closed;
     }
 
     /**
@@ -221,30 +250,113 @@ public class FileEditor extends AbstractJArmEmuModule {
     }
 
     /**
+     * Sauvegarde le fichier
+     */
+    public void save() {
+        if (!FileUtils.exists(path)) {
+            saveAs();
+        } else {
+            try {
+                logger.info("Saving file...");
+                getSourceScanner().exportCodeToFile(path);
+                setSaved();
+                logger.info("Saved at: " + path.getAbsolutePath());
+            } catch (Exception exception) {
+                new ExceptionDialog(exception).show();
+                logger.severe(ExceptionUtils.getStackTrace(exception));
+            }
+        }
+    }
+
+    /**
+     * Sauvegarde le fichier sous un chemin spécifique
+     */
+    public void saveAs() {
+        logger.info("Locating a new file to save...");
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Source File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
+        if (FileUtils.exists(path)) {
+            fileChooser.setInitialDirectory(path.isDirectory() ? path : path.getParentFile());
+        }
+        File file = fileChooser.showSaveDialog(application.stage);
+        if (file != null && !file.isDirectory()) {
+            try {
+                if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
+                logger.info("File located: " + file.getAbsolutePath());
+                path = file;
+                logger.info("Saving file...");
+                getSourceScanner().exportCodeToFile(path);
+                setSaved();
+                logger.info("Saved at: " + path.getAbsolutePath());
+            } catch (Exception exception) {
+                new ExceptionDialog(exception).show();
+                logger.severe(ExceptionUtils.getStackTrace(exception));
+            }
+        }
+    }
+
+    /**
+     * Recharge le fichier depuis le disque
+     */
+    public void reload() {
+        logger.info("Reloading file from disk");
+        getSimulationMenuController().onStop();
+        if (FileUtils.isValidFile(path)) {
+            try {
+                SourceScanner scanner = new SourceScanner(path);
+                this.codeArea.replaceText(scanner.exportCode());
+                setSaved();
+                logger.info("File reloaded: " + path.getAbsolutePath());
+            } catch (Exception exception) {
+                new ExceptionDialog(exception).show();
+                logger.severe(ExceptionUtils.getStackTrace(exception));
+            }
+        }
+    }
+
+    /**
+     * @return le nom du fichier ou "New File"
+     */
+    public String getFileName() {
+        return FileUtils.isValidFile(path) ? path.getName() : "New File";
+    }
+
+    /**
      * Défini le contenu de la dernière sauvegarde
      *
      * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
      */
-    public void setSaved() {
-        lastSave = String.valueOf(codeArea.getText());
-        fileTab.setText(fileName);
+    private void setSaved() {
+        saved = true;
+        lastSaveContent = String.valueOf(codeArea.getText());
+        fileTab.setText(getFileName());
     }
 
     /**
      * Met à jour l'état de sauvegarde
-     *
-     * @return
      */
-    public boolean updateSaveState() {
-        boolean saved = codeArea.getText().equals(lastSave);
+    public void updateSaveState() {
+        saved = codeArea.getText().equals(lastSaveContent);
 
         if (saved) {
-            fileTab.setText(fileName);
+            Platform.runLater(() -> fileTab.setText(getFileName()));
         } else {
-            fileTab.setText(fileName + "*");
+            Platform.runLater(() -> fileTab.setText(getFileName() + "*"));
         }
 
+    }
+
+    public boolean getSaveState() {
+        updateSaveState();
         return saved;
+    }
+
+    /**
+     * @return un nouveau SourceScanner du fichier modifié
+     */
+    public SourceScanner getSourceScanner() {
+        return new SourceScanner(codeArea.getText());
     }
 
     /**
@@ -253,9 +365,16 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return la tache associée
      */
     private ComputeHightlightsTask autoComputeHighlightingAsync() {
-        ComputeHightlightsTask task = new ComputeHightlightsTask(getApplication());
+        ComputeHightlightsTask task = new ComputeHightlightsTask(this);
 
         executor.execute(task);
         return task;
+    }
+
+    /**
+     * @return le chemin d'accès du fichier
+     */
+    public @Nullable File getPath() {
+        return path;
     }
 }

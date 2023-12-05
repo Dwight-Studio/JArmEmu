@@ -51,7 +51,7 @@ public class HalfExecutor implements DirectiveExecutor {
                 int data = stateContainer.evalWithAll(string.strip());
                 if (Integer.numberOfLeadingZeros(data) >= 16) {
                     short half = (short) data;
-                    stateContainer.memory.putHalf(currentPos, half);
+                    stateContainer.getMemory().putHalf(currentPos, half);
                     currentPos += 2;
                 } else {
                     throw new SyntaxASMException("Overflowing Half value '" + args + "'");

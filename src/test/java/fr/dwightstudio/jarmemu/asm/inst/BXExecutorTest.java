@@ -45,22 +45,22 @@ public class BXExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleBxTest() {
-        Register lr = stateContainer.registers[0];
-        Register pc = stateContainer.registers[15];
+        Register lr = stateContainer.getRegister(0);
+        Register pc = stateContainer.getRegister(15);
         lr.setData(24);
         pc.setData(48);
         bxExecutor.execute(stateContainer, false, false, null, null, lr, null, null, null);
         assertEquals(24, pc.getData());
-        assertFalse(stateContainer.cpsr.getT());
+        assertFalse(stateContainer.getCPSR().getT());
         lr.setData(45);
         bxExecutor.execute(stateContainer, false, false, null, null, lr, null, null, null);
         assertEquals(45, pc.getData());
-        assertTrue(stateContainer.cpsr.getT());
+        assertTrue(stateContainer.getCPSR().getT());
     }
 
     @Test
     public void BxExceptionTest() {
-        Register pc = stateContainer.registers[15];
+        Register pc = stateContainer.getRegister(15);
         assertThrows(StuckExecutionASMException.class, () -> bxExecutor.execute(stateContainer, false, false, null, null, pc, null, null, null));
     }
 

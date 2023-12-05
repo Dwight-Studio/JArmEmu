@@ -55,9 +55,9 @@ public class CodeInterpreter {
      *
      * @param sourceParser le parseur de source utilisé
      */
-    public SyntaxASMException[] load(SourceParser sourceParser, int stackAddress, int symbolAddress) {
+    public SyntaxASMException[] load(SourceParser sourceParser, int stackAddress, int symbolAddress, List<SourceScanner> fileSources) {
         this.codePreparator = new CodePreparator(stackAddress, symbolAddress);
-        return this.codePreparator.load(sourceParser);
+        return this.codePreparator.load(sourceParser, fileSources);
     }
 
     /**
@@ -103,14 +103,12 @@ public class CodeInterpreter {
     public void restart() {
         resetState();
 
-        if (stateContainer.getGlobal() != null) {
-            try {
-                stateContainer.registers[RegisterUtils.PC.getN()].setData(stateContainer.labels.get(stateContainer.getGlobal()));
-                logger.warning("Setting PC to address of '" + stateContainer.getGlobal() + "' positioned at " + stateContainer.labels.get(stateContainer.getGlobal()));
-            } catch (Exception e) {
-                logger.warning("Can't find position of global '" + stateContainer.getGlobal() + "'");
-                stateContainer.registers[RegisterUtils.PC.getN()].setData(0);
-            }
+        try {
+            stateContainer.getRegister(RegisterUtils.PC.getN()).setData(stateContainer.getLabels().get(stateContainer.getGlobals()));
+            logger.warning("Setting PC to address of '" + stateContainer.getGlobals() + "' positioned at " + stateContainer.getLabels().get(stateContainer.getGlobals()));
+        } catch (Exception e) {
+            logger.warning("Can't find position of global '" + stateContainer.getGlobals() + "'");
+            stateContainer.getRegister(RegisterUtils.PC.getN()).setData(0);
         }
     }
 
@@ -144,7 +142,7 @@ public class CodeInterpreter {
         if (stateContainer == null) {
             throw new IllegalStateException("Can't get PC from null state");
         } else {
-            return stateContainer.registers[RegisterUtils.PC.getN()];
+            return stateContainer.getRegister(RegisterUtils.PC.getN());
         }
     }
 

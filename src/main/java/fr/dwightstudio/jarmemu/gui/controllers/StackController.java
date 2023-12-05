@@ -122,10 +122,10 @@ public class StackController extends AbstractJArmEmuModule {
     private ArrayList<Integer> getLowerValues(StateContainer container) {
         ArrayList<Integer> rtn = new ArrayList<>();
         int address = container.getStackAddress() - 4;
-        int sp = container.registers[RegisterUtils.SP.getN()].getData();
+        int sp = container.getRegister(RegisterUtils.SP.getN()).getData();
 
         int number = 0;
-        while (container.memory.isWordInitiated(address) || (sp < container.getStackAddress() && address >= sp)) {
+        while (container.getMemory().isWordInitiated(address) || (sp < container.getStackAddress() && address >= sp)) {
             if (number > MAX_NUMBER) {
                 break;
             }
@@ -140,10 +140,10 @@ public class StackController extends AbstractJArmEmuModule {
     private ArrayList<Integer> getHigherValues(StateContainer container) {
         ArrayList<Integer> rtn = new ArrayList<>();
         int address = container.getStackAddress();
-        int sp = container.registers[RegisterUtils.SP.getN()].getData();
+        int sp = container.getRegister(RegisterUtils.SP.getN()).getData();
 
         int number = 0;
-        while (container.memory.isWordInitiated(address) || (sp > container.getStackAddress() && address <= sp)) {
+        while (container.getMemory().isWordInitiated(address) || (sp > container.getStackAddress() && address <= sp)) {
             if (number > MAX_NUMBER) {
                 break;
             }
@@ -165,17 +165,17 @@ public class StackController extends AbstractJArmEmuModule {
         if (stateContainer == null) {
             views.clear();
         } else {
-            Register sp = stateContainer.registers[RegisterUtils.SP.getN()];
+            Register sp = stateContainer.getRegister(RegisterUtils.SP.getN());
 
             ArrayList<Integer> stackValues = getLowerValues(stateContainer);
             stackValues.addAll(getHigherValues(stateContainer));
             stackValues.add(stateContainer.getStackAddress());
 
-            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.registers[RegisterUtils.SP.getN()]);
+            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.getRegister(RegisterUtils.SP.getN()));
             views.forEach(view -> stackValues.remove((Integer) view.getAddressProperty().get()));
 
             for (int address : stackValues) {
-                views.add(new MemoryWordView(stateContainer.memory, address, sp));
+                views.add(new MemoryWordView(stateContainer.getMemory(), address, sp));
             }
 
             Platform.runLater(() -> {

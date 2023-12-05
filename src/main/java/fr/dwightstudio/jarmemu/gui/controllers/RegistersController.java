@@ -123,24 +123,24 @@ public class RegistersController extends AbstractJArmEmuModule {
             views.clear();
         } else {
             views.clear();
-            views.add(new RegisterView(stateContainer.registers[0], "R0"));
-            views.add(new RegisterView(stateContainer.registers[1], "R1"));
-            views.add(new RegisterView(stateContainer.registers[2], "R2"));
-            views.add(new RegisterView(stateContainer.registers[3], "R3"));
-            views.add(new RegisterView(stateContainer.registers[4], "R4"));
-            views.add(new RegisterView(stateContainer.registers[5], "R5"));
-            views.add(new RegisterView(stateContainer.registers[6], "R6"));
-            views.add(new RegisterView(stateContainer.registers[7], "R7"));
-            views.add(new RegisterView(stateContainer.registers[8], "R8"));
-            views.add(new RegisterView(stateContainer.registers[9], "R9"));
-            views.add(new RegisterView(stateContainer.registers[10], "R10"));
-            views.add(new RegisterView(stateContainer.registers[11], "R11 (FP)"));
-            views.add(new RegisterView(stateContainer.registers[12], "R12 (IP)"));
-            views.add(new RegisterView(stateContainer.registers[13], "R13 (SP)"));
-            views.add(new RegisterView(stateContainer.registers[14], "R14 (LR)"));
-            views.add(new RegisterView(stateContainer.registers[15], "R15 (PC)"));
-            views.add(new RegisterView(stateContainer.cpsr, "CPSR"));
-            views.add(new RegisterView(stateContainer.spsr, "SPSR"));
+            views.add(new RegisterView(stateContainer.getRegister(0), "R0"));
+            views.add(new RegisterView(stateContainer.getRegister(1), "R1"));
+            views.add(new RegisterView(stateContainer.getRegister(2), "R2"));
+            views.add(new RegisterView(stateContainer.getRegister(3), "R3"));
+            views.add(new RegisterView(stateContainer.getRegister(4), "R4"));
+            views.add(new RegisterView(stateContainer.getRegister(5), "R5"));
+            views.add(new RegisterView(stateContainer.getRegister(6), "R6"));
+            views.add(new RegisterView(stateContainer.getRegister(7), "R7"));
+            views.add(new RegisterView(stateContainer.getRegister(8), "R8"));
+            views.add(new RegisterView(stateContainer.getRegister(9), "R9"));
+            views.add(new RegisterView(stateContainer.getRegister(10), "R10"));
+            views.add(new RegisterView(stateContainer.getRegister(11), "R11 (FP)"));
+            views.add(new RegisterView(stateContainer.getRegister(12), "R12 (IP)"));
+            views.add(new RegisterView(stateContainer.getRegister(13), "R13 (SP)"));
+            views.add(new RegisterView(stateContainer.getRegister(14), "R14 (LR)"));
+            views.add(new RegisterView(stateContainer.getRegister(15), "R15 (PC)"));
+            views.add(new RegisterView(stateContainer.getCPSR(), "CPSR"));
+            views.add(new RegisterView(stateContainer.getSPSR(), "SPSR"));
         }
     }
 

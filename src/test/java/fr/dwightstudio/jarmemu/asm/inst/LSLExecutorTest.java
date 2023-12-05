@@ -44,8 +44,8 @@ public class LSLExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleLslTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
         r0.setData(25);
         r1.setData(-25);
         lslExecutor.execute(stateContainer, false, false, null, null, r0, r0, 3, null);
@@ -60,35 +60,35 @@ public class LSLExecutorTest extends JArmEmuTest {
 
     @Test
     public void flagsTest() {
-        Register r0 = stateContainer.registers[0];
-        Register r1 = stateContainer.registers[1];
+        Register r0 = stateContainer.getRegister(0);
+        Register r1 = stateContainer.getRegister(1);
         r0.setData(-25);
         r1.setData(25);
         lslExecutor.execute(stateContainer, false, true, null, null, r1, r1, 4, null);
         assertEquals(400, r1.getData());
-        assertFalse(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
         lslExecutor.execute(stateContainer, false, true, null, null, r0, r0, 4, null);
         assertEquals(-400, r0.getData());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
         lslExecutor.execute(stateContainer, false, true, null, null, r0, r0, 27, null);
         assertEquals(Integer.MIN_VALUE, r0.getData());
-        assertTrue(stateContainer.cpsr.getN());
-        assertFalse(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertTrue(stateContainer.getCPSR().getN());
+        assertFalse(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
         lslExecutor.execute(stateContainer, false, true, null, null, r0, r0, 1, null);
         assertEquals(0, r0.getData());
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
-        assertTrue(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
+        assertTrue(stateContainer.getCPSR().getC());
         lslExecutor.execute(stateContainer, false, true, null, null, r0, r0, 1, null);
         assertEquals(0, r0.getData());
-        assertFalse(stateContainer.cpsr.getN());
-        assertTrue(stateContainer.cpsr.getZ());
-        assertFalse(stateContainer.cpsr.getC());
+        assertFalse(stateContainer.getCPSR().getN());
+        assertTrue(stateContainer.getCPSR().getZ());
+        assertFalse(stateContainer.getCPSR().getC());
     }
 
 }

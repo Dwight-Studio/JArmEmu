@@ -72,7 +72,7 @@ public class ParsedDirective extends ParsedObject {
         directive.apply(stateContainer, this.args, currentPos + symbolAddress, section);
 
         if (generated) {
-            stateContainer.pseudoData.put(hash, currentPos);
+            stateContainer.getPseudoData().put(hash, currentPos);
         }
 
         return directive.computeDataLength(stateContainer, args, currentPos, section) + currentPos;

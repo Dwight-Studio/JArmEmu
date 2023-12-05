@@ -35,9 +35,9 @@ public class LSLExecutor implements InstructionExecutor<Register, Register, Inte
         arg1.setData(arg2.getData() << arg3);
 
         if (updateFlags) {
-            stateContainer.cpsr.setN(arg1.getData() < 0);
-            stateContainer.cpsr.setZ(arg1.getData() == 0);
-            stateContainer.cpsr.setC((oldValue & (1 << (32 - arg3))) != 0);
+            stateContainer.getCPSR().setN(arg1.getData() < 0);
+            stateContainer.getCPSR().setZ(arg1.getData() == 0);
+            stateContainer.getCPSR().setC((oldValue & (1 << (32 - arg3))) != 0);
         }
     }
 }

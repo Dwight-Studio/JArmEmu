@@ -45,14 +45,14 @@ public class RegisterParserTest extends JArmEmuTest {
     @Test
     public void allRegisterTest() {
         for (int i = 0 ; i < 16 ; i++) {
-            assertEquals(stateContainer.registers[i], REGISTER.parse(stateContainer, "R" + i));
+            assertEquals(stateContainer.getRegister(i), REGISTER.parse(stateContainer, "R" + i));
         }
 
-        assertEquals(stateContainer.registers[13], REGISTER.parse(stateContainer, "SP"));
-        assertEquals(stateContainer.registers[14], REGISTER.parse(stateContainer, "LR"));
-        assertEquals(stateContainer.registers[15], REGISTER.parse(stateContainer, "PC"));
-        assertEquals(stateContainer.cpsr, REGISTER.parse(stateContainer, "CPSR"));
-        assertEquals(stateContainer.spsr, REGISTER.parse(stateContainer, "SPSR"));
+        assertEquals(stateContainer.getRegister(13), REGISTER.parse(stateContainer, "SP"));
+        assertEquals(stateContainer.getRegister(14), REGISTER.parse(stateContainer, "LR"));
+        assertEquals(stateContainer.getRegister(15), REGISTER.parse(stateContainer, "PC"));
+        assertEquals(stateContainer.getCPSR(), REGISTER.parse(stateContainer, "CPSR"));
+        assertEquals(stateContainer.getSPSR(), REGISTER.parse(stateContainer, "SPSR"));
 
         assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "DAF"));
         assertThrows(SyntaxASMException.class, () -> REGISTER.parse(stateContainer, "R16"));
