@@ -46,7 +46,7 @@ public class BXExecutorTest extends JArmEmuTest {
     @Test
     public void simpleBxTest() {
         Register lr = stateContainer.getRegister(0);
-        Register pc = stateContainer.getRegister(15);
+        Register pc = stateContainer.getPC();
         lr.setData(24);
         pc.setData(48);
         bxExecutor.execute(stateContainer, false, false, null, null, lr, null, null, null);
@@ -60,7 +60,7 @@ public class BXExecutorTest extends JArmEmuTest {
 
     @Test
     public void BxExceptionTest() {
-        Register pc = stateContainer.getRegister(15);
+        Register pc = stateContainer.getPC();
         assertThrows(StuckExecutionASMException.class, () -> bxExecutor.execute(stateContainer, false, false, null, null, pc, null, null, null));
     }
 

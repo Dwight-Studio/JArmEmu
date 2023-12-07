@@ -26,11 +26,10 @@ package fr.dwightstudio.jarmemu.sim;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -57,7 +56,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     public ExecutionWorker(JArmEmuApplication application) {
         super(application);
-
         this.daemon = new ExecutionThead(application);
     }
 
@@ -150,6 +148,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
      */
     public void revive() {
         if (!this.daemon.isAlive()) {
+            logger.info("Reviving Execution Thread");
             this.daemon = new ExecutionThead(application);
         }
     }
@@ -158,6 +157,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
      * Tue le Thread d'exécution
      */
     public void stop() {
+        logger.info("Killing Execution Thread");
         this.daemon.doContinue = this.daemon.doRun = false;
         if (this.daemon.isAlive()) {
             if (!this.daemon.isInterrupted()) daemon.interrupt();
@@ -189,14 +189,15 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private boolean doContinue = false;
         private boolean doRun = true;
         private int waitingPeriod;
-        private int last;
-        private int line;
-        private int next;
+        private FileLine last;
+        private FileLine line;
+        private FileLine next;
         private long updateGUITimestamp;
 
         public ExecutionThead(JArmEmuApplication application) {
             super("CodeExecutorDeamon");
 
+            logger.info("Initiating Execution Thread");
             this.application = application;
             updateGUITimestamp = System.currentTimeMillis();
 
@@ -277,7 +278,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             next = application.getCodeInterpreter().getCurrentLine();
 
-            if (application.getEditorController().currentFileEditor().hasBreakPoint(next)) {
+            if (application.getEditorController().hasBreakPoint(next)) {
                 Platform.runLater(() -> {
                     application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", Styles.WARNING);
                     application.getSimulationMenuController().onPause();
@@ -311,7 +312,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (application.getSettingsController().getAutoBreakSetting()) {
                 if (application.getSettingsController().getProgramAlignBreakSetting()) {
-                    if (application.getCodeInterpreter().stateContainer.getRegister(RegisterUtils.PC.getN()).getData() % 4 != 0) {
+                    if (application.getCodeInterpreter().stateContainer.getPC().getData() % 4 != 0) {
                         Platform.runLater(() -> {
                             application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter.", Styles.DANGER);
                             application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
@@ -322,7 +323,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
 
                 if (application.getSettingsController().getStackAlignBreakSetting()) {
-                    if (application.getCodeInterpreter().stateContainer.getRegister(RegisterUtils.SP.getN()).getData() % 4 != 0) {
+                    if (application.getCodeInterpreter().stateContainer.getSP().getData() % 4 != 0) {
                     Platform.runLater(() -> {
                         application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer.", Styles.DANGER);
                         application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
@@ -420,10 +421,10 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
-                if (next != 0 && line != next || line != 0 && next != 0) {
+                if (next != null && !line.equals(next) || line != null && next != null) {
                     if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearAllLineMarkings());
                     Platform.runLater(() -> {
-                        if (last != -1) application.getEditorController().markLine(last, LineStatus.NONE);
+                        if (last != null) application.getEditorController().markLine(last, LineStatus.NONE);
                         application.getEditorController().markLine(line, LineStatus.EXECUTED);
                         application.getEditorController().markLine(next, LineStatus.SCHEDULED);
                     });
@@ -451,7 +452,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 );
 
                 if (errors.length == 0) {
-                    line = next = last = 0;
+                    line = next = last = null;
                     application.getCodeInterpreter().restart();
                     application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
                     application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
@@ -476,7 +477,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void restartTask() {
             nextTask.set(IDLE);
 
-            line = next = last = 0;
+            line = next = last = null;
             updateGUI();
 
             application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);

@@ -24,7 +24,19 @@
 package fr.dwightstudio.jarmemu;
 
 public enum Status {
-    EDITING,
-    SIMULATING,
-    ERROR;
+    INITIALIZING("Initializing"),
+    EDITING("Editing"),
+    SIMULATING("Simulating"),
+    ERROR("Error");
+
+    private final String desc;
+
+    Status(String desc) {
+        this.desc = desc;
+    }
+
+    @Override
+    public String toString() {
+        return desc;
+    }
 }

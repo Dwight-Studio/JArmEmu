@@ -44,7 +44,7 @@ public class ShiftParserTest extends JArmEmuTest {
     public void LSLTest() {
         int data = 0b00000000000000000000000000000001;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
-        stateContainer.getRegister(14).setData(0b00000000000000000000000000000100);
+        stateContainer.getLR().setData(0b00000000000000000000000000000100);
         ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "LSL#5");
@@ -61,7 +61,7 @@ public class ShiftParserTest extends JArmEmuTest {
     public void LSRTest() {
         int data = 0b10000000000000000000000000000000;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
-        stateContainer.getRegister(14).setData(0b00000000000000000000000000000100);
+        stateContainer.getLR().setData(0b00000000000000000000000000000100);
         ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "LSR#5");
@@ -78,7 +78,7 @@ public class ShiftParserTest extends JArmEmuTest {
     public void ASRTest() {
         int data = 0b10000000000000000000000000000000;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
-        stateContainer.getRegister(14).setData(0b00000000000000000000000000000100);
+        stateContainer.getLR().setData(0b00000000000000000000000000000100);
         ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "ASR#5");
@@ -106,7 +106,7 @@ public class ShiftParserTest extends JArmEmuTest {
     public void RORTest() {
         int data = 0b00000000000000000000000000001000;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
-        stateContainer.getRegister(14).setData(0b00000000000000000000000000000100);
+        stateContainer.getLR().setData(0b00000000000000000000000000000100);
         ShiftParser.ShiftFunction f;
 
         f = SHIFT.parse(stateContainer, "ROR#5");

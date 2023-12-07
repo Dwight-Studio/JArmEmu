@@ -32,9 +32,15 @@ import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
+import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -49,7 +55,6 @@ import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -62,6 +67,7 @@ public class FileEditor extends AbstractJArmEmuModule {
     // GUI
     private final CodeArea codeArea;
     private final VirtualizedScrollPane<CodeArea> editorScroll;
+    private final StackPane stackPane;
     private final Tab fileTab;
     private final EditorContextMenu contextMenu;
     private final JArmEmuLineFactory lineFactory;
@@ -80,7 +86,15 @@ public class FileEditor extends AbstractJArmEmuModule {
         this.executor = Executors.newSingleThreadExecutor();
         codeArea = new CodeArea();
         editorScroll = new VirtualizedScrollPane<>(codeArea);
-        fileTab = new Tab(fileName, editorScroll);
+        stackPane = new StackPane(editorScroll);
+        fileTab = new Tab(fileName, stackPane);
+
+        Separator separator = new Separator(Orientation.VERTICAL);
+        separator.setMouseTransparent(true);
+        separator.setPadding(new Insets(0, 0, 0, 80));
+
+        stackPane.setAlignment(Pos.CENTER_LEFT);
+        stackPane.getChildren().add(separator);
 
         hightlightUpdateSubscription = codeArea.plainTextChanges().successionEnds(Duration.ofMillis(50))
                 .retainLatestUntilLater(executor)
@@ -115,6 +129,9 @@ public class FileEditor extends AbstractJArmEmuModule {
                         default -> {}
                     }
                 });
+            } else {
+                close();
+                getEditorController().cleanClosedEditors();
             }
         });
 
@@ -124,7 +141,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         contextMenu = new EditorContextMenu(codeArea);
         codeArea.setContextMenu(contextMenu);
 
-        lineFactory = new JArmEmuLineFactory();
+        lineFactory = new JArmEmuLineFactory(getApplication(), this);
         codeArea.setParagraphGraphicFactory(lineFactory);
 
         getController().filesTabPane.getTabs().add(fileTab);
@@ -192,11 +209,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return vrai si la ligne contient un breakpoint, faux sinon
      */
     public boolean hasBreakPoint(int line) {
-        AtomicBoolean flag = new AtomicBoolean(false);
-        lineFactory.breakpoints.forEach(ln -> {
-            if (ln == line) flag.set(true);
-        });
-        return flag.get();
+        return lineFactory.hasBreakpoint(line);
     }
 
     /**
@@ -229,6 +242,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      * Ferme le fichier
      */
     public void close() {
+        logger.info("Closing " + getFileName());
         getController().filesTabPane.getTabs().remove(fileTab);
         hightlightUpdateSubscription.unsubscribe();
         executor.close();
@@ -305,6 +319,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         if (FileUtils.isValidFile(path)) {
             try {
                 SourceScanner scanner = new SourceScanner(path);
+                this.codeArea.replaceText("");
                 this.codeArea.replaceText(scanner.exportCode());
                 setSaved();
                 logger.info("File reloaded: " + path.getAbsolutePath());

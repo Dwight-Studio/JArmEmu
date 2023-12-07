@@ -45,8 +45,8 @@
     </mimetypes>
     <screenshots>
         <screenshot type="default">
-            <caption>Main Screen</caption>
-            <image type="source">https://github.com/Dwight-Studio/JArmEmu/blob/main/medias/main.png?raw=true</image>
+            <caption>Main Screen: Editor</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/main.png</image>
         </screenshot>
     </screenshots>
     <releases>

@@ -151,7 +151,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedLabel("CECIESTUNEETIQUETTE", 0),
+                new ParsedLabel("CECIESTUNEETIQUETTE"),
                 parser.parseOneLine()
         );
 
@@ -197,7 +197,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
 
         parser.currentSection = Section.TEXT;
         assertEquals(
-                new ParsedLabel("A", 0),
+                new ParsedLabel("A"),
                 parser.parseOneLine()
         );
 

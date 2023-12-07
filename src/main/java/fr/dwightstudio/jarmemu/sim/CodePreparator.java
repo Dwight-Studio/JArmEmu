@@ -26,9 +26,11 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -38,7 +40,7 @@ public class CodePreparator {
     private final int symbolsAddress;
     private final ArrayList<ParsedFile> parsedFiles;
     private ArrayList<ParsedInstruction> instructionMemory;
-    private ArrayList<int[]> instructionPosition;
+    private ArrayList<FileLine> instructionPosition;
 
     public CodePreparator(int stackAddress, int symbolsAddress) {
         this.stackAddress = stackAddress;
@@ -58,6 +60,8 @@ public class CodePreparator {
     public SyntaxASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
         ArrayList<SyntaxASMException> exceptions = new ArrayList<>();
 
+        this.parsedFiles.clear();
+
         for (SourceScanner source : fileSources) {
             try {
                 source.goTo(0);
@@ -73,15 +77,15 @@ public class CodePreparator {
         instructionMemory = new ArrayList<>();
         instructionPosition = new ArrayList<>();
 
-        for (int i=0; i < parsedFiles.size(); i++) {
+        for (int i = 0; i < parsedFiles.size(); i++) {
             for (Map.Entry<Integer, ParsedObject> obj : parsedFiles.get(i).getParsedObjects().entrySet()) {
                 if (obj.getValue() instanceof ParsedInstruction instruction) {
                     instructionMemory.add(instruction);
-                    instructionPosition.add(new int[]{i, obj.getKey()});
+                    instructionPosition.add(new FileLine(i, obj.getKey()).freeze());
                 } else if (obj.getValue() instanceof  ParsedLabel parsedLabel) {
                     if (parsedLabel.getInstruction() != null) {
                         instructionMemory.add(parsedLabel.getInstruction());
-                        instructionPosition.add(new int[]{i, obj.getKey()});
+                        instructionPosition.add(new FileLine(i, obj.getKey()).freeze());
                     }
                 }
             }
@@ -346,36 +350,40 @@ public class CodePreparator {
      * Enregistre les labels dans le conteneur d'états
      */
     public void registerLabels(StateContainer stateContainer) {
-        //FIXME: ne prends pas en compte les fichiers multiples
-        int lastInstruction = 0;
+        FileLine lastInstruction = new FileLine(0,1);
         for (ParsedFile file : parsedFiles) {
             for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
                 if (inst.getValue() instanceof ParsedLabel label) {
-                    label.register(stateContainer, lastInstruction * 4);
+                    label.register(stateContainer, lastInstruction.freeze());
                     if (label.getInstruction() != null) {
-                        lastInstruction++;
+                        lastInstruction.increment();
                     }
                 }
                 if (inst.getValue() instanceof ParsedInstruction) {
-                    lastInstruction++;
+                    lastInstruction.increment();
                 }
             }
         }
 
 
-        if (!stateContainer.getLabels().containsKey("_END")) stateContainer.getLabels().put("_END", lastInstruction * 4);
+        if (!stateContainer.getLabels().containsKey("_END")) stateContainer.getLabels().put("_END", lastInstruction.freeze());
     }
 
     /**
      * @param pos la position dans la mémoire
      * @return le numéro de ligne de l'instruction
      */
-    public int[] getLineNumber(int pos) {
-        //FIXME: ne prends pas en compte les fichiers multiples
-        if (pos % 4 != 0 || pos < 0 || pos / 4 >= instructionMemory.size()) return new int[]{-1, -1};
-        int[] line = instructionPosition.get(pos / 4);
+    public @Nullable FileLine getLineNumber(int pos) {
+        if (pos % 4 != 0 || pos < 0 || pos / 4 >= instructionMemory.size()) return null;
+        return instructionPosition.get(pos / 4);
+    }
 
-        return line == null ? new int[]{-1, -1} : line;
+    /**
+     * @param fileLine le numéro de la ligne
+     * @return la position de la ligne
+     */
+    public int getPosition(FileLine fileLine) {
+        return instructionPosition.indexOf(fileLine) * 4;
     }
 
     public ArrayList<ParsedFile> getParsedFiles() {

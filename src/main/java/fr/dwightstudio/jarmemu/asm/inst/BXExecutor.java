@@ -32,8 +32,8 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class BXExecutor implements InstructionExecutor<Register, Object, Object, Object> {
     @Override
     public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Object arg2, Object arg3, Object arg4) {
-        if (arg1.equals(stateContainer.getRegister(15))) throw new StuckExecutionASMException();
-        stateContainer.getRegister(15).setData(arg1.getData()); // PC = arg1
+        if (arg1.equals(stateContainer.getPC())) throw new StuckExecutionASMException();
+        stateContainer.getPC().setData(arg1.getData()); // PC = arg1
         stateContainer.getCPSR().setT(arg1.get(0));
         stateContainer.merge();
     }

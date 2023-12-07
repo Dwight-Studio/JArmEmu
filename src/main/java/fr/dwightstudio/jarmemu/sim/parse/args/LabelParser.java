@@ -25,14 +25,15 @@ package fr.dwightstudio.jarmemu.sim.parse.args;
 
 import fr.dwightstudio.jarmemu.sim.exceptions.BadArgumentsASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "imm24"
-public class LabelParser implements ArgumentParser<Integer> {
+public class LabelParser implements ArgumentParser<FileLine> {
     @Override
-    public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        Integer value = stateContainer.getLabels().get(string);
+    public FileLine parse(@NotNull StateContainer stateContainer, @NotNull String string) {
+        FileLine value = stateContainer.getLabels().get(string);
 
         if (value == null) throw new SyntaxASMException("Unknown label '" + string +"'");
 
@@ -40,7 +41,7 @@ public class LabelParser implements ArgumentParser<Integer> {
     }
 
     @Override
-    public Integer none() {
+    public FileLine none() {
         throw new BadArgumentsASMException("missing label identifier");
     }
 

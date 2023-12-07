@@ -37,8 +37,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private Alert loadingAlert;
-
     public SimulationMenuController(JArmEmuApplication application) {
         super(application);
     }
@@ -69,9 +67,9 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?).", Styles.DANGER);
             } else {
                 getEditorController().clearAllLineMarkings();
-                getEditorController().currentFileEditor().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
-                getController().stackTab.setDisable(false);
-                getController().memoryTab.setDisable(false);
+                getEditorController().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
+                getController().stackPane.setDisable(false);
+                getController().memoryPane.setDisable(false);
                 getController().addressField.setDisable(false);
                 getEditorController().onLaunch();
                 getController().stepInto.setDisable(false);
@@ -82,11 +80,11 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().restart.setDisable(false);
                 getController().settingsRegex.setDisable(true);
                 getController().settingsLegacy.setDisable(true);
-                getController().registersTab.setDisable(false);
+                getController().registersPane.setDisable(false);
                 getController().settingsStackAddress.setDisable(true);
                 getController().settingsSymbolsAddress.setDisable(true);
-                application.status = Status.SIMULATING;
-                getController().memorySettingsTab.getSelectionModel().select(getController().memoryTab);
+
+                application.status.set(Status.SIMULATING);
             }
         } else {
             getController().simulate.setDisable(false);
@@ -164,17 +162,18 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(true);
         getController().stop.setDisable(true);
         getController().restart.setDisable(true);
-        getController().memoryTab.setDisable(true);
+        getController().memoryPane.setDisable(true);
         getController().addressField.setDisable(true);
         getController().settingsRegex.setDisable(false);
         getController().settingsLegacy.setDisable(false);
-        getController().registersTab.setDisable(true);
-        getController().stackTab.setDisable(true);
+        getController().registersPane.setDisable(true);
+        getController().stackPane.setDisable(true);
         getController().settingsStackAddress.setDisable(false);
         getController().settingsSymbolsAddress.setDisable(false);
         getEditorController().clearAllLineMarkings();
         getExecutionWorker().updateGUI();
-        application.status = Status.EDITING;
+
+        application.status.set(Status.EDITING);
     }
 
     /**

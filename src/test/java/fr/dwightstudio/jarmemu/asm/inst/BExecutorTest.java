@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.LabelParser;
@@ -47,20 +48,20 @@ public class BExecutorTest extends JArmEmuTest {
 
     @Test
     public void simpleBTest() {
-        Register pc = stateContainer.getRegister(15);
+        Register pc = stateContainer.getPC();
         pc.setData(24);
-        stateContainer.getLabels().put("COUCOU", 20);
-        Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
+        stateContainer.getLabels().put("COUCOU", new FileLine(0, 5));
+        FileLine value =  new LabelParser().parse(stateContainer, "COUCOU");
         bExecutor.execute(stateContainer, false, false, null, null, value, null, null, null);
         assertEquals(20, pc.getData());
     }
 
     @Test
     public void BExceptionTest() {
-        Register pc = stateContainer.getRegister(15);
+        Register pc = stateContainer.getPC();
         pc.setData(24);
-        stateContainer.getLabels().put("COUCOU", 24);
-        Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
+        stateContainer.getLabels().put("COUCOU", new FileLine(0, 6));
+        FileLine value =  new LabelParser().parse(stateContainer, "COUCOU");
         assertThrows(StuckExecutionASMException.class, () -> bExecutor.execute(stateContainer, false, false, null, null, value, null, null, null));
     }
 

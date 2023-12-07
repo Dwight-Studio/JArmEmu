@@ -33,6 +33,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -49,7 +50,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     protected ModalPane modalPaneMiddle;
     protected ModalPane modalPaneFront;
 
-    @FXML protected StackPane editorStackPane;
     @FXML protected TabPane filesTabPane;
     @FXML protected VBox notifications;
     @FXML protected Button simulate;
@@ -60,17 +60,15 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Button stop;
     @FXML protected Button restart;
 
-    @FXML protected Tab registersTab;
+    @FXML protected AnchorPane registersPane;
 
-    @FXML protected TabPane memorySettingsTab;
-
-    @FXML protected Tab memoryTab;
-    @FXML protected Menu memoryMenu;
+    @FXML protected AnchorPane memoryPane;
     @FXML protected AnchorPane memoryAnchorPane;
+    @FXML protected Menu memoryMenu;
     @FXML protected Pagination memoryPage;
     @FXML protected CustomTextField addressField;
 
-    @FXML protected Tab settingsTab;
+    @FXML protected AnchorPane settingsPane;
     @FXML protected Spinner<Integer> settingsSimInterval;
     @FXML protected ToggleButton settingsRegex;
     @FXML protected ToggleButton settingsLegacy;
@@ -88,7 +86,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected ToggleButton settingsDark;
     @FXML protected ToggleButton settingsLight;
 
-    @FXML protected Tab stackTab;
+    @FXML protected AnchorPane stackPane;
 
 
     public JArmEmuController(JArmEmuApplication application) {

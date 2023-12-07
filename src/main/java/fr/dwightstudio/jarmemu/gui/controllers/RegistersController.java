@@ -37,6 +37,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -108,8 +109,11 @@ public class RegistersController extends AbstractJArmEmuModule {
         registersTable.getSelectionModel().selectFirst();
         registersTable.setEditable(true);
 
-
-        getController().registersTab.setContent(registersTable);
+        AnchorPane.setTopAnchor(registersTable, 0d);
+        AnchorPane.setRightAnchor(registersTable, 0d);
+        AnchorPane.setBottomAnchor(registersTable, 0d);
+        AnchorPane.setLeftAnchor(registersTable, 0d);
+        getController().registersPane.getChildren().add(registersTable);
     }
 
     /**
@@ -137,8 +141,8 @@ public class RegistersController extends AbstractJArmEmuModule {
             views.add(new RegisterView(stateContainer.getRegister(11), "R11 (FP)"));
             views.add(new RegisterView(stateContainer.getRegister(12), "R12 (IP)"));
             views.add(new RegisterView(stateContainer.getRegister(13), "R13 (SP)"));
-            views.add(new RegisterView(stateContainer.getRegister(14), "R14 (LR)"));
-            views.add(new RegisterView(stateContainer.getRegister(15), "R15 (PC)"));
+            views.add(new RegisterView(stateContainer.getLR(), "R14 (LR)"));
+            views.add(new RegisterView(stateContainer.getPC(), "R15 (PC)"));
             views.add(new RegisterView(stateContainer.getCPSR(), "CPSR"));
             views.add(new RegisterView(stateContainer.getSPSR(), "SPSR"));
         }

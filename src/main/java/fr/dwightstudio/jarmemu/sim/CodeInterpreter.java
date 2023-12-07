@@ -25,12 +25,12 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
-import fr.dwightstudio.jarmemu.util.RegisterUtils;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -104,11 +104,11 @@ public class CodeInterpreter {
         resetState();
 
         try {
-            stateContainer.getRegister(RegisterUtils.PC.getN()).setData(stateContainer.getLabels().get(stateContainer.getGlobals()));
+            stateContainer.getPC().setData(stateContainer.getLabels().get(stateContainer.getGlobals()).toByteValue());
             logger.warning("Setting PC to address of '" + stateContainer.getGlobals() + "' positioned at " + stateContainer.getLabels().get(stateContainer.getGlobals()));
         } catch (Exception e) {
             logger.warning("Can't find position of global '" + stateContainer.getGlobals() + "'");
-            stateContainer.getRegister(RegisterUtils.PC.getN()).setData(0);
+            stateContainer.getPC().setData(0);
         }
     }
 
@@ -142,7 +142,7 @@ public class CodeInterpreter {
         if (stateContainer == null) {
             throw new IllegalStateException("Can't get PC from null state");
         } else {
-            return stateContainer.getRegister(RegisterUtils.PC.getN());
+            return stateContainer.getPC();
         }
     }
 
@@ -150,9 +150,17 @@ public class CodeInterpreter {
         return jumped;
     }
 
-    public int getCurrentLine() {
-        //FIXME: ne prends pas en compte les fichiers multiples
-        return codePreparator.getLineNumber(getCurrentPosition())[1];
+    public FileLine getCurrentLine() {
+        FileLine pos = codePreparator.getLineNumber(getCurrentPosition());
+        return pos == null ? null : pos.freeze();
+    }
+
+    public FileLine getLineNumber(int pos) {
+        return codePreparator.getLineNumber(pos);
+    }
+
+    public int getPosition(FileLine line) {
+        return codePreparator.getPosition(line);
     }
 
     public int getCurrentPosition() {

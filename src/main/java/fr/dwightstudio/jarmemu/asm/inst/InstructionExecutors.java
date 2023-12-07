@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.inst;
 
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.RegisterWithUpdateParser;
@@ -76,8 +77,8 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Register, Integer, Object> SWP_EXECUTOR = new SWPExecutor();
 
     // Branching
-    public static final InstructionExecutor<Integer, Object, Object, Object> B_EXECUTOR = new BExecutor();
-    public static final InstructionExecutor<Integer, Object, Object, Object> BL_EXECUTOR = new BLExecutor();
+    public static final InstructionExecutor<FileLine, Object, Object, Object> B_EXECUTOR = new BExecutor();
+    public static final InstructionExecutor<FileLine, Object, Object, Object> BL_EXECUTOR = new BLExecutor();
     public static final InstructionExecutor<Register, Object, Object, Object> BX_EXECUTOR = new BXExecutor();
     public static final InstructionExecutor<Integer, Object, Object, Object> SWI_EXECUTOR = new SWIExecutor();
 

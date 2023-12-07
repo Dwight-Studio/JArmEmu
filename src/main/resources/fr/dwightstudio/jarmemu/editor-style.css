@@ -43,6 +43,12 @@
     -fx-background-color: -color-bg-overlay;
 }
 
+.code-area .lineno-over {
+    -fx-font-family: Monospaced;
+    -fx-fill: -color-danger-subtle;
+    -fx-background-color: -color-bg-subtle;
+}
+
 .code-area .breakpoint {
     -fx-font-family: Monospaced;
     -fx-fill: -color-danger-emphasis;
@@ -96,9 +102,3 @@
 .none {
     -fx-background-color: -color-bg-overlay;
 }
-
-/*
-.paragraph-box:has-caret {
-    -fx-background-color: #be3030;
-}
- */

@@ -150,7 +150,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedLabel("CECIESTUNEETIQUETTE", 0),
+                new ParsedLabel("CECIESTUNEETIQUETTE"),
                 parser.parseOneLine()
         );
 

@@ -53,8 +53,8 @@ public class StateContainer {
     private final HashMap<String, Integer> consts; // HashMap des constantes
     private final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     private final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
-    private final HashMap<String, Integer> labels; // HashMap des labels
-    private final ArrayList<String> global; // Labels globaux
+    private final HashMap<String, FileLine> labels; // HashMap des labels
+    private final ArrayList<String> global; // Symbols globaux
     private int nestingCount;
     private int lastAddressROData;
 
@@ -275,7 +275,7 @@ public class StateContainer {
         return pseudoData;
     }
 
-    public HashMap<String, Integer> getLabels() {
+    public HashMap<String, FileLine> getLabels() {
         return labels;
     }
 
@@ -285,6 +285,26 @@ public class StateContainer {
 
     public Register getRegister(int i) {
         return registers[i];
+    }
+
+    public Register getFP() {
+        return registers[RegisterUtils.FP.getN()];
+    }
+
+    public Register getIP() {
+        return registers[RegisterUtils.IP.getN()];
+    }
+
+    public Register getSP() {
+        return registers[RegisterUtils.SP.getN()];
+    }
+
+    public Register getPC() {
+        return registers[RegisterUtils.PC.getN()];
+    }
+
+    public Register getLR() {
+        return registers[RegisterUtils.LR.getN()];
     }
 
     public PSR getCPSR() {

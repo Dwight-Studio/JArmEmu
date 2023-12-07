@@ -82,6 +82,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
                     lastFile = file;
                 }
             }
+            setLastSave();
         }
     }
 
@@ -90,6 +91,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void onSaveAll() {
         getEditorController().saveAll();
+        setLastSave();
     }
 
     /**
@@ -97,6 +99,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void onSave() {
         getEditorController().currentFileEditor().save();
+        setLastSave();
     }
 
     /**
@@ -104,6 +107,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void onSaveAs() {
         getEditorController().currentFileEditor().saveAs();
+        setLastSave();
     }
 
     /**
@@ -159,8 +163,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
                             getEditorController().closeAll();
                         }
 
-                        default -> {
-                        }
+                        default -> {}
                     }
                 });
             }
@@ -188,8 +191,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
                             getEditorController().cleanClosedEditors();
                         }
 
-                        default -> {
-                        }
+                        default -> {}
                     }
                 });
             }
@@ -201,24 +203,35 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void onExit() {
         if (getEditorController().getSaveState()) {
-            Platform.exit();
+            exit();
         } else {
             getDialogs().unsavedAlert().thenAccept(rtn -> {
                 switch (rtn) {
                     case SAVE_AND_CONTINUE -> {
                         onSaveAll();
-                        Platform.exit();
+                        exit();
                     }
 
                     case DISCARD_AND_CONTINUE -> {
-                        Platform.exit();
+                        exit();
                     }
 
-                    default -> {
-                    }
+                    default -> {}
                 }
             });
         }
+    }
+
+    /**
+     * Ferme correctement l'application
+     */
+    public void exit() {
+        logger.info("Exiting JArmEmu...");
+
+        getExecutionWorker().stop();
+        getEditorController().closeAll();
+
+        Platform.exit();
     }
 
     /**
@@ -227,6 +240,16 @@ public class MainMenuController extends AbstractJArmEmuModule {
     public void onResetSettings() {
         getSettingsController().setToDefaults();
         getSettingsController().updateGUI();
+    }
+
+    /**
+     * Ecrit la préférence de la dernière sauvegarde.
+     */
+    public void setLastSave() {
+        getEditorController().cleanClosedEditors();
+        List<File> files = getEditorController().getSavePaths();
+        String paths = String.join(";", files.stream().map(File::getAbsolutePath).toList());
+        getSettingsController().setLastSavePath(paths);
     }
 
     /**
@@ -286,7 +309,6 @@ public class MainMenuController extends AbstractJArmEmuModule {
      */
     public void registerMemoryColumns(TableView<MemoryWordView> memoryTable) {
         getController().memoryMenu.getItems().clear();
-
 
         memoryTable.getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());

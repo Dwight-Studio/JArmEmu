@@ -33,12 +33,12 @@ import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -116,13 +116,18 @@ public class StackController extends AbstractJArmEmuModule {
         stackTable.getSortOrder().clear();
         stackTable.getSortOrder().add(col1);
 
-        getController().stackTab.setContent(stackTable);
+        AnchorPane.setTopAnchor(stackTable, 0d);
+        AnchorPane.setRightAnchor(stackTable, 0d);
+        AnchorPane.setBottomAnchor(stackTable, 0d);
+        AnchorPane.setLeftAnchor(stackTable, 0d);
+
+        getController().stackPane.getChildren().add(stackTable);
     }
 
     private ArrayList<Integer> getLowerValues(StateContainer container) {
         ArrayList<Integer> rtn = new ArrayList<>();
         int address = container.getStackAddress() - 4;
-        int sp = container.getRegister(RegisterUtils.SP.getN()).getData();
+        int sp = container.getSP().getData();
 
         int number = 0;
         while (container.getMemory().isWordInitiated(address) || (sp < container.getStackAddress() && address >= sp)) {
@@ -140,7 +145,7 @@ public class StackController extends AbstractJArmEmuModule {
     private ArrayList<Integer> getHigherValues(StateContainer container) {
         ArrayList<Integer> rtn = new ArrayList<>();
         int address = container.getStackAddress();
-        int sp = container.getRegister(RegisterUtils.SP.getN()).getData();
+        int sp = container.getSP().getData();
 
         int number = 0;
         while (container.getMemory().isWordInitiated(address) || (sp > container.getStackAddress() && address <= sp)) {
@@ -165,13 +170,13 @@ public class StackController extends AbstractJArmEmuModule {
         if (stateContainer == null) {
             views.clear();
         } else {
-            Register sp = stateContainer.getRegister(RegisterUtils.SP.getN());
+            Register sp = stateContainer.getSP();
 
             ArrayList<Integer> stackValues = getLowerValues(stateContainer);
             stackValues.addAll(getHigherValues(stateContainer));
             stackValues.add(stateContainer.getStackAddress());
 
-            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.getRegister(RegisterUtils.SP.getN()));
+            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.getSP());
             views.forEach(view -> stackValues.remove((Integer) view.getAddressProperty().get()));
 
             for (int address : stackValues) {

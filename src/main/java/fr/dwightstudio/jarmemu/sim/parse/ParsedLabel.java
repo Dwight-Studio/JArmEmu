@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FileLine;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Supplier;
@@ -33,15 +34,15 @@ public class ParsedLabel extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final String name;
     private ParsedInstruction instruction;
-    private int pos;
+    private FileLine pos;
 
     public ParsedLabel(String name) {
         this.name = name;
     }
 
-    public ParsedLabel(String name, int pos) {
+    public ParsedLabel(String name, FileLine pos) {
         this.name = name;
-        this.pos = pos;
+        this.pos = pos.freeze();
     }
 
     public String getName() {
@@ -70,9 +71,9 @@ public class ParsedLabel extends ParsedObject {
      *
      * @param stateContainer le conteneur d'état
      */
-    public void register(StateContainer stateContainer, int pos) {
-        stateContainer.getLabels().put(name.strip().toUpperCase(), pos);
-        this.pos = pos;
+    public void register(StateContainer stateContainer, FileLine pos) {
+        this.pos = pos.freeze();
+        stateContainer.getLabels().put(name.strip().toUpperCase(), this.pos);
     }
 
     @Override

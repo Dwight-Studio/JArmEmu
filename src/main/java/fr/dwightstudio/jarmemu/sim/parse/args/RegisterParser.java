@@ -48,8 +48,8 @@ public class RegisterParser implements ArgumentParser<Register> {
             case "FP", "R11" -> stateContainer.getRegister(11);
             case "IP", "R12" -> stateContainer.getRegister(12);
             case "SP", "R13" -> stateContainer.getRegister(13);
-            case "LR", "R14" -> stateContainer.getRegister(14);
-            case "PC", "R15" -> stateContainer.getRegister(15);
+            case "LR", "R14" -> stateContainer.getLR();
+            case "PC", "R15" -> stateContainer.getPC();
             case "CPSR" -> stateContainer.getCPSR();
             case "SPSR" -> stateContainer.getSPSR();
             default -> throw new SyntaxASMException("Unknown register '" + string + "'");

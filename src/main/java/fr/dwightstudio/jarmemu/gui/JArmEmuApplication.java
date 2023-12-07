@@ -34,6 +34,7 @@ import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -81,7 +82,7 @@ public class JArmEmuApplication extends Application {
 
 
     public Theme theme;
-    public Status status;
+    public SimpleObjectProperty<Status> status;
     public Stage stage;
     public Scene scene;
     private String argSave;
@@ -90,12 +91,14 @@ public class JArmEmuApplication extends Application {
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     // TODO: Ajouter une coloration lors de l'update d'un élément
     // TODO: Ajouter la possibilité de charger plusieurs fichiers
-    // TODO: Ajouter une vue compacte dans la mémoire
+    // TODO: Ajouter une vue compacte de la mémoire
     // TODO: Réparer le .deb
+    // TODO: Gérer la désactivation des vues de manière propre (sans désactiver l'onglet)
 
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
+        this.status = new SimpleObjectProperty<>(Status.INITIALIZING);
 
         logger.info("Starting up JArmEmu v" + VERSION + " on " + OS_NAME + " v" + OS_VERSION + " (" + OS_ARCH + ")");
 
@@ -135,8 +138,6 @@ public class JArmEmuApplication extends Application {
 
         scene.setOnKeyPressed(shortcutHandler::handle);
 
-        status = Status.EDITING;
-
         stage.setOnCloseRequest(this::onClosingRequest);
         stage.getIcons().addAll(
                 new Image(getResourceAsStream("medias/favicon@16.png")),
@@ -147,7 +148,10 @@ public class JArmEmuApplication extends Application {
                 new Image(getResourceAsStream("medias/favicon@512.png")),
                 new Image(getResourceAsStream("medias/logo.png"))
         );
-        stage.setTitle("JArmEmu v" + VERSION);
+
+        status.addListener((observable -> updateTitle()));
+
+        updateTitle();
         stage.setScene(scene);
         stage.show();
         stage.setMaximized(true);
@@ -163,8 +167,19 @@ public class JArmEmuApplication extends Application {
         }
 
         logger.info("Startup finished");
+        status.set(Status.EDITING);
     }
 
+    public void updateTitle() {
+        stage.setTitle("JArmEmu v" + VERSION + " - " + status.get());
+    }
+
+    /**
+     * Mise à jour du UserAgentStyle pour la modification du thème.
+     *
+     * @param variation l'indice de la variation
+     * @param family l'indice' de la famille
+     */
     public void updateUserAgentStyle(int variation, int family) {
         if (family == 0) {
             theme = (variation == 0) ? new PrimerDark() : new PrimerLight();

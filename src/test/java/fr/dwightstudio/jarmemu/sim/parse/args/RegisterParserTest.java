@@ -49,8 +49,8 @@ public class RegisterParserTest extends JArmEmuTest {
         }
 
         assertEquals(stateContainer.getRegister(13), REGISTER.parse(stateContainer, "SP"));
-        assertEquals(stateContainer.getRegister(14), REGISTER.parse(stateContainer, "LR"));
-        assertEquals(stateContainer.getRegister(15), REGISTER.parse(stateContainer, "PC"));
+        assertEquals(stateContainer.getLR(), REGISTER.parse(stateContainer, "LR"));
+        assertEquals(stateContainer.getPC(), REGISTER.parse(stateContainer, "PC"));
         assertEquals(stateContainer.getCPSR(), REGISTER.parse(stateContainer, "CPSR"));
         assertEquals(stateContainer.getSPSR(), REGISTER.parse(stateContainer, "SPSR"));
 
