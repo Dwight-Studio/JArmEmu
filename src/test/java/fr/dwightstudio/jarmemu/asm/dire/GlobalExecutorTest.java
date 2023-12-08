@@ -26,9 +26,12 @@ package fr.dwightstudio.jarmemu.asm.dire;
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,15 +47,19 @@ class GlobalExecutorTest extends JArmEmuTest {
 
     @Test
     void normalTest() {
-        GLOBAL.apply(container, "ExEMpLE", 0, Section.DATA);
+        FilePos pos = FilePos.ZERO.clone();
+
+        GLOBAL.apply(container, "ExEMpLE", pos, Section.DATA);
         assertEquals("EXEMPLE", container.getGlobals().getFirst());
-        assertEquals(0, GLOBAL.computeDataLength(container,"EXEMPLE", 0, Section.DATA));
+
+        GLOBAL.computeDataLength(container,"EXEMPLE", pos, Section.DATA);
+        assertEquals(0, pos.getPos());
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> GLOBAL.apply(container, "AHHHHHHHHHHHHHHH", 0, Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "", 0, Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "/.", 0, Section.DATA));
+        assertDoesNotThrow(() -> GLOBAL.apply(container, "AHHHHHHHHHHHHHHH", FilePos.ZERO.clone(), Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "", FilePos.ZERO.clone(), Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "/.", FilePos.ZERO.clone(), Section.DATA));
     }
 }

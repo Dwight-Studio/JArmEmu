@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +55,7 @@ public class ParsedDirective extends ParsedObject {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
-            apply(stateContainer, 0);
+            apply(stateContainer, FilePos.ZERO.clone());
             return null;
         } catch (SyntaxASMException exception) {
             return exception.with(this);
@@ -67,15 +68,16 @@ public class ParsedDirective extends ParsedObject {
      * Application de la directive
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
-    public int apply(StateContainer stateContainer, int currentPos) {
+    public void apply(StateContainer stateContainer, FilePos currentPos) {
         int symbolAddress = stateContainer.getSymbolsAddress();
-        directive.apply(stateContainer, this.args, currentPos + symbolAddress, section);
+
+        directive.apply(stateContainer, this.args, currentPos.freeze(symbolAddress), section);
 
         if (generated) {
-            stateContainer.getPseudoData().put(hash, currentPos);
+            stateContainer.getPseudoData().put(hash, currentPos.getPos());
         }
 
-        return directive.computeDataLength(stateContainer, args, currentPos, section) + currentPos;
+        directive.computeDataLength(stateContainer, args, currentPos, section);
     }
 
     public Directive getDirective() {

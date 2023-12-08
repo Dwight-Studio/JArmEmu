@@ -25,7 +25,7 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FileLine;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
@@ -70,6 +70,7 @@ public class CodeInterpreter {
         // Remise à zéro des drapeaux de ligne des parseurs
         AddressParser.reset(this.stateContainer);
 
+
         ExecutionASMException executionException = null;
         List<ParsedInstruction> instructions = codePreparator.getInstructionMemory();
 
@@ -104,10 +105,11 @@ public class CodeInterpreter {
         resetState();
 
         try {
-            stateContainer.getPC().setData(stateContainer.getLabels().get(stateContainer.getGlobals()).toByteValue());
-            logger.warning("Setting PC to address of '" + stateContainer.getGlobals() + "' positioned at " + stateContainer.getLabels().get(stateContainer.getGlobals()));
+            FilePos pos = stateContainer.getGlobal("_START");
+            stateContainer.getPC().setData(pos.getPos());
+            logger.warning("Setting PC to address of label '_START' positioned at " + pos.getPos());
         } catch (Exception e) {
-            logger.warning("Can't find position of global '" + stateContainer.getGlobals() + "'");
+            logger.warning("Can't find position of label '_START'");
             stateContainer.getPC().setData(0);
         }
     }
@@ -116,6 +118,7 @@ public class CodeInterpreter {
      * Reinitialise l'état courant
      */
     public void resetState() {
+        logger.info("Resetting program state");
         stateContainer = codePreparator.processState();
     }
 
@@ -150,16 +153,16 @@ public class CodeInterpreter {
         return jumped;
     }
 
-    public FileLine getCurrentLine() {
-        FileLine pos = codePreparator.getLineNumber(getCurrentPosition());
+    public FilePos getCurrentLine() {
+        FilePos pos = codePreparator.getLineNumber(getCurrentPosition());
         return pos == null ? null : pos.freeze();
     }
 
-    public FileLine getLineNumber(int pos) {
+    public FilePos getLineNumber(int pos) {
         return codePreparator.getLineNumber(pos);
     }
 
-    public int getPosition(FileLine line) {
+    public int getPosition(FilePos line) {
         return codePreparator.getPosition(line);
     }
 

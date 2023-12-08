@@ -68,8 +68,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             } else {
                 getEditorController().clearAllLineMarkings();
                 getEditorController().markLine(getCodeInterpreter().getCurrentLine(), LineStatus.SCHEDULED);
-                getController().stackPane.setDisable(false);
-                getController().memoryPane.setDisable(false);
                 getController().addressField.setDisable(false);
                 getEditorController().onLaunch();
                 getController().stepInto.setDisable(false);
@@ -80,9 +78,14 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().restart.setDisable(false);
                 getController().settingsRegex.setDisable(true);
                 getController().settingsLegacy.setDisable(true);
-                getController().registersPane.setDisable(false);
                 getController().settingsStackAddress.setDisable(true);
                 getController().settingsSymbolsAddress.setDisable(true);
+
+                getController().stackPane.setDisable(false);
+                getController().registersPane.setDisable(false);
+                getController().memoryPane.setDisable(false);
+                getController().labelsPane.setDisable(false);
+                getController().symbolsPane.setDisable(false);
 
                 application.status.set(Status.SIMULATING);
             }
@@ -162,16 +165,19 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(true);
         getController().stop.setDisable(true);
         getController().restart.setDisable(true);
-        getController().memoryPane.setDisable(true);
         getController().addressField.setDisable(true);
         getController().settingsRegex.setDisable(false);
         getController().settingsLegacy.setDisable(false);
-        getController().registersPane.setDisable(true);
-        getController().stackPane.setDisable(true);
         getController().settingsStackAddress.setDisable(false);
         getController().settingsSymbolsAddress.setDisable(false);
         getEditorController().clearAllLineMarkings();
         getExecutionWorker().updateGUI();
+
+        getController().registersPane.setDisable(true);
+        getController().memoryPane.setDisable(true);
+        getController().labelsPane.setDisable(true);
+        getController().symbolsPane.setDisable(true);
+        getController().stackPane.setDisable(true);
 
         application.status.set(Status.EDITING);
     }

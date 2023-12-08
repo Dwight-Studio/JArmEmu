@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class WordExecutor implements DirectiveExecutor {
@@ -37,7 +38,7 @@ public class WordExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         if (args.isBlank()) {
             return;
         } else if (!section.allowDataInitialisation()) {
@@ -47,10 +48,12 @@ public class WordExecutor implements DirectiveExecutor {
         try {
             String[] arg = args.split(",");
 
+            FilePos tempPos = currentPos.clone();
+
             for (String string : arg) {
                 int data = stateContainer.evalWithAll(string.strip());
-                stateContainer.getMemory().putWord(currentPos, data);
-                currentPos += 4;
+                stateContainer.getMemory().putWord(tempPos.getPos(), data);
+                tempPos.incrementPos(4);
             }
         } catch (NumberFormatException exception) {
             throw new SyntaxASMException("Invalid Word value '" + args + "'");
@@ -67,9 +70,9 @@ public class WordExecutor implements DirectiveExecutor {
      * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
-        if (args.isBlank()) return 4;
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+        if (args.isBlank()) currentPos.incrementPos(4);
         String[] arg = args.split(",");
-        return arg.length * 4;
+        currentPos.incrementPos(arg.length * 4);
     }
 }

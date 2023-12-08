@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public interface DirectiveExecutor {
@@ -36,7 +37,7 @@ public interface DirectiveExecutor {
      * @param currentPos     la position actuelle dans la mémoire
      * @param section        la section actuelle
      */
-    void apply(StateContainer stateContainer, String args, int currentPos, Section section);
+    void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section);
 
     /**
      * Calcul de la taille prise en mémoire
@@ -45,8 +46,7 @@ public interface DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section        la section actuelle
-     * @return la taille des données
      */
-    int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section);
+    void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section);
 
 }

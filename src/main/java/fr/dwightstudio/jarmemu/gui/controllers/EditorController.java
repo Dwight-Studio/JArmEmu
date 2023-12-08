@@ -30,7 +30,7 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FileLine;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -103,7 +103,13 @@ public class EditorController extends AbstractJArmEmuModule {
         }
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
         if (exception.isLineSpecified()) {
-            addNotif(exception.getTitle(), exception.getMessage() + " at line " + exception.getLine(), Styles.DANGER);
+            if (exception.isFileSpecified()) {
+                addNotif(exception.getTitle(), exception.getMessage()
+                        + " at line " + exception.getLine()
+                        + " (" + exception.getFile().getName() + ")", Styles.DANGER);
+            } else {
+                addNotif(exception.getTitle(), exception.getMessage() + " at line " + exception.getLine() + " (Unknown file)", Styles.DANGER);
+            }
         } else {
             addNotif(exception.getTitle(), exception.getMessage(), Styles.DANGER);
         }
@@ -179,16 +185,25 @@ public class EditorController extends AbstractJArmEmuModule {
      * @param pos la ligne à marquer
      * @param lineStatus le status de marquage
      */
-    public void markLine(FileLine pos, LineStatus lineStatus) {
+    public void markLine(FilePos pos, LineStatus lineStatus) {
         fileEditors.get(pos.getFileIndex()).markLine(pos.getPos(), lineStatus);
+        getController().filesTabPane.getSelectionModel().select(pos.getFileIndex());
     }
 
     /**
      * @param pos la ligne à marquer
      * @return vrai si la ligne contient un breakpoint, faux sinon
      */
-    public boolean hasBreakPoint(FileLine pos) {
+    public boolean hasBreakPoint(FilePos pos) {
+        if (pos == null) return false;
         return fileEditors.get(pos.getFileIndex()).hasBreakPoint(pos.getPos());
+    }
+
+    /**
+     * Prépare chaque FileEditor pour la simulation (pré-génération etc...)
+     */
+    public void prepareSimulation() {
+        fileEditors.forEach(FileEditor::prepareSimulation);
     }
 
     /**

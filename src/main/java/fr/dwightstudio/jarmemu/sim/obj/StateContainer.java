@@ -27,6 +27,9 @@ import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
+import org.apache.commons.collections4.MultiMap;
+import org.apache.commons.collections4.MultiValuedMap;
+import org.apache.commons.collections4.map.MultiKeyMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,10 +56,11 @@ public class StateContainer {
     private final HashMap<String, Integer> consts; // HashMap des constantes
     private final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     private final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
-    private final HashMap<String, FileLine> labels; // HashMap des labels
-    private final ArrayList<String> global; // Symbols globaux
+    private final ArrayList<HashMap<String, Integer>> labels; // HashMap des labels
+    private final HashMap<String, FilePos> globals; // Symbols globaux
     private int nestingCount;
     private int lastAddressROData;
+    private int currentfileIndex;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -74,13 +78,14 @@ public class StateContainer {
         this.symbolsAddress = symbolsAddress;
 
         // ASM
-        labels = new HashMap<>();
+        labels = new ArrayList<>();
         consts = new HashMap<>();
         data = new HashMap<>();
         pseudoData = new HashMap<>();
-        global = new ArrayList<>();
+        globals = new HashMap<>();
         nestingCount = 0;
         lastAddressROData = 0;
+        currentfileIndex = 0;
 
         // Initializing registers
         cpsr = new PSR();
@@ -88,6 +93,7 @@ public class StateContainer {
 
         this.registers = new Register[REGISTER_NUMBER];
         clearRegisters();
+        clearLabels(1);
 
         // Initializing memory
         this.memory = new MemoryAccessor();
@@ -99,10 +105,15 @@ public class StateContainer {
 
     public StateContainer(StateContainer stateContainer) {
         this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
-        this.getConsts().putAll(stateContainer.consts);
-        this.getData().putAll(stateContainer.data);
-        this.getLabels().putAll(stateContainer.labels);
-        this.getPseudoData().putAll(stateContainer.pseudoData);
+
+        this.labels.clear();
+
+        this.consts.putAll(stateContainer.consts);
+        this.data.putAll(stateContainer.data);
+        this.pseudoData.putAll(stateContainer.pseudoData);
+        this.labels.addAll(stateContainer.labels);
+        this.globals.putAll(stateContainer.globals);
+        this.currentfileIndex = stateContainer.currentfileIndex;
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
             registers[i].setData(stateContainer.getRegister(i).getData());
@@ -198,16 +209,33 @@ public class StateContainer {
         return symbolsAddress;
     }
 
+    /**
+     * @return une liste non modifiable des variables globales.
+     */
     public List<String> getGlobals() {
-        return global;
+        return globals.keySet().stream().toList();
     }
 
-    public void setGlobal(String global) {
-        this.global.add(global);
+    /**
+     * Ajoute une variable globale.
+     *
+     * @param global la variable globale
+     * @param filePos la position dans les fichiers de la variable globale
+     */
+    public void addGlobal(String global, FilePos filePos) {
+        this.globals.put(global, filePos);
+    }
+
+    /**
+     * @param global le nom de la variable globale
+     * @return la position dans les fichiers de la variable globale
+     */
+    public FilePos getGlobal(String global) {
+        return globals.get(global);
     }
 
     public void clearGlobals() {
-        this.global.clear();
+        this.globals.clear();
     }
 
     public Register[] getAllRegisters() {
@@ -275,12 +303,32 @@ public class StateContainer {
         return pseudoData;
     }
 
-    public HashMap<String, FileLine> getLabels() {
+    public AccessibleLabelsMap getAccessibleLabels() {
+        return new AccessibleLabelsMap(labels.get(currentfileIndex), globals, currentfileIndex);
+    }
+
+    public ArrayList<HashMap<String, Integer>> getLabelsInFiles() {
         return labels;
     }
 
-    public ArrayList<String> getGlobal() {
-        return global;
+    public MultiValuedMap<String, FilePos> getAllLabels() {
+        return new AllLabelsMap(labels);
+    }
+
+    public void clearLabels(int size) {
+        labels.clear();
+
+        for (int i = 0 ; i < size ; i++) {
+            labels.add(new HashMap<>());
+        }
+    }
+
+    public void setFileIndex(int i) {
+        currentfileIndex = i;
+    }
+
+    public int getCurrentFileIndex() {
+        return currentfileIndex;
     }
 
     public Register getRegister(int i) {

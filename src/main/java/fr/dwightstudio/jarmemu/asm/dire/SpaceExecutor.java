@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class SpaceExecutor implements DirectiveExecutor {
@@ -37,7 +38,7 @@ public class SpaceExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         // Rien à faire, on veut juste laisser de la place
 
         try {
@@ -54,14 +55,11 @@ public class SpaceExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         try {
-            return stateContainer.evalWithConsts(args);
-        } catch (Exception e) {
-            return 0;
-        }
+            currentPos.incrementPos(stateContainer.evalWithConsts(args));
+        } catch (Exception ignored) {}
     }
 }

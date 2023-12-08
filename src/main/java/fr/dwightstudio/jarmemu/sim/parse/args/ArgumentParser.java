@@ -32,10 +32,10 @@ public interface ArgumentParser<T> {
     /**
      * Analyse le texte et renvoie la valeur de l'argument.
      *
-     * @apiNote Ce n'est pas conçu pour être appelé plusieurs fois ! (Modifie stateContainer dans certaines situations)
      * @param stateContainer le conteneur d'état
-     * @param string le texte à analyser
+     * @param string         le texte à analyser
      * @return la valeur de l'argument
+     * @apiNote Ce n'est pas conçu pour être appelé plusieurs fois ! (Modifie stateContainer dans certaines situations)
      */
     public T parse(@NotNull StateContainer stateContainer, @NotNull String string);
 

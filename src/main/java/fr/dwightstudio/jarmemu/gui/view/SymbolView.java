@@ -21,18 +21,30 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm.inst;
+package fr.dwightstudio.jarmemu.gui.view;
 
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
-import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
 
-public class BExecutor implements InstructionExecutor<Integer, Object, Object, Object> {
-    @Override
-    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Integer arg1, Object arg2, Object arg3, Object arg4) {
-        if (arg1 == stateContainer.getPC().getData()) throw new StuckExecutionASMException();
-        stateContainer.getPC().setData(arg1); // PC = arg1
+import java.util.Map;
+
+public class SymbolView {
+    private final ReadOnlyStringWrapper name;
+    private final ReadOnlyIntegerWrapper value;
+
+    public SymbolView(Map.Entry<String, Integer> symbol) {
+        this.name = new ReadOnlyStringWrapper(symbol.getKey());
+        this.value = new ReadOnlyIntegerWrapper(symbol.getValue());
+    }
+
+
+    public ReadOnlyStringProperty getNameProperty() {
+        return name;
+    }
+
+    public ReadOnlyIntegerProperty getValueProperty() {
+        return value;
     }
 }

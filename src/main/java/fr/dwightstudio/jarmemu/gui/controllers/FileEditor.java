@@ -318,7 +318,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         getSimulationMenuController().onStop();
         if (FileUtils.isValidFile(path)) {
             try {
-                SourceScanner scanner = new SourceScanner(path);
+                SourceScanner scanner = new SourceScanner(path, getEditorController().getFileIndex(this));
                 this.codeArea.replaceText("");
                 this.codeArea.replaceText(scanner.exportCode());
                 setSaved();
@@ -371,7 +371,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return un nouveau SourceScanner du fichier modifié
      */
     public SourceScanner getSourceScanner() {
-        return new SourceScanner(codeArea.getText());
+        return new SourceScanner(codeArea.getText(), path.getName(), getEditorController().getFileIndex(this));
     }
 
     /**

@@ -88,6 +88,10 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected AnchorPane stackPane;
 
+    @FXML protected AnchorPane symbolsPane;
+
+    @FXML protected AnchorPane labelsPane;
+
 
     public JArmEmuController(JArmEmuApplication application) {
         super(application);
@@ -108,6 +112,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getSettingsController().initialize(url, resourceBundle);
         getSimulationMenuController().initialize(url, resourceBundle);
         getStackController().initialize(url, resourceBundle);
+        getSymbolsController().initialize(url, resourceBundle);
+        getLabelsController().initialize(url, resourceBundle);
 
         application.newSourceParser();
 
@@ -115,6 +121,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
         getMemoryController().attach(getCodeInterpreter().getStateContainer());
         getRegistersController().attach(getCodeInterpreter().getStateContainer());
+        getLabelsController().attach(getCodeInterpreter().getStateContainer());
+        getSymbolsController().attach(getCodeInterpreter().getStateContainer());
 
         getExecutionWorker().revive();
     }

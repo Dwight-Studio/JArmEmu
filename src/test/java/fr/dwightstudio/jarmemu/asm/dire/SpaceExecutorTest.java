@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,13 +50,15 @@ class SpaceExecutorTest extends JArmEmuTest {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i++) {
-            int r = random.nextInt();
-            assertEquals(r, SPACE.computeDataLength(container,"" + r, 0, Section.DATA));
+            int r = Math.abs(random.nextInt());
+            FilePos pos = new FilePos(0, 0);
+            SPACE.computeDataLength(container,"" + r, pos, Section.DATA);
+            assertEquals(r, pos.getPos());
         }
     }
 
     void failTest() {
-        assertDoesNotThrow(() -> SPACE.apply(container, "", 0, Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> SPACE.apply(container, "ODdad$ù", 0, Section.DATA));
+        assertDoesNotThrow(() -> SPACE.apply(container, "", FilePos.ZERO.clone(), Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> SPACE.apply(container, "ODdad$ù", FilePos.ZERO.clone(), Section.DATA));
     }
 }

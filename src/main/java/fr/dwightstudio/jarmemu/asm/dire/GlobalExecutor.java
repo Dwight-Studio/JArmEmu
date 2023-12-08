@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class GlobalExecutor implements DirectiveExecutor {
@@ -37,9 +38,9 @@ public class GlobalExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         if (args.matches("[A-Za-z_0-9]+")) {
-            stateContainer.setGlobal(args.toUpperCase().strip());
+            stateContainer.addGlobal(args.toUpperCase().strip(), currentPos);
         } else {
             throw new SyntaxASMException("Invalid argument '" + args + "'");
         }
@@ -52,10 +53,7 @@ public class GlobalExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
-        return 0;
-    }
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {}
 }

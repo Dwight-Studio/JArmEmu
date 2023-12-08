@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.nio.ByteBuffer;
@@ -39,7 +40,7 @@ public class FillExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         String[] arg = args.split(",");
 
         switch (arg.length) {
@@ -78,8 +79,8 @@ public class FillExecutor implements DirectiveExecutor {
                     }
                 }
 
-                for (int i = currentPos ; i < currentPos + totalNum ; i++) {
-                    stateContainer.getMemory().putByte(currentPos + i, bytes[i % valueSize]);
+                for (int i = currentPos.getPos() ; i < currentPos.getPos() + totalNum ; i++) {
+                    stateContainer.getMemory().putByte(currentPos.getPos() + i, bytes[i % valueSize]);
                 }
             }
 
@@ -94,11 +95,10 @@ public class FillExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         String[] arg = args.split(",");
-        return stateContainer.evalWithConsts(arg[0]);
+        currentPos.incrementPos(stateContainer.evalWithConsts(arg[0]));
     }
 }

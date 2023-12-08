@@ -23,12 +23,14 @@
 
 package fr.dwightstudio.jarmemu.sim.exceptions;
 
+import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 
 public class SyntaxASMException extends IllegalStateException {
 
     int line;
     ParsedObject parsedObject;
+    private ParsedFile file;
 
     public SyntaxASMException(String s) {
         super(s);
@@ -50,12 +52,24 @@ public class SyntaxASMException extends IllegalStateException {
         return line != -1;
     }
 
+    public boolean isFileSpecified() {
+        return line != -1;
+    }
+
     public int getLine() {
         return line;
     }
 
+    public ParsedFile getFile() {
+        return file;
+    }
+
     public void setLine(int line) {
         this.line = line;
+    }
+
+    public void setFile(ParsedFile file) {
+        this.file = file;
     }
 
     public ParsedObject getObject() {
@@ -73,6 +87,11 @@ public class SyntaxASMException extends IllegalStateException {
 
     public SyntaxASMException with(int line) {
         this.line = line;
+        return this;
+    }
+
+    public SyntaxASMException with(ParsedFile file) {
+        this.file = file;
         return this;
     }
 

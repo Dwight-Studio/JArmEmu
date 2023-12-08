@@ -24,18 +24,19 @@
 package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class DirectiveExecutors {
 
     public static final DirectiveExecutor NOT_IMPLEMENTED = new DirectiveExecutor() {
         @Override
-        public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+        public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
             throw new IllegalStateException("Directive not implemented");
         }
 
         @Override
-        public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
+        public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
             throw new IllegalStateException("Directive not implemented");
         }
     };

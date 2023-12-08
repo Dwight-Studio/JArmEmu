@@ -25,7 +25,7 @@ package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FileLine;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.LabelParser;
@@ -43,6 +43,7 @@ public class BLExecutorTest extends JArmEmuTest {
     @BeforeEach
     public void setUp() {
         stateContainer = new StateContainer();
+        stateContainer.clearLabels(1);
         blExecutor = new BLExecutor();
     }
 
@@ -51,8 +52,8 @@ public class BLExecutorTest extends JArmEmuTest {
         Register lr = stateContainer.getLR();
         Register pc = stateContainer.getPC();
         pc.setData(24);
-        stateContainer.getLabels().put("COUCOU", new FileLine(0, 5));
-        FileLine value =  new LabelParser().parse(stateContainer, "COUCOU");
+        stateContainer.getAccessibleLabels().put("COUCOU", 20);
+        Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
         blExecutor.execute(stateContainer, false, false, null, null, value, null, null, null);
         assertEquals(20, pc.getData());
         assertEquals(28, lr.getData());
@@ -62,8 +63,8 @@ public class BLExecutorTest extends JArmEmuTest {
     public void BlExceptionTest() {
         Register pc = stateContainer.getPC();
         pc.setData(24);
-        stateContainer.getLabels().put("COUCOU", new FileLine(0, 6));
-        FileLine value =  new LabelParser().parse(stateContainer, "COUCOU");
+        stateContainer.getAccessibleLabels().put("COUCOU", 24);
+        Integer value =  new LabelParser().parse(stateContainer, "COUCOU");
         assertThrows(StuckExecutionASMException.class, () -> blExecutor.execute(stateContainer, false, false, null, null, value, null, null, null));
     }
 }

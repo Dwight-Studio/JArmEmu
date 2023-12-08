@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,14 +50,17 @@ class AlignExecutorTest extends JArmEmuTest {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i++) {
-            int r = random.nextInt();
-            assertEquals(0, (ALIGN.computeDataLength(container, "", r, Section.DATA) + r) % 4);
+            FilePos pos = new FilePos(0, random.nextInt());
+
+            ALIGN.computeDataLength(container, "", pos, Section.DATA);
+
+            assertEquals(0, pos.getPos() % 4);
         }
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> ALIGN.apply(container, "", 0, Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> ALIGN.apply(container, "HIHI", 0, Section.DATA));
+        assertDoesNotThrow(() -> ALIGN.apply(container, "", FilePos.ZERO.clone(), Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> ALIGN.apply(container, "HIHI", FilePos.ZERO.clone(), Section.DATA));
     }
 }

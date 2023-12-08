@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ByteExecutor implements DirectiveExecutor {
@@ -37,7 +38,7 @@ public class ByteExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
 
         if (args.isBlank()) {
             return;
@@ -48,12 +49,14 @@ public class ByteExecutor implements DirectiveExecutor {
         try {
             String[] arg = args.split(",");
 
+            FilePos tempPos = currentPos.clone();
+
             for (String string : arg) {
                 int data = stateContainer.evalWithAll(string.strip());
                 if (Integer.numberOfLeadingZeros(data) >= 24) {
                     byte half = (byte) data;
-                    stateContainer.getMemory().putByte(currentPos, half);
-                    currentPos += 1;
+                    stateContainer.getMemory().putByte(tempPos.getPos(), half);
+                    tempPos.incrementPos(1);
                 } else {
                     throw new SyntaxASMException("Overflowing Byte value '" + args + "'");
                 }
@@ -70,12 +73,11 @@ public class ByteExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
-        if (args.isBlank()) return 1;
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+        if (args.isBlank()) currentPos.incrementPos();
         String[] arg = args.split(",");
-        return arg.length;
+        currentPos.incrementPos(arg.length);
     }
 }

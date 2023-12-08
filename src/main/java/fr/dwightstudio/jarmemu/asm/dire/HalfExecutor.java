@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class HalfExecutor implements DirectiveExecutor {
@@ -37,7 +38,7 @@ public class HalfExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         if (args.isBlank()) {
             return;
         } else if (!section.allowDataInitialisation()) {
@@ -47,12 +48,14 @@ public class HalfExecutor implements DirectiveExecutor {
         try {
             String[] arg = args.split(",");
 
+            FilePos tempPos = currentPos.clone();
+
             for (String string : arg) {
                 int data = stateContainer.evalWithAll(string.strip());
                 if (Integer.numberOfLeadingZeros(data) >= 16) {
                     short half = (short) data;
-                    stateContainer.getMemory().putHalf(currentPos, half);
-                    currentPos += 2;
+                    stateContainer.getMemory().putHalf(tempPos.getPos(), half);
+                    tempPos.incrementPos( 2);
                 } else {
                     throw new SyntaxASMException("Overflowing Half value '" + args + "'");
                 }
@@ -69,12 +72,11 @@ public class HalfExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
-        if (args.isBlank()) return 2;
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+        if (args.isBlank()) currentPos.incrementPos(2);
         String[] arg = args.split(",");
-        return arg.length * 2;
+        currentPos.incrementPos(arg.length * 2);
     }
 }

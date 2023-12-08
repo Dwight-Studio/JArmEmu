@@ -27,9 +27,7 @@ import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
-import fr.dwightstudio.jarmemu.sim.obj.FileLine;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -198,7 +196,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         private void update() {
             if (show) {
                 int pos = application.getCodeInterpreter().getPosition(
-                        new FileLine(
+                        new FilePos(
                                 application.getEditorController().getFileIndex(fileEditor),
                                 line
                         )

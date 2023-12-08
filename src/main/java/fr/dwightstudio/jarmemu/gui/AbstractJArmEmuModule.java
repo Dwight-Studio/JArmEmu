@@ -68,6 +68,13 @@ public class AbstractJArmEmuModule implements Initializable {
         return application.getStackController();
     }
 
+    protected SymbolsController getSymbolsController() {
+        return application.getSymbolsController();
+    }
+    protected LabelsController getLabelsController() {
+        return application.getLabelsController();
+    }
+
     protected SourceParser getSourceParser() {
         return application.getSourceParser();
     }

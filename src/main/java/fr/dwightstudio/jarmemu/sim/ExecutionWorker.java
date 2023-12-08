@@ -28,7 +28,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
-import fr.dwightstudio.jarmemu.sim.obj.FileLine;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -189,9 +189,9 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private boolean doContinue = false;
         private boolean doRun = true;
         private int waitingPeriod;
-        private FileLine last;
-        private FileLine line;
-        private FileLine next;
+        private FilePos last;
+        private FilePos line;
+        private FilePos next;
         private long updateGUITimestamp;
 
         public ExecutionThead(JArmEmuApplication application) {
@@ -456,7 +456,9 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     application.getCodeInterpreter().restart();
                     application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
                     application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
-                    application.getEditorController().currentFileEditor().prepareSimulation();
+                    application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
+                    application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
+                    application.getEditorController().prepareSimulation();
                     updateGUI();
                 }
 
@@ -482,6 +484,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
             application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
+            application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
+            application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
 
             logger.info("Done!");
         }
@@ -492,6 +496,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             application.getRegistersController().refresh();
             application.getStackController().refresh();
             application.getMemoryController().refresh();
+            application.getSymbolsController().refresh();
+            application.getLabelsController().refresh();
         }
 
         private boolean isIntervalTooShort() {

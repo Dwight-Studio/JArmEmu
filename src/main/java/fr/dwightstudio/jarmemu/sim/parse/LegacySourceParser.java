@@ -79,17 +79,6 @@ public class LegacySourceParser implements SourceParser {
     }
 
     /**
-     * Création du lecteur de code du fichier *.s
-     * @param file Le fichier
-     * @throws FileNotFoundException Exception si le fichier n'est pas trouvé
-     */
-    public LegacySourceParser(File file) throws IOException {
-        this();
-
-        this.sourceScanner = new SourceScanner(file);
-    }
-
-    /**
      * Création du lecteur de code de l'éditeur
      * @param sourceScanner le lecteur de source utilisé
      */
@@ -352,7 +341,7 @@ public class LegacySourceParser implements SourceParser {
             if (instruction == null) {
                 return new ParsedLabel(this.label);
             } else {
-                return new ParsedLabel(this.label).withInstruction(new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4));
+                return new ParsedLabel(this.label).withInstruction(new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex()));
             }
         }
 
@@ -364,6 +353,6 @@ public class LegacySourceParser implements SourceParser {
         } catch (IndexOutOfBoundsException ignored) {}
 
         if (instruction == null) return null;
-        return new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        return new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex());
     }
 }

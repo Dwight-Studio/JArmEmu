@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FileLine;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Supplier;
@@ -34,13 +34,13 @@ public class ParsedLabel extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final String name;
     private ParsedInstruction instruction;
-    private FileLine pos;
+    private FilePos pos;
 
     public ParsedLabel(String name) {
         this.name = name;
     }
 
-    public ParsedLabel(String name, FileLine pos) {
+    public ParsedLabel(String name, FilePos pos) {
         this.name = name;
         this.pos = pos.freeze();
     }
@@ -53,9 +53,9 @@ public class ParsedLabel extends ParsedObject {
     public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer container = stateSupplier.get();
 
-        if (container.getLabels().get(this.name.toUpperCase()) == null) {
-            throw new IllegalStateException("Unable to verify label (incorrectly registered in the StateContainer)");
-        } else if (container.getLabels().get(this.name) != this.pos) {
+        if (container.getAccessibleLabels().get(this.name.toUpperCase()) == null) {
+            throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
+        } else if (container.getAccessibleLabels().get(this.name) != this.pos.toByteValue()) {
             return new SyntaxASMException("Label '" + this.name + "' is already defined", line, this);
         }
 
@@ -71,9 +71,9 @@ public class ParsedLabel extends ParsedObject {
      *
      * @param stateContainer le conteneur d'état
      */
-    public void register(StateContainer stateContainer, FileLine pos) {
+    public void register(StateContainer stateContainer, FilePos pos) {
         this.pos = pos.freeze();
-        stateContainer.getLabels().put(name.strip().toUpperCase(), this.pos);
+        stateContainer.getAccessibleLabels().put(name.strip().toUpperCase(), this.pos.toByteValue());
     }
 
     @Override

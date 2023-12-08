@@ -169,7 +169,17 @@
                                     <tabs>
                                         <Tab text="Stack">
                                             <content>
-                                                <AnchorPane fx:id="stackPane"/>
+                                                <AnchorPane fx:id="stackPane" disable="true" />
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Symbols">
+                                            <content>
+                                                <AnchorPane fx:id="symbolsPane" disable="true" />
+                                            </content>
+                                        </Tab>
+                                        <Tab text="Labels">
+                                            <content>
+                                                <AnchorPane fx:id="labelsPane" disable="true" />
                                             </content>
                                         </Tab>
                                     </tabs>

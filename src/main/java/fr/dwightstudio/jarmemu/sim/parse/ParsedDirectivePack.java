@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.ArrayList;
@@ -83,44 +84,46 @@ public class ParsedDirectivePack extends ParsedObject {
      * Application des directives
      *
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
+     * @param pos la position de la directive
      */
-    public int apply(StateContainer stateContainer, int pos) {
+    public void apply(StateContainer stateContainer, FilePos pos) {
         for (ParsedObject directive : content) {
             if (directive instanceof ParsedDirective dir) {
-                pos = dir.apply(stateContainer, pos);
+                dir.apply(stateContainer, pos);
             } else if (directive instanceof ParsedDirectiveLabel label) {
-                label.register(stateContainer, pos);
+                label.register(stateContainer, pos.getPos());
             }
         }
-
-        return pos;
     }
 
     /**
-     * Application des directives
+     * Application des directives indifférentes à la section
      *
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
+     * @param pos la position de la directive
      */
-    public int applySectionIndifferent(StateContainer stateContainer, int pos) {
+    public void applySectionIndifferent(StateContainer stateContainer, FilePos pos) {
         for (ParsedObject directive : content) {
             if (directive instanceof ParsedDirective dir && dir.getDirective().isSectionIndifferent()) {
-                pos = dir.apply(stateContainer, pos);
+                dir.apply(stateContainer, pos);
             }
         }
-
-        return pos;
     }
 
-    public int applySectionSensitive(StateContainer stateContainer, int pos, Section section) {
+    /**
+     * Application des directives sensibles à la section
+     *
+     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
+     * @param pos la position de la directive
+     */
+    public void applySectionSensitive(StateContainer stateContainer, FilePos pos, Section section) {
         for (ParsedObject directive : content) {
             if (directive instanceof ParsedDirective dir && !dir.getDirective().isSectionIndifferent() && dir.getSection() == section) {
-                pos = dir.apply(stateContainer, pos);
+                dir.apply(stateContainer, pos);
             } else if (directive instanceof ParsedDirectiveLabel label && label.getSection() == section) {
-                label.register(stateContainer, pos);
+                label.register(stateContainer, pos.getPos());
             }
         }
-
-        return pos;
     }
 
     public boolean isEmpty() {

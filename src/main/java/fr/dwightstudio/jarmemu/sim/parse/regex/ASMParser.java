@@ -182,7 +182,7 @@ public class ASMParser {
             if (arg4.isEmpty()) arg4 = null;
         }
 
-        ParsedInstruction parsedInstruction = new ParsedInstruction(instruction, condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        ParsedInstruction parsedInstruction = new ParsedInstruction(instruction, condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex());
 
         if (matcherLabel.find()) {
             return new ParsedLabel(matcherLabel.group("LABEL").strip().toUpperCase()).withInstruction(parsedInstruction);

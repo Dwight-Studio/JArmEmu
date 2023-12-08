@@ -47,15 +47,17 @@ public class ParsedInstruction extends ParsedObject {
     private final boolean updateFlags;
     private final DataMode dataMode;
     private final UpdateMode updateMode;
+    private int fileIndex;
 
     private final Pattern PSEUDO_OP_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]\\{\\}]+)");
 
-    public ParsedInstruction(@NotNull Instruction instruction, @NotNull Condition conditionExec, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) {
+    public ParsedInstruction(@NotNull Instruction instruction, @NotNull Condition conditionExec, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4, int fileIndex) {
         this.instruction = instruction;
         this.condition = conditionExec;
         this.updateFlags = updateFlags;
         this.dataMode = dataMode;
         this.updateMode = updateMode;
+        this.fileIndex = fileIndex;
         this.originalArgs = new String[]{arg1, arg2, arg3, arg4};
         this.processedArgs = new String[]{arg1, arg2, arg3, arg4};
     }
@@ -85,6 +87,10 @@ public class ParsedInstruction extends ParsedObject {
      * @param forceExecution ignore les erreurs d'exécution non bloquantes
      */
     public void execute(StateContainer stateContainer, boolean forceExecution) throws ExecutionASMException {
+
+        // Mise à jour de l'indice du fichier
+        stateContainer.setFileIndex(fileIndex);
+
         if (instruction.hasDomReg()) {
             ArgumentParser[] argParsers = instruction.getArgParsers();
             Object[] parsedArgs = new Object[4];
@@ -236,7 +242,7 @@ public class ParsedInstruction extends ParsedObject {
             if (originalArgs[2] == null) return this;
             if (argParsers[2].parse(stateContainer, originalArgs[2].toUpperCase()) instanceof ShiftParser.ShiftFunction){
                 try {
-                    return new ParsedInstruction(Instruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null);
+                    return new ParsedInstruction(Instruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null, fileIndex);
                 } catch (Exception e) {
                     logger.severe(e.getMessage());
                 }

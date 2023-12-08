@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ASCIIExecutor implements DirectiveExecutor {
@@ -37,19 +38,21 @@ public class ASCIIExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
+
+        FilePos tempPos = currentPos.clone();
 
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
             String del = String.valueOf(args.charAt(0));
             String str = args.substring(1, args.length()-1);
             if (str.contains(del)) throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
             for (char c : str.toCharArray()) {
-                DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), currentPos, section);
-                currentPos++;
+                DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), tempPos, section);
+                tempPos.incrementPos();
             }
         } else {
             throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
@@ -63,11 +66,10 @@ public class ASCIIExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         String str = args.substring(1, args.length() - 1);
-        return str.length();
+        currentPos.incrementPos(str.length());
     }
 }

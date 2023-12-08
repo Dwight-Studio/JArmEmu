@@ -72,6 +72,8 @@ public class JArmEmuApplication extends Application {
     private SettingsController settingsController;
     private SimulationMenuController simulationMenuController;
     private StackController stackController;
+    private SymbolsController symbolsController;
+    private LabelsController labelsController;
 
     // Others
     private ShortcutHandler shortcutHandler;
@@ -111,6 +113,8 @@ public class JArmEmuApplication extends Application {
         settingsController = new SettingsController(this);
         simulationMenuController = new SimulationMenuController(this);
         stackController = new StackController(this);
+        symbolsController = new SymbolsController(this);
+        labelsController = new LabelsController(this);
         dialogs = new JArmEmuDialogs(this);
 
         fxmlLoader.setController(new JArmEmuController(this));
@@ -265,6 +269,14 @@ public class JArmEmuApplication extends Application {
         return stackController;
     }
 
+    public SymbolsController getSymbolsController() {
+        return symbolsController;
+    }
+
+    public LabelsController getLabelsController() {
+        return labelsController;
+    }
+
     public SourceParser getSourceParser() {
         return sourceParser;
     }
@@ -296,9 +308,9 @@ public class JArmEmuApplication extends Application {
 
     public void newSourceParser() {
         if (getSettingsController().getSourceParserSetting() == 1) {
-            sourceParser = new LegacySourceParser(new SourceScanner(""));
+            sourceParser = new LegacySourceParser(new SourceScanner("", null, 0));
         } else {
-            sourceParser = new RegexSourceParser(new SourceScanner(""));
+            sourceParser = new RegexSourceParser(new SourceScanner("", null, 0));
         }
     }
 

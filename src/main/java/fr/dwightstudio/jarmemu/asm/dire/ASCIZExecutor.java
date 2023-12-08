@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ASCIZExecutor implements DirectiveExecutor {
@@ -37,14 +38,17 @@ public class ASCIZExecutor implements DirectiveExecutor {
      * @param section
      */
     @Override
-    public void apply(StateContainer stateContainer, String args, int currentPos, Section section) {
+    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        DirectiveExecutors.ASCII.apply(stateContainer, args, currentPos, section);
-        DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) '\0'), currentPos + DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos, section), section);
+        FilePos tempPos = currentPos.clone();
+        DirectiveExecutors.ASCII.apply(stateContainer, args, tempPos, section);
+
+        DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, tempPos, section);
+        DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) '\0'), tempPos, section);
     }
 
     /**
@@ -54,10 +58,10 @@ public class ASCIZExecutor implements DirectiveExecutor {
      * @param args           la chaine d'arguments
      * @param currentPos     la position actuelle
      * @param section
-     * @return la taille des données
      */
     @Override
-    public int computeDataLength(StateContainer stateContainer, String args, int currentPos, Section section) {
-        return DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos, section) + 1;
+    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+        DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos, section);
+        currentPos.incrementPos();
     }
 }

@@ -23,16 +23,22 @@
 
 package fr.dwightstudio.jarmemu.sim.obj;
 
-public class FileLine {
-    public static final FileLine ZERO = new FileLine(0, 0).freeze();
+public class FilePos {
+    public static final FilePos ZERO = new FilePos(0, 0).freeze();
 
-    private final int file;
+    private int file;
     private int pos;
 
-    public FileLine(int file, int pos) {
+    public FilePos(int file, int pos) {
         this.file = file;
         this.pos = pos;
     }
+
+    public FilePos(FilePos filePos) {
+        this.file = filePos.file;
+        this.pos = filePos.pos;
+    }
+
     @Override
     public String toString() {
         return file + ":" + pos;
@@ -46,35 +52,65 @@ public class FileLine {
         return pos;
     }
 
-    public int increment() {
-        return ++pos;
+    public int incrementPos(int i) {
+        return pos += i;
     }
 
-    public void set(int i) {
+    public int incrementPos() {
+        return incrementPos(1);
+    }
+
+    public void setPos(int i) {
         pos = i;
+    }
+
+    public int incrementFileIndex(int i) {
+        return file += i;
+    }
+
+    public int incrementFileIndex() {
+        return incrementFileIndex(1);
+    }
+
+    public void setFileIndex(int i) {
+        file = i;
     }
 
     public int toByteValue() {
         return pos * 4;
     }
 
-    public FileLine freeze() {
-        return new FrozenFileLine(this);
+    public FilePos freeze(int offset) {
+        return new FrozenFilePos(this, offset);
+    }
+
+    public FilePos freeze() {
+        return new FrozenFilePos(this, 0);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof FileLine position) {
+        if (obj instanceof FilePos position) {
             return position.getPos() == pos && position.getFileIndex() == file;
         } else {
             return false;
         }
     }
 
-    public static class FrozenFileLine extends FileLine {
+    public FilePos clone() {
+        return new FilePos(this);
+    }
 
-        public FrozenFileLine(FileLine fileLine) {
-            super(fileLine.file, fileLine.pos);
+    public static class FrozenFilePos extends FilePos {
+
+        private final static String ERROR_MESSAGE = "Can't modify frozen position";
+
+        private final int offset;
+
+
+        public FrozenFilePos(FilePos filePos, int offset) {
+            super(filePos.file, filePos.pos);
+            this.offset = offset;
         }
 
         @Override
@@ -84,26 +120,36 @@ public class FileLine {
 
         @Override
         public int getPos() {
-            return super.getPos();
+            return super.getPos() + offset;
         }
 
         @Override
-        public int increment() {
-            throw new UnsupportedOperationException("Can't modify frozen position");
+        public int incrementPos(int i) {
+            throw new UnsupportedOperationException(ERROR_MESSAGE);
         }
 
         @Override
-        public void set(int i) {
-            throw new UnsupportedOperationException("Can't modify frozen position");
+        public void setPos(int i) {
+            throw new UnsupportedOperationException(ERROR_MESSAGE);
+        }
+
+        @Override
+        public int incrementFileIndex(int i) {
+            throw new UnsupportedOperationException(ERROR_MESSAGE);
+        }
+
+        @Override
+        public void setFileIndex(int i) {
+            throw new UnsupportedOperationException(ERROR_MESSAGE);
         }
 
         @Override
         public int toByteValue() {
-            return super.toByteValue();
+            return getPos() * 4;
         }
 
         @Override
-        public FileLine freeze() {
+        public FilePos freeze() {
             return this;
         }
     }

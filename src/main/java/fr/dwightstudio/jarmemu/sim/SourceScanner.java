@@ -31,17 +31,23 @@ public class SourceScanner {
 
     private int currentInstructionValue;
     private final ArrayList<String> code;
+    private final int fileIndex;
+    private final String fileName;
 
-    public SourceScanner(File file) throws IOException {
+    public SourceScanner(File file, int fileIndex) throws IOException {
         this.code = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         code.addAll(reader.lines().toList());
         this.currentInstructionValue = -1;
+        this.fileIndex = fileIndex;
+        fileName = file.getName();
     }
 
-    public SourceScanner(String code) {
+    public SourceScanner(String code, String fileName, int fileIndex) {
         this.code = new ArrayList<>(Arrays.stream(code.split("\n")).toList());
         this.currentInstructionValue = -1;
+        this.fileIndex = fileIndex;
+        this.fileName = fileName;
     }
 
     public String nextLine() {
@@ -84,4 +90,11 @@ public class SourceScanner {
         printWriter.close();
     }
 
+    public int getFileIndex() {
+        return fileIndex;
+    }
+
+    public String getName() {
+        return fileName;
+    }
 }

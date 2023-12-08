@@ -74,7 +74,7 @@ public class CompleteTest extends JArmEmuTest {
     public void loadUnique(String name) {
         try {
             sources.clear();
-            sources.add(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI())));
+            sources.add(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI()), 0));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
