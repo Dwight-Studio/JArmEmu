@@ -85,7 +85,7 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
             return labels.get(key);
         } else {
             if (globals.containsKey(key)) {
-                return globals.get(key).toByteValue();
+                return globals.get(key).getPos();
             }
         }
         return null;

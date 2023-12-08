@@ -148,7 +148,7 @@ public enum Instruction {
                                     A arg1, B arg2, C arg3, D arg4) {
 
         if (condition.eval(stateContainer)) {
-            executor.execute(stateContainer, false, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+            executor.execute(stateContainer, forceExecution, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
         } else if (this.doModifyPC()) {
             stateContainer.getPC().add(4);
         }

@@ -262,6 +262,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
+                } else {
+                    application.getCodeInterpreter().executeCurrentLine(true);
                 }
             } catch (IllegalDataWritingASMException exception) {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getReadOnlyWritingBreakSetting()) {
@@ -271,6 +273,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
+                } else {
+                    application.getCodeInterpreter().executeCurrentLine(true);
                 }
             } catch (ExecutionASMException exception) {
                 executionException = exception;
