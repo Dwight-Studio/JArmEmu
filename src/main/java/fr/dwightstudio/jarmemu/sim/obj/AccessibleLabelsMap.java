@@ -31,22 +31,24 @@ import java.util.*;
 
 public class AccessibleLabelsMap implements Map<String, Integer> {
     
-    private final HashMap<String, Integer> labels;
-    private final HashMap<String, FilePos> globals;
+    private final ArrayList<HashMap<String, Integer>> allLabels;
+    private final HashMap<String, Integer> localLabels;
+    private final HashMap<String, Integer> globals;
     private final int currentfileIndex;
 
-    public AccessibleLabelsMap(HashMap<String, Integer> labels, HashMap<String, FilePos> globals, int currentfileIndex) {
-        this.labels = labels;
+    public AccessibleLabelsMap(ArrayList<HashMap<String, Integer>> allLabels, HashMap<String, Integer> globals, int currentfileIndex) {
+        this.allLabels = allLabels;
+        this.localLabels = allLabels.get(currentfileIndex);
         this.globals = globals;
         this.currentfileIndex = currentfileIndex;
     }
 
     @Override
     public int size() {
-        int rtn = labels.size();
+        int rtn = localLabels.size();
 
-        for (Entry<String, FilePos> entry : globals.entrySet()) {
-            if (entry.getValue().getFileIndex() != currentfileIndex) rtn++;
+        for (Entry<String, Integer> entry : globals.entrySet()) {
+            if (entry.getValue() != currentfileIndex) rtn++;
         }
 
         return rtn;
@@ -54,12 +56,12 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
 
     @Override
     public boolean isEmpty() {
-        return labels.isEmpty() && globals.isEmpty();
+        return localLabels.isEmpty() && globals.isEmpty();
     }
 
     @Override
     public boolean containsKey(Object key) {
-        if (labels.containsKey(key)) {
+        if (localLabels.containsKey(key)) {
             return true;
         } else {
             return globals.containsKey(key);
@@ -68,24 +70,20 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
 
     @Override
     public boolean containsValue(Object value) {
-        if (labels.containsValue(value)) {
+        if (localLabels.containsValue(value)) {
             return true;
         } else {
-            if (value instanceof Integer i) {
-                return globals.values().stream().anyMatch(filePos -> filePos.getPos() == i);
-            } else {
-                return false;
-            }
+            return globals.values().stream().anyMatch(filePos -> allLabels.get(filePos).containsValue(value));
         }
     }
 
     @Override
     public Integer get(Object key) {
-        if (labels.containsKey(key)) {
-            return labels.get(key);
+        if (localLabels.containsKey(key)) {
+            return localLabels.get(key);
         } else {
             if (globals.containsKey(key)) {
-                return globals.get(key).getPos();
+                return allLabels.get(globals.get(key)).get(key);
             }
         }
         return null;
@@ -94,32 +92,37 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
     @Nullable
     @Override
     public Integer put(String key, Integer value) {
-        return labels.put(key, value);
+        return localLabels.put(key, value);
     }
 
     @Override
     public Integer remove(Object key) {
-        return labels.remove(key);
+        if (localLabels.containsKey(key)) {
+            if (globals.containsKey(key) && globals.get(key) == currentfileIndex) globals.remove(key);
+            return localLabels.remove(key);
+        }
+
+        return null;
     }
 
     @Override
     public void putAll(@NotNull Map<? extends String, ? extends Integer> m) {
-        labels.putAll(m);
+        localLabels.putAll(m);
     }
 
     @Override
     public void clear() {
-        labels.clear();
+        allLabels.clear();
     }
 
     @NotNull
     @Override
     public Set<String> keySet() {
         Set<String> rtn = new HashSet<>(size());
-        rtn.addAll(labels.keySet());
+        rtn.addAll(localLabels.keySet());
 
-        for (Entry<String, FilePos> entry : globals.entrySet()) {
-            if (entry.getValue().getFileIndex() != currentfileIndex) rtn.add(entry.getKey());
+        for (Entry<String, Integer> entry : globals.entrySet()) {
+            if (entry.getValue() != currentfileIndex) rtn.add(entry.getKey());
         }
 
         return rtn;
@@ -129,10 +132,10 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
     @Override
     public Collection<Integer> values() {
         ArrayList<Integer> rtn = new ArrayList<>(size());
-        rtn.addAll(labels.values());
+        rtn.addAll(localLabels.values());
 
-        for (Entry<String, FilePos> entry : globals.entrySet()) {
-            if (entry.getValue().getFileIndex() != currentfileIndex) rtn.add(entry.getValue().getPos());
+        for (Entry<String, Integer> entry : globals.entrySet()) {
+            if (entry.getValue() != currentfileIndex) rtn.add(allLabels.get(entry.getValue()).get(entry.getKey()));
         }
 
         return rtn;
@@ -142,10 +145,11 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
     @Override
     public Set<Entry<String, Integer>> entrySet() {
         Set<Entry<String, Integer>> rtn = new HashSet<>(size());
-        rtn.addAll(labels.entrySet());
+        rtn.addAll(localLabels.entrySet());
 
-        for (Entry<String, FilePos> entry : globals.entrySet()) {
-            if (entry.getValue().getFileIndex() != currentfileIndex) rtn.add(MapUtils.extractPos(entry));
+        for (Entry<String, Integer> entry : globals.entrySet()) {
+            if (entry.getValue() != currentfileIndex)
+                rtn.add(Map.entry(entry.getKey(), allLabels.get(entry.getValue()).get(entry.getKey())));
         }
 
         return rtn;
@@ -154,13 +158,13 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
     @Override
     public boolean equals(Object o) {
         return (o instanceof AccessibleLabelsMap map
-                && map.labels.equals(labels)
+                && map.allLabels.equals(allLabels)
                 && map.globals.equals(globals)
                 && map.currentfileIndex == currentfileIndex);
     }
 
     @Override
     public int hashCode() {
-        return labels.hashCode() * globals.hashCode();
+        return allLabels.hashCode() * globals.hashCode();
     }
 }

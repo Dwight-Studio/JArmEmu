@@ -105,9 +105,10 @@ public class CodeInterpreter {
         resetState();
 
         try {
-            FilePos pos = stateContainer.getGlobal("_START");
-            stateContainer.getPC().setData(pos.getPos());
-            logger.warning("Setting PC to address of label '_START' positioned at " + pos.getPos());
+            int fileIndex = stateContainer.getGlobal("_START");
+            stateContainer.setFileIndex(fileIndex);
+            stateContainer.getPC().setData(stateContainer.getLabelsInFiles().get(fileIndex).get("_START"));
+            logger.warning("Setting PC to address of label '_START' positioned at " + stateContainer.getPC().getData());
         } catch (Exception e) {
             logger.warning("Can't find position of label '_START'");
             stateContainer.getPC().setData(0);

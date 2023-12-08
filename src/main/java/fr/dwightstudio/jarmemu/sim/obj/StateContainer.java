@@ -57,7 +57,7 @@ public class StateContainer {
     private final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
     private final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
     private final ArrayList<HashMap<String, Integer>> labels; // HashMap des labels
-    private final HashMap<String, FilePos> globals; // Symbols globaux
+    private final HashMap<String, Integer> globals; // Symbols globaux
     private int nestingCount;
     private int lastAddressROData;
     private int currentfileIndex;
@@ -220,17 +220,17 @@ public class StateContainer {
      * Ajoute une variable globale.
      *
      * @param global la variable globale
-     * @param filePos la position dans les fichiers de la variable globale
+     * @param fileIndex l'indice du fichier de la variable globale
      */
-    public void addGlobal(String global, FilePos filePos) {
-        this.globals.put(global, filePos);
+    public void addGlobal(String global, int fileIndex) {
+        this.globals.put(global, fileIndex);
     }
 
     /**
      * @param global le nom de la variable globale
-     * @return la position dans les fichiers de la variable globale
+     * @return l'indice du fichier de la variable globale
      */
-    public FilePos getGlobal(String global) {
+    public int getGlobal(String global) {
         return globals.get(global);
     }
 
@@ -304,7 +304,7 @@ public class StateContainer {
     }
 
     public AccessibleLabelsMap getAccessibleLabels() {
-        return new AccessibleLabelsMap(labels.get(currentfileIndex), globals, currentfileIndex);
+        return new AccessibleLabelsMap(labels, globals, currentfileIndex);
     }
 
     public ArrayList<HashMap<String, Integer>> getLabelsInFiles() {

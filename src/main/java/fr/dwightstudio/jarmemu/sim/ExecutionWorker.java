@@ -246,14 +246,14 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             }
         }
 
-        private void step() {
+        private void step(boolean forceExecution) {
             last = line;
             line = application.getCodeInterpreter().getCurrentLine();
 
             ExecutionASMException executionException = null;
 
             try {
-                application.getCodeInterpreter().executeCurrentLine(false);
+                application.getCodeInterpreter().executeCurrentLine(forceExecution);
             } catch (MemoryAccessMisalignedASMException exception) {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getMemoryAlignBreakSetting()) {
                     Platform.runLater(() -> {
@@ -263,7 +263,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     });
                     doContinue = false;
                 } else {
-                    application.getCodeInterpreter().executeCurrentLine(true);
+                    step(true);
                 }
             } catch (IllegalDataWritingASMException exception) {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getReadOnlyWritingBreakSetting()) {
@@ -274,7 +274,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     });
                     doContinue = false;
                 } else {
-                    application.getCodeInterpreter().executeCurrentLine(true);
+                    step(true);
                 }
             } catch (ExecutionASMException exception) {
                 executionException = exception;
@@ -353,7 +353,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void stepIntoTask() {
             nextTask.set(IDLE);
 
-            step();
+            step(false);
             updateGUI();
 
             try {
@@ -369,7 +369,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             nextTask.set(IDLE);
             doContinue = true;
             while (doContinue) {
-                step();
+                step(false);
                 if (shouldUpdateGUI()) updateGUI();
 
                 doContinue = doContinue && !application.getCodeInterpreter().hasJumped();
@@ -393,7 +393,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             nextTask.set(IDLE);
             doContinue = true;
             while (doContinue) {
-                step();
+                step(false);
                 if (shouldUpdateGUI()) updateGUI();
 
                 try {

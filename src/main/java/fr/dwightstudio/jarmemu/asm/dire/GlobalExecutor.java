@@ -40,7 +40,7 @@ public class GlobalExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         if (args.matches("[A-Za-z_0-9]+")) {
-            stateContainer.addGlobal(args.toUpperCase().strip(), currentPos);
+            stateContainer.addGlobal(args.toUpperCase().strip(), currentPos.getFileIndex());
         } else {
             throw new SyntaxASMException("Invalid argument '" + args + "'");
         }

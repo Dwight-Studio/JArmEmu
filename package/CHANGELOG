@@ -1,6 +1,11 @@
 0.1.6 -> 0.1.7
 
 - Added new splash screens
+- Added support for multi-files projects
+- Added instruction address in editors margins
+- Added symbol and labels observation tab
+- Added stack pointer following setting
+- Fixed memory, stack and register tabs unavailability when not simulating
 
 
 0.1.5 -> 0.1.6

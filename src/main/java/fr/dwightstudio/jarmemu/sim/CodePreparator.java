@@ -397,24 +397,17 @@ public class CodePreparator {
             }
         }
 
-        // Rectification des positions des labels globaux
-
-        for (String global : stateContainer.getGlobals()) {
-            stateContainer.setFileIndex(stateContainer.getGlobal(global).getFileIndex());
-            stateContainer.addGlobal(global, new FilePos(stateContainer.getCurrentFileIndex(), stateContainer.getAccessibleLabels().get(global)));
-        }
-
         // Ajout des labels _START et _END
 
         if (!stateContainer.getGlobals().contains("_START")) {
             stateContainer.getLabelsInFiles().getFirst().put("_START", 0);
-            stateContainer.addGlobal("_START", FilePos.ZERO);
+            stateContainer.addGlobal("_START", 0);
             logger.info("Can't find label '_START', setting one at 0");
         }
 
         if (!stateContainer.getGlobals().contains("_END")) {
             stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
-            stateContainer.addGlobal("_END", lastInstruction.freeze());
+            stateContainer.addGlobal("_END", lastInstruction.getFileIndex());
             logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());
         }
     }
