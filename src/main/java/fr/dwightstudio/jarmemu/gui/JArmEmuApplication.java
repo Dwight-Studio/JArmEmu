@@ -92,10 +92,9 @@ public class JArmEmuApplication extends Application {
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     // TODO: Ajouter une coloration lors de l'update d'un élément
-    // TODO: Ajouter la possibilité de charger plusieurs fichiers
     // TODO: Ajouter une vue compacte de la mémoire
     // TODO: Réparer le .deb
-    // TODO: Gérer la désactivation des vues de manière propre (sans désactiver l'onglet)
+    // FIXME: Problème de stockage des données dans la mémoire (adresse qui semble incorrecte, à investiguer)
 
     @Override
     public void start(Stage stage) throws IOException {
