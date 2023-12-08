@@ -27,9 +27,7 @@ import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
-import org.apache.commons.collections4.MultiMap;
 import org.apache.commons.collections4.MultiValuedMap;
-import org.apache.commons.collections4.map.MultiKeyMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,11 +51,11 @@ public class StateContainer {
     );
 
     // ASM
-    private final HashMap<String, Integer> consts; // HashMap des constantes
-    private final HashMap<String, Integer> data; // HashMap des données ajoutées dans la mémoire par directive
-    private final HashMap<String, Integer> pseudoData; // HashMap des données ajoutées dans la mémoire par pseudo-op
-    private final ArrayList<HashMap<String, Integer>> labels; // HashMap des labels
-    private final HashMap<String, Integer> globals; // Symbols globaux
+    private final HashMap<String, Integer> consts; // Nom -> Constantes
+    private final HashMap<String, Integer> data; // Nom -> Données ajoutées dans la mémoire par directive
+    private final HashMap<String, Integer> pseudoData; // Code -> Données ajoutées dans la mémoire par pseudo-op
+    private final ArrayList<HashMap<String, Integer>> labels; // Indice de fichier -> Label -> Position dans la mémoire
+    private final HashMap<String, Integer> globals; // Symbols globaux -> Indice de fichier
     private int nestingCount;
     private int lastAddressROData;
     private int currentfileIndex;
@@ -303,8 +301,8 @@ public class StateContainer {
         return pseudoData;
     }
 
-    public AccessibleLabelsMap getAccessibleLabels() {
-        return new AccessibleLabelsMap(labels, globals, currentfileIndex);
+    public AccessibleValueMap getAccessibleLabels() {
+        return new AccessibleValueMap(labels, globals, currentfileIndex);
     }
 
     public ArrayList<HashMap<String, Integer>> getLabelsInFiles() {

@@ -95,6 +95,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter une vue compacte de la mémoire
     // TODO: Réparer le .deb
     // FIXME: Problème de stockage des données dans la mémoire (adresse qui semble incorrecte, à investiguer)
+    // TODO: Stocker les constantes et autres séparément (entre fichiers)
 
     @Override
     public void start(Stage stage) throws IOException {

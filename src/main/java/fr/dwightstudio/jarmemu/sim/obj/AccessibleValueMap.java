@@ -29,14 +29,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class AccessibleLabelsMap implements Map<String, Integer> {
+public class AccessibleValueMap implements Map<String, Integer> {
     
     private final ArrayList<HashMap<String, Integer>> allLabels;
     private final HashMap<String, Integer> localLabels;
     private final HashMap<String, Integer> globals;
     private final int currentfileIndex;
 
-    public AccessibleLabelsMap(ArrayList<HashMap<String, Integer>> allLabels, HashMap<String, Integer> globals, int currentfileIndex) {
+    public AccessibleValueMap(ArrayList<HashMap<String, Integer>> allLabels, HashMap<String, Integer> globals, int currentfileIndex) {
         this.allLabels = allLabels;
         this.localLabels = allLabels.get(currentfileIndex);
         this.globals = globals;
@@ -149,7 +149,7 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
 
         for (Entry<String, Integer> entry : globals.entrySet()) {
             if (entry.getValue() != currentfileIndex)
-                rtn.add(Map.entry(entry.getKey(), allLabels.get(entry.getValue()).get(entry.getKey())));
+                rtn.add(MapUtils.entry(entry.getKey(), allLabels.get(entry.getValue()).get(entry.getKey())));
         }
 
         return rtn;
@@ -157,7 +157,7 @@ public class AccessibleLabelsMap implements Map<String, Integer> {
 
     @Override
     public boolean equals(Object o) {
-        return (o instanceof AccessibleLabelsMap map
+        return (o instanceof AccessibleValueMap map
                 && map.allLabels.equals(allLabels)
                 && map.globals.equals(globals)
                 && map.currentfileIndex == currentfileIndex);

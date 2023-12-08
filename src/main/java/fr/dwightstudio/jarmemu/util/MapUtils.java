@@ -59,7 +59,7 @@ public class MapUtils {
 
             @Override
             public int hashCode() {
-                return 0;
+                return getKey().hashCode();
             }
         };
     }
@@ -94,9 +94,41 @@ public class MapUtils {
 
             @Override
             public int hashCode() {
-                return 0;
+                return getKey().hashCode();
             }
         };
     }
 
+    public static Map.Entry<String, Integer> entry(String key, Integer value) {
+        return new Map.Entry<>() {
+            @Override
+            public String getKey() {
+                return key;
+            }
+
+            @Override
+            public Integer getValue() {
+                return value;
+            }
+
+            @Override
+            public Integer setValue(Integer value) {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                if (o instanceof Map.Entry<?, ?> entry) {
+                    return entry.getValue().equals(getValue()) && entry.getKey().equals(getKey());
+                } else {
+                    return false;
+                }
+            }
+
+            @Override
+            public int hashCode() {
+                return getKey().hashCode();
+            }
+        };
+    }
 }

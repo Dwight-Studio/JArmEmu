@@ -407,7 +407,7 @@ public class CodePreparator {
 
         if (!stateContainer.getGlobals().contains("_END")) {
             stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
-            stateContainer.addGlobal("_END", lastInstruction.getFileIndex());
+            stateContainer.addGlobal("_END", parsedFiles.size() - 1);
             logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());
         }
     }
