@@ -157,10 +157,13 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
      */
     public void stop() {
         logger.info("Killing Execution Thread");
-        this.daemon.doContinue = this.daemon.doRun = false;
         if (this.daemon.isAlive()) {
+            this.daemon.doContinue = this.daemon.doRun = false;
             if (!this.daemon.isInterrupted()) daemon.interrupt();
         }
+
+        this.daemon.doContinue = this.daemon.doRun = false;
+
         this.daemon = null;
     }
 
@@ -421,6 +424,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void updateGUI() {
+            logger.info("Updating GUI");
             if (application.getCodeInterpreter() != null) {
 
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);

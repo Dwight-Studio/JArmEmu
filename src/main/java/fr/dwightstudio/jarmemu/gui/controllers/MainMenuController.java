@@ -206,7 +206,6 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onExit() {
-        getSimulationMenuController().onStop();
         if (getEditorController().getSaveState()) {
             exit();
         } else {
