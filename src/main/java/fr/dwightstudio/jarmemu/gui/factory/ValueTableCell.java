@@ -23,53 +23,84 @@
 
 package fr.dwightstudio.jarmemu.gui.factory;
 
-import atlantafx.base.theme.Tweaks;
+import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
-import fr.dwightstudio.jarmemu.util.converters.WordASCIIStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.ValueStringConverter;
+import fr.dwightstudio.jarmemu.util.converters.WordASCIIStringConverter;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.Transition;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
-import org.w3c.dom.traversal.TreeWalker;
 
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
+    private final Animation UPDATE_ANIMATION = new Transition() {
+
+        {
+            setCycleDuration(Duration.millis(1000));
+            setInterpolator(Interpolator.EASE_OUT);
+        }
+
+        @Override
+        protected void interpolate(double frac) {
+            int percentage = (int) Math.floor(frac * 100);
+            System.out.println(percentage);
+            setStyle("-fx-background-color: ladder(derive(black, " + percentage + "%), -color-warning-muted, transparent 50%);");
+        }
+    };
+
+    private final JArmEmuApplication application;
 
     private ValueTableCell(JArmEmuApplication application) {
         super(new ValueStringConverter(application));
+        this.application = application;
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
     }
 
-    private ValueTableCell(StringConverter<Number> converter) {
+    private ValueTableCell(JArmEmuApplication application, StringConverter<Number> converter) {
         super(converter);
+        this.application = application;
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
     }
 
+    @Override
+    public void updateItem(Number number, boolean b) {
+        super.updateItem(number, b);
+
+        if (application.status.get() == Status.SIMULATING) {
+            Platform.runLater(UPDATE_ANIMATION::stop);
+            Platform.runLater(UPDATE_ANIMATION::play);
+        }
+    }
 
     public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryDynamicFormat(JArmEmuApplication application) {
         return (val) -> new ValueTableCell<>(application);
     }
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticHex() {
-        return (val) -> new ValueTableCell<>(new HexStringConverter());
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticHex(JArmEmuApplication application) {
+        return (val) -> new ValueTableCell<>(application, new HexStringConverter());
     }
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticBin() {
-        return (val) -> new ValueTableCell<>(new BinStringConverter());
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticBin(JArmEmuApplication application) {
+        return (val) -> new ValueTableCell<>(application, new BinStringConverter());
     }
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticWordASCII() {
-        return (val) -> new ValueTableCell<>(new WordASCIIStringConverter());
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticWordASCII(JArmEmuApplication application) {
+        return (val) -> new ValueTableCell<>(application, new WordASCIIStringConverter());
     }
 
-    public static Callback<TableColumn<MemoryChunkView, String>, TableCell<MemoryChunkView, String>> factoryStaticString() {
+    public static Callback<TableColumn<MemoryChunkView, String>, TableCell<MemoryChunkView, String>> factoryStaticString(JArmEmuApplication application) {
         return (val) -> {
             TextFieldTableCell<MemoryChunkView, String> rtn = new TextFieldTableCell<>();
             rtn.getStyleClass().add("data-value");

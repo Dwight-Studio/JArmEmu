@@ -35,6 +35,10 @@
     -fx-font-size: 14px;
 }
 
+.data-value-update {
+    -fx-background-color: -color-warning-muted;
+}
+
 .big-icon {
     -fx-icon-size: 48;
 }

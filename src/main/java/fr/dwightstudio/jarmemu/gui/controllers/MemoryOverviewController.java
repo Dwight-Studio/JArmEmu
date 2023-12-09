@@ -124,7 +124,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
         col1.setPrefWidth(80);
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getASCIIProperty());
-        col1.setCellFactory(ValueTableCell.factoryStaticString());
+        col1.setCellFactory(ValueTableCell.factoryStaticString(getApplication()));
         col1.setVisible(false);
 
         col2 = new TableColumn<>("Value 0");

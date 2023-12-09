@@ -133,7 +133,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col2.setCellFactory(ValueTableCell.factoryStaticWordASCII());
+        col2.setCellFactory(ValueTableCell.factoryStaticWordASCII(getApplication()));
         col2.setVisible(false);
 
         col3 = new TableColumn<>("Byte 3");
@@ -145,7 +145,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col3.setPrefWidth(80);
         col3.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col3.setCellValueFactory(c -> c.getValue().getByte0Property());
-        col3.setCellFactory(ValueTableCell.factoryStaticBin());
+        col3.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
         col4 = new TableColumn<>("Byte 2");
         col4.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
@@ -156,7 +156,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col4.setPrefWidth(80);
         col4.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col4.setCellValueFactory(c -> c.getValue().getByte1Property());
-        col4.setCellFactory(ValueTableCell.factoryStaticBin());
+        col4.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
         col5 = new TableColumn<>("Byte 1");
         col5.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
@@ -167,7 +167,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col5.setPrefWidth(80);
         col5.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col5.setCellValueFactory(c -> c.getValue().getByte2Property());
-        col5.setCellFactory(ValueTableCell.factoryStaticBin());
+        col5.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
         col6 = new TableColumn<>("Byte 0");
         col6.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
@@ -178,7 +178,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col6.setPrefWidth(80);
         col6.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col6.setCellValueFactory(c -> c.getValue().getByte3Property());
-        col6.setCellFactory(ValueTableCell.factoryStaticBin());
+        col6.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
         memoryTable = new TableView<>();
         views = memoryTable.getItems();
