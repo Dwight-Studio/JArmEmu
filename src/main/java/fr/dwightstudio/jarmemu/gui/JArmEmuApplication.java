@@ -33,7 +33,6 @@ import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -45,11 +44,9 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -67,7 +64,8 @@ public class JArmEmuApplication extends Application {
 
     private EditorController editorController;
     private MainMenuController mainMenuController;
-    private MemoryController memoryController;
+    private MemoryDetailsController memoryDetailsController;
+    private MemoryOverviewController memoryOverviewController;
     private RegistersController registersController;
     private SettingsController settingsController;
     private SimulationMenuController simulationMenuController;
@@ -92,7 +90,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     // TODO: Ajouter une coloration lors de l'update d'un élément
-    // TODO: Ajouter une vue compacte de la mémoire
     // TODO: Réparer le .deb
     // TODO: Stocker les constantes et autres séparément (entre fichiers)
 
@@ -107,7 +104,8 @@ public class JArmEmuApplication extends Application {
 
         editorController = new EditorController(this);
         mainMenuController = new MainMenuController(this);
-        memoryController = new MemoryController(this);
+        memoryDetailsController = new MemoryDetailsController(this);
+        memoryOverviewController = new MemoryOverviewController(this);
         registersController = new RegistersController(this);
         settingsController = new SettingsController(this);
         simulationMenuController = new SimulationMenuController(this);
@@ -153,6 +151,7 @@ public class JArmEmuApplication extends Application {
         );
 
         status.addListener((observable -> updateTitle()));
+        getSimulationMenuController().onStop();
 
         updateTitle();
         stage.setScene(scene);
@@ -252,8 +251,12 @@ public class JArmEmuApplication extends Application {
         return mainMenuController;
     }
 
-    public MemoryController getMemoryController() {
-        return memoryController;
+    public MemoryDetailsController getMemoryDetailsController() {
+        return memoryDetailsController;
+    }
+
+    public MemoryOverviewController getMemoryOverviewController() {
+        return memoryOverviewController;
     }
 
     public RegistersController getRegistersController() {

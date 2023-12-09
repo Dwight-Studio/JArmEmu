@@ -47,10 +47,10 @@ public class MemoryWordView {
         this.addressProperty = new ReadOnlyIntegerWrapper(address);
         this.valueProperty = memoryAccessor.getProperty(address);
         this.sp = null;
-        this.byte0 = new MemoryByteProperty(valueProperty, 0);
-        this.byte1 = new MemoryByteProperty(valueProperty, 1);
-        this.byte2 = new MemoryByteProperty(valueProperty, 2);
-        this.byte3 = new MemoryByteProperty(valueProperty, 3);
+        this.byte0 = new MemoryByteProperty(0);
+        this.byte1 = new MemoryByteProperty(1);
+        this.byte2 = new MemoryByteProperty(2);
+        this.byte3 = new MemoryByteProperty(3);
         this.cursorProperty = null;
     }
 
@@ -60,10 +60,10 @@ public class MemoryWordView {
         this.valueProperty = memoryAccessor.getProperty(address);
         this.sp = sp;
         this.cursorProperty = new SimpleBooleanProperty(this.sp.getData() == address);
-        this.byte0 = new MemoryByteProperty(valueProperty, 0);
-        this.byte1 = new MemoryByteProperty(valueProperty, 1);
-        this.byte2 = new MemoryByteProperty(valueProperty, 2);
-        this.byte3 = new MemoryByteProperty(valueProperty, 3);
+        this.byte0 = new MemoryByteProperty(0);
+        this.byte1 = new MemoryByteProperty(1);
+        this.byte2 = new MemoryByteProperty(2);
+        this.byte3 = new MemoryByteProperty(3);
 
         this.sp.getDataProperty().addListener((obs, oldVal, newVal) -> this.cursorProperty.setValue((int) newVal == address));
     }
@@ -95,6 +95,7 @@ public class MemoryWordView {
     public ReadOnlyIntegerProperty getByte2Property() {
         return byte2;
     }
+
     public ReadOnlyIntegerProperty getByte3Property() {
         return byte3;
     }
@@ -104,17 +105,14 @@ public class MemoryWordView {
     }
 
 
-    public static class MemoryByteProperty extends ReadOnlyIntegerProperty {
+    public class MemoryByteProperty extends ReadOnlyIntegerProperty {
 
-        ArrayList<ChangeListener<? super Number>> changeListeners;
-        ArrayList<InvalidationListener> invalidationListeners;
+        private final ArrayList<ChangeListener<? super Number>> changeListeners;
+        private final ArrayList<InvalidationListener> invalidationListeners;
 
-        IntegerProperty valueProperty;
-        final int n;
-        final int lastVal;
+        private final int n;
 
-        public MemoryByteProperty(IntegerProperty valueProperty, int n) {
-            this.valueProperty = valueProperty;
+        public MemoryByteProperty(int n) {
             this.n = 3 - n;
             if (this.n > 3 || this.n < 0) throw new IllegalArgumentException("n must be between 0 and 3 included");
             changeListeners = new ArrayList<>();
@@ -126,7 +124,6 @@ public class MemoryWordView {
 
             valueProperty.addListener(observable -> invalidationListeners.forEach(invalidationListener -> invalidationListener.invalidated(observable)));
 
-            lastVal = get();
         }
 
         @Override

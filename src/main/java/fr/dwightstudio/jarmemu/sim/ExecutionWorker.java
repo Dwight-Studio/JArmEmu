@@ -415,7 +415,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             updateGUI();
 
-            application.getMemoryController().updatePage(application.getCodeInterpreter().stateContainer);
+            application.getMemoryDetailsController().updatePage(application.getCodeInterpreter().stateContainer);
+            application.getMemoryOverviewController().updatePage(application.getCodeInterpreter().stateContainer);
 
             logger.info("Done!");
         }
@@ -458,10 +459,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (errors.length == 0) {
                     line = next = last = null;
                     application.getCodeInterpreter().restart();
-                    application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
-                    application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
-                    application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
-                    application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
+                    attachControllers();
                     application.getEditorController().prepareSimulation();
                     updateGUI();
                 }
@@ -486,10 +484,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             line = next = last = null;
             updateGUI();
 
-            application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
-            application.getMemoryController().attach(application.getCodeInterpreter().stateContainer);
-            application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
-            application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
+            attachControllers();
 
             logger.info("Done!");
         }
@@ -499,7 +494,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             application.getRegistersController().refresh();
             application.getStackController().refresh();
-            application.getMemoryController().refresh();
+            application.getMemoryDetailsController().refresh();
+            application.getMemoryOverviewController().refresh();
             application.getSymbolsController().refresh();
             application.getLabelsController().refresh();
         }
@@ -510,6 +506,14 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
         private boolean shouldUpdateGUI() {
             return !isIntervalTooShort() || (System.currentTimeMillis() - updateGUITimestamp) > FALLBACK_UPDATE_INTERVAL;
+        }
+
+        private void attachControllers() {
+            application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
+            application.getMemoryDetailsController().attach(application.getCodeInterpreter().stateContainer);
+            application.getMemoryOverviewController().attach(application.getCodeInterpreter().getStateContainer());
+            application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
+            application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
         }
     }
 }

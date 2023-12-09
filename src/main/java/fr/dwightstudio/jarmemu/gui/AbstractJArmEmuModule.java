@@ -52,8 +52,11 @@ public class AbstractJArmEmuModule implements Initializable {
         return application.getMainMenuController();
     }
 
-    protected MemoryController getMemoryController() {
-        return application.getMemoryController();
+    protected MemoryDetailsController getMemoryDetailsController() {
+        return application.getMemoryDetailsController();
+    }
+    protected MemoryOverviewController getMemoryOverviewController() {
+        return application.getMemoryOverviewController();
     }
 
     protected RegistersController getRegistersController() {

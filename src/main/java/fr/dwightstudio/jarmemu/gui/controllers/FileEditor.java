@@ -116,12 +116,14 @@ public class FileEditor extends AbstractJArmEmuModule {
                 getDialogs().unsavedAlert().thenAccept(rtn -> {
                     switch (rtn) {
                         case SAVE_AND_CONTINUE -> {
+                            getSimulationMenuController().onStop();
                             save();
                             close();
                             getEditorController().cleanClosedEditors();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
+                            getSimulationMenuController().onStop();
                             close();
                             getEditorController().cleanClosedEditors();
                         }
@@ -130,6 +132,7 @@ public class FileEditor extends AbstractJArmEmuModule {
                     }
                 });
             } else {
+                getSimulationMenuController().onStop();
                 close();
                 getEditorController().cleanClosedEditors();
             }
@@ -315,7 +318,6 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public void reload() {
         logger.info("Reloading file from disk");
-        getSimulationMenuController().onStop();
         if (FileUtils.isValidFile(path)) {
             try {
                 SourceScanner scanner = new SourceScanner(path, getEditorController().getFileIndex(this));

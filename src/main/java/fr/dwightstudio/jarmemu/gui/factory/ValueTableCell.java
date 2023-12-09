@@ -23,27 +23,33 @@
 
 package fr.dwightstudio.jarmemu.gui.factory;
 
+import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.util.converters.ASCIIStringConverter;
+import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
+import fr.dwightstudio.jarmemu.util.converters.WordASCIIStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.ValueStringConverter;
+import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+import org.w3c.dom.traversal.TreeWalker;
 
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
     private ValueTableCell(JArmEmuApplication application) {
         super(new ValueStringConverter(application));
         this.getStyleClass().add("data-value");
+        this.setAlignment(Pos.CENTER);
     }
 
     private ValueTableCell(StringConverter<Number> converter) {
         super(converter);
         this.getStyleClass().add("data-value");
+        this.setAlignment(Pos.CENTER);
     }
 
 
@@ -59,7 +65,16 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         return (val) -> new ValueTableCell<>(new BinStringConverter());
     }
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticASCII() {
-        return (val) -> new ValueTableCell<>(new ASCIIStringConverter());
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticWordASCII() {
+        return (val) -> new ValueTableCell<>(new WordASCIIStringConverter());
+    }
+
+    public static Callback<TableColumn<MemoryChunkView, String>, TableCell<MemoryChunkView, String>> factoryStaticString() {
+        return (val) -> {
+            TextFieldTableCell<MemoryChunkView, String> rtn = new TextFieldTableCell<>();
+            rtn.getStyleClass().add("data-value");
+            rtn.setAlignment(Pos.CENTER);
+            return rtn;
+        };
     }
 }

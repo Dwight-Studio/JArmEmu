@@ -53,7 +53,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class MemoryController extends AbstractJArmEmuModule {
+public class MemoryDetailsController extends AbstractJArmEmuModule {
 
     protected static final int LINES_PER_PAGE = 512;
     protected static final int ADDRESS_PER_LINE = 4;
@@ -76,7 +76,7 @@ public class MemoryController extends AbstractJArmEmuModule {
     private boolean doSearchQuery;
     private int searchQuery;
 
-    public MemoryController(JArmEmuApplication application) {
+    public MemoryDetailsController(JArmEmuApplication application) {
         super(application);
     }
 
@@ -126,14 +126,14 @@ public class MemoryController extends AbstractJArmEmuModule {
         col1.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
         col2 = new TableColumn<>("ASCII");
-        col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
+        col2.setGraphic(new FontIcon(Material2OutlinedMZ.SHORT_TEXT));
         col2.setSortable(false);
         col2.setReorderable(false);
         col2.setMinWidth(80);
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col2.setCellFactory(ValueTableCell.factoryStaticASCII());
+        col2.setCellFactory(ValueTableCell.factoryStaticWordASCII());
         col2.setVisible(false);
 
         col3 = new TableColumn<>("Byte 3");
@@ -191,7 +191,7 @@ public class MemoryController extends AbstractJArmEmuModule {
         memoryTable.setEditable(true);
         memoryTable.setMaxWidth(Double.POSITIVE_INFINITY);
 
-        getMainMenuController().registerMemoryColumns(memoryTable);
+        getMainMenuController().registerMemoryDetailsColumns(memoryTable);
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
@@ -205,12 +205,12 @@ public class MemoryController extends AbstractJArmEmuModule {
         AnchorPane.setLeftAnchor(memoryTable, 0d);
         AnchorPane.setTopAnchor(memoryTable, 0d);
 
-        getController().memoryAnchorPane.getChildren().add(memoryTable);
+        getController().memoryDetailsAnchorPane.getChildren().add(memoryTable);
 
         // Configuration du sélecteur de pages
-        getController().memoryPage.setPageCount(PAGE_NUMBER);
-        getController().memoryPage.setCurrentPageIndex(PAGE_OFFSET);
-        getController().memoryPage.currentPageIndexProperty().addListener((observableValue, number, t1) -> {
+        getController().memoryDetailsPage.setPageCount(PAGE_NUMBER);
+        getController().memoryDetailsPage.setCurrentPageIndex(PAGE_OFFSET);
+        getController().memoryDetailsPage.currentPageIndexProperty().addListener((observableValue, number, t1) -> {
             if (number.intValue() != t1.intValue()) {
                 getExecutionWorker().updateGUI();
             }
@@ -219,41 +219,41 @@ public class MemoryController extends AbstractJArmEmuModule {
         lastPageIndex = PAGE_OFFSET;
         doSearchQuery = false;
 
-        getController().addressField.setOnKeyPressed(keyEvent -> {
+        getController().memoryDetailsAddressField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 try {
                     StateContainer container = getCodeInterpreter().getStateContainer();
-                    searchQuery = container.evalWithAll(getController().addressField.getText().strip().toUpperCase());
+                    searchQuery = container.evalWithAll(getController().memoryDetailsAddressField.getText().strip().toUpperCase());
                     doSearchQuery = true;
                     int page = Math.floorDiv(searchQuery, ADDRESS_PER_PAGE) + PAGE_OFFSET;
 
-                    if (page == getController().memoryPage.getCurrentPageIndex()) {
+                    if (page == getController().memoryDetailsPage.getCurrentPageIndex()) {
                         getExecutionWorker().updateGUI();
                     } else {
-                        getController().memoryPage.setCurrentPageIndex(page);
+                        getController().memoryDetailsPage.setCurrentPageIndex(page);
                     }
 
-                    getController().addressField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
+                    getController().memoryDetailsAddressField.pseudoClassStateChanged(Styles.STATE_DANGER, false);
                 } catch (Exception e) {
                     logger.info(ExceptionUtils.getStackTrace(e));
-                    getController().addressField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
+                    getController().memoryDetailsAddressField.pseudoClassStateChanged(Styles.STATE_DANGER, true);
                 }
             }
         });
 
-        getController().addressField.textProperty().addListener(((observableValue, oldVal, newVal) -> {
-            if (getController().addressField.focusedProperty().get() && newVal.equalsIgnoreCase("")) {
-                Bounds bounds = getController().addressField.localToScreen(getController().addressField.getBoundsInLocal());
-                hintPop.show(getController().addressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
+        getController().memoryDetailsAddressField.textProperty().addListener(((observableValue, oldVal, newVal) -> {
+            if (getController().memoryDetailsAddressField.focusedProperty().get() && newVal.equalsIgnoreCase("")) {
+                Bounds bounds = getController().memoryDetailsAddressField.localToScreen(getController().memoryDetailsAddressField.getBoundsInLocal());
+                hintPop.show(getController().memoryDetailsAddressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
             } else {
                 hintPop.hide();
             }
         } ));
 
-        getController().addressField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
-            if (newVal && getController().addressField.getText().equalsIgnoreCase("")) {
-                Bounds bounds = getController().addressField.localToScreen(getController().addressField.getBoundsInLocal());
-                hintPop.show(getController().addressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
+        getController().memoryDetailsAddressField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
+            if (newVal && getController().memoryDetailsAddressField.getText().equalsIgnoreCase("")) {
+                Bounds bounds = getController().memoryDetailsAddressField.localToScreen(getController().memoryDetailsAddressField.getBoundsInLocal());
+                hintPop.show(getController().memoryDetailsAddressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
             }
         }));
     }
@@ -269,10 +269,10 @@ public class MemoryController extends AbstractJArmEmuModule {
             views.clear();
         } else {
             views.clear();
-            lastPageIndex = (getController().memoryPage.getCurrentPageIndex());
+            lastPageIndex = (getController().memoryDetailsPage.getCurrentPageIndex());
 
             for (int i = 0; i < LINES_PER_PAGE; i++) {
-                int add = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
+                int add = ((getController().memoryDetailsPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE + i) * ADDRESS_PER_LINE;
 
                 views.add(new MemoryWordView(stateContainer.getMemory(), add));
             }
@@ -280,13 +280,13 @@ public class MemoryController extends AbstractJArmEmuModule {
     }
 
     public void updatePage(StateContainer stateContainer) {
-        if (getController().memoryPage.getCurrentPageIndex() != lastPageIndex) {
+        if (getController().memoryDetailsPage.getCurrentPageIndex() != lastPageIndex) {
             attach(stateContainer);
         }
 
         if (doSearchQuery) {
             Platform.runLater(() -> {
-                int firstAdd = ((getController().memoryPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE) * ADDRESS_PER_LINE;
+                int firstAdd = ((getController().memoryDetailsPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE) * ADDRESS_PER_LINE;
                 int relativePos = Math.floorDiv(searchQuery - firstAdd, 4);
 
                 memoryTable.scrollTo(relativePos);

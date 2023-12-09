@@ -29,13 +29,18 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 
-public class ASCIIStringConverter  extends StringConverter<Number> {
+public class WordASCIIStringConverter extends StringConverter<Number> {
     @Override
     public String toString(Number number) {
         byte[] bytes = new byte[4];
         ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt((Integer) number);
 
-        return new String(bytes, StandardCharsets.UTF_8);
+        String s0 = new String(new byte[]{bytes[0]}, StandardCharsets.UTF_8).replace('\0', '_');
+        String s1 = new String(new byte[]{bytes[1]}, StandardCharsets.UTF_8).replace('\0', '_');
+        String s2 = new String(new byte[]{bytes[2]}, StandardCharsets.UTF_8).replace('\0', '_');
+        String s3 = new String(new byte[]{bytes[3]}, StandardCharsets.UTF_8).replace('\0', '_');
+
+        return s0 + s1 + s2 + s3;
     }
 
     @Override

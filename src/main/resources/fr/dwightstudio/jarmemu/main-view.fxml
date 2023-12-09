@@ -126,8 +126,14 @@
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
                             <items>
-                                <Menu fx:id="memoryMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
-                                      text="Memory">
+                                <Menu fx:id="memoryDetailsMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
+                                      text="Memory Details">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-memory"/>
+                                    </graphic>
+                                </Menu>
+                                <Menu fx:id="memoryOverviewMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
+                                      text="Memory Overview">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-memory"/>
                                     </graphic>
@@ -294,14 +300,14 @@
                         <TabPane side="BOTTOM" styleClass="btn-group-horizontal"
                                  tabClosingPolicy="UNAVAILABLE">
                             <tabs>
-                                <Tab text="Memory">
+                                <Tab text="Memory details">
                                     <content>
-                                        <AnchorPane fx:id="memoryPane">
+                                        <AnchorPane fx:id="memoryDetailsPane">
                                             <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                                                   AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0">
                                                 <children>
-                                                    <AnchorPane fx:id="memoryAnchorPane" VBox.vgrow="ALWAYS"/>
-                                                    <CustomTextField fx:id="addressField" promptText="Go to address">
+                                                    <AnchorPane fx:id="memoryDetailsAnchorPane" VBox.vgrow="ALWAYS"/>
+                                                    <CustomTextField fx:id="memoryDetailsAddressField" promptText="Go to address">
                                                         <VBox.margin>
                                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                                         </VBox.margin>
@@ -309,7 +315,29 @@
                                                             <FontIcon iconLiteral="mdmz-search"/>
                                                         </left>
                                                     </CustomTextField>
-                                                    <Pagination fx:id="memoryPage" styleClass="bullet"
+                                                    <Pagination fx:id="memoryDetailsPage" styleClass="bullet"
+                                                                VBox.vgrow="NEVER"/>
+                                                </children>
+                                            </VBox>
+                                        </AnchorPane>
+                                    </content>
+                                </Tab>
+                                <Tab text="Memory overview">
+                                    <content>
+                                        <AnchorPane fx:id="memoryOverviewPane">
+                                            <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                                                  AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0">
+                                                <children>
+                                                    <AnchorPane fx:id="memoryOverviewAnchorPane" VBox.vgrow="ALWAYS"/>
+                                                    <CustomTextField fx:id="memoryOverviewAddressField" promptText="Go to address">
+                                                        <VBox.margin>
+                                                            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+                                                        </VBox.margin>
+                                                        <left>
+                                                            <FontIcon iconLiteral="mdmz-search"/>
+                                                        </left>
+                                                    </CustomTextField>
+                                                    <Pagination fx:id="memoryOverviewPage" styleClass="bullet"
                                                                 VBox.vgrow="NEVER"/>
                                                 </children>
                                             </VBox>

@@ -33,7 +33,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
@@ -62,11 +61,17 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected AnchorPane registersPane;
 
-    @FXML protected AnchorPane memoryPane;
-    @FXML protected AnchorPane memoryAnchorPane;
-    @FXML protected Menu memoryMenu;
-    @FXML protected Pagination memoryPage;
-    @FXML protected CustomTextField addressField;
+    @FXML protected AnchorPane memoryDetailsPane;
+    @FXML protected AnchorPane memoryDetailsAnchorPane;
+    @FXML protected Menu memoryDetailsMenu;
+    @FXML protected Pagination memoryDetailsPage;
+    @FXML protected CustomTextField memoryDetailsAddressField;
+
+    @FXML protected AnchorPane memoryOverviewPane;
+    @FXML protected AnchorPane memoryOverviewAnchorPane;
+    @FXML protected Menu memoryOverviewMenu;
+    @FXML protected Pagination memoryOverviewPage;
+    @FXML protected CustomTextField memoryOverviewAddressField;
 
     @FXML protected AnchorPane settingsPane;
     @FXML protected Spinner<Integer> settingsSimInterval;
@@ -107,7 +112,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
         getEditorController().initialize(url, resourceBundle);
         getMainMenuController().initialize(url, resourceBundle);
-        getMemoryController().initialize(url, resourceBundle);
+        getMemoryDetailsController().initialize(url, resourceBundle);
+        getMemoryOverviewController().initialize(url, resourceBundle);
         getRegistersController().initialize(url, resourceBundle);
         getSettingsController().initialize(url, resourceBundle);
         getSimulationMenuController().initialize(url, resourceBundle);
@@ -119,7 +125,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
         getMainMenuController().openLastSave();
 
-        getMemoryController().attach(getCodeInterpreter().getStateContainer());
+        getMemoryDetailsController().attach(getCodeInterpreter().getStateContainer());
+        getMemoryOverviewController().attach(getCodeInterpreter().getStateContainer());
         getRegistersController().attach(getCodeInterpreter().getStateContainer());
         getLabelsController().attach(getCodeInterpreter().getStateContainer());
         getSymbolsController().attach(getCodeInterpreter().getStateContainer());

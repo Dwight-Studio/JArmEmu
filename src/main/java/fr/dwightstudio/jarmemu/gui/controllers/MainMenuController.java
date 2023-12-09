@@ -25,20 +25,18 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.controlsfx.dialog.ExceptionDialog;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -56,6 +54,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Initie un nouveau fichier
      */
     public void onNewFile() {
+        getSimulationMenuController().onStop();
         logger.info("Opening a new file");
         getSimulationMenuController().onStop();
         getEditorController().newFile();
@@ -66,6 +65,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onOpen() {
+        getSimulationMenuController().onStop();
         logger.info("Locating new file to open...");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Source File");
@@ -114,6 +114,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReloadAll() {
+        getSimulationMenuController().onStop();
         if (getEditorController().getSaveState()) {
             if (getEditorController().getSaveState()) {
                 getEditorController().reloadAll();
@@ -141,6 +142,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReload() {
+        getSimulationMenuController().onStop();
         getEditorController().currentFileEditor().reload();
     }
 
@@ -148,6 +150,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onCloseAll() {
+        getSimulationMenuController().onStop();
         if (getEditorController().getSaveState()) {
             if (getEditorController().getSaveState()) {
                 getEditorController().closeAll();
@@ -174,6 +177,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onClose() {
+        getSimulationMenuController().onStop();
         if (getEditorController().currentFileEditor().getSaveState()) {
             if (getEditorController().getSaveState()) {
                 getEditorController().currentFileEditor().close();
@@ -202,6 +206,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onExit() {
+        getSimulationMenuController().onStop();
         if (getEditorController().getSaveState()) {
             exit();
         } else {
@@ -307,8 +312,8 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Crée les boutons pour les colonnes du tableau de la mémoire.
      * @param memoryTable le tableau de la mémoire
      */
-    public void registerMemoryColumns(TableView<MemoryWordView> memoryTable) {
-        getController().memoryMenu.getItems().clear();
+    public void registerMemoryDetailsColumns(TableView<MemoryWordView> memoryTable) {
+        getController().memoryDetailsMenu.getItems().clear();
 
         memoryTable.getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
@@ -330,7 +335,38 @@ public class MainMenuController extends AbstractJArmEmuModule {
             item.setOnAction(event -> {
                 column.setVisible(!column.isVisible());
             });
-            getController().memoryMenu.getItems().add(item);
+            getController().memoryDetailsMenu.getItems().add(item);
+        });
+    }
+
+    /**
+     * Crée les boutons pour les colonnes du tableau de la mémoire.
+     * @param memoryTable le tableau de la mémoire
+     */
+    public void registerMemoryOverviewColumns(TableView<MemoryChunkView> memoryTable) {
+        getController().memoryOverviewMenu.getItems().clear();
+
+        memoryTable.getColumns().forEach(column -> {
+            MenuItem item = new MenuItem(column.getText());
+
+            column.visibleProperty().addListener((obs, oldVal, newVal) -> {
+                if (newVal) {
+                    item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                } else {
+                    item.setGraphic(null);
+                }
+            });
+
+            if (column.isVisible()) {
+                item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+            } else {
+                item.setGraphic(null);
+            }
+
+            item.setOnAction(event -> {
+                column.setVisible(!column.isVisible());
+            });
+            getController().memoryOverviewMenu.getItems().add(item);
         });
     }
 }
