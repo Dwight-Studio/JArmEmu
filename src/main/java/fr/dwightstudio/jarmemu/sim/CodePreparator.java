@@ -184,7 +184,6 @@ public class CodePreparator {
         FilePos pos = new FilePos(0, 0);
 
         // Suppression des directives générées
-        pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
             file.getParsedObjects().replaceAll((k, v) -> {
@@ -195,7 +194,6 @@ public class CodePreparator {
                 }
                 return v;
             });
-            pos.incrementFileIndex();
         }
 
         // Application de toutes les directives qui n'initialisent pas de données
@@ -243,18 +241,18 @@ public class CodePreparator {
             pos.incrementFileIndex();
         }
 
-        FilePos generateDataPos = new FilePos(pos);
+        FilePos generateDataPos = pos.clone();
 
         // Allocation de la place pour les directives générées
-        generateDataPos.setFileIndex(0);
+        pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
             for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
                 if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
-                    generateDataPos.incrementPos(parsedInstruction.isPseudoInstruction() ? 4 : 0);
+                    pos.incrementPos(parsedInstruction.isPseudoInstruction() ? 4 : 0);
                 }
             }
-            generateDataPos.incrementFileIndex();
+            pos.incrementFileIndex();
         }
 
 

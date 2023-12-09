@@ -94,7 +94,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter une coloration lors de l'update d'un élément
     // TODO: Ajouter une vue compacte de la mémoire
     // TODO: Réparer le .deb
-    // FIXME: Problème de stockage des données dans la mémoire (adresse qui semble incorrecte, à investiguer)
     // TODO: Stocker les constantes et autres séparément (entre fichiers)
 
     @Override
