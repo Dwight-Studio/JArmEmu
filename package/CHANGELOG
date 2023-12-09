@@ -4,8 +4,12 @@
 - Added support for multi-files projects
 - Added instruction address in editors margins
 - Added symbol and labels observation tab
+- Added memory summary observation tab
 - Added stack pointer following setting
 - Fixed memory, stack and register tabs unavailability when not simulating
+- Fixed simulation speed setting changeability when simulating
+- Optimising line marking
+- Reduced simulation interval lower threshold
 
 
 0.1.5 -> 0.1.6

@@ -131,7 +131,32 @@ public class AllLabelsMap implements MultiValuedMap<String, FilePos> {
 
     @Override
     public Collection<Map.Entry<String, FilePos>> entries() {
-        return null;
+        ArrayList<Map.Entry<String, FilePos>> rtn = new ArrayList<>(size());
+
+        for (int i = 0 ; i < labels.size() ; i++) {
+            Map<String, Integer> map = labels.get(i);
+            for (Map.Entry<String, Integer> label : map.entrySet()) {
+                int finalI = i;
+                rtn.add(new Map.Entry<String, FilePos>() {
+                    @Override
+                    public String getKey() {
+                        return label.getKey();
+                    }
+
+                    @Override
+                    public FilePos getValue() {
+                        return new FilePos(finalI, label.getValue());
+                    }
+
+                    @Override
+                    public FilePos setValue(FilePos value) {
+                        throw new UnsupportedOperationException();
+                    }
+                });
+            }
+        }
+
+        return rtn;
     }
 
     @Override
@@ -176,6 +201,41 @@ public class AllLabelsMap implements MultiValuedMap<String, FilePos> {
 
     @Override
     public MapIterator<String, FilePos> mapIterator() {
-        return null;
+        return new MapIterator<String, FilePos>() {
+
+            private final Iterator<Map.Entry<String, FilePos>> entries = entries().iterator();
+            private Map.Entry<String, FilePos> lastEntry;
+
+            @Override
+            public boolean hasNext() {
+                return entries.hasNext();
+            }
+
+            @Override
+            public String next() {
+                lastEntry = entries.next();
+                return lastEntry.getKey();
+            }
+
+            @Override
+            public String getKey() {
+                return lastEntry.getKey();
+            }
+
+            @Override
+            public FilePos getValue() {
+                return lastEntry.getValue();
+            }
+
+            @Override
+            public void remove() {
+                entries.remove();
+            }
+
+            @Override
+            public FilePos setValue(FilePos filePos) {
+                throw new UnsupportedOperationException();
+            }
+        };
     }
 }

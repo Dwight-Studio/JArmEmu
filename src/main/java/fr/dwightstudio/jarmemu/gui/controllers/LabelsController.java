@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.SymbolView;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -120,8 +121,8 @@ public class LabelsController extends AbstractJArmEmuModule {
     public void attach(StateContainer stateContainer) {
         views.clear();
         if (stateContainer != null) {
-            for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleLabels().entrySet()) {
-                views.add(new SymbolView(entry));
+            for (Map.Entry<String, FilePos> entry : stateContainer.getAllLabels().entries()) {
+                views.add(new SymbolView(entry, false));
             }
 
             Platform.runLater(() -> {

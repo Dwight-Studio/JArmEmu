@@ -44,87 +44,86 @@ import java.util.function.IntFunction;
 public class JArmEmuLineFactory implements IntFunction<Node> {
 
     private final JArmEmuApplication application;
-
-    private final HashMap<Integer, GridPane> cache;
     private final HashMap<Integer, LineManager> managers;
+    private LineManager lastScheduled;
+    private LineManager lastExecuted;
     private final FileEditor fileEditor;
 
     public JArmEmuLineFactory(JArmEmuApplication application, FileEditor fileEditor) {
         this.application = application;
-        this.cache = new HashMap<>();
         this.managers = new HashMap<>();
         this.fileEditor = fileEditor;
     }
 
+    /**
+     * Récupère une marge de ligne (dans le cache, ou fraiche).
+     *
+     * @param line le numéro de ligne
+     * @return une marge de ligne
+     */
     @Override
     public Node apply(int line) {
-        Node rtn = cache.get(line);
-
-        if (rtn == null) {
-            rtn = generate(line);
+        if (managers.containsKey(line)) {
+            return managers.get(line).getNode();
         } else {
-            rtn = rtn.getParent();
+            LineManager manager = new LineManager(line);
+            return manager.getNode();
         }
-
-        return rtn;
     }
 
     /**
-     * Génère une ligne et la stocke dans le cache.
+     * Marque une ligne.
      *
-     * @param line
-     * @return
+     * @param line le numéro de la ligne
+     * @param lineStatus le status de la ligne
      */
-    public HBox generate(int line) {
-        GridPane grid = new GridPane();
-
-        grid.getStyleClass().add("none");
-        grid.setMaxWidth(80);
-        grid.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
-        grid.setMinWidth(80);
-        grid.setHgap(0);
-        grid.setVgap(0);
-        grid.setAlignment(Pos.CENTER_RIGHT);
-        grid.getColumnConstraints().addAll(new ColumnConstraints(40), new ColumnConstraints(40));
-
-        grid.setPadding(new Insets(0, 5, 0, 0));
-
-        Text lineNo = new Text();
-        Text linePos = new Text();
-
-
-        LineManager property = new LineManager(line, lineNo, linePos);
-
-        lineNo.getStyleClass().add("lineno");
-        lineNo.setText(String.format("%4d", line));
-        lineNo.setTextAlignment(TextAlignment.RIGHT);
-
-
-        linePos.getStyleClass().add("breakpoint");
-        linePos.setTextAlignment(TextAlignment.RIGHT);
-
-        managers.put(line, property);
-
-        grid.add(lineNo, 0, 0);
-        grid.add(linePos, 1, 0);
-
-        HBox rtn = new HBox(grid);
-        HBox.setMargin(grid, new Insets(0, 5, 0, 0));
-
-        cache.put(line, grid);
-        return rtn;
+    public void markLine(int line, LineStatus lineStatus) {
+        if (managers.containsKey(line)) {
+            LineManager manager = managers.get(line);
+            manager.markLine(lineStatus);
+            if (lineStatus != LineStatus.NONE) lastScheduled = manager;
+        }
     }
 
-    public void markLine(int line, LineStatus lineStatus) {
-        if (cache.containsKey(line)) {
-            GridPane grid = cache.get(line);
-            grid.getStyleClass().clear();
-            switch (lineStatus) {
-                case EXECUTED -> grid.getStyleClass().add("executed");
-                case SCHEDULED -> grid.getStyleClass().add("scheduled");
-                case NONE -> grid.getStyleClass().add("none");
-            }
+    /**
+     * Nettoie le marquage.
+     */
+    public void clearMarkings() {
+        managers.values().forEach(lineManager -> lineManager.markLine(LineStatus.NONE));
+    }
+
+    /**
+     * Marque comme executé la dernière ligne prévue tout en nettoyant l'ancienne ligne exécutée.
+     */
+    public void markExecuted() {
+        if (lastScheduled != null) lastScheduled.markLine(LineStatus.EXECUTED);
+
+        if (lastExecuted != null) lastExecuted.markLine(LineStatus.NONE);
+        lastExecuted = lastScheduled;
+    }
+
+    /**
+     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévue.
+     *
+     * @param line le numéro de la ligne
+     */
+    public void markForward(int line) {
+        if (managers.containsKey(line)) {
+            LineManager manager = managers.get(line);
+            manager.markLine(LineStatus.SCHEDULED);
+
+            markExecuted();
+            lastScheduled = manager;
         }
+    }
+
+    /**
+     * Nettoie la dernière ligne marquée comme exécutée.
+     *
+     * @apiNote Utile lors du changement d'éditeur
+     */
+    public void clearLastExecuted() {
+        if (lastExecuted != null) lastExecuted.markLine(LineStatus.NONE);
     }
 
     /**
@@ -137,7 +136,11 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         return managers.get(line).hasBreakpoint();
     }
 
-    public void pregenAll(int lineNum) {
+    /**
+     * Pré-génère des lignes pour améliorer les performances.
+     * @param lineNum le numéro de la dernière ligne (exclusif)
+     */
+    public void pregen(int lineNum) {
         for (int i = 0; i < lineNum; i++) {
             apply(i);
         }
@@ -148,15 +151,47 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         private final int line;
         private final Text lineNo;
         private final Text linePos;
+        private final GridPane grid;
+        private final HBox hBox;
         private boolean breakpoint;
         private boolean show;
+        private LineStatus status;
 
-        public LineManager(int line, Text lineNo, Text linePos) {
+        public LineManager(int line) {
             this.line = line;
-            this.lineNo = lineNo;
-            this.linePos = linePos;
             breakpoint = false;
             show = false;
+            status = LineStatus.NONE;
+
+            grid = new GridPane();
+
+            grid.getStyleClass().add("none");
+            grid.setMaxWidth(80);
+            grid.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
+            grid.setMinWidth(80);
+            grid.setHgap(0);
+            grid.setVgap(0);
+            grid.setAlignment(Pos.CENTER_RIGHT);
+            grid.getColumnConstraints().addAll(new ColumnConstraints(40), new ColumnConstraints(40));
+
+            grid.setPadding(new Insets(0, 5, 0, 0));
+
+            lineNo = new Text();
+            linePos = new Text();
+
+            lineNo.getStyleClass().add("lineno");
+            lineNo.setText(String.format("%4d", line));
+            lineNo.setTextAlignment(TextAlignment.RIGHT);
+
+
+            linePos.getStyleClass().add("breakpoint");
+            linePos.setTextAlignment(TextAlignment.RIGHT);
+
+            grid.add(lineNo, 0, 0);
+            grid.add(linePos, 1, 0);
+
+            hBox = new HBox(grid);
+            HBox.setMargin(grid, new Insets(0, 5, 0, 0));
 
             application.status.addListener((obs, oldVal, newVal) -> {
                 show = (newVal == Status.SIMULATING);
@@ -169,7 +204,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
             lineNo.setOnMouseEntered(event -> {
 
                 if (!breakpoint) {
-                    lineNo.setText("   ⬤");
+                    lineNo.setText("  ⬤ ");
                     lineNo.getStyleClass().clear();
                     lineNo.getStyleClass().add("lineno-over");
                 }
@@ -182,11 +217,36 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                     lineNo.getStyleClass().add("lineno");
                 }
             });
+
+            managers.put(line, this);
         }
 
         public void toggle() {
             breakpoint = !breakpoint;
             update();
+        }
+
+        public void markLine(LineStatus status) {
+            if (status != this.status) {
+
+                this.status = status;
+                if (status == LineStatus.EXECUTED) lastScheduled = this;
+
+                grid.getStyleClass().clear();
+                switch (status) {
+                    case EXECUTED -> grid.getStyleClass().add("executed");
+                    case SCHEDULED -> grid.getStyleClass().add("scheduled");
+                    case NONE -> grid.getStyleClass().add("none");
+                }
+            }
+        }
+
+        public Node getNode() {
+            return hBox;
+        }
+
+        public LineStatus getStatus() {
+            return status;
         }
 
         public boolean hasBreakpoint() {
@@ -213,7 +273,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
 
             if (breakpoint) {
-                lineNo.setText("   ⬤");
+                lineNo.setText("  ⬤ ");
                 lineNo.getStyleClass().clear();
                 lineNo.getStyleClass().add("breakpoint");
             } else {

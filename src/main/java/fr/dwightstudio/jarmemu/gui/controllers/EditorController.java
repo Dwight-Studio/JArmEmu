@@ -27,7 +27,6 @@ import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
@@ -50,6 +49,8 @@ public class EditorController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final ArrayList<FileEditor> fileEditors;
+    private FileEditor lastScheduledEditor;
+    private FileEditor lastExecutedEditor;
 
     public EditorController(JArmEmuApplication application) {
         super(application);
@@ -171,22 +172,33 @@ public class EditorController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Nettoie tous les marquages.
+     * Nettoie tous les marquages de ligne.
      */
     public void clearAllLineMarkings() {
         for (FileEditor editor : fileEditors) {
-            editor.clearLineMarking();
+            editor.clearLineMarkings();
         }
     }
 
     /**
-     * Marque une ligne en utilisant le numéro de ligne des fichiers concaténés.
+     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévu.
      *
      * @param pos la ligne à marquer
-     * @param lineStatus le status de marquage
      */
-    public void markLine(FilePos pos, LineStatus lineStatus) {
-        fileEditors.get(pos.getFileIndex()).markLine(pos.getPos(), lineStatus);
+    public void markForward(FilePos pos) {
+        FileEditor fileEditor = fileEditors.get(pos.getFileIndex());
+        fileEditor.markForward(pos.getPos());
+
+        if (lastExecutedEditor != null && !lastExecutedEditor.isClosed() && lastExecutedEditor != fileEditor)
+            lastExecutedEditor.clearLastExecuted();
+
+        if (lastScheduledEditor != null && !lastScheduledEditor.isClosed() && lastScheduledEditor != fileEditor) {
+            lastScheduledEditor.markExecuted();
+
+            lastExecutedEditor = lastScheduledEditor;
+        }
+        lastScheduledEditor = fileEditor;
+
         getController().filesTabPane.getSelectionModel().select(pos.getFileIndex());
     }
 

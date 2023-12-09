@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.sim;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -38,7 +37,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class ExecutionWorker extends AbstractJArmEmuModule {
-    public static final int UPDATE_THRESHOLD = 50;
+    public static final int UPDATE_THRESHOLD = 5;
 
     private static final int ERROR = -1;
     private static final int IDLE = 0;
@@ -181,7 +180,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private static class ExecutionThead extends Thread {
 
-        private static final int FALLBACK_UPDATE_INTERVAL = 100;
+        private static final int FALLBACK_UPDATE_INTERVAL = 25;
         private final Logger logger = Logger.getLogger(getClass().getName());
 
         private final JArmEmuApplication application;
@@ -427,11 +426,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
                 if (next != null && !line.equals(next) || line != null && next != null) {
-                    if (isIntervalTooShort()) Platform.runLater(() -> application.getEditorController().clearAllLineMarkings());
                     Platform.runLater(() -> {
-                        if (last != null) application.getEditorController().markLine(last, LineStatus.NONE);
-                        application.getEditorController().markLine(line, LineStatus.EXECUTED);
-                        application.getEditorController().markLine(next, LineStatus.SCHEDULED);
+                        if (isIntervalTooShort()) {
+                            application.getEditorController().clearAllLineMarkings();
+                        }
+                        application.getEditorController().markForward(next);
                     });
                 }
             }

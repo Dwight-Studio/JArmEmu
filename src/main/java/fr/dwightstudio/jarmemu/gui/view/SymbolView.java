@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.view;
 
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;
@@ -33,6 +34,11 @@ import java.util.Map;
 public class SymbolView {
     private final ReadOnlyStringWrapper name;
     private final ReadOnlyIntegerWrapper value;
+
+    public SymbolView(Map.Entry<String, FilePos> label, boolean useFile) {
+        this.name = new ReadOnlyStringWrapper(label.getKey());
+        this.value = new ReadOnlyIntegerWrapper(useFile ? label.getValue().getFileIndex() : label.getValue().getPos());
+    }
 
     public SymbolView(Map.Entry<String, Integer> symbol) {
         this.name = new ReadOnlyStringWrapper(symbol.getKey());

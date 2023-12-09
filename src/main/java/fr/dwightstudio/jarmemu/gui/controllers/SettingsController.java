@@ -114,7 +114,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // Gestion des spinners
-        simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.UPDATE_THRESHOLD, 50);
+        simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.UPDATE_THRESHOLD, ExecutionWorker.UPDATE_THRESHOLD);
         stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
         symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
 
@@ -267,7 +267,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     private void setSimulationInterval(int nb) {
         if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
-            getDialogs().warningAlert("Setting the simulation interval below 50ms disables systematic GUI update to prevent glitches with the front-end. You may see steps being skipped (this is just visual, the back-end is still running as usual).");
+            getDialogs().warningAlert("Setting the simulation interval below " + ExecutionWorker.UPDATE_THRESHOLD + "ms disables systematic GUI update to prevent glitches with the front-end. You may see steps being skipped (this is just visual, the back-end is still running as usual).");
         }
         preferences.putInt(SIMULATION_INTERVAL_KEY, nb);
     }

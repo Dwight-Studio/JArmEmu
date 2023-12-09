@@ -32,7 +32,6 @@ import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -216,29 +215,40 @@ public class FileEditor extends AbstractJArmEmuModule {
     }
 
     /**
-     * Marque une ligne comme étant éxécuté ou prévue
+     * Nettoie le marquage des lignes.
+     */
+    public void clearLineMarkings() {
+        this.lineFactory.clearMarkings();
+    }
+
+    /**
+     * Marque comme executé la dernière ligne prévue tout en nettoyant l'ancienne ligne exécutée.
+     */
+    public void markExecuted() {
+        this.lineFactory.markExecuted();
+    }
+
+    /**
+     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévue.
      *
      * @param line le numéro de la ligne
-     * @param status le nouveau statut
      */
-    public void markLine(int line, LineStatus status) {
+    public void markForward(int line) {
         if (line >= 0) {
-            if (status == LineStatus.SCHEDULED) {
-                codeArea.moveTo(line, 0);
-                codeArea.requestFollowCaret();
-            }
+            codeArea.moveTo(line, 0);
+            codeArea.requestFollowCaret();
 
-            this.lineFactory.markLine(line, status == null ? LineStatus.NONE : status);
+            this.lineFactory.markForward(line);
         }
     }
 
     /**
-     * Supprime le marquage des lignes
+     * Nettoie la dernière ligne marquée comme exécutée.
+     *
+     * @apiNote Utile lors du changement d'éditeur
      */
-    public void clearLineMarking() {
-        for (int i = 0; i < codeArea.getParagraphs().size() ; i++) {
-            this.lineFactory.markLine(i, LineStatus.NONE);
-        }
+    public void clearLastExecuted() {
+        this.lineFactory.clearLastExecuted();
     }
 
     /**
@@ -262,8 +272,8 @@ public class FileEditor extends AbstractJArmEmuModule {
     public void prepareSimulation() {
         int lineNum = codeArea.getParagraphs().size();
         logger.info("Pre-generate " + lineNum + " lines");
-        lineFactory.pregenAll(codeArea.getParagraphs().size());
-        Platform.runLater(this::clearLineMarking);
+        lineFactory.pregen(codeArea.getParagraphs().size());
+        Platform.runLater(this::clearLineMarkings);
     }
 
     /**
