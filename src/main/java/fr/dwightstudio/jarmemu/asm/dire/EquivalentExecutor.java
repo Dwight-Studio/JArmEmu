@@ -47,9 +47,9 @@ public class EquivalentExecutor implements DirectiveExecutor {
             if (!symbol.matches("[A-Za-z_0-9]+")) {
                 throw new SyntaxASMException("Invalid symbol name '" + symbol + "'");
             } else {
-                int val = stateContainer.evalWithConsts(arg[1]);
+                int val = stateContainer.evalWithAccessibleConsts(arg[1]);
 
-                stateContainer.getConsts().put(symbol, val);
+                stateContainer.getAccessibleConsts().put(symbol, val);
             }
         } else {
             throw new SyntaxASMException("Invalid arguments '" + args + "' for Equivalent directive");

@@ -32,6 +32,7 @@ import org.apache.commons.collections4.MultiValuedMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class StateContainer {
@@ -51,8 +52,8 @@ public class StateContainer {
     );
 
     // ASM
-    private final HashMap<String, Integer> consts; // Nom -> Constantes
-    private final HashMap<String, Integer> data; // Nom -> Données ajoutées dans la mémoire par directive
+    private final ArrayList<HashMap<String, Integer>> consts; // Indice de fichier -> Nom -> Constantes
+    private final ArrayList<HashMap<String, Integer>> data; // Indice de fichier -> Nom -> Données ajoutées dans la mémoire par directive
     private final HashMap<String, Integer> pseudoData; // Code -> Données ajoutées dans la mémoire par pseudo-op
     private final ArrayList<HashMap<String, Integer>> labels; // Indice de fichier -> Label -> Position dans la mémoire
     private final HashMap<String, Integer> globals; // Symbols globaux -> Indice de fichier
@@ -77,8 +78,8 @@ public class StateContainer {
 
         // ASM
         labels = new ArrayList<>();
-        consts = new HashMap<>();
-        data = new HashMap<>();
+        consts = new ArrayList<>();
+        data = new ArrayList<>();
         pseudoData = new HashMap<>();
         globals = new HashMap<>();
         nestingCount = 0;
@@ -91,7 +92,7 @@ public class StateContainer {
 
         this.registers = new Register[REGISTER_NUMBER];
         clearRegisters();
-        clearLabels(1);
+        clearAndInitFiles(1);
 
         // Initializing memory
         this.memory = new MemoryAccessor();
@@ -104,12 +105,13 @@ public class StateContainer {
     public StateContainer(StateContainer stateContainer) {
         this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
 
-        this.labels.clear();
+        clearAndInitFiles(0);
 
-        this.consts.putAll(stateContainer.consts);
-        this.data.putAll(stateContainer.data);
+        stateContainer.consts.forEach(map -> this.consts.add(new HashMap<>(map)));
+        stateContainer.labels.forEach(map -> this.labels.add(new HashMap<>(map)));
+        stateContainer.data.forEach(map -> this.data.add(new HashMap<>(map)));
+
         this.pseudoData.putAll(stateContainer.pseudoData);
-        this.labels.addAll(stateContainer.labels);
         this.globals.putAll(stateContainer.globals);
         this.currentfileIndex = stateContainer.currentfileIndex;
 
@@ -138,12 +140,16 @@ public class StateContainer {
         spsr.setData(0);
     }
 
-    public int evalWithConsts(String expString) {
+    public int evalWithAccessibleConsts(String expString) {
         try {
-            Expression exp = new ExpressionBuilder(preEval(expString)).variables(consts.keySet()).build();
+            ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
 
-            for (String str : consts.keySet()) {
-                exp.setVariable(str, (double) consts.get(str));
+            consts.forEach(map -> builder.variables(map.keySet()));
+
+            Expression exp = builder.build();
+
+            for (Map.Entry<String, Integer> entry : consts.get(currentfileIndex).entrySet()) {
+                exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
             return (int) exp.evaluate();
@@ -154,13 +160,44 @@ public class StateContainer {
 
     public int evalWithAll(String expString) {
         try {
-            Expression exp = new ExpressionBuilder(preEval(expString)).variables(consts.keySet()).variables(data.keySet()).build();
+            ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
 
-            for (String str : consts.keySet()) {
-                exp.setVariable(str, (double) consts.get(str));
+            consts.forEach(map -> builder.variables(map.keySet()));
+            data.forEach(map -> builder.variables(map.keySet()));
+
+            Expression exp = builder.build();
+
+            for (int i = 0 ; i < consts.size() ; i++) {
+                for (Map.Entry<String, Integer> entry : consts.get(i).entrySet()) {
+                    exp.setVariable(entry.getKey(), (double) entry.getValue());
+                }
+
+                for (Map.Entry<String, Integer> entry : data.get(i).entrySet()) {
+                    exp.setVariable(entry.getKey(), (double) entry.getValue());
+                }
             }
-            for (String str : data.keySet()) {
-                exp.setVariable(str, (double) data.get(str));
+
+            return (int) Math.floor(exp.evaluate());
+        } catch (IllegalArgumentException exception) {
+            throw new SyntaxASMException("Malformed math expression '" + expString + "' (" + exception.getMessage() + ")");
+        }
+    }
+
+    public int evalWithAccessible(String expString) {
+        try {
+            ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
+
+            consts.forEach(map -> builder.variables(map.keySet()));
+            data.forEach(map -> builder.variables(map.keySet()));
+
+            Expression exp = builder.build();
+
+            for (Map.Entry<String, Integer> entry : consts.get(currentfileIndex).entrySet()) {
+                exp.setVariable(entry.getKey(), (double) entry.getValue());
+            }
+
+            for (Map.Entry<String, Integer> entry : data.get(currentfileIndex).entrySet()) {
+                exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
             return (int) Math.floor(exp.evaluate());
@@ -289,12 +326,12 @@ public class StateContainer {
         this.lastAddressROData = lastAddressROData;
     }
 
-    public HashMap<String, Integer> getConsts() {
-        return consts;
+    public HashMap<String, Integer> getAccessibleConsts() {
+        return consts.get(currentfileIndex);
     }
 
-    public HashMap<String, Integer> getData() {
-        return data;
+    public HashMap<String, Integer> getAccessibleData() {
+        return data.get(currentfileIndex);
     }
 
     public HashMap<String, Integer> getPseudoData() {
@@ -313,11 +350,15 @@ public class StateContainer {
         return new AllLabelsMap(labels);
     }
 
-    public void clearLabels(int size) {
+    public void clearAndInitFiles(int size) {
         labels.clear();
+        consts.clear();
+        data.clear();
 
         for (int i = 0 ; i < size ; i++) {
             labels.add(new HashMap<>());
+            consts.add(new HashMap<>());
+            data.add(new HashMap<>());
         }
     }
 

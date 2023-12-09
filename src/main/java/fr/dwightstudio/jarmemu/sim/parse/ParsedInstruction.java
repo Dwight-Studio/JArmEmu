@@ -208,7 +208,7 @@ public class ParsedInstruction extends ParsedObject {
         for (int i = 0; i < originalArgs.length; i++) {
             if (originalArgs[i] != null) {
                 processedArgs[i] = PSEUDO_OP_PATTERN.matcher(originalArgs[i]).replaceAll(matchResult -> {
-                    int value = stateContainer.evalWithAll(matchResult.group("VALUE"));
+                    int value = stateContainer.evalWithAccessible(matchResult.group("VALUE"));
                     ParsedDirective dir = new ParsedDirective(Directive.WORD, Integer.toString(value), Section.RODATA);
                     String hash = RandomStringUtils.randomAlphabetic(10).toUpperCase();
                     dir.setGenerated(hash.strip());

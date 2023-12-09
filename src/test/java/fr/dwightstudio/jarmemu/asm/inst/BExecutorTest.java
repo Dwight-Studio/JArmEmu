@@ -25,7 +25,6 @@ package fr.dwightstudio.jarmemu.asm.inst;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.LabelParser;
@@ -43,7 +42,7 @@ public class BExecutorTest extends JArmEmuTest {
     @BeforeEach
     public void setUp() {
         stateContainer = new StateContainer();
-        stateContainer.clearLabels(1);
+        stateContainer.clearAndInitFiles(1);
         bExecutor = new BExecutor();
     }
 

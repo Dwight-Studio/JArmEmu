@@ -25,7 +25,6 @@ package fr.dwightstudio.jarmemu.sim.parse.args;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ public class LabelParserTest extends JArmEmuTest {
     @BeforeEach
     public void setUp() {
         stateContainer = new StateContainer();
-        stateContainer.clearLabels(1);
+        stateContainer.clearAndInitFiles(1);
     }
 
     @Test

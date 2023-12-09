@@ -36,7 +36,7 @@ public class ImmParser implements ArgumentParser<Integer> {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1).strip();
 
-                int rtn = stateContainer.evalWithConsts(valueString);
+                int rtn = stateContainer.evalWithAccessibleConsts(valueString);
 
 
 

@@ -42,7 +42,7 @@ public class SpaceExecutor implements DirectiveExecutor {
         // Rien à faire, on veut juste laisser de la place
 
         try {
-            stateContainer.evalWithAll(args);
+            stateContainer.evalWithAccessible(args);
         } catch (Exception e) {
             throw new SyntaxASMException("Invalid argument '" + args + "'");
         }
@@ -59,7 +59,7 @@ public class SpaceExecutor implements DirectiveExecutor {
     @Override
     public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         try {
-            currentPos.incrementPos(stateContainer.evalWithConsts(args));
+            currentPos.incrementPos(stateContainer.evalWithAccessibleConsts(args));
         } catch (Exception ignored) {}
     }
 }

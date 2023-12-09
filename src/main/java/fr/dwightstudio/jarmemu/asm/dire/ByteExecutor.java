@@ -52,7 +52,7 @@ public class ByteExecutor implements DirectiveExecutor {
             FilePos tempPos = currentPos.clone();
 
             for (String string : arg) {
-                int data = stateContainer.evalWithAll(string.strip());
+                int data = stateContainer.evalWithAccessible(string.strip());
                 if (Integer.numberOfLeadingZeros(data) >= 24) {
                     byte half = (byte) data;
                     stateContainer.getMemory().putByte(tempPos.getPos(), half);

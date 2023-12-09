@@ -122,11 +122,11 @@ public class SymbolsController extends AbstractJArmEmuModule {
         views.clear();
         if (stateContainer != null) {
 
-            for (Map.Entry<String, Integer> entry : stateContainer.getData().entrySet()) {
+            for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleData().entrySet()) {
                 views.add(new SymbolView(entry));
             }
 
-            for (Map.Entry<String, Integer> entry : stateContainer.getConsts().entrySet()) {
+            for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleConsts().entrySet()) {
                 views.add(new SymbolView(entry));
             }
 

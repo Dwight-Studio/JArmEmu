@@ -39,7 +39,7 @@ public class AlignExecutor implements DirectiveExecutor {
     @Override
     public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         if (!args.isEmpty()) {
-            stateContainer.evalWithConsts(args);
+            stateContainer.evalWithAccessibleConsts(args);
         }
     }
 
@@ -55,7 +55,7 @@ public class AlignExecutor implements DirectiveExecutor {
     public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         int d = 4;
         if (!args.isEmpty()) {
-            d = stateContainer.evalWithConsts(args);
+            d = stateContainer.evalWithAccessibleConsts(args);
         }
         currentPos.incrementPos((d - (currentPos.getPos() % d)) % d);
     }

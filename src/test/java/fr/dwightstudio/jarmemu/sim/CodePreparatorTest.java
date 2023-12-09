@@ -48,7 +48,7 @@ public class CodePreparatorTest {
         codePreparator = new CodePreparator(0, 0);
         parsedFile = new ParsedFile(new SourceScanner("", "Test.s", 0));
         stateContainer = new StateContainer();
-        stateContainer.clearLabels(1);
+        stateContainer.clearAndInitFiles(1);
         instr = new HashMap<>();
     }
 

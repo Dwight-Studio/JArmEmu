@@ -52,7 +52,7 @@ public class ParsedDirectiveLabel extends ParsedObject {
     public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer container = stateSupplier.get();
 
-        if (container.getData().get(this.name) == null) {
+        if (container.getAccessibleData().get(this.name) == null) {
             throw new IllegalStateException("Unable to verify directive label (incorrectly registered in the StateContainer)");
         }
 
@@ -66,7 +66,7 @@ public class ParsedDirectiveLabel extends ParsedObject {
      * @param currentPos la position actuelle dans la mémoire
      */
     public void register(StateContainer stateContainer, int currentPos) {
-        stateContainer.getData().put(name.strip().toUpperCase(), currentPos + stateContainer.getSymbolsAddress());
+        stateContainer.getAccessibleData().put(name.strip().toUpperCase(), currentPos + stateContainer.getSymbolsAddress());
     }
 
     @Override

@@ -51,7 +51,7 @@ public class HalfExecutor implements DirectiveExecutor {
             FilePos tempPos = currentPos.clone();
 
             for (String string : arg) {
-                int data = stateContainer.evalWithAll(string.strip());
+                int data = stateContainer.evalWithAccessible(string.strip());
                 if (Integer.numberOfLeadingZeros(data) >= 16) {
                     short half = (short) data;
                     stateContainer.getMemory().putHalf(tempPos.getPos(), half);

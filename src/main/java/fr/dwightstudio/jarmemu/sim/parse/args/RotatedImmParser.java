@@ -35,7 +35,7 @@ public class RotatedImmParser implements ArgumentParser<Integer> {
         try {
             if (string.startsWith("#")) {
                 String valueString = string.substring(1).strip();
-                int value = stateContainer.evalWithConsts(valueString);
+                int value = stateContainer.evalWithAccessibleConsts(valueString);
                 checkOverflow(value, string);
                 return value;
 

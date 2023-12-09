@@ -38,7 +38,7 @@ public class CodeParser implements ArgumentParser<Integer> {
      */
     @Override
     public Integer parse(@NotNull StateContainer stateContainer, @NotNull String string) {
-        return stateContainer.evalWithConsts(string);
+        return stateContainer.evalWithAccessibleConsts(string);
     }
 
     /**

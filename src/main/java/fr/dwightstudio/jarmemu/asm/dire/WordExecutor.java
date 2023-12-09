@@ -51,7 +51,7 @@ public class WordExecutor implements DirectiveExecutor {
             FilePos tempPos = currentPos.clone();
 
             for (String string : arg) {
-                int data = stateContainer.evalWithAll(string.strip());
+                int data = stateContainer.evalWithAccessible(string.strip());
                 stateContainer.getMemory().putWord(tempPos.getPos(), data);
                 tempPos.incrementPos(4);
             }

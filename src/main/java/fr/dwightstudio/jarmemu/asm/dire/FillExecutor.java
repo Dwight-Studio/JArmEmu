@@ -49,9 +49,9 @@ public class FillExecutor implements DirectiveExecutor {
             case 2 -> apply(stateContainer, args + ", 1", currentPos, section);
 
             case 3 -> {
-                int totalNum = stateContainer.evalWithConsts(arg[0]);
-                int value = stateContainer.evalWithConsts(arg[1]);
-                int valueSize = stateContainer.evalWithConsts(arg[2]);
+                int totalNum = stateContainer.evalWithAccessibleConsts(arg[0]);
+                int value = stateContainer.evalWithAccessibleConsts(arg[1]);
+                int valueSize = stateContainer.evalWithAccessibleConsts(arg[2]);
 
                 if (!section.allowDataInitialisation() && value != 0) {
                     throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
@@ -99,6 +99,6 @@ public class FillExecutor implements DirectiveExecutor {
     @Override
     public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
         String[] arg = args.split(",");
-        currentPos.incrementPos(stateContainer.evalWithConsts(arg[0]));
+        currentPos.incrementPos(stateContainer.evalWithAccessibleConsts(arg[0]));
     }
 }

@@ -169,6 +169,8 @@ public class CodePreparator {
     public StateContainer processState() {
         StateContainer stateContainer = new StateContainer(stackAddress, symbolsAddress);
 
+        stateContainer.clearAndInitFiles(parsedFiles.size());
+
         replaceMovShifts(stateContainer);
         applyDirectives(stateContainer);
         registerLabels(stateContainer);
@@ -375,9 +377,6 @@ public class CodePreparator {
      * Enregistre les labels dans le conteneur d'états
      */
     public void registerLabels(StateContainer stateContainer) {
-
-        stateContainer.clearLabels(parsedFiles.size());
-
         FilePos lastInstruction = new FilePos(0,0);
 
         for (ParsedFile file : parsedFiles) {
