@@ -606,30 +606,32 @@
                                                                                             vgrow="SOMETIMES"/>
                                                                                     <RowConstraints
                                                                                             vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
-                                                                                    <RowConstraints
-                                                                                            vgrow="SOMETIMES"/>
                                                                                 </rowConstraints>
                                                                                 <children>
                                                                                     <Text text="Follow SP in stack"
                                                                                           GridPane.halignment="LEFT"
-                                                                                          GridPane.valignment="CENTER"/>
+                                                                                          GridPane.valignment="CENTER"
+                                                                                          GridPane.columnIndex="0"
+                                                                                          GridPane.rowIndex="0"/>
                                                                                     <ToggleSwitch
                                                                                             fx:id="followSPSwitch"
                                                                                             alignment="CENTER_RIGHT"
                                                                                             selected="true"
                                                                                             GridPane.columnIndex="1"
+                                                                                            GridPane.rowIndex="0"
+                                                                                            GridPane.halignment="RIGHT"
+                                                                                            GridPane.valignment="CENTER"/>
+                                                                                    <Text text="Highlight updates"
+                                                                                          GridPane.halignment="LEFT"
+                                                                                          GridPane.valignment="CENTER"
+                                                                                          GridPane.columnIndex="0"
+                                                                                          GridPane.rowIndex="1"/>
+                                                                                    <ToggleSwitch
+                                                                                            fx:id="updateSwitch"
+                                                                                            alignment="CENTER_RIGHT"
+                                                                                            selected="true"
+                                                                                            GridPane.columnIndex="1"
+                                                                                            GridPane.rowIndex="1"
                                                                                             GridPane.halignment="RIGHT"
                                                                                             GridPane.valignment="CENTER"/>
                                                                                 </children>

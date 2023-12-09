@@ -62,6 +62,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final int DEFAULT_THEME_FAMILY = 0;
     public static final int DEFAULT_THEME_VARIATION = 0;
     public static final boolean DEFAULT_FOLLOW_SP = true;
+    public static final boolean DEFAULT_HIGHTLIGHT_UPDATES = true;
 
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
@@ -80,6 +81,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
     public static final String DATA_FORMAT_KEY = "dataFormat";
     public static final String FOLLOW_SP_KEY = "followSP";
+    public static final String HIGHLIGHT_UPDATES_KEY = "highlightUpdates";
 
     public static final String THEME_FAMILY_KEY = "themeFamily";
     public static final String THEME_VARIATION_KEY = "theme";
@@ -147,6 +149,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreakSetting(newVal));
         getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreakSetting(newVal));
         getController().followSPSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFollowSPSetting(newVal));
+        getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHightlightUpdatesSetting(newVal));
 
         // Gestion des ChoiceBoxes
         getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
@@ -205,6 +208,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreakSetting());
         getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreakSetting());
         getController().followSPSwitch.setSelected(getFollowSPSetting());
+        getController().updateSwitch.setSelected(getHighlightUpdatesSetting());
 
         // ChoiceBoxes
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
@@ -394,5 +398,13 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setFollowSPSetting(boolean b) {
         preferences.putBoolean(FOLLOW_SP_KEY, b);
+    }
+
+    public boolean getHighlightUpdatesSetting() {
+        return preferences.getBoolean(HIGHLIGHT_UPDATES_KEY, DEFAULT_HIGHTLIGHT_UPDATES);
+    }
+
+    public void setHightlightUpdatesSetting(boolean b) {
+        preferences.putBoolean(HIGHLIGHT_UPDATES_KEY, b);
     }
 }

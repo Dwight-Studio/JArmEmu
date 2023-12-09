@@ -84,6 +84,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected ToggleSwitch functionNestingBreakSwitch;
     @FXML protected ToggleSwitch readOnlyWritingBreakSwitch;
     @FXML protected ToggleSwitch followSPSwitch;
+    @FXML protected ToggleSwitch updateSwitch;
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
     @FXML protected ChoiceBox<String> settingsFormat;

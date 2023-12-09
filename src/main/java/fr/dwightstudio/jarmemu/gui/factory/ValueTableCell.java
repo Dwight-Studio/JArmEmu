@@ -68,7 +68,6 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         this.application = application;
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
-        last = 0;
     }
 
     private ValueTableCell(JArmEmuApplication application, StringConverter<Number> converter) {
@@ -76,14 +75,18 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         this.application = application;
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
-        last = 0;
     }
 
     @Override
     public void updateItem(Number number, boolean empty) {
         super.updateItem(number, empty);
 
-        if (application.status.get() == Status.SIMULATING && !empty && !Objects.equals(number, last)) {
+        if (
+                !empty
+                && !Objects.equals(number, last)
+                && application.status.get() == Status.SIMULATING
+                && application.getSettingsController().getHighlightUpdatesSetting()
+        ) {
             Platform.runLater(UPDATE_ANIMATION::stop);
             Platform.runLater(UPDATE_ANIMATION::play);
             last = number;
