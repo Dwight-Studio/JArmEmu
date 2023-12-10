@@ -72,7 +72,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
     private TableColumn<MemoryChunkView, Number> col4;
     private TableColumn<MemoryChunkView, Number> col5;
     private ObservableList<MemoryChunkView> views;
-    private TableView<MemoryChunkView> memoryTable;
+    protected TableView<MemoryChunkView> memoryTable;
     private int lastPageIndex;
     private boolean doSearchQuery;
     private int searchQuery;
@@ -178,7 +178,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
         memoryTable.setEditable(true);
         memoryTable.setMaxWidth(Double.POSITIVE_INFINITY);
 
-        getMainMenuController().registerMemoryOverviewColumns(memoryTable);
+        getMainMenuController().registerMemoryOverviewColumns();
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);

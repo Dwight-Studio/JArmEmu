@@ -187,16 +187,16 @@ public class StateContainer {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
 
-            consts.forEach(map -> builder.variables(map.keySet()));
-            data.forEach(map -> builder.variables(map.keySet()));
+            builder.variables(getAccessibleConsts().keySet());
+            builder.variables(getAccessibleData().keySet());
 
             Expression exp = builder.build();
 
-            for (Map.Entry<String, Integer> entry : consts.get(currentfileIndex).entrySet()) {
+            for (Map.Entry<String, Integer> entry : getAccessibleConsts().entrySet()) {
                 exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
-            for (Map.Entry<String, Integer> entry : data.get(currentfileIndex).entrySet()) {
+            for (Map.Entry<String, Integer> entry : getAccessibleData().entrySet()) {
                 exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
@@ -326,30 +326,67 @@ public class StateContainer {
         this.lastAddressROData = lastAddressROData;
     }
 
-    public HashMap<String, Integer> getAccessibleConsts() {
-        return consts.get(currentfileIndex);
+    /**
+     * @return les constantes accessibles dans le fichier actuel
+     */
+    public AccessibleValueMap getAccessibleConsts() {
+        return new AccessibleValueMap(consts, globals, currentfileIndex);
     }
 
-    public HashMap<String, Integer> getAccessibleData() {
+    /**
+     * @return les données accessibles dans le fichier actuel
+     */
+    public AccessibleValueMap getAccessibleData() {
+        return new AccessibleValueMap(data, globals, currentfileIndex);
+    }
+
+    /**
+     * @return les données définies dans le fichier actuel (exclusion des globals)
+     */
+    public HashMap<String, Integer> getRestrainedData() {
         return data.get(currentfileIndex);
     }
 
+    /**
+     * @return les pseudo données générées par directive (tous fichiers confondus)
+     */
     public HashMap<String, Integer> getPseudoData() {
         return pseudoData;
     }
 
+    /**
+     * @return les labels accessibles dans le fichier actuel
+     */
     public AccessibleValueMap getAccessibleLabels() {
         return new AccessibleValueMap(labels, globals, currentfileIndex);
     }
 
+    /**
+     * @return les labels définis dans le fichier actuel (exclusion des globals)
+     */
+    public HashMap<String, Integer> getRestrainedLabels() {
+        return labels.get(currentfileIndex);
+    }
+
+    /**
+     * @return les labels répartis dans les fichiers
+     */
     public ArrayList<HashMap<String, Integer>> getLabelsInFiles() {
         return labels;
     }
 
+    /**
+     * @return tous les labels (tous fichiers confondus)
+     */
     public MultiValuedMap<String, FilePos> getAllLabels() {
         return new AllLabelsMap(labels);
     }
 
+    /**
+     * Initialise les variables pour un nombre de fichiers spécifique.
+     *
+     * @param size le nombre de fichiers
+     */
     public void clearAndInitFiles(int size) {
         labels.clear();
         consts.clear();
@@ -362,10 +399,18 @@ public class StateContainer {
         }
     }
 
+    /**
+     * Modifie le fichier courant.
+     *
+     * @param i l'indice du fichier courant
+     */
     public void setFileIndex(int i) {
         currentfileIndex = i;
     }
 
+    /**
+     * @return l'indice du fichier courant
+     */
     public int getCurrentFileIndex() {
         return currentfileIndex;
     }

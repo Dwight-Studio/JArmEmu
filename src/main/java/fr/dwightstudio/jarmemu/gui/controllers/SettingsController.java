@@ -61,10 +61,12 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final boolean DEFAULT_READ_ONLY_WRITING_BREAK = true;
 
     public static final int DEFAULT_DATA_FORMAT = 0;
-    public static final int DEFAULT_THEME_FAMILY = 0;
-    public static final int DEFAULT_THEME_VARIATION = 0;
     public static final boolean DEFAULT_FOLLOW_SP = true;
     public static final boolean DEFAULT_HIGHTLIGHT_UPDATES = true;
+
+    public static final int DEFAULT_THEME_FAMILY = 0;
+    public static final int DEFAULT_THEME_VARIATION = 0;
+    public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
 
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
@@ -87,6 +89,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public static final String THEME_FAMILY_KEY = "themeFamily";
     public static final String THEME_VARIATION_KEY = "theme";
+    public static final String LAYOUT_KEY = "layout";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
@@ -215,6 +218,8 @@ public class SettingsController extends AbstractJArmEmuModule {
         // ChoiceBoxes
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
         getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
+
+        getController().applyLayout(getLayoutSetting());
     }
 
     /**
@@ -233,14 +238,15 @@ public class SettingsController extends AbstractJArmEmuModule {
         setProgramAlignBreakSetting(DEFAULT_PROGRAM_ALIGN_BREAK);
         setFunctionNestingBreakSetting(DEFAULT_FUNCTION_NESTING_BREAK);
         setReadOnlyWritingBreakSetting(DEFAULT_READ_ONLY_WRITING_BREAK);
-        setFollowSPSetting(DEFAULT_FOLLOW_SP);
 
         setStackAddress(StateContainer.DEFAULT_STACK_ADDRESS);
         setSymbolsAddress(StateContainer.DEFAULT_SYMBOLS_ADDRESS);
         setDataFormat(DEFAULT_DATA_FORMAT);
+        setFollowSPSetting(DEFAULT_FOLLOW_SP);
 
         setThemeFamily(DEFAULT_THEME_FAMILY);
         setThemeVariation(DEFAULT_THEME_VARIATION);
+        setLayoutSetting(DEFAULT_LAYOUT);
     }
 
     /**
@@ -408,5 +414,13 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setHightlightUpdatesSetting(boolean b) {
         preferences.putBoolean(HIGHLIGHT_UPDATES_KEY, b);
+    }
+
+    public String getLayoutSetting() {
+        return preferences.get(LAYOUT_KEY, DEFAULT_LAYOUT);
+    }
+
+    public void setLayoutSetting(String s) {
+        preferences.put(LAYOUT_KEY, s);
     }
 }

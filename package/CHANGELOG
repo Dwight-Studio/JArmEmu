@@ -1,5 +1,8 @@
 0.1.7 -> 0.1.8
 
+- Added layout preferences saving
+- Fixed label verifying process
+- Fixed global accessibility
 - Fixed exception throwing when launching non-saved file
 
 

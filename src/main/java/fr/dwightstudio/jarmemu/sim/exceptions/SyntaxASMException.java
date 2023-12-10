@@ -53,7 +53,7 @@ public class SyntaxASMException extends IllegalStateException {
     }
 
     public boolean isFileSpecified() {
-        return line != -1;
+        return file != null;
     }
 
     public int getLine() {

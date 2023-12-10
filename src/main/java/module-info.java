@@ -17,6 +17,7 @@ module fr.dwightstudio.jarmemu {
     requires org.fxmisc.flowless;
     requires atlantafx.base;
     requires org.apache.commons.collections4;
+    requires org.json;
 
     exports fr.dwightstudio.jarmemu;
     exports fr.dwightstudio.jarmemu.gui;

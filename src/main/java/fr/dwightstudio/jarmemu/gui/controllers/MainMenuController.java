@@ -308,13 +308,12 @@ public class MainMenuController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Crée les boutons pour les colonnes du tableau de la mémoire.
-     * @param memoryTable le tableau de la mémoire
+     * Crée les boutons pour les colonnes du tableau de détails de la mémoire.
      */
-    public void registerMemoryDetailsColumns(TableView<MemoryWordView> memoryTable) {
+    public void registerMemoryDetailsColumns() {
         getController().memoryDetailsMenu.getItems().clear();
 
-        memoryTable.getColumns().forEach(column -> {
+        getMemoryDetailsController().memoryTable.getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
@@ -339,13 +338,12 @@ public class MainMenuController extends AbstractJArmEmuModule {
     }
 
     /**
-     * Crée les boutons pour les colonnes du tableau de la mémoire.
-     * @param memoryTable le tableau de la mémoire
+     * Crée les boutons pour les colonnes du tableau de résumé de la mémoire.
      */
-    public void registerMemoryOverviewColumns(TableView<MemoryChunkView> memoryTable) {
+    public void registerMemoryOverviewColumns() {
         getController().memoryOverviewMenu.getItems().clear();
 
-        memoryTable.getColumns().forEach(column -> {
+        getMemoryOverviewController().memoryTable.getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {

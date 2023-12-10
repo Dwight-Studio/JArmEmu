@@ -87,7 +87,6 @@ public class JArmEmuApplication extends Application {
     public Scene scene;
     private String argSave;
 
-    // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
 
     @Override

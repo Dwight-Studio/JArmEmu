@@ -143,7 +143,7 @@ public class SymbolsController extends AbstractJArmEmuModule {
                     views.add(new SymbolView(entry,  stateContainer.getCurrentFileIndex()));
                 }
 
-                for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleConsts().entrySet()) {
+                for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleData().entrySet()) {
                     views.add(new SymbolView(entry,  stateContainer.getCurrentFileIndex()));
                 }
             }

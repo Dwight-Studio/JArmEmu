@@ -156,9 +156,9 @@
                         </Menu>
                     </menus>
                 </MenuBar>
-                <SplitPane dividerPositions="0.2, 0.75" VBox.vgrow="ALWAYS">
+                <SplitPane fx:id="mainSplitPane" dividerPositions="0.2, 0.75" VBox.vgrow="ALWAYS">
                     <items>
-                        <SplitPane dividerPositions="0.5026178010471204" orientation="VERTICAL" prefHeight="200.0"
+                        <SplitPane fx:id="leftSplitPane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0"
                                    prefWidth="160.0">
                             <items>
                                 <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">

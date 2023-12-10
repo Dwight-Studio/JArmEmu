@@ -132,7 +132,11 @@ public class CodePreparator {
         try {
             if (!stateContainer.getGlobals().isEmpty()) {
                 for (String global : stateContainer.getGlobals())
-                    ArgumentParsers.LABEL.parse(stateContainer, global);
+                    try {
+                        stateContainer.evalWithAll(global);
+                    } catch (SyntaxASMException e) {
+                        ArgumentParsers.LABEL.parse(stateContainer, global);
+                    }
             }
         } catch (SyntaxASMException exception) {
 

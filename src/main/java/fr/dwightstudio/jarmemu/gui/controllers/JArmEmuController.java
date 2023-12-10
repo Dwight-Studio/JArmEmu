@@ -29,22 +29,47 @@ import atlantafx.base.controls.ToggleSwitch;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.ModalDialog;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public class JArmEmuController extends AbstractJArmEmuModule {
 
+    public static final String SPLIT_PANES_KEY = "splitPanes";
+    public static final String MAIN_SPLIT_PANE_KEY = "mainSplitPane";
+    public static final String LEFT_SPLIT_PANE_KEY = "leftSplitPane";
+    public static final String MEMORY_COLUMNS_KEY = "memoryColumns";
+    public static final String MEMORY_DETAILS_KEY = "memoryDetails";
+    public static final String MEMORY_OVERVIEW_KEY = "memoryOverview";
+
     private final Logger logger = Logger.getLogger(getClass().getName());
 
+    private final Timeline LAYOUT_SAVING_TIMELINE = new Timeline(
+            new KeyFrame(Duration.seconds(5), event -> {
+                getSettingsController().setLayoutSetting(getLayoutJSON());
+                logger.info("Layout saved");
+            })
+    );
+
     @FXML protected StackPane mainPane;
+    @FXML protected SplitPane mainSplitPane;
+    @FXML protected SplitPane leftSplitPane;
     protected ModalPane modalPaneBack;
     protected ModalPane modalPaneMiddle;
     protected ModalPane modalPaneFront;
@@ -132,7 +157,89 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getLabelsController().attach(getCodeInterpreter().getStateContainer());
         getSymbolsController().attach(getCodeInterpreter().getStateContainer());
 
+        registerLayoutChangeListener();
+        applyLayout(getSettingsController().getLayoutSetting());
+
         getExecutionWorker().revive();
+    }
+
+    public void registerLayoutChangeListener() {
+        mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
+        leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
+
+        getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+        getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+    }
+
+    /**
+     * Indique un changement de layout et enclenche une timeline de sauvegarde.
+     */
+    public void notifyLayoutChange() {
+        LAYOUT_SAVING_TIMELINE.stop();
+        LAYOUT_SAVING_TIMELINE.play();
+    }
+
+    /**
+     * @return une chaîne de caractères contenant les données du layout au format JSON
+     */
+    public String getLayoutJSON() {
+        HashMap<String, JSONObject> layout = new HashMap<>();
+
+        HashMap<String, JSONArray> splitPanes = new HashMap<>();
+        splitPanes.put(MAIN_SPLIT_PANE_KEY, new JSONArray(mainSplitPane.getDividerPositions()));
+        splitPanes.put(LEFT_SPLIT_PANE_KEY, new JSONArray(leftSplitPane.getDividerPositions()));
+        layout.put(SPLIT_PANES_KEY, new JSONObject(splitPanes));
+
+        HashMap<String, JSONArray> memoryColumns = new HashMap<>();
+        memoryColumns.put(
+                MEMORY_DETAILS_KEY,
+                new JSONArray(getMemoryDetailsController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+        );
+        memoryColumns.put(
+                MEMORY_OVERVIEW_KEY,
+                new JSONArray(getMemoryOverviewController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+        );
+        layout.put(MEMORY_COLUMNS_KEY, new JSONObject(memoryColumns));
+
+        return new JSONObject(layout).toString();
+    }
+
+    /**
+     * Lit et applique le layout à partir d'une chaîne de caractères
+     *
+     * @param json une chaîne de caractères contenant les données du layout au format JSON
+     */
+    public void applyLayout(String json) {
+        try {
+            JSONObject layout = new JSONObject(json);
+
+            JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
+
+            JSONArray mainSplitPaneData = splitPanes.getJSONArray(MAIN_SPLIT_PANE_KEY);
+            for (int i = 0; i < mainSplitPaneData.length(); i++) {
+                mainSplitPane.setDividerPosition(i, mainSplitPaneData.getDouble(i));
+            }
+
+            JSONArray leftSplitPaneData = splitPanes.getJSONArray(LEFT_SPLIT_PANE_KEY);
+            for (int i = 0; i < leftSplitPaneData.length(); i++) {
+                leftSplitPane.setDividerPosition(i, leftSplitPaneData.getDouble(i));
+            }
+
+            JSONObject memoryColumns = layout.getJSONObject(MEMORY_COLUMNS_KEY);
+
+            JSONArray memoryDetailsData = memoryColumns.getJSONArray(MEMORY_DETAILS_KEY);
+            for (int i = 0; i < memoryDetailsData.length(); i++) {
+                getMemoryDetailsController().memoryTable.getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
+            }
+
+            JSONArray memoryOverviewData = memoryColumns.getJSONArray(MEMORY_OVERVIEW_KEY);
+            for (int i = 0; i < memoryOverviewData.length(); i++) {
+                getMemoryOverviewController().memoryTable.getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
+            }
+        } catch (JSONException exception) {
+            logger.severe("Error while parsing layout: " + exception.getMessage());
+            logger.severe(ExceptionUtils.getStackTrace(exception));
+        }
     }
 
     public void openDialogFront(ModalDialog dialog) {

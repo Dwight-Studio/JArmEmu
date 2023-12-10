@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.AccessibleValueMap;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
@@ -35,6 +36,7 @@ public class ParsedLabel extends ParsedObject {
     private final String name;
     private ParsedInstruction instruction;
     private FilePos pos;
+    private Integer erased;
 
     public ParsedLabel(String name) {
         this.name = name;
@@ -53,15 +55,13 @@ public class ParsedLabel extends ParsedObject {
     public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
         StateContainer container = stateSupplier.get();
 
-        if (container.getAccessibleLabels().get(this.name.toUpperCase()) == null) {
+        if (container.getRestrainedLabels().get(this.name.toUpperCase()) == null) {
             throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
-        } else if (container.getAccessibleLabels().get(this.name) != this.pos.toByteValue()) {
+        } else if (container.getRestrainedLabels().get(this.name) != this.pos.toByteValue()) {
             return new SyntaxASMException("Label '" + this.name + "' is already defined", line, this);
         }
 
-        if (container.getAccessibleData().containsKey(this.name.toUpperCase())) {
-            return new SyntaxASMException("Symbol '" + this.name + "' is already defined", line, this);
-        }
+        if (erased != null) return new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
 
         return null;
     }
@@ -73,7 +73,7 @@ public class ParsedLabel extends ParsedObject {
      */
     public void register(StateContainer stateContainer, FilePos pos) {
         this.pos = pos.freeze();
-        stateContainer.getAccessibleLabels().put(name.strip().toUpperCase(), this.pos.toByteValue());
+        erased = stateContainer.getAccessibleLabels().put(name.strip().toUpperCase(), this.pos.toByteValue());
     }
 
     @Override

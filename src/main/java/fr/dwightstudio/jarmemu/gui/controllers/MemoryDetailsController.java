@@ -71,7 +71,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
     private TableColumn<MemoryWordView, Number> col5;
     private TableColumn<MemoryWordView, Number> col6;
     private ObservableList<MemoryWordView> views;
-    private TableView<MemoryWordView> memoryTable;
+    protected TableView<MemoryWordView> memoryTable;
     private int lastPageIndex;
     private boolean doSearchQuery;
     private int searchQuery;
@@ -191,7 +191,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         memoryTable.setEditable(true);
         memoryTable.setMaxWidth(Double.POSITIVE_INFINITY);
 
-        getMainMenuController().registerMemoryDetailsColumns(memoryTable);
+        getMainMenuController().registerMemoryDetailsColumns();
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
