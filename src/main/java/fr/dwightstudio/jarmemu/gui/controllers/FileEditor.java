@@ -383,7 +383,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return un nouveau SourceScanner du fichier modifié
      */
     public SourceScanner getSourceScanner() {
-        return new SourceScanner(codeArea.getText(), path.getName(), getEditorController().getFileIndex(this));
+        return new SourceScanner(codeArea.getText(), path == null ? "New File" : path.getName(), getEditorController().getFileIndex(this));
     }
 
     /**

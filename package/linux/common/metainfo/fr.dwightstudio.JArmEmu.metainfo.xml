@@ -65,7 +65,7 @@
                     <li>Added value update indicator</li>
                     <li>Fixed memory, stack and register tabs unavailability when not simulating</li>
                     <li>Fixed simulation speed setting changeability when simulating</li>
-                    <li>Optimising line marking</li>
+                    <li>Optimizing line marking</li>
                     <li>Reduced simulation interval lower threshold</li>
                 </ul>
             </description>
