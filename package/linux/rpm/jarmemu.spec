@@ -1,11 +1,11 @@
 Name:           jarmemu
-Version:        0.1.7
+Version:        0.1.8
 Release:        BETA
 Summary:        JArmEmu
 Group:          Development/Tools
 BuildArch:      noarch
 
-License:        GPL3
+License:        GPL-3.0
 Packager:       Alexandre Leconte <aleconte@dwightstudio>
 Source0:        %{name}-%{version}.tar.gz
 
