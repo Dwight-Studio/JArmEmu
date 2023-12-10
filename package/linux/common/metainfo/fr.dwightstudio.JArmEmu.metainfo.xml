@@ -50,6 +50,26 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2023-12-10" version="0.1.7">
+            <url type="details">https://github.com/DwightStudio/JArmEmu/releases/tag/v0.1.7</url>
+            <description>
+                <p>Beta stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Added new splash screens</li>
+                    <li>Added support for multi-files projects</li>
+                    <li>Added instruction address in editors margins</li>
+                    <li>Added symbol and labels observation tab</li>
+                    <li>Added memory summary observation tab</li>
+                    <li>Added stack pointer following setting</li>
+                    <li>Added value update indicator</li>
+                    <li>Fixed memory, stack and register tabs unavailability when not simulating</li>
+                    <li>Fixed simulation speed setting changeability when simulating</li>
+                    <li>Optimising line marking</li>
+                    <li>Reduced simulation interval lower threshold</li>
+                </ul>
+            </description>
+        </release>
         <release date="2023-11-23" version="0.1.6">
             <url type="details">https://github.com/DwightStudio/JArmEmu/releases/tag/v0.1.6</url>
             <description>

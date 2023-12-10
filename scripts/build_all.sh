@@ -31,11 +31,8 @@ if [ "${EUID}" -ne 0 ]; then
     exit 0
 fi
 
-echo "Building RPM..."
-source ./scripts/build_rpm.sh || exit 1
-
-echo "Building DEB..."
-source ./scripts/build_deb.sh || exit 1
+echo "Building RPM and DEB..."
+source ./scripts/build_rpm_deb.sh || exit 1
 
 echo "Building WIN..."
 source ./scripts/build_win.sh || exit 1
