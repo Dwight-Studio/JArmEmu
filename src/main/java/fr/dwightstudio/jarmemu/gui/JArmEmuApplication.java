@@ -89,7 +89,6 @@ public class JArmEmuApplication extends Application {
 
     // TODO: Enregistrer la disposition du GUI (splitpane, tableview...)
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
-    // TODO: Réparer le .deb
 
     @Override
     public void start(Stage stage) throws IOException {
