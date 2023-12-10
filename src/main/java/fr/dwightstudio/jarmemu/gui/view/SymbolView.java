@@ -34,15 +34,19 @@ import java.util.Map;
 public class SymbolView {
     private final ReadOnlyStringWrapper name;
     private final ReadOnlyIntegerWrapper value;
+    private final ReadOnlyIntegerWrapper fileIndex;
 
-    public SymbolView(Map.Entry<String, FilePos> label, boolean useFile) {
+    public SymbolView(Map.Entry<String, FilePos> label) {
         this.name = new ReadOnlyStringWrapper(label.getKey());
-        this.value = new ReadOnlyIntegerWrapper(useFile ? label.getValue().getFileIndex() : label.getValue().getPos());
+        this.value = new ReadOnlyIntegerWrapper(label.getValue().getPos());
+        this.fileIndex = new ReadOnlyIntegerWrapper(label.getValue().getFileIndex());
     }
 
-    public SymbolView(Map.Entry<String, Integer> symbol) {
+    public SymbolView(Map.Entry<String, Integer> symbol, int fileIndex) {
         this.name = new ReadOnlyStringWrapper(symbol.getKey());
         this.value = new ReadOnlyIntegerWrapper(symbol.getValue());
+        this.fileIndex = new ReadOnlyIntegerWrapper(fileIndex);
+
     }
 
 
@@ -52,5 +56,9 @@ public class SymbolView {
 
     public ReadOnlyIntegerProperty getValueProperty() {
         return value;
+    }
+
+    public ReadOnlyIntegerProperty getFileIndexProperty() {
+        return fileIndex;
     }
 }
