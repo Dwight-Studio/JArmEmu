@@ -33,9 +33,19 @@ BF=$HOME/rpmbuild
 
 # Clean
 rm -r $BF
-rm ./target/jarmemu-$VER-$RELEASE.noarch.rpm
+rm ./target/JArmEmu-$VER-$RELEASE.noarch.rpm
+rm ./target/JArmEmu-$VER-${RELEASE}_all.deb
 
-rpmdev-setuptree
+mkdir -p $BF/SOURCES
+mkdir $BF/SPECS
+mkdir $BF/BUILD
+mkdir $BF/SRPMS
+mkdir $BF/RPMS
+mkdir $BF/SDEBS
+mkdir $BF/DEBS
+
+ln -s $BF $HOME/debbuild
+
 TMP=$(mktemp -d -q)
 CPF=$TMP/jarmemu-$VER
 
@@ -56,7 +66,9 @@ rm -r $TMP
 # Build
 cp ./package/linux/rpm/jarmemu.spec $BF/SPECS/
 rpmbuild -ba $BF/SPECS/jarmemu.spec || exit 1
+debbuild --rebuild $BF/SRPMS/jarmemu-$VER-$RELEASE.src.rpm || exit 1
 
 # Clean et rendu
 cp $BF/RPMS/noarch/jarmemu-$VER-$RELEASE.noarch.rpm ./target/JArmEmu-$VER-$RELEASE.noarch.rpm
+cp $BF/DEBS/all/jarmemu_$VER-${RELEASE}_all.deb ./target/JArmEmu-$VER-${RELEASE}_all.deb
 rm -r $BF

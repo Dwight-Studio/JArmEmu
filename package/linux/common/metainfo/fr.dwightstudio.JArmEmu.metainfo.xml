@@ -8,7 +8,7 @@
     <project_license>GPL-3.0</project_license>
     <metadata_license>CC0-1.0</metadata_license>
     <content_rating type="oars-1.1"/>
-    <url type="homepage">https://github.com/Dwight-Studio/JArmEmu/</url>
+    <url type="homepage">https://dwightstudio.fr/jarmemu</url>
     <description>
         <p>JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a
             simulated ARMv7 architecture.

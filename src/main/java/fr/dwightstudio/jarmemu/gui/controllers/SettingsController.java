@@ -51,6 +51,8 @@ public class SettingsController extends AbstractJArmEmuModule {
     };
 
     // Valeurs par défaut
+    public static final int DEFAULT_SIMULATION_INTERVAL = 25;
+
     public static final boolean DEFAULT_AUTO_BREAK = true;
     public static final boolean DEFAULT_MEMORY_ALIGN_BREAK = false;
     public static final boolean DEFAULT_STACK_ALIGN_BREAK = true;
@@ -116,7 +118,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // Gestion des spinners
-        simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.UPDATE_THRESHOLD, ExecutionWorker.UPDATE_THRESHOLD);
+        simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, DEFAULT_SIMULATION_INTERVAL, ExecutionWorker.UPDATE_THRESHOLD);
         stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
         symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
 
@@ -222,7 +224,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.put(VERSION_KEY, JArmEmuApplication.VERSION);
         preferences.put(LAST_SAVE_PATH_KEY, "");
 
-        setSimulationInterval(ExecutionWorker.UPDATE_THRESHOLD);
+        setSimulationInterval(DEFAULT_SIMULATION_INTERVAL);
         setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
 
         setAutoBreakSetting(DEFAULT_AUTO_BREAK);

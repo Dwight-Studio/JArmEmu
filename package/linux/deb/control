@@ -1,7 +1,0 @@
-Package: jarmemu
-Version: 0.1.7-BETA
-Section: editors
-Priority: optional
-Architecture: all
-Maintainer: Alexandre Leconte <aleconte@insa-rennes.fr>
-Description: The portable arm simulator. JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a simulated ARMv7 architecture.

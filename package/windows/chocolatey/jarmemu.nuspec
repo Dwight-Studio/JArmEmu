@@ -7,8 +7,8 @@
     <owners>FoxYinx</owners>
     <title>JArmEmu</title>
     <authors>Dwight Studio</authors>
-    <projectUrl>https://github.com/Dwight-Studio/JArmEmu/</projectUrl>
-    <iconUrl>https://rawcdn.githack.com/Dwight-Studio/JArmEmu/5486f2940364e422ccbded111afd68ab0c4bc905/src/main/resources/fr/dwightstudio/jarmemu/medias/logo.png</iconUrl>
+    <projectUrl>https://dwightstudio.fr/jarmemu</projectUrl>
+    <iconUrl>https://static.dwightstudio.fr/jarmemu/logo.png</iconUrl>
     <copyright>Copyright (C) 2023 Dwight Studio</copyright>
     <licenseUrl>https://github.com/Dwight-Studio/JArmEmu/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>

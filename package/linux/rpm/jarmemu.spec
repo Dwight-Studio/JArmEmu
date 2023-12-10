@@ -6,7 +6,7 @@ Group:          Development/Tools
 BuildArch:      noarch
 
 License:        GPL3
-Packager:       Alexandre Leconte <aleconte@insa-rennes.fr>
+Packager:       Alexandre Leconte <aleconte@dwightstudio>
 Source0:        %{name}-%{version}.tar.gz
 
 Requires:       bash, desktop-file-utils
@@ -29,7 +29,7 @@ cp -r icons/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r mime/ $RPM_BUILD_ROOT/%{_datadir}/
 cp -r metainfo/ $RPM_BUILD_ROOT/%{_datadir}/
 
-install jarmemu $RPM_BUILD_ROOT/%{_bindir}/jarmemu
+install -Dm755 jarmemu $RPM_BUILD_ROOT/%{_bindir}/jarmemu
 
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ fr.dwightstudio.JArmEmu.desktop
 
@@ -72,5 +72,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/applications/fr.dwightstudio.JArmEmu.desktop
 
 %changelog
-* Wed Nov 8 2023 Alexandre Leconte <aleconte@insa-rennes.fr>
-- Creating SPEC File
+* Wed Nov 8 2023 Alexandre Leconte <aleconte@dwightstudio>
+- Creating package

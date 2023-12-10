@@ -153,7 +153,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         website.setContentDisplay(ContentDisplay.RIGHT);
         website.setAlignment(Pos.CENTER);
         website.setOnAction(event -> {
-            application.openURL("https://github.com/Dwight-Studio/JArmEmu");
+            application.openURL("https://dwightstudio.fr/jarmemu");
             getController().closeDialogBack();
         });
 
