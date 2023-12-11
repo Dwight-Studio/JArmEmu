@@ -339,9 +339,9 @@ public class CompleteTest extends JArmEmuTest {
         parser = new RegexSourceParser();
         ArrayList<String> names = new ArrayList<>();
         names.add("/complete/graph/GraphesMain.s");
-        names.add("/complete/graph/DFS.s");
-        names.add("/complete/graph/EstPointEntree.s");
         names.add("/complete/graph/RechercheSommet.s");
+        names.add("/complete/graph/EstPointEntree.s");
+        names.add("/complete/graph/DFS.s");
         loadMultiple(names);
 
         // Parse

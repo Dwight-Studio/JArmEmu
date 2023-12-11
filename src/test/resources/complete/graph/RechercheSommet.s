@@ -1,7 +1,7 @@
 @ Graphes et parcours de graphes
 @ Fonction RechercheSommet
 @ Objectifs : 
-@	- recherche de l''indice relatif au sommet passé en paramètre
+@	- recherche de l'indice relatif au sommet passé en paramètre
 @---------------------------------------
 
 @ Structure graphe {

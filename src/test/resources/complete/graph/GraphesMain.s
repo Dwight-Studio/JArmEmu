@@ -6,6 +6,8 @@
 @ 	- appel de fonction
 @---------------------------------------
 
+.set indice,-12
+
 @ les fonctions DFS, EstPointEntree et RechercheSommet sont définies en global dans des fichiers à part
 
 @ Structure graphe {
@@ -65,6 +67,7 @@ _Start:
 	bl RechercheSommet
 	@ fonction retourne indice
 	ldmfd sp!,{r1}
+	str r1,[fp,#indice]
 	@ libération dans la pile des param d''entrée
 	add sp,	sp, #8	
 	
@@ -78,7 +81,7 @@ _Start:
 	@ fonction retourne un booléen
 	ldmfd sp!,{r2}
 	ldr r10, =0xFFFFFFF0
-    str r2, [r10]
+    	str r2, [r10]
 	@ libération dans la pile des param d''entrée
 	add sp,	sp, #8	
 
