@@ -187,7 +187,7 @@ public class CodePreparator {
      */
     private void applyDirectives(StateContainer stateContainer) {
         int off = -1;
-        FilePos pos = new FilePos(0, 0);
+        FilePos pos = new FilePos(0, symbolsAddress);
 
         // Suppression des directives générées
         for (ParsedFile file : parsedFiles) {
@@ -223,7 +223,7 @@ public class CodePreparator {
         }
 
 
-        if (pos.getPos() != 0) throw new IllegalStateException("Non-data initializer taking space in memory");
+        if (pos.getPos() != symbolsAddress) throw new IllegalStateException("Non-data initializer taking space in memory");
 
         // Application de toutes les directives de RODATA
         pos.setFileIndex(0);

@@ -69,9 +69,7 @@ public class ParsedDirective extends ParsedObject {
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
     public void apply(StateContainer stateContainer, FilePos currentPos) {
-        int symbolAddress = stateContainer.getSymbolsAddress();
-
-        directive.apply(stateContainer, this.args, currentPos.freeze(symbolAddress), section);
+        directive.apply(stateContainer, this.args, currentPos.freeze(), section);
 
         if (generated) {
             stateContainer.getPseudoData().put(hash, currentPos.getPos());

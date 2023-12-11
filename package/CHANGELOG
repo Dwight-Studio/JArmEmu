@@ -5,6 +5,7 @@
 - Fixed label verifying process
 - Fixed global accessibility
 - Fixed exception throwing when launching non-saved file
+- Fixed symbols address setting (did not change all symbols addresses)
 
 
 0.1.6 -> 0.1.7
