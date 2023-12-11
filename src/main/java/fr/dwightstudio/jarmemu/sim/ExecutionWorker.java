@@ -384,11 +384,26 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void stepOverTask() {
             nextTask.set(IDLE);
             doContinue = true;
+
+            int nesting = application.getCodeInterpreter().getNestingCount();
+
+            step(false);
+            if (shouldUpdateGUI()) updateGUI();
+
+            try {
+                synchronized (this) {
+                    if (waitingPeriod != 0)
+                        wait(waitingPeriod);
+                }
+            } catch (InterruptedException ignored) {
+                doContinue = false;
+            }
+
             while (doContinue) {
                 step(false);
                 if (shouldUpdateGUI()) updateGUI();
 
-                doContinue = doContinue && !application.getCodeInterpreter().hasJumped();
+                doContinue = doContinue && application.getCodeInterpreter().getNestingCount() > nesting;
 
                 try {
                     synchronized (this) {

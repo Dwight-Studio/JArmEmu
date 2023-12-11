@@ -44,7 +44,6 @@ public class CodeInterpreter {
 
     // Simulation
     protected StateContainer stateContainer;
-    protected boolean jumped;
 
     public CodeInterpreter() {
         this.stateContainer = new StateContainer();
@@ -84,11 +83,8 @@ public class CodeInterpreter {
             }
 
             if (forceExecution || executionException == null) {
-                if (instruction.getInstruction().doModifyPC()) {
-                    jumped = true;
-                } else {
+                if (!instruction.getInstruction().doModifyPC()) {
                     getPC().add(4);
-                    jumped = false;
                 }
             }
         } else {
@@ -150,13 +146,13 @@ public class CodeInterpreter {
         }
     }
 
-    public boolean hasJumped() {
-        return jumped;
-    }
-
     public FilePos getCurrentLine() {
         FilePos pos = codePreparator.getLineNumber(getCurrentPosition());
         return pos == null ? null : pos.freeze();
+    }
+
+    public int getNestingCount() {
+        return stateContainer.getNestingCount();
     }
 
     public FilePos getLineNumber(int pos) {

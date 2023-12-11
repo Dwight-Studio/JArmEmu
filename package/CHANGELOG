@@ -1,7 +1,8 @@
 0.1.7 -> 0.1.8
 
 - Added layout preferences saving
-- Modified change highlighting
+- Modified change highlighting (no more fading)
+- Modified Step Over task (based on nesting count)
 - Fixed label verifying process
 - Fixed global accessibility
 - Fixed exception throwing when launching non-saved file
