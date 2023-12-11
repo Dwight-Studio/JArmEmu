@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.asm.inst;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class BLExecutor implements InstructionExecutor<Integer, Object, Object, Object> {

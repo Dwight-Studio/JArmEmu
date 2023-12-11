@@ -27,10 +27,6 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.EditorController;
 import javafx.util.StringConverter;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
-
 public class FileNameStringConverter extends StringConverter<Number> {
 
     private final EditorController controller;

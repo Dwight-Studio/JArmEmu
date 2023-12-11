@@ -25,8 +25,6 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 
-import java.util.List;
-
 public interface SourceParser {
 
     int DEFAULT_SOURCE_PARSER = 0;

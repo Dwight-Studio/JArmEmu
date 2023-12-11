@@ -24,7 +24,6 @@
 package fr.dwightstudio.jarmemu.gui.editor;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.concurrent.Task;

@@ -46,8 +46,6 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 

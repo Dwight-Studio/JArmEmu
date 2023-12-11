@@ -24,10 +24,12 @@
 package fr.dwightstudio.jarmemu.gui.view;
 
 import fr.dwightstudio.jarmemu.sim.obj.MemoryAccessor;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.util.converters.WordASCIIStringConverter;
 import javafx.beans.InvalidationListener;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerProperty;
+import javafx.beans.property.ReadOnlyIntegerWrapper;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 

@@ -30,13 +30,10 @@ import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
 import java.util.ArrayList;
-import java.util.EventListener;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 

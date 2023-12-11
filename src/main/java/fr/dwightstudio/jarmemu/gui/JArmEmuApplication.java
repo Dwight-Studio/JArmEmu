@@ -33,7 +33,6 @@ import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import javafx.application.Application;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;

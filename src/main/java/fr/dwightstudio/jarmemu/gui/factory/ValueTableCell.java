@@ -23,17 +23,12 @@
 
 package fr.dwightstudio.jarmemu.gui.factory;
 
-import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.ValueStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.WordASCIIStringConverter;
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,10 +37,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
-
-import java.util.Objects;
 
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 

@@ -25,12 +25,9 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
-import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;

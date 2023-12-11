@@ -30,9 +30,6 @@ import fr.dwightstudio.jarmemu.sim.parse.legacy.LegacyDirectiveParser;
 import fr.dwightstudio.jarmemu.sim.parse.legacy.LegacySectionParser;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.TreeMap;

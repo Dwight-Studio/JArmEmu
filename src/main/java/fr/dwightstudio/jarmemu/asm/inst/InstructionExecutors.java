@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.asm.inst;
 
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.RegisterWithUpdateParser;

@@ -27,7 +27,6 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.ComputeHightlightsTask;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
-import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
