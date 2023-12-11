@@ -80,6 +80,23 @@ public class CompleteTest extends JArmEmuTest {
         }
     }
 
+    public void loadMultiple(ArrayList<String> names) {
+        try {
+            sources.clear();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        int index = 0;
+        for (String name : names) {
+            try {
+                sources.add(new SourceScanner(new File(Objects.requireNonNull(getClass().getResource(name)).toURI()), index));
+                index++;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     public void assertEqualsMemory(String memoryDumpFileName) {
         HashMap<Integer, Byte> expectedMemory = new HashMap<>();
 
@@ -114,8 +131,8 @@ public class CompleteTest extends JArmEmuTest {
             matcher = HEX_PATTERN.matcher(line);
 
             if (matcher.find()) {
-                int address = Integer.parseInt(matcher.group("ADDRESS"), 16);
-                int value = Integer.parseInt(matcher.group("VALUE"), 16);
+                int address = Integer.parseUnsignedInt(matcher.group("ADDRESS"), 16);
+                int value = Integer.parseUnsignedInt(matcher.group("VALUE"), 16);
 
                 byte[] bytes = new byte[4];
                 ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(value);
@@ -293,6 +310,60 @@ public class CompleteTest extends JArmEmuTest {
         execute();
 
         assertEqualsMemory("/complete/pgcdDrive-memory.d");
+    }
+
+    @Test
+    public void graphesTest() {
+        parser = new RegexSourceParser();
+        loadUnique("/complete/graph/Graphes.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/graph/Graphes-memory.d");
+    }
+
+    @Test
+    public void graphesLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/graph/Graphes.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/graph/Graphes-memory.d");
+    }
+
+    @Test
+    public void graphesMainTest() {
+        parser = new RegexSourceParser();
+        ArrayList<String> names = new ArrayList<>();
+        names.add("/complete/graph/GraphesMain.s");
+        names.add("/complete/graph/DFS.s");
+        names.add("/complete/graph/EstPointEntree.s");
+        names.add("/complete/graph/RechercheSommet.s");
+        loadMultiple(names);
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
+    }
+
+    @Test
+    public void graphesMainLegacyTest() {
+        parser = new LegacySourceParser();
+        ArrayList<String> names = new ArrayList<>();
+        names.add("/complete/graph/GraphesMain.s");
+        names.add("/complete/graph/DFS.s");
+        names.add("/complete/graph/EstPointEntree.s");
+        names.add("/complete/graph/RechercheSommet.s");
+        loadMultiple(names);
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
     }
 
 }
