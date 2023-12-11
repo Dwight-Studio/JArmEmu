@@ -66,7 +66,7 @@ public class ParsedDirectiveLabel extends ParsedObject {
      * @param currentPos la position actuelle dans la mémoire
      */
     public void register(StateContainer stateContainer, int currentPos) {
-        stateContainer.getAccessibleData().put(name.strip().toUpperCase(), currentPos + stateContainer.getSymbolsAddress());
+        stateContainer.getAccessibleData().put(name.strip().toUpperCase(), currentPos);
     }
 
     @Override

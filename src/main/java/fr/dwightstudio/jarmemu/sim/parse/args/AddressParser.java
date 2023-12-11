@@ -43,7 +43,7 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
     public UpdatableInteger parse(@NotNull StateContainer stateContainer, @NotNull String string) {
         if (string.startsWith("*")) {
             String symbol = string.substring(1).strip().toUpperCase();
-            int rtn = stateContainer.getPseudoData().get(symbol) + stateContainer.getSymbolsAddress();
+            int rtn = stateContainer.getPseudoData().get(symbol);
             return new UpdatableInteger(rtn, stateContainer, false, false, null);
         } else if (!string.startsWith("[")) {
             throw new SyntaxASMException("Invalid address '" + string + "'");

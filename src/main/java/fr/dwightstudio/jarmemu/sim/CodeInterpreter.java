@@ -54,8 +54,8 @@ public class CodeInterpreter {
      *
      * @param sourceParser le parseur de source utilisé
      */
-    public SyntaxASMException[] load(SourceParser sourceParser, int stackAddress, int symbolAddress, List<SourceScanner> fileSources) {
-        this.codePreparator = new CodePreparator(stackAddress, symbolAddress);
+    public SyntaxASMException[] load(SourceParser sourceParser, int stackAddress, int symbolsAddress, List<SourceScanner> fileSources) {
+        this.codePreparator = new CodePreparator(stackAddress, symbolsAddress);
         return this.codePreparator.load(sourceParser, fileSources);
     }
 
