@@ -16,7 +16,7 @@
         <p>You can write your program and include GNU Assembly directives (only the basic ones are implemented, refer to
             synthaxic colorimetry to see if it is implemented).
         </p>
-        <p>JArmEmu is powered by an ARMv7 interpreter made &lt;em&gt;Ex Nihilo&lt;/em&gt; for this project.</p>
+        <p>JArmEmu is powered by an ARMv7 interpreter made Ex Nihilo for this project.</p>
         <p>Currently, known limitations or differences with the real architecture:</p>
         <ul>
             <li>SWI instruction is not implemented</li>

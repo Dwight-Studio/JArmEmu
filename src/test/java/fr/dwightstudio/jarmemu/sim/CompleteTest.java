@@ -148,7 +148,7 @@ public class CompleteTest extends JArmEmuTest {
         }
 
         for (Map.Entry<Integer, Byte> entry : expectedMemory.entrySet()) {
-            assertEquals(codeInterpreter.stateContainer.getMemory().getByte(entry.getKey()), (byte) entry.getValue());
+            assertEquals((byte) entry.getValue(), codeInterpreter.stateContainer.getMemory().getByte(entry.getKey()));
         }
     }
 
