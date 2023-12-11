@@ -30,9 +30,13 @@ import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
+import java.util.ArrayList;
+import java.util.EventListener;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -181,6 +185,14 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         if (task != IDLE) logger.warning("Overriding next task (ID" + task + " with ID" + id + ")");
     }
 
+    public void addStepListener(StepListener stepListener) {
+        this.daemon.stepListeners.add(stepListener);
+    }
+
+    public void removeStepListener(StepListener stepListener) {
+        this.daemon.stepListeners.remove(stepListener);
+    }
+
     private static class ExecutionThead extends Thread {
 
         private static final int FALLBACK_UPDATE_INTERVAL = 25;
@@ -191,10 +203,10 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private boolean doContinue = false;
         private boolean doRun = true;
         private int waitingPeriod;
-        private FilePos last;
         private FilePos line;
         private FilePos next;
         private long updateGUITimestamp;
+        private ArrayList<StepListener> stepListeners;
 
         public ExecutionThead(JArmEmuApplication application) {
             super("CodeExecutorDeamon");
@@ -202,6 +214,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             logger.info("Initiating Execution Thread");
             this.application = application;
             updateGUITimestamp = System.currentTimeMillis();
+
+            stepListeners = new ArrayList<>();
 
             setDaemon(true);
             start();
@@ -249,8 +263,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void step(boolean forceExecution) {
-            last = line;
             line = application.getCodeInterpreter().getCurrentLine();
+            Platform.runLater(() -> stepListeners.forEach(stepListener -> stepListener.step(line)));
 
             ExecutionASMException executionException = null;
 
@@ -424,7 +438,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void updateGUI() {
-            logger.info("Updating GUI");
             if (application.getCodeInterpreter() != null) {
 
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
@@ -460,7 +473,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 );
 
                 if (errors.length == 0) {
-                    line = next = last = null;
+                    line = next = null;
                     application.getCodeInterpreter().restart();
                     attachControllers();
                     application.getEditorController().prepareSimulation();
@@ -484,7 +497,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void restartTask() {
             nextTask.set(IDLE);
 
-            line = next = last = null;
+            line = next = null;
             updateGUI();
 
             attachControllers();

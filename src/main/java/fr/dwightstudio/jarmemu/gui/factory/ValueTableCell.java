@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.gui.factory;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.util.converters.ValueStringConverter;
@@ -34,6 +35,8 @@ import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -45,10 +48,13 @@ import javafx.util.StringConverter;
 import java.util.Objects;
 
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
+
+    // RIP l'animation
+    /*
     private final Animation UPDATE_ANIMATION = new Transition() {
 
         {
-            setCycleDuration(Duration.millis(1000));
+            setCycleDuration(Duration.seconds(10));
             setInterpolator(Interpolator.EASE_OUT);
         }
 
@@ -58,40 +64,49 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
             setStyle("-fx-background-color: ladder(derive(black, " + percentage + "%), -color-warning-muted, transparent 50%);");
         }
     };
+    */
+
+    private final ChangeListener<Number> CHANGE_LISTENER;
 
     private final JArmEmuApplication application;
-
-    private Number last;
-
-    private ValueTableCell(JArmEmuApplication application) {
-        super(new ValueStringConverter(application));
-        this.application = application;
-        this.getStyleClass().add("data-value");
-        this.setAlignment(Pos.CENTER);
-    }
+    private ObservableValue<Number> obs;
 
     private ValueTableCell(JArmEmuApplication application, StringConverter<Number> converter) {
         super(converter);
         this.application = application;
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
+
+        CHANGE_LISTENER = (obs, oldVal, newVal) -> {
+        /*
+        Platform.runLater(UPDATE_ANIMATION::stop);
+        Platform.runLater(UPDATE_ANIMATION::play);
+         */
+            if (application.getSettingsController().getHighlightUpdatesSetting())
+                Platform.runLater(() -> setStyle("-fx-background-color: -color-warning-muted"));
+        };
+
+        application.getExecutionWorker().addStepListener((pos) -> setStyle("-fx-background-color: transparent"));
+    }
+
+    private ValueTableCell(JArmEmuApplication application) {
+        this(application, new ValueStringConverter(application));
     }
 
     @Override
     public void updateItem(Number number, boolean empty) {
         super.updateItem(number, empty);
 
-        if (
-                !empty
-                && !Objects.equals(number, last)
-                && application.status.get() == Status.SIMULATING
-                && application.getSettingsController().getHighlightUpdatesSetting()
-        ) {
-            Platform.runLater(UPDATE_ANIMATION::stop);
-            Platform.runLater(UPDATE_ANIMATION::play);
-            last = number;
+        if (getTableColumn() != null && getTableColumn().getCellObservableValue(getIndex()) != null) {
+            if (obs != getTableColumn().getCellObservableValue(getIndex())) {
+                if (obs != null) obs.removeListener(CHANGE_LISTENER);
+                obs = getTableColumn().getCellObservableValue(getIndex());
+                obs.addListener(CHANGE_LISTENER);
+            }
         }
     }
+
+
 
     public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryDynamicFormat(JArmEmuApplication application) {
         return (val) -> new ValueTableCell<>(application);

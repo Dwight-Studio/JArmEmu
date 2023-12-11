@@ -33,6 +33,8 @@ import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
 import javafx.application.Application;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -152,12 +154,11 @@ public class JArmEmuApplication extends Application {
         updateTitle();
         stage.setScene(scene);
         stage.show();
-        stage.setMaximized(true);
 
         SplashScreen splashScreen = SplashScreen.getSplashScreen();
 
         int scale = (int) (stage.getOutputScaleY() * 100);
-        Preferences.userRoot().node(getClass().getPackage().getName()).putInt("scale", scale);
+        Preferences.userRoot().node(getClass().getPackage().getName().replaceAll("\\.", "/")).putInt("scale", scale);
         logger.info("Computing scale: " + scale + "%");
 
         if (splashScreen != null) {
@@ -190,9 +191,34 @@ public class JArmEmuApplication extends Application {
         Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
     }
 
+    /**
+     * Définie l'état de maximisation.
+     *
+     * @param maximized l'état de maximisation
+     */
+    public void setMaximized(boolean maximized) {
+        stage.setMaximized(maximized);
+    }
+
+    /**
+     * @return l'état de maximisation
+     */
+    public boolean isMaximized() {
+        return stage.isMaximized();
+    }
+
+    public ReadOnlyBooleanProperty maximizedProperty() {
+        return stage.maximizedProperty();
+    }
+
+    /**
+     * Adapte le splashscreen à la dimension de l'écran.
+     *
+     * @param splashScreen l'instance du splashscreen
+     */
     private static void adaptSplashScreen(SplashScreen splashScreen) {
         try {
-            int scale = Preferences.userRoot().node(JArmEmuApplication.class.getPackage().getName()).getInt("scale", 100);
+            int scale = Preferences.userRoot().node(JArmEmuApplication.class.getPackage().getName().replaceAll("\\.", "/")).getInt("scale", 100);
 
             logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
 

@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.ModalDialog;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -46,11 +47,13 @@ import org.json.JSONObject;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
 public class JArmEmuController extends AbstractJArmEmuModule {
 
+    public static final String MAXIMIZED_KEY = "maximized";
     public static final String SPLIT_PANES_KEY = "splitPanes";
     public static final String MAIN_SPLIT_PANE_KEY = "mainSplitPane";
     public static final String LEFT_SPLIT_PANE_KEY = "leftSplitPane";
@@ -60,12 +63,18 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
+    private boolean savingDeviation = false;
+    private JSONObject lastLayout;
     private final Timeline LAYOUT_SAVING_TIMELINE = new Timeline(
-            new KeyFrame(Duration.seconds(5), event -> {
-                getSettingsController().setLayoutSetting(getLayoutJSON());
-                logger.info("Layout saved");
+            new KeyFrame(Duration.millis(250), event -> {
+                if (savingDeviation) {
+                    applyLayoutSecond(lastLayout);
+                } else {
+                    getSettingsController().setLayoutSetting(getLayoutJSON());
+                }
             })
     );
+
 
     @FXML protected StackPane mainPane;
     @FXML protected SplitPane mainSplitPane;
@@ -157,38 +166,47 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getLabelsController().attach(getCodeInterpreter().getStateContainer());
         getSymbolsController().attach(getCodeInterpreter().getStateContainer());
 
-        registerLayoutChangeListener();
-        applyLayout(getSettingsController().getLayoutSetting());
+        Platform.runLater(this::registerLayoutChangeListener);
 
         getExecutionWorker().revive();
     }
 
     public void registerLayoutChangeListener() {
-        mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
-        leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
+        applyLayout(getSettingsController().getLayoutSetting());
 
-        getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
-        getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+        Platform.runLater(() -> {
+            getApplication().maximizedProperty().addListener(obs -> notifyLayoutChange());
+
+            mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
+            leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
+
+            getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+        });
     }
 
     /**
      * Indique un changement de layout et enclenche une timeline de sauvegarde.
      */
     public void notifyLayoutChange() {
-        LAYOUT_SAVING_TIMELINE.stop();
-        LAYOUT_SAVING_TIMELINE.play();
+        if (!getLayoutJSON().equals(getSettingsController().getLayoutSetting())) {
+            LAYOUT_SAVING_TIMELINE.stop();
+            LAYOUT_SAVING_TIMELINE.play();
+        }
     }
 
     /**
      * @return une chaîne de caractères contenant les données du layout au format JSON
      */
     public String getLayoutJSON() {
-        HashMap<String, JSONObject> layout = new HashMap<>();
+        HashMap<String, Object> layout = new HashMap<>();
+
+        layout.put(MAXIMIZED_KEY, getApplication().isMaximized());
 
         HashMap<String, JSONArray> splitPanes = new HashMap<>();
         splitPanes.put(MAIN_SPLIT_PANE_KEY, new JSONArray(mainSplitPane.getDividerPositions()));
         splitPanes.put(LEFT_SPLIT_PANE_KEY, new JSONArray(leftSplitPane.getDividerPositions()));
-        layout.put(SPLIT_PANES_KEY, new JSONObject(splitPanes));
+        layout.put(SPLIT_PANES_KEY, splitPanes);
 
         HashMap<String, JSONArray> memoryColumns = new HashMap<>();
         memoryColumns.put(
@@ -199,20 +217,47 @@ public class JArmEmuController extends AbstractJArmEmuModule {
                 MEMORY_OVERVIEW_KEY,
                 new JSONArray(getMemoryOverviewController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
-        layout.put(MEMORY_COLUMNS_KEY, new JSONObject(memoryColumns));
+        layout.put(MEMORY_COLUMNS_KEY, memoryColumns);;
 
         return new JSONObject(layout).toString();
     }
 
     /**
-     * Lit et applique le layout à partir d'une chaîne de caractères
+     * Lit et applique le layout à partir d'une chaîne de caractères.
      *
      * @param json une chaîne de caractères contenant les données du layout au format JSON
      */
     public void applyLayout(String json) {
+        logger.info("Applying layout");
         try {
             JSONObject layout = new JSONObject(json);
 
+            boolean maximized = layout.getBoolean(MAXIMIZED_KEY);
+
+            if (maximized != getApplication().isMaximized()) {
+                lastLayout = layout;
+                savingDeviation = true;
+                getApplication().setMaximized(maximized);
+            } else {
+                applyLayoutSecond(layout);
+            }
+        } catch (JSONException exception) {
+            logger.severe("Error while parsing layout");
+            logger.severe(ExceptionUtils.getStackTrace(exception));
+        }
+
+        LAYOUT_SAVING_TIMELINE.stop();
+    }
+
+    /**
+     * Applique le layout après maximisation.
+     *
+     * @param layout le JSONObject contenant le layout
+     */
+    public void applyLayoutSecond(JSONObject layout) {
+        savingDeviation = false;
+
+        try {
             JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
 
             JSONArray mainSplitPaneData = splitPanes.getJSONArray(MAIN_SPLIT_PANE_KEY);
@@ -237,10 +282,11 @@ public class JArmEmuController extends AbstractJArmEmuModule {
                 getMemoryOverviewController().memoryTable.getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
             }
         } catch (JSONException exception) {
-            logger.severe("Error while parsing layout: " + exception.getMessage());
+            logger.severe("Error while parsing layout");
             logger.severe(ExceptionUtils.getStackTrace(exception));
         }
     }
+
 
     public void openDialogFront(ModalDialog dialog) {
         modalPaneFront.show(dialog.getModalBox());

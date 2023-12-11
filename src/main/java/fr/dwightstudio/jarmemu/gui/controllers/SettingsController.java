@@ -176,7 +176,9 @@ public class SettingsController extends AbstractJArmEmuModule {
             }
         });
 
-        preferences = Preferences.userRoot().node(getApplication().getClass().getPackage().getName());
+        String path = getApplication().getClass().getPackage().getName().replaceAll("\\.", "/");
+        logger.info("Setting preferences node to '" + path + "'");
+        preferences = Preferences.userRoot().node(path);
 
         if (preferences.get("version", "").isEmpty()) {
             setToDefaults();
@@ -219,7 +221,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
         getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
 
-        getController().applyLayout(getLayoutSetting());
+        if (initied) getController().applyLayout(getLayoutSetting());
     }
 
     /**

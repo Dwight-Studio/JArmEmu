@@ -309,11 +309,9 @@ public class CodePreparator {
             pos.incrementFileIndex();
         }
 
-
-        HashMap<Integer, ParsedObject> temp = new HashMap<>();
-
         // Génération des directives à l'aide des pseudo-opérations '='
         for (ParsedFile file : parsedFiles) {
+            HashMap<Integer, ParsedObject> temp = new HashMap<>();
             stateContainer.setFileIndex(file.getIndex());
             for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
                 if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
