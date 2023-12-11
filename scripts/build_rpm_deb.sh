@@ -27,7 +27,7 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.8
+VER=0.1.9
 RELEASE=BETA
 BF=$HOME/rpmbuild
 

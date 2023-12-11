@@ -50,6 +50,23 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2023-12-12" version="0.1.8">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.8</url>
+            <description>
+                <p>Beta stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Added layout preferences saving</li>
+                    <li>Adding editor tabs reordering</li>
+                    <li>Modified change highlighting (no more fading)</li>
+                    <li>Modified Step Over task (based on nesting count)</li>
+                    <li>Fixed label verifying process</li>
+                    <li>Fixed global accessibility</li>
+                    <li>Fixed exception throwing when launching non-saved file</li>
+                    <li>Fixed symbols address setting (did not change all symbols addresses)</li>
+                </ul>
+            </description>
+        </release>
         <release date="2023-12-10" version="0.1.7">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.7</url>
             <description>
