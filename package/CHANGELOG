@@ -1,6 +1,7 @@
 0.1.7 -> 0.1.8
 
 - Added layout preferences saving
+- Adding editor tabs reordering
 - Modified change highlighting (no more fading)
 - Modified Step Over task (based on nesting count)
 - Fixed label verifying process

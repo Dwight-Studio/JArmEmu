@@ -199,7 +199,7 @@ public class EditorController extends AbstractJArmEmuModule {
         }
         lastScheduledEditor = fileEditor;
 
-        getController().filesTabPane.getSelectionModel().select(pos.getFileIndex());
+        getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
     }
 
     /**

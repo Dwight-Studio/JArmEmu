@@ -284,7 +284,7 @@
                                         <StackPane fx:id="editorStackPane" VBox.vgrow="ALWAYS">
                                             <children>
                                                 <TabPane fx:id="filesTabPane" prefHeight="200.0" prefWidth="200.0"
-                                                         tabClosingPolicy="ALL_TABS"/>
+                                                         tabClosingPolicy="ALL_TABS" tabDragPolicy="REORDER"/>
                                             </children>
                                         </StackPane>
                                     </children>

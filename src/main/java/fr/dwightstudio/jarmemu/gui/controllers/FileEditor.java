@@ -403,4 +403,11 @@ public class FileEditor extends AbstractJArmEmuModule {
     public @Nullable File getPath() {
         return path;
     }
+
+    /**
+     * @return l'indice visuel de l'éditeur
+     */
+    public int getVisualIndex() {
+        return getController().filesTabPane.getTabs().indexOf(fileTab);
+    }
 }
