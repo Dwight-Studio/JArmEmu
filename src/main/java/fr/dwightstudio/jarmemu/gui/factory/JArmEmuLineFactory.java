@@ -98,7 +98,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     public void markExecuted() {
         if (lastScheduled != null) lastScheduled.markLine(LineStatus.EXECUTED);
 
-        if (lastExecuted != null) lastExecuted.markLine(LineStatus.NONE);
+        if (lastExecuted != null && lastScheduled != lastExecuted) lastExecuted.markLine(LineStatus.NONE);
         lastExecuted = lastScheduled;
     }
 

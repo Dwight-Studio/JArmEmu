@@ -1,6 +1,10 @@
 0.1.8 -> 0.1.9
 
-- Nothing (yet!)
+- Adding more screenshots in the MetaInfos
+- Fixed Flatpak version poor performances (allowing OpenGL)
+- Fixed line marking disappearing when the PC does not move
+- Fixed Step Over task (skipped an instruction)
+- Adjusted the default simulation interval to prevent front-end bugs
 
 
 0.1.7 -> 0.1.8

@@ -38,7 +38,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class ExecutionWorker extends AbstractJArmEmuModule {
-    public static final int UPDATE_THRESHOLD = 5;
+    public static final int UPDATE_THRESHOLD = 10;
+    public static final int FALLBACK_UPDATE_INTERVAL = 30;
 
     private static final int ERROR = -1;
     private static final int IDLE = 0;
@@ -191,8 +192,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     }
 
     private static class ExecutionThead extends Thread {
-
-        private static final int FALLBACK_UPDATE_INTERVAL = 25;
         private final Logger logger = Logger.getLogger(getClass().getName());
 
         private final JArmEmuApplication application;
@@ -383,18 +382,6 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             doContinue = true;
 
             int nesting = application.getCodeInterpreter().getNestingCount();
-
-            step(false);
-            if (shouldUpdateGUI()) updateGUI();
-
-            try {
-                synchronized (this) {
-                    if (waitingPeriod != 0)
-                        wait(waitingPeriod);
-                }
-            } catch (InterruptedException ignored) {
-                doContinue = false;
-            }
 
             while (doContinue) {
                 step(false);

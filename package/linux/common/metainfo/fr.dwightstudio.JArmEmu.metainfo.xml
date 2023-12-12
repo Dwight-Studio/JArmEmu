@@ -45,8 +45,28 @@
     </mimetypes>
     <screenshots>
         <screenshot type="default">
-            <caption>Main Screen: Editor</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/main.png</image>
+            <caption>Editor: Primer Dark theme</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/primer-dark.png</image>
+        </screenshot>
+        <screenshot type="extra">
+            <caption>Editor: Primer Light theme</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/primer-light.png</image>
+        </screenshot>
+        <screenshot type="extra">
+            <caption>Editor: Nord Dark theme</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/nord-dark.png</image>
+        </screenshot>
+        <screenshot type="extra">
+            <caption>Editor: Nord Light theme</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/nord-light.png</image>
+        </screenshot>
+        <screenshot type="extra">
+            <caption>Editor: Cupertino Dark theme</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/cupertino-dark.png</image>
+        </screenshot>
+        <screenshot type="extra">
+            <caption>Editor: Cupertino Light theme</caption>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/cupertino-light.png</image>
         </screenshot>
     </screenshots>
     <releases>
@@ -59,7 +79,7 @@
                     <li>Added layout preferences saving</li>
                     <li>Adding editor tabs reordering</li>
                     <li>Modified change highlighting (no more fading)</li>
-                    <li>Modified Step Over task (based on nesting count)</li>
+                    <li>Modified Step Over task (based on nesting count)</li>m
                     <li>Fixed label verifying process</li>
                     <li>Fixed global accessibility</li>
                     <li>Fixed exception throwing when launching non-saved file</li>
