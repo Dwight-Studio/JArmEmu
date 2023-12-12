@@ -37,8 +37,8 @@ source ./scripts/build_rpm_deb.sh || exit 1
 echo "Building WIN..."
 source ./scripts/build_win.sh || exit 1
 
-echo "Building FLATPAK..."
-source ./scripts/build_flatpak.sh || exit 1
+echo "Building FLATPAK and ARCH..."
+source ./scripts/build_flatpak_arch.sh || exit 1
 
 echo "Building ZIP..."
 source ./scripts/build_zip.sh || exit 1

@@ -1,6 +1,6 @@
 Name:           jarmemu
 Version:        0.1.9
-Release:        BETA
+Release:        RELEASE
 Summary:        JArmEmu
 Group:          Development/Tools
 BuildArch:      noarch

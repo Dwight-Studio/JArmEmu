@@ -29,7 +29,7 @@ CWD=$(pwd)
 
 # Constantes
 VER=0.1.9
-RELEASE=BETA
+RELEASE=RELEASE
 
 rpmdev-setuptree
 TMP=$(mktemp -d -q)

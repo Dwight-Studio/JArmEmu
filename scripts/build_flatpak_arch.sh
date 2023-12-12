@@ -29,7 +29,7 @@ CWD=$(pwd)
 
 # Constantes
 VER=0.1.9
-RELEASE=BETA
+RELEASE=RELEASE
 
 rpmdev-setuptree
 TMP=$(mktemp -d -q)
@@ -38,10 +38,11 @@ CPF=$TMP/JArmEmu
 # Copie
 mkdir -p $CPF/java/JArmEmu/
 cp ./package/linux/common/fr.dwightstudio.JArmEmu.desktop $CPF
+cp ./package/linux/common/jarmemu $CPF/
 cp -r ./package/linux/common/icons $CPF/
 cp -r ./package/linux/common/mime $CPF/
 cp -r ./package/linux/common/metainfo $CPF/
-cp ./package/linux/flatpak/jarmemu $CPF/
+cp ./package/linux/flatpak/jarmemu-flatpak $CPF/
 cp ./target/JArmEmu.jar $CPF/java/JArmEmu/
 cp -r ./target/lib/ $CPF/java/JArmEmu/
 
@@ -50,7 +51,7 @@ cd $TMP/ || exit 1
 zip -r JArmEmu *
 
 # Rendu et clean
-mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-source.zip
-sha256sum $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-source.zip > $CWD/target/flatpak.checksum
+mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-arch-source.zip
+sha256sum $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-arch-source.zip > $CWD/target/flatpak.checksum
 cd $CWD/ || exit 1
 rm -r $TMP
