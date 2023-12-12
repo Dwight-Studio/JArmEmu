@@ -3,7 +3,7 @@
 
 #define MyAppName "JArmEmu"
 #define MyAppVersion "0.1.9"
-#define MyAppRelease ""
+#define MyAppRelease "1"
 #define MyAppPublisher "Dwight Studio"
 #define MyAppURL "https://dwightstudio.fr/jarmemu"
 #define MyAppExeName "launcher.exe"

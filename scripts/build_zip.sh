@@ -28,8 +28,8 @@ cd $(git rev-parse --show-toplevel) || exit 1
 CWD=$(pwd)
 
 # Constantes
-VER=0.1.9
-RELEASE=RELEASE
+VER=0.1.10
+RELEASE=1
 
 rpmdev-setuptree
 TMP=$(mktemp -d -q)

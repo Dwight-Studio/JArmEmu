@@ -27,8 +27,8 @@
 cd $(git rev-parse --show-toplevel) || exit 1
 
 # Constantes
-VER=0.1.9
-RELEASE=RELEASE
+VER=0.1.10
+RELEASE=1
 BF=$HOME/rpmbuild
 
 # Clean
