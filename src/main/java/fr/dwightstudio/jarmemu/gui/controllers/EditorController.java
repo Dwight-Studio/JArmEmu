@@ -315,7 +315,7 @@ public class EditorController extends AbstractJArmEmuModule {
     /**
      * Méthode appelée lors de la reprise de l'exécution.
      */
-    public void onContinue() {
+    public void onContinueOrStepOver() {
         if (!fileEditors.isEmpty()) {
             for (FileEditor editor : fileEditors) {
                 editor.getCodeArea().setDisable(true);

@@ -1,5 +1,10 @@
 0.1.8 -> 0.1.9
 
+- Fixed Step Over task GUI (buttons stayed enabled)
+
+
+0.1.8 -> 0.1.9
+
 - Adding more screenshots in the MetaInfos
 - Adding line marking when double-clicking in labels
 - Fixed Flatpak version poor performances (allowing OpenGL)

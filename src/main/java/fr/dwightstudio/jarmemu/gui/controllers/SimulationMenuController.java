@@ -120,7 +120,13 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
     public void onStepOver() {
         getEditorController().clearNotifs();
         getExecutionWorker().stepOver();
-    }
+        getController().stepInto.setDisable(true);
+        getController().stepOver.setDisable(true);
+        getController().conti.setDisable(true);
+        getController().pause.setDisable(false);
+        getController().restart.setDisable(true);
+        getController().memoryDetailsAddressField.setDisable(true);
+        getEditorController().onContinueOrStepOver();}
 
     /**
      * Méthode invoquée par JavaFX
@@ -134,7 +140,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(false);
         getController().restart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
-        getEditorController().onContinue();
+        getEditorController().onContinueOrStepOver();
     }
 
     /**

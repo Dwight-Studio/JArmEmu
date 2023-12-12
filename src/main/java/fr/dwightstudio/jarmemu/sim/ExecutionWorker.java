@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.sim;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.gui.controllers.SimulationMenuController;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -401,6 +402,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             }
 
             if (isIntervalTooShort()) updateGUI();
+
+            Platform.runLater(() -> application.getSimulationMenuController().onPause());
             logger.info("Done!");
         }
 
