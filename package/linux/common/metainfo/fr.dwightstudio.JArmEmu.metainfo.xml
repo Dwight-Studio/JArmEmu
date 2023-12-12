@@ -70,7 +70,22 @@
         </screenshot>
     </screenshots>
     <releases>
-        <release date="2023-12-12" version="0.1.8">
+        <release date="2023-12-12" version="0.1.9">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.9</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Adding more screenshots in the MetaInfos</li>
+                    <li>Adding line marking when double-clicking in labels</li>
+                    <li>Fixed Flatpak version poor performances (allowing OpenGL)</li>
+                    <li>Fixed line marking disappearing when the PC does not move</li>
+                    <li>Fixed Step Over task (skipped an instruction)</li>
+                    <li>Adjusted the default simulation interval to prevent front-end bugs</li>
+                </ul>
+            </description>
+        </release>
+        <release date="2023-12-11" version="0.1.8">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.8</url>
             <description>
                 <p>Beta stable release of JArmEmu</p>

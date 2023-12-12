@@ -52,6 +52,6 @@ zip -r JArmEmu *
 
 # Rendu et clean
 mv JArmEmu.zip $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-arch-source.zip
-sha256sum $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-arch-source.zip > $CWD/target/flatpak.checksum
+sha256sum $CWD/target/JArmEmu-$VER-$RELEASE.flatpak-arch-source.zip > $CWD/target/flatpak-arch-source.checksum
 cd $CWD/ || exit 1
 rm -r $TMP
