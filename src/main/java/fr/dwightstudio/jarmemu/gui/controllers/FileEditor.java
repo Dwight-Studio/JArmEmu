@@ -242,6 +242,18 @@ public class FileEditor extends AbstractJArmEmuModule {
     }
 
     /**
+     * Déplace le curseur jusqu'à cette ligne.
+     *
+     * @param line le numéro de la ligne dans le fichier
+     */
+    public void goTo(int line) {
+        codeArea.moveTo(line, 0);
+        codeArea.requestFollowCaret();
+
+        lineFactory.goTo(line);
+    }
+
+    /**
      * Nettoie la dernière ligne marquée comme exécutée.
      *
      * @apiNote Utile lors du changement d'éditeur

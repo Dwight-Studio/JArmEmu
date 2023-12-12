@@ -310,7 +310,7 @@ _Start:
 	ldmfd sp!,{r1}
 	str r1,[fp,#indice]
 	@ libération dans la pile des param d''entrée
-	add sp,	sp, #8	
+	add sp,	sp, #8
 	
 	@---------------------------------------------------
 	ldr r0,='a'			@ b = EstPointEntree('a',&g);

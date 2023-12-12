@@ -28,6 +28,8 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -37,6 +39,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 
 import java.util.HashMap;
 import java.util.function.IntFunction;
@@ -81,7 +84,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         if (managers.containsKey(line)) {
             LineManager manager = managers.get(line);
             manager.markLine(lineStatus);
-            if (lineStatus != LineStatus.NONE) lastScheduled = manager;
+            if (lineStatus == LineStatus.SCHEDULED) lastScheduled = manager;
         }
     }
 
@@ -144,6 +147,19 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
         for (int i = 0; i < lineNum; i++) {
             apply(i);
         }
+    }
+
+    public void goTo(int line) {
+        LineManager manager = managers.get(line);
+
+        new Timeline(
+                new KeyFrame(Duration.millis(0), event -> manager.markLine(LineStatus.FLAGGED)),
+                new KeyFrame(Duration.millis(500), event -> manager.markLine(LineStatus.NONE)),
+                new KeyFrame(Duration.millis(1000), event -> manager.markLine(LineStatus.FLAGGED)),
+                new KeyFrame(Duration.millis(1500), event -> manager.markLine(LineStatus.NONE)),
+                new KeyFrame(Duration.millis(2000), event -> manager.markLine(LineStatus.FLAGGED)),
+                new KeyFrame(Duration.millis(2500), event -> manager.markLine(LineStatus.NONE))
+        ).play();
     }
 
     public class LineManager {
@@ -236,6 +252,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 switch (status) {
                     case EXECUTED -> grid.getStyleClass().add("executed");
                     case SCHEDULED -> grid.getStyleClass().add("scheduled");
+                    case FLAGGED -> grid.getStyleClass().add("flagged");
                     case NONE -> grid.getStyleClass().add("none");
                 }
             }

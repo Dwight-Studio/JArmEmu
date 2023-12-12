@@ -186,20 +186,40 @@ public class EditorController extends AbstractJArmEmuModule {
      * @param pos la ligne à marquer
      */
     public void markForward(FilePos pos) {
-        FileEditor fileEditor = fileEditors.get(pos.getFileIndex());
-        fileEditor.markForward(pos.getPos());
+        try {
+            FileEditor fileEditor = fileEditors.get(pos.getFileIndex());
+            fileEditor.markForward(pos.getPos());
 
-        if (lastExecutedEditor != null && !lastExecutedEditor.isClosed() && lastExecutedEditor != fileEditor)
-            lastExecutedEditor.clearLastExecuted();
+            if (lastExecutedEditor != null && !lastExecutedEditor.isClosed() && lastExecutedEditor != fileEditor)
+                lastExecutedEditor.clearLastExecuted();
 
-        if (lastScheduledEditor != null && !lastScheduledEditor.isClosed() && lastScheduledEditor != fileEditor) {
-            lastScheduledEditor.markExecuted();
+            if (lastScheduledEditor != null && !lastScheduledEditor.isClosed() && lastScheduledEditor != fileEditor) {
+                lastScheduledEditor.markExecuted();
 
-            lastExecutedEditor = lastScheduledEditor;
+                lastExecutedEditor = lastScheduledEditor;
+            }
+            lastScheduledEditor = fileEditor;
+
+            getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
+        } catch (NullPointerException e) {
+            logger.warning("Trying to mark non-existent line " + pos);
         }
-        lastScheduledEditor = fileEditor;
+    }
 
-        getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
+    /**
+     * Déplace le curseur jusqu'à cette ligne.
+     *
+     * @param pos les coordonnées de la ligne dans les fichiers
+     */
+    public void goTo(FilePos pos) {
+        try {
+            FileEditor fileEditor = fileEditors.get(pos.getFileIndex());
+            fileEditor.goTo(pos.getPos());
+
+            getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
+        } catch (NullPointerException e) {
+            logger.warning("Trying to go to non-existent line " + pos);
+        }
     }
 
     /**

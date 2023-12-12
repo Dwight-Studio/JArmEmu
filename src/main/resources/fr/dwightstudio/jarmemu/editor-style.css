@@ -99,6 +99,10 @@
     -fx-background-color: -color-warning-muted;
 }
 
+.flagged {
+    -fx-background-color: -color-accent-muted;
+}
+
 .none {
     -fx-background-color: -color-bg-overlay;
 }

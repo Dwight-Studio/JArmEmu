@@ -36,6 +36,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
@@ -116,6 +117,20 @@ public class LabelsController extends AbstractJArmEmuModule {
         labelTable.setEditable(true);
         labelTable.getSortOrder().clear();
         labelTable.getSortOrder().add(col0);
+
+        labelTable.setRowFactory(table -> {
+            TableRow<SymbolView> row = new TableRow<>();
+
+            row.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                    int address = row.getItem().getValueProperty().get();
+                    FilePos pos = getCodeInterpreter().getLineNumber(address);
+                    getEditorController().goTo(pos);
+                }
+            });
+
+            return row;
+        });
 
         AnchorPane.setTopAnchor(labelTable, 0d);
         AnchorPane.setRightAnchor(labelTable, 0d);

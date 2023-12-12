@@ -89,7 +89,7 @@ public class JArmEmuApplication extends Application {
     private String argSave;
 
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
-    // TODO: Ajouter d'autres types de packages (ArchLinux,
+    // TODO: Ajouter d'autres types de packages (ArchLinux, etc)
 
     @Override
     public void start(Stage stage) throws IOException {
