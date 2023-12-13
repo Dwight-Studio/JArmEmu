@@ -1,12 +1,14 @@
-0.1.8 -> 0.1.9
+0.1.9 -> 0.1.10
 
+- Added ADR instruction
+- Improved Linux execution script (discovering and selecting JRE version)
 - Fixed Step Over task GUI (buttons stayed enabled)
 
 
 0.1.8 -> 0.1.9
 
-- Adding more screenshots in the MetaInfos
-- Adding line marking when double-clicking in labels
+- Added more screenshots in the MetaInfos
+- Added line marking when double-clicking in labels
 - Fixed Flatpak version poor performances (allowing OpenGL)
 - Fixed line marking disappearing when the PC does not move
 - Fixed Step Over task (skipped an instruction)
@@ -16,7 +18,7 @@
 0.1.7 -> 0.1.8
 
 - Added layout preferences saving
-- Adding editor tabs reordering
+- Added editor tabs reordering
 - Modified change highlighting (no more fading)
 - Modified Step Over task (based on nesting count)
 - Fixed label verifying process
@@ -36,7 +38,7 @@
 - Added value update indicator
 - Fixed memory, stack and register tabs unavailability when not simulating
 - Fixed simulation speed setting changeability when simulating
-- Optimizing line marking
+- Optimized line marking
 - Reduced simulation interval lower threshold
 
 
@@ -46,7 +48,7 @@
 - Fixed unread instruction when placed in the same line as a label
 - Added menu (in View) to control memory columns visibility
 - Fixed cross-platform compatibility
-- Adding Chocolatey packaging
+- Added Chocolatey packaging
 
 
 0.1.4 -> 0.1.5
@@ -55,7 +57,7 @@
 - Fixed a bug where you could only use in the stack the first 10 registers
 - Fixed a bug that prevented declaring structures in a structure
 - Refactored CodeInterpreter to completely use PC
-- Fixing wrong memory management (Big to Little endian)
+- Fixed wrong memory management (Big to Little endian)
 - Added ASCII column in memory viewing table
 - Fixed Stack address and Symbol address settings (enabled during simulation)
 - Fixed transparent line numbers in editor
@@ -76,28 +78,28 @@
 
 - ASR carry flag improved yet again (didn't work for positive values)
 - Convert MOV instruction to SHIFT instruction (in the backend only) for better use of update flags
-- Fixing a bug that prevented the leftest text of editor to be selected with mouse
-- Fixing Regex parser arguments parsing (strip whitespaces)
-- Two new themes (Nord & Cupertino) are now available
-- Reworking data viewing (Registers, Stack, Memory)
-- Adding dynamic settings
-- Adding automatic breakpoints
-- Fixing new file saving
+- Fixed a bug that prevented the leftest text of editor to be selected with mouse
+- Fixed Regex parser arguments parsing (strip whitespaces)
+- Added two new themes (Nord & Cupertino)
+- Reworked data viewing (Registers, Stack, Memory)
+- Added dynamic settings
+- Added automatic breakpoints
+- Fixed new file saving
 
 
 0.1.1 -> 0.1.2
 
-- Fixing character parsing
-- Fixing unresponsive app bug due to inexistant save file
-- Optimizing concurrent management (using bound properties instead of direct assignation)
-- Fixing unrefreshed screen bug
-- Adding global directive logic (actually usable now)
-- Fixing the stack auto-scrolling for non-HDPI screens
-- Adding Fill directive
-- Adding AtlantaFx theme (instead of JavaFx Moderna with a bit of BootstrapFx)
-- Adding support for Dark & Light themes
+- Fixed character parsing
+- Fixed unresponsive app bug due to inexistant save file
+- Optimized concurrent management (using bound properties instead of direct assignation)
+- Fixed unrefreshed screen bug
+- Added global directive logic (actually usable now)
+- Fixed the stack auto-scrolling for non-HDPI screens
+- Added Fill directive
+- Added AtlantaFx theme (instead of JavaFx Moderna with a bit of BootstrapFx)
+- Added support for Dark & Light themes
 - Legacy Parser now works when selected in the drop down menu (its use is still not recommended nonetheless)
 - RRX as an instruction is now fully supported
 - S condition now update all flags on ROR instruction
 - ASR carry flag should now work correctly
-- Enhancing settings menu
+- Enhanced settings menu

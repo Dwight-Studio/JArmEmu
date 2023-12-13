@@ -76,8 +76,8 @@
                 <p>Stable release of JArmEmu</p>
                 <p>Changelog:</p>
                 <ul>
-                    <li>Adding more screenshots in the MetaInfos</li>
-                    <li>Adding line marking when double-clicking in labels</li>
+                    <li>Added more screenshots in the MetaInfos</li>
+                    <li>Added line marking when double-clicking in labels</li>
                     <li>Fixed Flatpak version poor performances (allowing OpenGL)</li>
                     <li>Fixed line marking disappearing when the PC does not move</li>
                     <li>Fixed Step Over task (skipped an instruction)</li>
@@ -92,7 +92,7 @@
                 <p>Changelog:</p>
                 <ul>
                     <li>Added layout preferences saving</li>
-                    <li>Adding editor tabs reordering</li>
+                    <li>Added editor tabs reordering</li>
                     <li>Modified change highlighting (no more fading)</li>
                     <li>Modified Step Over task (based on nesting count)</li>m
                     <li>Fixed label verifying process</li>
@@ -117,7 +117,7 @@
                     <li>Added value update indicator</li>
                     <li>Fixed memory, stack and register tabs unavailability when not simulating</li>
                     <li>Fixed simulation speed setting changeability when simulating</li>
-                    <li>Optimizing line marking</li>
+                    <li>Optimized line marking</li>
                     <li>Reduced simulation interval lower threshold</li>
                 </ul>
             </description>
@@ -132,7 +132,7 @@
                     <li>Fixed unread instruction when placed in the same line as a label</li>
                     <li>Added menu (in View) to control memory columns visibility</li>
                     <li>Fixed cross-platform compatibility</li>
-                    <li>Adding Chocolatey packaging</li>
+                    <li>Added Chocolatey packaging</li>
                 </ul>
             </description>
         </release>
@@ -146,7 +146,7 @@
                     <li>Fixed a bug where you could only use in the stack the first 10 registers</li>
                     <li>Fixed a bug that prevented declaring structures in a structure</li>
                     <li>Refactored CodeInterpreter to completely use PC</li>
-                    <li>Fixing wrong memory management (Big to Little endian)</li>
+                    <li>Fixed wrong memory management (Big to Little endian)</li>
                     <li>Added ASCII column in memory viewing table</li>
                     <li>Fixed Stack address and Symbol address settings (enabled during simulation)</li>
                     <li>Fixed transparent line numbers in editor</li>
@@ -179,13 +179,13 @@
                     <li>Convert MOV instruction to SHIFT instruction (in the backend only) for better use of update
                         flags
                     </li>
-                    <li>Fixing a bug that prevented the leftest text of editor to be selected with mouse</li>
-                    <li>Fixing Regex parser arguments parsing (strip whitespaces)</li>
-                    <li>Two new themes (Nord &amp; Cupertino) are now available</li>
-                    <li>Reworking data viewing (Registers, Stack, Memory)</li>
-                    <li>Adding dynamic settings</li>
-                    <li>Adding automatic breakpoints</li>
-                    <li>Fixing new file saving</li>
+                    <li>Fixed a bug that prevented the leftest text of editor to be selected with mouse</li>
+                    <li>Fixed Regex parser arguments parsing (strip whitespaces)</li>
+                    <li>Added two new themes (Nord &amp; Cupertino)</li>
+                    <li>Reworked data viewing (Registers, Stack, Memory)</li>
+                    <li>Added dynamic settings</li>
+                    <li>Added automatic breakpoints</li>
+                    <li>Fixed new file saving</li>
                 </ul>
             </description>
         </release>
@@ -195,15 +195,15 @@
                 <p>Alpha release of JArmEmu</p>
                 <p>Changelog:</p>
                 <ul>
-                    <li>Fixing character parsing</li>
-                    <li>Fixing unresponsive app bug due to inexistant save file</li>
-                    <li>Optimizing concurrent management (using bound properties instead of direct assignation)</li>
-                    <li>Fixing unrefreshed screen bug</li>
-                    <li>Adding global directive logic (actually usable now)</li>
-                    <li>Fixing the stack auto-scrolling for non-HDPI screens</li>
-                    <li>Adding Fill directive</li>
-                    <li>Adding AtlantaFx theme (instead of JavaFx Moderna with a bit of BootstrapFx)</li>
-                    <li>Adding support for Dark &amp; Light themes</li>
+                    <li>Fixed character parsing</li>
+                    <li>Fixed unresponsive app bug due to inexistant save file</li>
+                    <li>Optimized concurrent management (using bound properties instead of direct assignation)</li>
+                    <li>Fixed unrefreshed screen bug</li>
+                    <li>Added global directive logic (actually usable now)</li>
+                    <li>Fixed the stack auto-scrolling for non-HDPI screens</li>
+                    <li>Added Fill directive</li>
+                    <li>Added AtlantaFx theme (instead of JavaFx Moderna with a bit of BootstrapFx)</li>
+                    <li>Added support for Dark &amp; Light themes</li>
                     <li>Legacy Parser now works when selected in the drop down menu (its use is still not recommended
                         nonetheless)
                     </li>

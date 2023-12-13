@@ -64,7 +64,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public static final int DEFAULT_THEME_FAMILY = 0;
     public static final int DEFAULT_THEME_VARIATION = 0;
-    public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
+    public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"maximized\":true,\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
 
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
