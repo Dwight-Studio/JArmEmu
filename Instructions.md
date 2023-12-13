@@ -1,5 +1,5 @@
 # ARMv7 Instructions
-This file regroups all implemented instructions in JArmEmu and a quick summary of their arguments.
+This file regroups all implemented instructions in JArmEmu and their respective arguments.
 
 ---
 
