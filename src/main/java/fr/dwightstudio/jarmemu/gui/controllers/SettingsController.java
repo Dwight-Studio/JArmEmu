@@ -60,7 +60,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public static final int DEFAULT_DATA_FORMAT = 0;
     public static final boolean DEFAULT_FOLLOW_SP = true;
-    public static final boolean DEFAULT_HIGHTLIGHT_UPDATES = true;
+    public static final boolean DEFAULT_HIGHLIGHT_UPDATES = true;
 
     public static final int DEFAULT_THEME_FAMILY = 0;
     public static final int DEFAULT_THEME_VARIATION = 0;
@@ -93,7 +93,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
     public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private boolean initied;
+    private boolean initiated;
 
     private Preferences preferences;
 
@@ -112,7 +112,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public SettingsController(JArmEmuApplication application) {
         super(application);
-        initied = false;
+        initiated = false;
     }
 
     @Override
@@ -152,7 +152,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreakSetting(newVal));
         getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreakSetting(newVal));
         getController().followSPSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFollowSPSetting(newVal));
-        getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHightlightUpdatesSetting(newVal));
+        getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHighlightUpdatesSetting(newVal));
 
         // Gestion des ChoiceBoxes
         getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
@@ -161,7 +161,7 @@ public class SettingsController extends AbstractJArmEmuModule {
             for (int i = 0 ; i < DATA_FORMAT_LABEL_DICT.length ; i++) {
                 if (DATA_FORMAT_LABEL_DICT[i].equals(newVal)) {
                     setDataFormat(i);
-                    if (initied) getExecutionWorker().updateFormat();
+                    if (initiated) getExecutionWorker().updateFormat();
                 }
             }
         });
@@ -189,7 +189,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         stackAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setStackAddress(newVal)));
         symbolsAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSymbolsAddress(newVal)));
 
-        initied = true;
+        initiated = true;
     }
 
     /**
@@ -219,7 +219,7 @@ public class SettingsController extends AbstractJArmEmuModule {
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
         getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
 
-        if (initied) getController().applyLayout(getLayoutSetting());
+        if (initiated) getController().applyLayout(getLayoutSetting());
     }
 
     /**
@@ -409,10 +409,10 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public boolean getHighlightUpdatesSetting() {
-        return preferences.getBoolean(HIGHLIGHT_UPDATES_KEY, DEFAULT_HIGHTLIGHT_UPDATES);
+        return preferences.getBoolean(HIGHLIGHT_UPDATES_KEY, DEFAULT_HIGHLIGHT_UPDATES);
     }
 
-    public void setHightlightUpdatesSetting(boolean b) {
+    public void setHighlightUpdatesSetting(boolean b) {
         preferences.putBoolean(HIGHLIGHT_UPDATES_KEY, b);
     }
 
