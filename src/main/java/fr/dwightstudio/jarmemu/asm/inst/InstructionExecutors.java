@@ -69,6 +69,7 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> MVN_EXECUTOR = new MVNExecutor();
 
     // Memory access
+    public static final InstructionExecutor<Register, Integer, Object, Object> ADR_EXECUTOR = new ADRExecutor();
     public static final InstructionExecutor<Register, AddressParser.UpdatableInteger, Integer, ShiftParser.ShiftFunction> LDR_EXECUTOR = new LDRExecutor();
     public static final InstructionExecutor<Register, AddressParser.UpdatableInteger, Integer, ShiftParser.ShiftFunction> STR_EXECUTOR = new STRExecutor();
     public static final InstructionExecutor<RegisterWithUpdateParser.UpdatableRegister, Register[], Object, Object> LDM_EXECUTOR = new LDMExecutor();

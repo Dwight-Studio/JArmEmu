@@ -37,7 +37,7 @@ public class ADDExecutor implements InstructionExecutor<Register, Register, Inte
 
         arg1.setData(arg2.getData() + i1); // arg1 = arg2 + (arg4 SHIFT arg3)
 
-        if (updateFlags){
+        if (updateFlags) {
             stateContainer.getCPSR().setN(arg1.getData() < 0);
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
             stateContainer.getCPSR().setC(MathUtils.hasCarry(arg2.getData(), i1));
