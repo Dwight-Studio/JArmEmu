@@ -50,6 +50,7 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> ORR_EXECUTOR = new ORRExecutor();
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> EOR_EXECUTOR = new EORExecutor();
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> BIC_EXECUTOR = new BICExecutor();
+    public static final InstructionExecutor<Register, Integer, Integer, Object> BFC_EXECUTOR = new BFCExecutor();
 
     //Shifter
     public static final InstructionExecutor<Register, Register, Integer, Object> LSL_EXECUTOR = new LSLExecutor();

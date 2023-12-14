@@ -1,6 +1,7 @@
 0.1.9 -> 0.1.10
 
 - Added ADR instruction
+- Added BFC instruction
 - Improved Linux execution script (discovering and selecting JRE version)
 - Fixed Step Over task GUI (buttons stayed enabled)
 

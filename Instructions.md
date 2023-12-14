@@ -20,6 +20,7 @@ This file regroups all implemented instructions in JArmEmu and their respective 
 |       ORR        |     reg     |  reg  | arg  |      |
 |       EOR        |     reg     |  reg  | arg  |      |
 |       BIC        |     reg     |  reg  | arg  |      |
+|       BFC        |     reg     |  imm  | imm  |      |
 |       CMP        |     reg     |  arg  |      |      |
 |       CMN        |     reg     |  arg  |      |      |
 |       TST        |     reg     |  arg  |      |      |
