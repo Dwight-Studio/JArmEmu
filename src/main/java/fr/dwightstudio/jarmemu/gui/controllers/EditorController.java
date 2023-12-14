@@ -103,6 +103,7 @@ public class EditorController extends AbstractJArmEmuModule {
             logger.info("Error parsing code at line " + exception.getLine());
         }
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
+
         if (exception.isLineSpecified()) {
             if (exception.isFileSpecified()) {
                 addNotif(exception.getTitle(), exception.getMessage()

@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
@@ -125,14 +126,14 @@ public class ASMParser {
             try {
                 instruction = Instruction.valueOf(instructionString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown instruction '" + instructionString + "' at line " + sourceScanner.getCurrentInstructionValue());
+                throw new SyntaxASMException("Unknown instruction '" + instructionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
             }
 
             try {
                 if (Objects.equals(conditionString, "")) conditionString = null;
                 if (conditionString != null) condition = Condition.valueOf(conditionString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown condition '" + conditionString + "' at line " + sourceScanner.getCurrentInstructionValue());
+                throw new SyntaxASMException("Unknown condition '" + conditionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
             }
 
             if (flagString != null) updateFlags = flagString.equalsIgnoreCase("S");
@@ -141,21 +142,21 @@ public class ASMParser {
                 if (Objects.equals(dataString, "")) dataString = null;
                 if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown data mode '" + dataString + "' at line " + sourceScanner.getCurrentInstructionValue());
+                throw new SyntaxASMException("Unknown data mode '" + dataString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
             }
 
             try {
                 if (Objects.equals(updateString, "")) updateString = null;
                 if (updateString != null) updateMode = UpdateMode.valueOf(updateString.toUpperCase());
             } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown update mode '" + updateString + "' at line " + sourceScanner.getCurrentInstructionValue());
+                throw new SyntaxASMException("Unknown update mode '" + updateString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
             }
 
             instructionPos++;
         } else if (matcherLabel.find()) {
             return new ParsedLabel(matcherLabel.group("LABEL").strip().toUpperCase());
         } else {
-            throw new SyntaxASMException("Unexpected statement '" + line + "', at line " + sourceScanner.getCurrentInstructionValue());
+            throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
         }
 
         if (arg1 != null) {

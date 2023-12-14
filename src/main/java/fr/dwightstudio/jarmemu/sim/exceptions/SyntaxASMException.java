@@ -37,17 +37,6 @@ public class SyntaxASMException extends IllegalStateException {
         line = -1;
     }
 
-    public SyntaxASMException(String s, int line) {
-        super(s);
-        this.line = line;
-    }
-
-    public SyntaxASMException(String s, int line, ParsedObject parsedObject) {
-        super(s);
-        this.line = line;
-        this.parsedObject = parsedObject;
-    }
-
     public boolean isLineSpecified() {
         return line != -1;
     }

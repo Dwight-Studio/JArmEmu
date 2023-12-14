@@ -27,10 +27,7 @@ import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectivePack;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
+import fr.dwightstudio.jarmemu.sim.parse.*;
 
 public class LegacyDirectiveParser {
 
@@ -72,7 +69,7 @@ public class LegacyDirectiveParser {
                 ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip(), section);
                 directives.add(parsedDirective);
             } catch (IllegalArgumentException exception) {
-                if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'", sourceScanner.getCurrentInstructionValue());
+                if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
             }
         }
 

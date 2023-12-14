@@ -91,7 +91,7 @@ public class DirectiveParser {
                     ParsedSection parsedSection = new ParsedSection(section);
                     directives.add(parsedSection);
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown section '" + sectionString + "'", sourceScanner.getCurrentInstructionValue());
+                    throw new SyntaxASMException("Unknown section '" + sectionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
                 }
             } else if (labelString != null && !labelString.isEmpty()) {
                 if (currentSection.getValue().shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase(), currentSection.getValue()));
@@ -102,13 +102,13 @@ public class DirectiveParser {
                     ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip(), currentSection.getValue());
                     directives.add(parsedDirective);
                 } catch (IllegalArgumentException exception) {
-                    if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'", sourceScanner.getCurrentInstructionValue());
+                    if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
                 }
             }
         }
 
         if (!flag) {
-            if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unexpected statement '" + line + "'", sourceScanner.getCurrentInstructionValue());
+            if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
         }
 
         return directives.close();

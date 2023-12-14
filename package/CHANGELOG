@@ -3,6 +3,7 @@
 - Added ADR instruction
 - Added BFC instruction
 - Improved Linux execution script (discovering and selecting JRE version)
+- Improved Syntax error message (specify file in most of the cases)
 - Fixed Step Over task GUI (buttons stayed enabled)
 
 

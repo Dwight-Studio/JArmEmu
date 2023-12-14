@@ -57,7 +57,7 @@ public class ParsedLabel extends ParsedObject {
         if (container.getRestrainedLabels().get(this.name.toUpperCase()) == null) {
             throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
         } else if (container.getRestrainedLabels().get(this.name) != this.pos.toByteValue()) {
-            return new SyntaxASMException("Label '" + this.name + "' is already defined", line, this);
+            return new SyntaxASMException("Label '" + this.name + "' is already defined").with(line).with(this);
         }
 
         if (erased != null) return new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
