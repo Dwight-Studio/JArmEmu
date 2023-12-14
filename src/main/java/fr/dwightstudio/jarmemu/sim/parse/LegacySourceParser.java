@@ -213,7 +213,8 @@ public class LegacySourceParser implements SourceParser {
                     currentLine = currentLine.substring(currentLine.indexOf(":")+1).strip();
                 }
                 if(!currentLine.isEmpty()){
-                    instructionString = currentLine.split(" ")[0].toUpperCase();
+                    String oldInstructionString = currentLine.split(" ")[0];
+                    instructionString = oldInstructionString.toUpperCase();
                     int instructionLength = instructionString.length();
                     instructionString = this.removeFlags(instructionString);
                     instructionString = this.removeCondition(instructionString);
@@ -223,7 +224,7 @@ public class LegacySourceParser implements SourceParser {
                         if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
                     }
 
-                    if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + instructionString + "'");
+                    if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + oldInstructionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
 
                     if (currentLine.contains("{")) {
                         StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
@@ -312,9 +313,7 @@ public class LegacySourceParser implements SourceParser {
      * @return un ParsedObject non vérifié
      */
     public ParsedObject parseOneLine() {
-        try {
-            readOneLineASM();
-        } catch (SyntaxASMException ignored) {}
+        readOneLineASM();
 
         if (this.section != null) {
             this.currentSection = this.section;
