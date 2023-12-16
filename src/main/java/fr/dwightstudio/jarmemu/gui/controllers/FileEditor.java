@@ -282,7 +282,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public void prepareSimulation() {
         int lineNum = codeArea.getParagraphs().size();
-        logger.info("Pre-generate " + lineNum + " lines");
+        logger.info("Pre-generate " + lineNum + " lines in " + getFileName());
         lineFactory.pregen(codeArea.getParagraphs().size());
         Platform.runLater(this::clearLineMarkings);
     }

@@ -5,9 +5,10 @@ Simple ARMv7 simulator written in Java, intended for educational purpose.
 JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a simulated
 ARMv7 architecture.
 
-You can write your program and include GNU Assembly directives (only the basic ones are implemented, refer to
+You can write your program using the ARMv7 instruction set (refer to
 [Instructions.md](https://github.com/Dwight-Studio/JArmEmu/blob/main/Instructions.md) or to synthaxic colorimetry
-to see if it is implemented).
+to see if it is implemented) and include GNU Assembly directives (only the basic ones are implemented, again refer to synthaxic
+colorimetry to see if it is implemented).
 
 JArmEmu is powered by an ARMv7 interpreter made *Ex Nihilo* for this project.
 
