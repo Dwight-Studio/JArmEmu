@@ -2,6 +2,7 @@
 
 - Added ADR instruction
 - Added BFC instruction
+- Added BFI instruction
 - Improved Linux execution script (discovering and selecting JRE version)
 - Improved Syntax error message (specify file in most of the cases)
 - Fixed Legacy Parser skipping incorrect instructions when it should send a notification
