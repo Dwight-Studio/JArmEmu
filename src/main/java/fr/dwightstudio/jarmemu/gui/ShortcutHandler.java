@@ -31,12 +31,19 @@ public class ShortcutHandler extends AbstractJArmEmuModule {
     }
 
     public void handle(KeyEvent event) {
-        if (event.isControlDown()) {
-            switch (event.getCode()) {
-                case S -> getMainMenuController().onSave();
-                case O -> getMainMenuController().onOpen();
-                case R -> getMainMenuController().onReload();
-                case N -> getMainMenuController().onNewFile();
+        if (event.isShortcutDown()) {
+            if (event.isShiftDown()) {
+                switch (event.getCode()) {
+                    case S -> getMainMenuController().onSave();
+                    case O -> getMainMenuController().onOpen();
+                    case R -> getMainMenuController().onReload();
+                    case N -> getMainMenuController().onNewFile();
+                }
+            } else {
+                switch (event.getCode()) {
+                    case S -> getMainMenuController().onSaveAll();
+                    case R -> getMainMenuController().onReloadAll();
+                }
             }
         }
     }

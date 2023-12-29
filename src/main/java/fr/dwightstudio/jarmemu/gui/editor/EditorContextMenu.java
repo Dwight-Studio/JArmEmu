@@ -26,8 +26,7 @@ package fr.dwightstudio.jarmemu.gui.editor;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.*;
 import org.fxmisc.richtext.CodeArea;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -47,6 +46,10 @@ public class EditorContextMenu extends ContextMenu {
         cut = new MenuItem("Cut", new FontIcon(Material2OutlinedAL.CONTENT_CUT));
         paste = new MenuItem("Paste", new FontIcon(Material2OutlinedAL.CONTENT_PASTE));
         delete = new MenuItem("Delete", new FontIcon(Material2OutlinedAL.DELETE));
+
+        copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
+        cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));
+        paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN));
 
         copy.setOnAction(this::onCopy);
         cut.setOnAction(this::onCut);

@@ -38,23 +38,23 @@
                     <menus>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File">
+                                <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File" accelerator="Shortcut+N">
                                     <graphic>
                                         <FontIcon iconLiteral="mdral-insert_drive_file"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open...">
+                                <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open..." accelerator="Shortcut+O">
                                     <graphic>
                                         <FontIcon iconLiteral="mdal-folder"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="Save all">
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="Save all" accelerator="Shortcut+Shift+S">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save">
+                                <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save" accelerator="Shortcut+S">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
@@ -65,12 +65,12 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="Reload all from disk">
+                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="Reload all from disk" accelerator="Shortcut+Shift+R">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk">
+                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk" accelerator="Shortcut+R">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh"/>
                                     </graphic>
@@ -102,17 +102,17 @@
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#onCopy" text="Copy">
+                                <MenuItem mnemonicParsing="false" onAction="#onCopy" text="Copy" accelerator="Shortcut+C">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-content_copy"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onCut" text="Cut">
+                                <MenuItem mnemonicParsing="false" onAction="#onCut" text="Cut" accelerator="Shortcut+X">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-content_cut"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onPaste" text="Paste">
+                                <MenuItem mnemonicParsing="false" onAction="#onPaste" text="Paste" accelerator="Shortcut+V">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-content_paste"/>
                                     </graphic>
