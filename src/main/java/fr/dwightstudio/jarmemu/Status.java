@@ -23,20 +23,16 @@
 
 package fr.dwightstudio.jarmemu;
 
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+
 public enum Status {
-    INITIALIZING("Initializing"),
-    EDITING("Editing"),
-    SIMULATING("Simulating"),
-    ERROR("Error");
-
-    private final String desc;
-
-    Status(String desc) {
-        this.desc = desc;
-    }
+    INITIALIZING(),
+    EDITING(),
+    SIMULATING(),
+    ERROR();
 
     @Override
     public String toString() {
-        return desc;
+        return JArmEmuApplication.formatMessage("%status." + this.name().toLowerCase());
     }
 }
