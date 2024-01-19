@@ -92,10 +92,9 @@ public class JArmEmuApplication extends Application {
     private String argSave;
 
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
-    // TODO: Ajouter d'autres types de packages (ArchLinux, etc)
     // TODO: Ajouter un toggle pour les breakpoints dans le code
-    // TODO: Corriger la ligne verte qui fait des siennes
-
+    // TODO: Finir l'i18n (erreurs, about, colonnes etc)
+    // TODO: Ajouter le Français
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
