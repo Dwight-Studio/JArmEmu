@@ -34,6 +34,7 @@ This file regroups all implemented instructions in JArmEmu and their respective 
 |       STM        |     reg     | mreg  |      |      |
 |        B         |    label    |       |      |      |
 |        BL        |    label    |       |      |      |
+|       BLX        |     reg     |       |      |      |
 |        BX        |     reg     |       |      |      |
 |       LSL        | reg / value |  reg  |      |      |
 |       LSR        | reg / value |  reg  |      |      |

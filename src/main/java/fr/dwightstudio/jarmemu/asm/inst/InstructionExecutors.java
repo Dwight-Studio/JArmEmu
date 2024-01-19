@@ -81,6 +81,7 @@ public class InstructionExecutors {
     // Branching
     public static final InstructionExecutor<Integer, Object, Object, Object> B_EXECUTOR = new BExecutor();
     public static final InstructionExecutor<Integer, Object, Object, Object> BL_EXECUTOR = new BLExecutor();
+    public static final InstructionExecutor<Register, Object, Object, Object> BLX_EXECUTOR = new BLXExecutor();
     public static final InstructionExecutor<Register, Object, Object, Object> BX_EXECUTOR = new BXExecutor();
     public static final InstructionExecutor<Integer, Object, Object, Object> SWI_EXECUTOR = new SWIExecutor();
 

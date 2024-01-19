@@ -4,6 +4,7 @@
 - Added BFC instruction
 - Added BFI instruction
 - Added BKPT instruction
+- Added BLX instruction
 - Added shortcuts and shortcut hints
 - Improved Linux execution script (discovering and selecting JRE version)
 - Improved Syntax error message (specify file in most of the cases)

@@ -87,6 +87,7 @@ public enum Instruction {
     // Branching
     B(B_EXECUTOR, true, false, LABEL, NULL, NULL, NULL),
     BL(BL_EXECUTOR, true, false, LABEL, NULL, NULL, NULL),
+    BLX(BLX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
     BX(BX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
     SWI(SWI_EXECUTOR, false, false, CODE, NULL, NULL, NULL),
 
