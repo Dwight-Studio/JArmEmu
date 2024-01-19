@@ -204,10 +204,13 @@ public class LegacySourceParser implements SourceParser {
             Section section = this.legacySectionParser.parseOneLine(currentLine);
             if (section != null) this.section = section;
 
-            ParsedObject directives = this.legacyDirectiveParser.parseOneLine(sourceScanner, currentLine, currentSection);
-            if (directives != null) this.directive = directives;
+            if (section == null) {
+                ParsedObject directives = this.legacyDirectiveParser.parseOneLine(sourceScanner, currentLine, currentSection);
+                if (directives != null) this.directive = directives;
+            }
 
-            if (currentSection == Section.TEXT){
+
+            if (currentSection == Section.TEXT && this.section == null && this.directive == null){
                 if (currentLine.contains(":")){
                     this.label = currentLine.substring(0, currentLine.indexOf(":")).strip().toUpperCase();
                     currentLine = currentLine.substring(currentLine.indexOf(":")+1).strip();
@@ -314,6 +317,7 @@ public class LegacySourceParser implements SourceParser {
      */
     public ParsedObject parseOneLine() {
         readOneLineASM();
+
 
         if (this.section != null) {
             this.currentSection = this.section;
