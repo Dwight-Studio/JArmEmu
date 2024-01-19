@@ -8,6 +8,6 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 public class BKPTExecutor implements InstructionExecutor<Integer, Object, Object, Object>{
     @Override
     public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Integer arg1, Object arg2, Object arg3, Object arg4) {
-        throw new BreakpointASMException(arg1);
+        if (!forceExecution) throw new BreakpointASMException(arg1);
     }
 }

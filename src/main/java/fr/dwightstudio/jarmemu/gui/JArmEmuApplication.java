@@ -49,6 +49,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
+import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
@@ -58,6 +59,8 @@ public class JArmEmuApplication extends Application {
     public static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     public static final String OS_VERSION = System.getProperty("os.version").toLowerCase();
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
+    public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("fr.dwightstudio.jarmemu.Locale");
+
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
 
     // Controllers
@@ -116,6 +119,8 @@ public class JArmEmuApplication extends Application {
 
         fxmlLoader.setController(new JArmEmuController(this));
         controller = fxmlLoader.getController();
+
+        fxmlLoader.setResources(BUNDLE);
 
         // Essayer d'ouvrir le fichier passé en paramètre
         if (!getParameters().getUnnamed().isEmpty()) {
@@ -375,5 +380,13 @@ public class JArmEmuApplication extends Application {
 
     public static @NotNull InputStream getResourceAsStream(String name) {
         return Objects.requireNonNull(JArmEmuApplication.class.getResourceAsStream("/fr/dwightstudio/jarmemu/" + name));
+    }
+
+    public static String formatMessage(String message, Object ... args) {
+        for (String key : BUNDLE.keySet()) {
+            message = message.replaceAll("%" + key, BUNDLE.getString(key));
+        }
+
+        return message.formatted(args);
     }
 }

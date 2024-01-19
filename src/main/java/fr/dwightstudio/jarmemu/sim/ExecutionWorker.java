@@ -24,9 +24,9 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import atlantafx.base.theme.Styles;
+import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.controllers.SimulationMenuController;
 import fr.dwightstudio.jarmemu.sim.exceptions.*;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -270,8 +270,16 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             } catch (MemoryAccessMisalignedASMException exception) {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getMemoryAlignBreakSetting()) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned memory access attempt.", Styles.DANGER);
-                        application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                        application.getEditorController().addNotification(
+                                JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
+                                JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.memoryAccessMessage"),
+                                Styles.DANGER
+                        );
+                        application.getEditorController().addNotification(
+                                JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
+                                JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
+                                Styles.ACCENT
+                        );
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -281,8 +289,16 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             } catch (IllegalDataWritingASMException exception) {
                 if (application.getSettingsController().getAutoBreakSetting() && application.getSettingsController().getReadOnlyWritingBreakSetting()) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Read only data overwritten.", Styles.DANGER);
-                        application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                        application.getEditorController().addNotification(
+                                JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
+                                JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.readOnlyMessage"),
+                                Styles.DANGER
+                        );
+                        application.getEditorController().addNotification(
+                                JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
+                                JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
+                                Styles.ACCENT
+                        );
                         application.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
@@ -290,11 +306,14 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                     step(true);
                 }
             } catch (BreakpointASMException exception) {
-                // fixme: La ligne verte ne s'update pas correctement
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Code requested a breakpoint", "Value : " + exception.getValue(), Styles.ACCENT);
+                    application.getEditorController().addNotification(
+                            JArmEmuApplication.formatMessage("%notification.codeBreakpoint.title"),
+                            JArmEmuApplication.formatMessage("%notification.codeBreakpoint.message", exception.getValue()),
+                            Styles.WARNING
+                    );
+                    step(true);
                     application.getSimulationMenuController().onPause();
-                    application.getCodeInterpreter().stateContainer.getPC().add(4);
                 });
             } catch (ExecutionASMException exception) {
                 executionException = exception;
@@ -304,7 +323,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (application.getEditorController().hasBreakPoint(next)) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Breakpoint", "The program reached a breakpoint, execution is paused.", Styles.WARNING);
+                    application.getEditorController().addNotification(
+                            JArmEmuApplication.formatMessage("%notification.manualBreakpoint.title"),
+                            JArmEmuApplication.formatMessage("%notification.manualBreakpoint.message"),
+                            Styles.WARNING
+                    );
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
@@ -312,7 +335,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (!application.getCodeInterpreter().hasNext()) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Finished", "The program reached the end of the file.", Styles.SUCCESS);
+                    application.getEditorController().addNotification(
+                            JArmEmuApplication.formatMessage("%notification.eof.title"),
+                            JArmEmuApplication.formatMessage("%notification.eof.message"),
+                            Styles.SUCCESS
+                    );
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
@@ -320,7 +347,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (executionException instanceof StuckExecutionASMException) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Finished", "The program reached a catch point.", Styles.SUCCESS);
+                    application.getEditorController().addNotification(
+                            JArmEmuApplication.formatMessage("%notification.catchPoint.title"),
+                            JArmEmuApplication.formatMessage("%notification.catchPoint.message"),
+                            Styles.SUCCESS
+                    );
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
@@ -328,7 +359,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (executionException instanceof SoftwareInterruptionASMException exception) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotif("Software interrupt", "The program requested an interrupt with code " + exception.getCode() + ".", Styles.WARNING);
+                    application.getEditorController().addNotification(
+                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.title"),
+                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.message", + exception.getCode()),
+                            Styles.WARNING
+                    );
                     application.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
@@ -338,8 +373,16 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 if (application.getSettingsController().getProgramAlignBreakSetting()) {
                     if (application.getCodeInterpreter().stateContainer.getPC().getData() % 4 != 0) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Program Counter.", Styles.DANGER);
-                            application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                            application.getEditorController().addNotification(
+                                    JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
+                                    JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.programCounterMessage"),
+                                    Styles.DANGER
+                            );
+                            application.getEditorController().addNotification(
+                                    JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
+                                    JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
+                                    Styles.ACCENT
+                            );
                             application.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
@@ -348,20 +391,36 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 if (application.getSettingsController().getStackAlignBreakSetting()) {
                     if (application.getCodeInterpreter().stateContainer.getSP().getData() % 4 != 0) {
-                    Platform.runLater(() -> {
-                        application.getEditorController().addNotif("Simulator requested a breakpoint", "Misaligned Stack Pointer.", Styles.DANGER);
-                        application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
-                        application.getSimulationMenuController().onPause();
-                    });
-                    doContinue = false;
+                        Platform.runLater(() -> {
+                            application.getEditorController().addNotification(
+                                    JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
+                                    JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.stackPointerMessage"),
+                                    Styles.DANGER
+                            );
+                            application.getEditorController().addNotification(
+                                    JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
+                                    JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
+                                    Styles.ACCENT
+                            );
+                            application.getSimulationMenuController().onPause();
+                        });
+                        doContinue = false;
                     }
                 }
 
                 if (application.getSettingsController().getFunctionNestingBreakSetting()) {
                     if (application.getCodeInterpreter().stateContainer.getNestingCount() > StateContainer.MAX_NESTING_COUNT) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotif("Simulator requested a breakpoint", "Function nesting too deep (>1000 branches).", Styles.DANGER);
-                            application.getEditorController().addNotif("Automatic breakpoint", "You can disable automatic breakpoints in the settings.", Styles.ACCENT);
+                            application.getEditorController().addNotification(
+                                    JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
+                                    JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.nestingMessage"),
+                                    Styles.DANGER
+                            );
+                            application.getEditorController().addNotification(
+                                    JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
+                                    JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
+                                    Styles.ACCENT
+                            );
                             application.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
@@ -380,7 +439,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 synchronized (this) {
                     if (waitingPeriod != 0) wait(waitingPeriod);
                 }
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
 
             logger.info("Done!");
         }
@@ -451,12 +511,14 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
                 application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
 
-                if (next != null && !line.equals(next) || line != null && next != null) {
+                if (application.status.get() != Status.SIMULATING) {
+                    application.getEditorController().clearAllLineMarkings();
+                } else if (line != null) {
                     Platform.runLater(() -> {
                         if (isIntervalTooShort()) {
                             application.getEditorController().clearAllLineMarkings();
                         }
-                        application.getEditorController().markForward(next);
+                        application.getEditorController().markForward(next == null ? line : next);
                     });
                 }
             }
@@ -470,7 +532,8 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             synchronized (this) {
                 try {
                     this.wait(50);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException ignored) {
+                }
             }
 
             try {

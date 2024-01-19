@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.exceptions;
 
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 
@@ -85,6 +86,6 @@ public class SyntaxASMException extends IllegalStateException {
     }
 
     public String getTitle() {
-        return "Syntax error";
+        return JArmEmuApplication.formatMessage("%exception.syntax");
     }
 }

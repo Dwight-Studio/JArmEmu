@@ -36,118 +36,118 @@
             <children>
                 <MenuBar>
                     <menus>
-                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="File">
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.file.title">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="New File" accelerator="Shortcut+N">
+                                <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="%menu.file.newFile" accelerator="Shortcut+N">
                                     <graphic>
                                         <FontIcon iconLiteral="mdral-insert_drive_file"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onOpen" text="Open..." accelerator="Shortcut+O">
+                                <MenuItem mnemonicParsing="false" onAction="#onOpen" text="%menu.file.open" accelerator="Shortcut+O">
                                     <graphic>
                                         <FontIcon iconLiteral="mdal-folder"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="Save all" accelerator="Shortcut+Shift+S">
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="%menu.file.openAll" accelerator="Shortcut+Shift+S">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onSave" text="Save" accelerator="Shortcut+S">
+                                <MenuItem mnemonicParsing="false" onAction="#onSave" text="%menu.file.save" accelerator="Shortcut+S">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="Save as...">
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="%menu.saveAs">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="Reload all from disk" accelerator="Shortcut+Shift+R">
+                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="%menu.reloadALL" accelerator="Shortcut+Shift+R">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="Reload from disk" accelerator="Shortcut+R">
+                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="%menu.reload" accelerator="Shortcut+R">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onCloseAll" text="Close all">
+                                <MenuItem mnemonicParsing="false" onAction="#onCloseAll" text="%menu.file.closeAll">
                                     <graphic>
                                         <FontIcon iconLiteral="mdal-close"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onClose" text="Close">
+                                <MenuItem mnemonicParsing="false" onAction="#onClose" text="%menu.file.close">
                                     <graphic>
                                         <FontIcon iconLiteral="mdal-close"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="Reset Settings">
+                                <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="%menu.file.reset">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-settings_backup_restore"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onExit" text="Exit">
+                                <MenuItem mnemonicParsing="false" onAction="#onExit" text="%menu.file.exit">
                                     <graphic>
                                         <FontIcon iconLiteral="mdoal-exit_to_app"/>
                                     </graphic>
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="Edit">
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.edit.title">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#onCopy" text="Copy" accelerator="Shortcut+C">
+                                <MenuItem mnemonicParsing="false" onAction="#onCopy" text="%menu.edit.copy" accelerator="Shortcut+C">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-content_copy"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onCut" text="Cut" accelerator="Shortcut+X">
+                                <MenuItem mnemonicParsing="false" onAction="#onCut" text="%menu.edit.cut" accelerator="Shortcut+X">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-content_cut"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onPaste" text="Paste" accelerator="Shortcut+V">
+                                <MenuItem mnemonicParsing="false" onAction="#onPaste" text="%menu.edit.paste" accelerator="Shortcut+V">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-content_paste"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onDelete" text="Delete">
+                                <MenuItem mnemonicParsing="false" onAction="#onDelete" text="%menu.edit.delete">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-delete"/>
                                     </graphic>
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="View">
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.view.title">
                             <items>
                                 <Menu fx:id="memoryDetailsMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
-                                      text="Memory Details">
+                                      text="%tab.memoryDetails.title">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-memory"/>
                                     </graphic>
                                 </Menu>
                                 <Menu fx:id="memoryOverviewMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
-                                      text="Memory Overview">
+                                      text="%tab.memoryOverview.title">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-memory"/>
                                     </graphic>
                                 </Menu>
-                                <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="Clear notifications">
+                                <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="%menu.view.clearNotifs">
                                     <graphic>
                                         <FontIcon iconLiteral="mdoal-clear_all"/>
                                     </graphic>
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Help">
+                        <Menu mnemonicParsing="false" text="%menu.help.title">
                             <items>
-                                <MenuItem mnemonicParsing="false" onAction="#onAbout" text="About">
+                                <MenuItem mnemonicParsing="false" onAction="#onAbout" text="%menu.help.about">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-info"/>
                                     </graphic>
@@ -163,7 +163,7 @@
                             <items>
                                 <TabPane side="BOTTOM" styleClass="btn-group-horizontal" tabClosingPolicy="UNAVAILABLE">
                                     <tabs>
-                                        <Tab text="Registers">
+                                        <Tab text="%tab.registers.title">
                                             <content>
                                                 <AnchorPane fx:id="registersPane"/>
                                             </content>
@@ -173,17 +173,17 @@
                                 <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal"
                                          tabClosingPolicy="UNAVAILABLE">
                                     <tabs>
-                                        <Tab text="Stack">
+                                        <Tab text="%tab.stack.title">
                                             <content>
                                                 <AnchorPane fx:id="stackPane" disable="true" />
                                             </content>
                                         </Tab>
-                                        <Tab text="Symbols">
+                                        <Tab text="%tab.symbols.title">
                                             <content>
                                                 <AnchorPane fx:id="symbolsPane" disable="true" />
                                             </content>
                                         </Tab>
-                                        <Tab text="Labels">
+                                        <Tab text="%tab.labels.title">
                                             <content>
                                                 <AnchorPane fx:id="labelsPane" disable="true" />
                                             </content>
@@ -202,7 +202,7 @@
                                                     <children>
                                                         <Button fx:id="simulate" contentDisplay="CENTER"
                                                                 mnemonicParsing="false" onAction="#onSimulate"
-                                                                styleClass="accent" text="Simulate">
+                                                                styleClass="accent" text="%toolbar.simulate">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
@@ -213,7 +213,7 @@
                                                     <children>
                                                         <Button fx:id="stepInto" contentDisplay="CENTER" disable="true"
                                                                 mnemonicParsing="false" onAction="#onStepInto"
-                                                                text="Step Into">
+                                                                text="%toolbar.stepInto">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
@@ -224,7 +224,7 @@
                                                     <children>
                                                         <Button fx:id="stepOver" contentDisplay="CENTER" disable="true"
                                                                 mnemonicParsing="false" onAction="#onStepOver"
-                                                                text="Step Over">
+                                                                text="%toolbar.stepOver">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
@@ -236,7 +236,7 @@
                                                         <Button fx:id="conti" contentDisplay="CENTER" disable="true"
                                                                 layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
                                                                 onAction="#onContinue" styleClass="success"
-                                                                text="Continue" HBox.hgrow="ALWAYS">
+                                                                text="%toolbar.continue" HBox.hgrow="ALWAYS">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
@@ -246,7 +246,7 @@
                                                                 <Button fx:id="pause" contentDisplay="CENTER"
                                                                         disable="true" layoutX="10.0" layoutY="10.0"
                                                                         mnemonicParsing="false" onAction="#onPause"
-                                                                        styleClass="accent" text="Pause"
+                                                                        styleClass="accent" text="%toolbar.pause"
                                                                         HBox.hgrow="ALWAYS">
                                                                     <HBox.margin>
                                                                         <Insets left="10.0" right="10.0"/>
@@ -260,7 +260,7 @@
                                                     <children>
                                                         <Button fx:id="stop" contentDisplay="CENTER" disable="true"
                                                                 layoutX="20.0" layoutY="20.0" mnemonicParsing="false"
-                                                                onAction="#onStop" styleClass="danger" text="Stop">
+                                                                onAction="#onStop" styleClass="danger" text="%toolbar.stop">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
@@ -271,7 +271,7 @@
                                                     <children>
                                                         <Button fx:id="restart" contentDisplay="CENTER" disable="true"
                                                                 layoutX="160.0" layoutY="10.0" mnemonicParsing="false"
-                                                                onAction="#onRestart" styleClass="danger" text="Restart"
+                                                                onAction="#onRestart" styleClass="danger" text="%toolbar.restart"
                                                                 HBox.hgrow="ALWAYS">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
@@ -300,14 +300,14 @@
                         <TabPane side="BOTTOM" styleClass="btn-group-horizontal"
                                  tabClosingPolicy="UNAVAILABLE">
                             <tabs>
-                                <Tab text="Memory details">
+                                <Tab text="%tab.memoryDetails.title">
                                     <content>
                                         <AnchorPane fx:id="memoryDetailsPane">
                                             <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                                                   AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0">
                                                 <children>
                                                     <AnchorPane fx:id="memoryDetailsAnchorPane" VBox.vgrow="ALWAYS"/>
-                                                    <CustomTextField fx:id="memoryDetailsAddressField" promptText="Go to address">
+                                                    <CustomTextField fx:id="memoryDetailsAddressField" promptText="%tab.memoryDetails.search">
                                                         <VBox.margin>
                                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                                         </VBox.margin>
@@ -322,14 +322,14 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab text="Memory overview">
+                                <Tab text="%tab.memoryOverview.title">
                                     <content>
                                         <AnchorPane fx:id="memoryOverviewPane">
                                             <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                                                   AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0">
                                                 <children>
                                                     <AnchorPane fx:id="memoryOverviewAnchorPane" VBox.vgrow="ALWAYS"/>
-                                                    <CustomTextField fx:id="memoryOverviewAddressField" promptText="Go to address">
+                                                    <CustomTextField fx:id="memoryOverviewAddressField" promptText="%tab.memoryOverview.search">
                                                         <VBox.margin>
                                                             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                                         </VBox.margin>
@@ -344,13 +344,13 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab text="Settings">
+                                <Tab text="%tab.settings.title">
                                     <content>
                                         <AnchorPane fx:id="settingsPane">
                                             <Accordion AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
                                                        AnchorPane.rightAnchor="0" AnchorPane.leftAnchor="0">
                                                 <panes>
-                                                    <TitledPane text="Simulation">
+                                                    <TitledPane text="%settings.simulation.title">
                                                         <content>
                                                             <AnchorPane>
                                                                 <children>
@@ -359,7 +359,7 @@
                                                                           AnchorPane.rightAnchor="0.0"
                                                                           AnchorPane.topAnchor="0.0">
                                                                         <children>
-                                                                            <Text text="Simulation interval (ms)">
+                                                                            <Text text="%settings.simulation.interval">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>
@@ -378,7 +378,7 @@
                                                                                     <Insets bottom="20.0"/>
                                                                                 </VBox.margin>
                                                                             </AnchorPane>
-                                                                            <Text text="Source Parser">
+                                                                            <Text text="%settings.simulation.parser">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>
@@ -431,7 +431,7 @@
                                                             <Font size="14.0"/>
                                                         </font>
                                                     </TitledPane>
-                                                    <TitledPane text="Automatic breakpoints">
+                                                    <TitledPane text="%settings.breakpoints.title">
                                                         <content>
                                                             <AnchorPane>
                                                                 <VBox.margin>
@@ -459,7 +459,7 @@
                                                                             <RowConstraints vgrow="SOMETIMES"/>
                                                                         </rowConstraints>
                                                                         <children>
-                                                                            <Text text="Automatic breakpoints"
+                                                                            <Text text="%settings.breakpoints.title"
                                                                                   GridPane.halignment="LEFT"
                                                                                   GridPane.valignment="CENTER"/>
                                                                             <ToggleSwitch
@@ -471,7 +471,7 @@
                                                                                     GridPane.valignment="CENTER"/>
                                                                             <Separator GridPane.columnSpan="2"
                                                                                        GridPane.rowIndex="1"/>
-                                                                            <Text text="Memory access misaligned"
+                                                                            <Text text="%settings.breakpoints.memoryAlign"
                                                                                   GridPane.halignment="LEFT"
                                                                                   GridPane.rowIndex="2"
                                                                                   GridPane.valignment="CENTER"/>
@@ -482,7 +482,7 @@
                                                                                     GridPane.halignment="RIGHT"
                                                                                     GridPane.rowIndex="2"
                                                                                     GridPane.valignment="CENTER"/>
-                                                                            <Text text="Stack pointer misaligned"
+                                                                            <Text text="%settings.breakpoints.stackAlign"
                                                                                   GridPane.halignment="LEFT"
                                                                                   GridPane.rowIndex="3"
                                                                                   GridPane.valignment="CENTER"/>
@@ -491,7 +491,7 @@
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
                                                                                     GridPane.rowIndex="3"/>
-                                                                            <Text text="Program counter misaligned"
+                                                                            <Text text="%settings.breakpoints.programAlign"
                                                                                   GridPane.halignment="LEFT"
                                                                                   GridPane.rowIndex="4"
                                                                                   GridPane.valignment="CENTER"/>
@@ -500,7 +500,7 @@
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
                                                                                     GridPane.rowIndex="4"/>
-                                                                            <Text text="Function nesting too deep"
+                                                                            <Text text="%settings.breakpoints.nesting"
                                                                                   GridPane.halignment="LEFT"
                                                                                   GridPane.rowIndex="5"
                                                                                   GridPane.valignment="CENTER"/>
@@ -509,7 +509,7 @@
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
                                                                                     GridPane.rowIndex="5"/>
-                                                                            <Text text="Read-only data overwritten"
+                                                                            <Text text="%settings.breakpoints.readOnly"
                                                                                   GridPane.halignment="LEFT"
                                                                                   GridPane.rowIndex="6"
                                                                                   GridPane.valignment="CENTER"/>
@@ -527,7 +527,7 @@
                                                             <Font size="14.0"/>
                                                         </font>
                                                     </TitledPane>
-                                                    <TitledPane text="Data management">
+                                                    <TitledPane text="%settings.dataManagement.title">
                                                         <content>
                                                             <AnchorPane>
                                                                 <children>
@@ -536,7 +536,7 @@
                                                                           AnchorPane.rightAnchor="0.0"
                                                                           AnchorPane.topAnchor="0.0">
                                                                         <children>
-                                                                            <Text text="Stack address (Hex)">
+                                                                            <Text text="%settings.dataManagement.stackAddress">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>
@@ -556,7 +556,7 @@
                                                                                 </VBox.margin>
                                                                             </AnchorPane>
                                                                             <Text layoutX="10.0" layoutY="10.0"
-                                                                                  text="Symbols address (Hex)">
+                                                                                  text="%settings.dataManagement.symbolsAddress">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>
@@ -575,7 +575,7 @@
                                                                                     <Insets bottom="20.0"/>
                                                                                 </VBox.margin>
                                                                             </AnchorPane>
-                                                                            <Text text="Data display format">
+                                                                            <Text text="%settings.dataManagement.dataFormat">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>
@@ -608,7 +608,7 @@
                                                                                             vgrow="SOMETIMES"/>
                                                                                 </rowConstraints>
                                                                                 <children>
-                                                                                    <Text text="Follow SP in stack"
+                                                                                    <Text text="%settings.dataManagement.follow"
                                                                                           GridPane.halignment="LEFT"
                                                                                           GridPane.valignment="CENTER"
                                                                                           GridPane.columnIndex="0"
@@ -621,7 +621,7 @@
                                                                                             GridPane.rowIndex="0"
                                                                                             GridPane.halignment="RIGHT"
                                                                                             GridPane.valignment="CENTER"/>
-                                                                                    <Text text="Highlight updates"
+                                                                                    <Text text="%settings.dataManagement.highlight"
                                                                                           GridPane.halignment="LEFT"
                                                                                           GridPane.valignment="CENTER"
                                                                                           GridPane.columnIndex="0"
@@ -648,7 +648,7 @@
                                                             <Font size="14.0"/>
                                                         </font>
                                                     </TitledPane>
-                                                    <TitledPane text="Appearance">
+                                                    <TitledPane text="%settings.appearance.title">
                                                         <content>
                                                             <AnchorPane>
                                                                 <children>
@@ -656,7 +656,7 @@
                                                                           AnchorPane.leftAnchor="0.0"
                                                                           AnchorPane.rightAnchor="0.0"
                                                                           AnchorPane.topAnchor="0.0">
-                                                                        <Text text="Theme Family">
+                                                                        <Text text="%settings.appearance.themeFamily">
                                                                             <VBox.margin>
                                                                                 <Insets bottom="2.0"
                                                                                         left="5.0"/>
@@ -675,7 +675,7 @@
                                                                             </children>
                                                                         </AnchorPane>
                                                                         <children>
-                                                                            <Text text="Theme variation ">
+                                                                            <Text text="%settings.appearance.themeVariation">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>

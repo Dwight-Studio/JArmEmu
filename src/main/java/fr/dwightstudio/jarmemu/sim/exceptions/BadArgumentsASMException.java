@@ -23,6 +23,8 @@
 
 package fr.dwightstudio.jarmemu.sim.exceptions;
 
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+
 public class BadArgumentsASMException extends SyntaxASMException {
     public BadArgumentsASMException(String s) {
         super("Bad arguments: " + s);
@@ -30,6 +32,6 @@ public class BadArgumentsASMException extends SyntaxASMException {
 
     @Override
     public String getTitle() {
-        return "Bad arguments";
+        return JArmEmuApplication.formatMessage("%exception.arguments");
     }
 }

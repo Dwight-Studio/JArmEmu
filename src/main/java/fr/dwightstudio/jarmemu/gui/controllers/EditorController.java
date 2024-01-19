@@ -69,7 +69,7 @@ public class EditorController extends AbstractJArmEmuModule {
      * @param contentString le corps du message
      * @param classString la classe à utiliser (Classes de BootstrapFX)
      */
-    public void addNotif(String titleString, String contentString, String classString) {
+    public void addNotification(String titleString, String contentString, String classString) {
 
         if (getController().notifications.getChildren().size() > 5) return;
 
@@ -106,14 +106,24 @@ public class EditorController extends AbstractJArmEmuModule {
 
         if (exception.isLineSpecified()) {
             if (exception.isFileSpecified()) {
-                addNotif(exception.getTitle(), exception.getMessage()
-                        + " at line " + exception.getLine()
-                        + " (" + exception.getFile().getName() + ")", Styles.DANGER);
+                addNotification(
+                        exception.getTitle(),
+                        JArmEmuApplication.formatMessage("%notification.exception.fileAndLine", exception.getMessage(), exception.getLine(), exception.getFile().getName()),
+                        Styles.DANGER
+                );
             } else {
-                addNotif(exception.getTitle(), exception.getMessage() + " at line " + exception.getLine() + " (Unknown file)", Styles.DANGER);
+                addNotification(
+                        exception.getTitle(),
+                        JArmEmuApplication.formatMessage("%notification.exception.fileAndLine", exception.getMessage(), exception.getLine()),
+                        Styles.DANGER
+                );
             }
         } else {
-            addNotif(exception.getTitle(), exception.getMessage(), Styles.DANGER);
+            addNotification(
+                    exception.getTitle(),
+                    JArmEmuApplication.formatMessage("%notification.exception.nothing", exception.getMessage()),
+                    Styles.DANGER
+            );
         }
     }
 

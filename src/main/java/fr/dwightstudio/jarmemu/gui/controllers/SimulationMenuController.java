@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import javafx.application.Platform;
 
 import java.util.logging.Logger;
 
@@ -46,7 +47,11 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().simulate.setDisable(true);
         getEditorController().clearNotifs();
 
-        getEditorController().addNotif("Parsing in progress...", "Please wait, this can take up to a few seconds.", Styles.ACCENT);
+        getEditorController().addNotification(
+                JArmEmuApplication.formatMessage("%notification.parsing.title"),
+                JArmEmuApplication.formatMessage("%notification.parsing.message"),
+                Styles.ACCENT
+        );
 
         getExecutionWorker().revive();
         getExecutionWorker().prepare();
@@ -62,7 +67,11 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         if (errors.length == 0) {
             if (getCodeInterpreter().getInstructionCount() == 0) {
                 getController().simulate.setDisable(false);
-                getEditorController().addNotif("Simulation error", "No instructions detected (did you forget '.text'?).", Styles.DANGER);
+                getEditorController().addNotification(
+                        JArmEmuApplication.formatMessage("%notification.noInstruction.title"),
+                        JArmEmuApplication.formatMessage("%notification.noInstruction.message"),
+                        Styles.DANGER
+                );
             } else {
                 getEditorController().clearAllLineMarkings();
                 getEditorController().markForward(getCodeInterpreter().getCurrentLine());
@@ -102,7 +111,11 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      */
     public void abortSimulation() {
         getEditorController().clearNotifs();
-        getEditorController().addNotif("Parsing error", "Exceptions prevented the code from being parsed. See console for more details.", Styles.DANGER);
+        getEditorController().addNotification(
+                JArmEmuApplication.formatMessage("%notification.parsingError.title"),
+                JArmEmuApplication.formatMessage("%notification.parsingError.message"),
+                Styles.DANGER
+        );
         getController().simulate.setDisable(false);
     }
 
@@ -177,8 +190,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().settingsStackAddress.setDisable(false);
         getController().settingsSymbolsAddress.setDisable(false);
         getController().settingsSimInterval.setDisable(false);
-        getEditorController().clearAllLineMarkings();
-        getExecutionWorker().updateGUI();
 
         getController().registersPane.setDisable(true);
         getController().memoryDetailsPane.setDisable(true);
@@ -188,6 +199,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().stackPane.setDisable(true);
 
         application.status.set(Status.EDITING);
+        getExecutionWorker().updateGUI();
     }
 
     /**
