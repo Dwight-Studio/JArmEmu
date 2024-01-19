@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm;
 
+import fr.dwightstudio.jarmemu.asm.inst.BKPTExecutor;
 import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
@@ -87,7 +88,10 @@ public enum Instruction {
     B(B_EXECUTOR, true, false, LABEL, NULL, NULL, NULL),
     BL(BL_EXECUTOR, true, false, LABEL, NULL, NULL, NULL),
     BX(BX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
-    SWI(SWI_EXECUTOR, false, false, CODE, NULL, NULL, NULL);
+    SWI(SWI_EXECUTOR, false, false, CODE, NULL, NULL, NULL),
+
+    // Others
+    BKPT(BKPT_EXECUTOR, false, false, IMM_OR_REGISTER, NULL, NULL, NULL);
 
     private final ArgumentParser[] args;
     private final InstructionExecutor executor;

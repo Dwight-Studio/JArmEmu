@@ -84,4 +84,7 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Object, Object, Object> BX_EXECUTOR = new BXExecutor();
     public static final InstructionExecutor<Integer, Object, Object, Object> SWI_EXECUTOR = new SWIExecutor();
 
+    // Others
+    public static final InstructionExecutor<Integer, Object, Object, Object> BKPT_EXECUTOR = new BKPTExecutor();
+
 }

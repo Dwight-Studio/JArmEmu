@@ -90,6 +90,8 @@ public class JArmEmuApplication extends Application {
 
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
     // TODO: Ajouter d'autres types de packages (ArchLinux, etc)
+    // TODO: Ajouter un toggle pour les breakpoints dans le code
+    // TODO: Corriger la ligne verte qui fait des siennes
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -174,7 +176,7 @@ public class JArmEmuApplication extends Application {
     }
 
     /**
-     * Mise à jour du UserAgentStyle pour la modification du thème.
+     * Mise à jour de l'UserAgentStyle pour la modification du thème.
      *
      * @param variation l'indice de la variation
      * @param family l'indice' de la famille

@@ -289,6 +289,13 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 } else {
                     step(true);
                 }
+            } catch (BreakpointASMException exception) {
+                // fixme: La ligne verte ne s'update pas correctement
+                Platform.runLater(() -> {
+                    application.getEditorController().addNotif("Code requested a breakpoint", "Value : " + exception.getValue(), Styles.ACCENT);
+                    application.getSimulationMenuController().onPause();
+                    application.getCodeInterpreter().stateContainer.getPC().add(4);
+                });
             } catch (ExecutionASMException exception) {
                 executionException = exception;
             }

@@ -40,4 +40,5 @@ This file regroups all implemented instructions in JArmEmu and their respective 
 |       ASR        | reg / value |  reg  |      |      |
 |       ROR        | reg / value |  reg  |      |      |
 |       RRX        |     reg     |  reg  |      |      |
+|       BKPT       | reg / value |       |      |      |
 
