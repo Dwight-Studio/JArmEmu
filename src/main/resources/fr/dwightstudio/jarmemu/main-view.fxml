@@ -211,23 +211,29 @@
                                                 </HBox>
                                                 <HBox>
                                                     <children>
-                                                        <Button fx:id="stepInto" contentDisplay="CENTER" disable="true"
+                                                        <Button fx:id="stepInto" disable="true"
                                                                 mnemonicParsing="false" onAction="#onStepInto"
                                                                 text="%toolbar.stepInto">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
+                                                            <graphic>
+                                                                <FontIcon iconLiteral="mdomz-subdirectory_arrow_left" rotate="-90" />
+                                                            </graphic>
                                                         </Button>
                                                     </children>
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                     <children>
-                                                        <Button fx:id="stepOver" contentDisplay="CENTER" disable="true"
+                                                        <Button fx:id="stepOver" disable="true"
                                                                 mnemonicParsing="false" onAction="#onStepOver"
                                                                 text="%toolbar.stepOver">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
+                                                            <graphic>
+                                                                <FontIcon iconLiteral="mdmz-redo" />
+                                                            </graphic>
                                                         </Button>
                                                     </children>
                                                 </HBox>
