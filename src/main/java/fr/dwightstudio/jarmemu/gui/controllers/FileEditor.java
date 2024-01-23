@@ -312,8 +312,8 @@ public class FileEditor extends AbstractJArmEmuModule {
     public void saveAs() {
         logger.info("Locating a new file to save...");
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save Source File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
+        fileChooser.setTitle(JArmEmuApplication.formatMessage("%menu.file.saveSourceFile"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(JArmEmuApplication.formatMessage("%menu.file.formatName"), "*.s"));
         if (FileUtils.exists(path)) {
             fileChooser.setInitialDirectory(path.isDirectory() ? path : path.getParentFile());
         }
@@ -357,7 +357,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return le nom du fichier ou "New File"
      */
     public String getFileName() {
-        return FileUtils.isValidFile(path) ? path.getName() : "New File";
+        return FileUtils.isValidFile(path) ? path.getName() : JArmEmuApplication.formatMessage("%menu.file.newFile");
     }
 
     /**

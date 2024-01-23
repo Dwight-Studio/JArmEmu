@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.editor;
 
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import javafx.event.ActionEvent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -42,10 +43,10 @@ public class EditorContextMenu extends ContextMenu {
     public EditorContextMenu(CodeArea codeArea) {
         this.codeArea = codeArea;
 
-        copy = new MenuItem("Copy", new FontIcon(Material2OutlinedAL.CONTENT_COPY));
-        cut = new MenuItem("Cut", new FontIcon(Material2OutlinedAL.CONTENT_CUT));
-        paste = new MenuItem("Paste", new FontIcon(Material2OutlinedAL.CONTENT_PASTE));
-        delete = new MenuItem("Delete", new FontIcon(Material2OutlinedAL.DELETE));
+        copy = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.copy"), new FontIcon(Material2OutlinedAL.CONTENT_COPY));
+        cut = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.cut"), new FontIcon(Material2OutlinedAL.CONTENT_CUT));
+        paste = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.paste"), new FontIcon(Material2OutlinedAL.CONTENT_PASTE));
+        delete = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.delete"), new FontIcon(Material2OutlinedAL.DELETE));
 
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));

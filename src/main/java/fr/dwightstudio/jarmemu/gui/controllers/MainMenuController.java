@@ -65,8 +65,8 @@ public class MainMenuController extends AbstractJArmEmuModule {
         getSimulationMenuController().onStop();
         logger.info("Locating new file to open...");
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open Source File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Assembly Source File", "*.s"));
+        fileChooser.setTitle(JArmEmuApplication.formatMessage("%menu.file.openSourceFile"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(JArmEmuApplication.formatMessage("%menu.file.formatName"), "*.s"));
         if (FileUtils.exists(lastFile)) {
             fileChooser.setInitialDirectory(lastFile.isDirectory() ? lastFile : lastFile.getParentFile());
         }

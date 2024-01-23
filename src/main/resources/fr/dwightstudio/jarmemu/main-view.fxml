@@ -59,18 +59,18 @@
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="%menu.saveAs">
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="%menu.file.saveAs">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="%menu.reloadALL" accelerator="Shortcut+Shift+R">
+                                <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="%menu.file.reloadAll" accelerator="Shortcut+Shift+R">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="%menu.reload" accelerator="Shortcut+R">
+                                <MenuItem mnemonicParsing="false" onAction="#onReload" text="%menu.file.reload" accelerator="Shortcut+R">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-refresh"/>
                                     </graphic>
@@ -200,7 +200,7 @@
                                             <items>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                     <children>
-                                                        <Button fx:id="simulate"
+                                                        <Button fx:id="simulate" contentDisplay="RIGHT"
                                                                 mnemonicParsing="false" onAction="#onSimulate"
                                                                 styleClass="accent" text="%toolbar.simulate">
                                                             <HBox.margin>
@@ -213,7 +213,7 @@
                                                     </children>
                                                 </HBox>
                                                 <HBox>
-                                                    <Button fx:id="stepInto" disable="true"
+                                                    <Button fx:id="stepInto" disable="true" contentDisplay="RIGHT"
                                                             mnemonicParsing="false" onAction="#onStepInto"
                                                             text="%toolbar.stepInto">
                                                         <HBox.margin>
@@ -227,7 +227,7 @@
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                     <children>
-                                                        <Button fx:id="stepOver" disable="true"
+                                                        <Button fx:id="stepOver" disable="true" contentDisplay="RIGHT"
                                                                 mnemonicParsing="false" onAction="#onStepOver"
                                                                 text="%toolbar.stepOver">
                                                             <HBox.margin>
@@ -240,7 +240,7 @@
                                                     </children>
                                                 </HBox>
                                                 <HBox layoutX="20.0" layoutY="20.0">
-                                                    <Button fx:id="conti" disable="true"
+                                                    <Button fx:id="conti" disable="true" contentDisplay="RIGHT"
                                                             layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
                                                             onAction="#onContinue" styleClass="success"
                                                             text="%toolbar.continue" HBox.hgrow="ALWAYS">
@@ -252,7 +252,7 @@
                                                         </graphic>
                                                     </Button>
                                                     <HBox>
-                                                        <Button fx:id="pause"
+                                                        <Button fx:id="pause" contentDisplay="RIGHT"
                                                                 disable="true" layoutX="10.0" layoutY="10.0"
                                                                 mnemonicParsing="false" onAction="#onPause"
                                                                 styleClass="accent" text="%toolbar.pause"
@@ -267,7 +267,7 @@
                                                     </HBox>
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
-                                                    <Button fx:id="stop" disable="true"
+                                                    <Button fx:id="stop" contentDisplay="RIGHT" disable="true"
                                                             layoutX="20.0" layoutY="20.0" mnemonicParsing="false"
                                                             onAction="#onStop" styleClass="danger" text="%toolbar.stop">
                                                         <HBox.margin>
@@ -279,7 +279,7 @@
                                                     </Button>
                                                 </HBox>
                                                 <HBox layoutX="20.0" layoutY="20.0">
-                                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true"
+                                                    <Button fx:id="restart" contentDisplay="RIGHT" disable="true"
                                                             layoutX="160.0" layoutY="10.0" mnemonicParsing="false"
                                                             onAction="#onRestart" styleClass="danger"
                                                             text="%toolbar.restart"
