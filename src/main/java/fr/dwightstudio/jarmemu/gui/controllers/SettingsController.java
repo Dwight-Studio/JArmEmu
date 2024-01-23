@@ -95,7 +95,11 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final String MAX_NOTIFICATION_KEY = "maxNotification";
     public static final String LAYOUT_KEY = "layout";
 
-    private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
+    private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{
+            JArmEmuApplication.formatMessage("%settings.dataManagement.hexadecimal"),
+            JArmEmuApplication.formatMessage("%settings.dataManagement.signedDecimal"),
+            JArmEmuApplication.formatMessage("%settings.dataManagement.unsignedDecimal")
+    };
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
     public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
     private final Logger logger = Logger.getLogger(getClass().getName());

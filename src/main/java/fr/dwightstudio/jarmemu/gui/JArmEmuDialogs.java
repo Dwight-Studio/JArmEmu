@@ -76,7 +76,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
     }
 
     public CompletableFuture<UnsavedDialogChoice> unsavedAlert() {
-        Text contentText = new Text(JArmEmuApplication.formatMessage("%dialog.unsaved.title"));
+        Text contentText = new Text(JArmEmuApplication.formatMessage("%dialog.unsaved.message"));
         contentText.setWrappingWidth(500);
 
         CompletableFuture<UnsavedDialogChoice> rtn = new CompletableFuture<>();
