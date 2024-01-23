@@ -55,6 +55,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import java.util.regex.Matcher;
 
 public class JArmEmuApplication extends Application {
 
@@ -390,7 +391,7 @@ public class JArmEmuApplication extends Application {
 
     public static String formatMessage(String message, Object ... args) {
         for (String key : BUNDLE.keySet()) {
-            message = message.replaceAll("%" + key, BUNDLE.getString(key));
+            message = message.replaceAll("%" + key, Matcher.quoteReplacement(BUNDLE.getString(key)));
         }
         try {
             return message.formatted(args);
