@@ -45,8 +45,10 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -56,6 +58,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 public class JArmEmuApplication extends Application {
 
@@ -126,8 +129,8 @@ public class JArmEmuApplication extends Application {
 
         fxmlLoader.setResources(BUNDLE);
         try {
-            LICENCE = Files.readString(Path.of(JArmEmuApplication.getResource("Licence.txt").toURI()));
-        } catch (URISyntaxException ignored) {}
+            LICENCE = new BufferedReader(new InputStreamReader(getResourceAsStream("Licence.txt"))).lines().collect(Collectors.joining("\n"));
+        } catch (Exception ignored) {}
 
         // Essayer d'ouvrir le fichier passé en paramètre
         if (!getParameters().getUnnamed().isEmpty()) {
