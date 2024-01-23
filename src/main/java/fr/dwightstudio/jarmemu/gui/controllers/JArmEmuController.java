@@ -68,6 +68,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
                 if (savingDeviation) {
                     applyLayoutSecond(lastLayout);
                 } else {
+                    logger.info("Saving layout");
                     getSettingsController().setLayout(getLayoutJSON());
                 }
             })
