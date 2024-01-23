@@ -77,7 +77,7 @@ public class StackController extends AbstractJArmEmuModule {
         col0.setCellValueFactory(c -> c.getValue().getCursorProperty());
         col0.setCellFactory(CursorTableCell.factory());
 
-        col1 = new TableColumn<>("Address");
+        col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.stack.address"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
         col0.setEditable(false);
         col1.setReorderable(false);
@@ -88,7 +88,7 @@ public class StackController extends AbstractJArmEmuModule {
         col1.setCellFactory(AddressTableCell.factory());
         col1.setSortType(TableColumn.SortType.ASCENDING);
 
-        col2 = new TableColumn<>("Value");
+        col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.stack.value"));
         col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col2.setSortable(false);
         col2.setReorderable(false);

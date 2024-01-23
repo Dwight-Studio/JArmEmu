@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
@@ -83,28 +84,20 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        TextFlow textFlow = new TextFlow(
-                new Text("You can search in memory using multiple address formats:\n"),
-                new Text("\t→ Signed decimal number (e.g. -1842)\n"),
-                new Text("\t→ Hexadecimal number (e.g. 0x01FF)\n"),
-                new Text("\t→ Binary number (e.g. 0b1001)\n"),
-                new Text("\t→ Defined constant (e.g N)\n"),
-                new Text("\t→ Defined data (e.g. data1)\n"),
-                new Text("\t→ Mathematical expression (e.g (N*4)+0xFF)")
-        );
+        TextFlow textFlow = new TextFlow(new Text(JArmEmuApplication.formatMessage("%pop.memoryHint.message")));
         textFlow.setLineSpacing(5);
         textFlow.setPrefWidth(400);
         textFlow.setPadding(new Insets(10, 0, 10, 0));
 
         hintPop = new Popover(textFlow);
-        hintPop.setTitle("Memory searching");
+        hintPop.setTitle(JArmEmuApplication.formatMessage("%pop.memoryHint.title"));
         hintPop.setHeaderAlwaysVisible(true);
         hintPop.setDetachable(false);
         hintPop.setAnimated(true);
         hintPop.setCloseButtonEnabled(true);
         hintPop.setArrowLocation(Popover.ArrowLocation.RIGHT_CENTER);
 
-        col0 = new TableColumn<>("Address");
+        col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.address"));
         col0.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
         col0.setSortable(false);
         col0.setEditable(false);
@@ -115,7 +108,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col0.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col0.setCellFactory(AddressTableCell.factory());
 
-        col1 = new TableColumn<>("Value");
+        col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.value"));
         col1.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col1.setSortable(false);
         col1.setReorderable(false);
@@ -136,7 +129,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col2.setCellFactory(ValueTableCell.factoryStaticWordASCII(getApplication()));
         col2.setVisible(false);
 
-        col3 = new TableColumn<>("Byte 3");
+        col3 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 3));
         col3.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
         col3.setSortable(false);
         col3.setEditable(false);
@@ -147,7 +140,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col3.setCellValueFactory(c -> c.getValue().getByte0Property());
         col3.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
-        col4 = new TableColumn<>("Byte 2");
+        col4 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 2));
         col4.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
         col4.setSortable(false);
         col4.setEditable(false);
@@ -158,7 +151,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col4.setCellValueFactory(c -> c.getValue().getByte1Property());
         col4.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
-        col5 = new TableColumn<>("Byte 1");
+        col5 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 1));
         col5.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
         col5.setSortable(false);
         col5.setEditable(false);
@@ -169,7 +162,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
         col5.setCellValueFactory(c -> c.getValue().getByte2Property());
         col5.setCellFactory(ValueTableCell.factoryStaticBin(getApplication()));
 
-        col6 = new TableColumn<>("Byte 0");
+        col6 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 0));
         col6.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
         col6.setSortable(false);
         col6.setEditable(false);

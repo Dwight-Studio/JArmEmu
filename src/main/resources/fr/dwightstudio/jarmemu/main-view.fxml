@@ -290,7 +290,7 @@
                                     </children>
                                 </VBox>
                                 <VBox fx:id="notifications" alignment="BOTTOM_CENTER" focusTraversable="true"
-                                      pickOnBounds="false" spacing="10.0" StackPane.alignment="BOTTOM_CENTER">
+                                      pickOnBounds="false" spacing="10.0">
                                     <padding>
                                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                     </padding>
@@ -459,65 +459,94 @@
                                                                             <RowConstraints vgrow="SOMETIMES"/>
                                                                         </rowConstraints>
                                                                         <children>
-                                                                            <Text text="%settings.breakpoints.title"
+                                                                            <Text text="%settings.breakpoints.manualBreakpoints"
                                                                                   GridPane.halignment="LEFT"
-                                                                                  GridPane.valignment="CENTER"/>
+                                                                                  GridPane.valignment="CENTER"
+                                                                                  GridPane.columnIndex="0"
+                                                                                  GridPane.rowIndex="0"/>
+                                                                            <ToggleSwitch
+                                                                                    fx:id="manualBreakSwitch"
+                                                                                    alignment="CENTER_RIGHT"
+                                                                                    selected="true"
+                                                                                    GridPane.columnIndex="1"
+                                                                                    GridPane.rowIndex="0"
+                                                                                    GridPane.halignment="RIGHT"
+                                                                                    GridPane.valignment="CENTER"/>
+                                                                            <Text text="%settings.breakpoints.codeBreakpoints"
+                                                                                  GridPane.halignment="LEFT"
+                                                                                  GridPane.valignment="CENTER"
+                                                                                  GridPane.columnIndex="0"
+                                                                                  GridPane.rowIndex="1"/>
+                                                                            <ToggleSwitch
+                                                                                    fx:id="codeBreakSwitch"
+                                                                                    alignment="CENTER_RIGHT"
+                                                                                    selected="true"
+                                                                                    GridPane.columnIndex="1"
+                                                                                    GridPane.rowIndex="1"
+                                                                                    GridPane.halignment="RIGHT"
+                                                                                    GridPane.valignment="CENTER"/>
+                                                                            <Text text="%settings.breakpoints.autoBreakpoints"
+                                                                                  GridPane.halignment="LEFT"
+                                                                                  GridPane.valignment="CENTER"
+                                                                                  GridPane.columnIndex="0"
+                                                                                  GridPane.rowIndex="2"/>
                                                                             <ToggleSwitch
                                                                                     fx:id="autoBreakSwitch"
                                                                                     alignment="CENTER_RIGHT"
                                                                                     selected="true"
+                                                                                    GridPane.rowIndex="2"
                                                                                     GridPane.columnIndex="1"
                                                                                     GridPane.halignment="RIGHT"
                                                                                     GridPane.valignment="CENTER"/>
                                                                             <Separator GridPane.columnSpan="2"
-                                                                                       GridPane.rowIndex="1"/>
+                                                                                       GridPane.rowIndex="3"/>
                                                                             <Text text="%settings.breakpoints.memoryAlign"
                                                                                   GridPane.halignment="LEFT"
-                                                                                  GridPane.rowIndex="2"
+                                                                                  GridPane.rowIndex="4"
                                                                                   GridPane.valignment="CENTER"/>
                                                                             <ToggleSwitch
                                                                                     fx:id="memoryAlignBreakSwitch"
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
                                                                                     GridPane.halignment="RIGHT"
-                                                                                    GridPane.rowIndex="2"
+                                                                                    GridPane.rowIndex="4"
                                                                                     GridPane.valignment="CENTER"/>
                                                                             <Text text="%settings.breakpoints.stackAlign"
                                                                                   GridPane.halignment="LEFT"
-                                                                                  GridPane.rowIndex="3"
+                                                                                  GridPane.rowIndex="5"
                                                                                   GridPane.valignment="CENTER"/>
                                                                             <ToggleSwitch
                                                                                     fx:id="stackAlignBreakSwitch"
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
-                                                                                    GridPane.rowIndex="3"/>
+                                                                                    GridPane.rowIndex="5"/>
                                                                             <Text text="%settings.breakpoints.programAlign"
                                                                                   GridPane.halignment="LEFT"
-                                                                                  GridPane.rowIndex="4"
+                                                                                  GridPane.rowIndex="6"
                                                                                   GridPane.valignment="CENTER"/>
                                                                             <ToggleSwitch
                                                                                     fx:id="programAlignBreakSwitch"
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
-                                                                                    GridPane.rowIndex="4"/>
+                                                                                    GridPane.rowIndex="6"/>
                                                                             <Text text="%settings.breakpoints.nesting"
                                                                                   GridPane.halignment="LEFT"
-                                                                                  GridPane.rowIndex="5"
+                                                                                  GridPane.rowIndex="7"
                                                                                   GridPane.valignment="CENTER"/>
                                                                             <ToggleSwitch
                                                                                     fx:id="functionNestingBreakSwitch"
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
-                                                                                    GridPane.rowIndex="5"/>
+                                                                                    GridPane.rowIndex="7"/>
                                                                             <Text text="%settings.breakpoints.readOnly"
                                                                                   GridPane.halignment="LEFT"
-                                                                                  GridPane.rowIndex="6"
+                                                                                  GridPane.rowIndex="8"
                                                                                   GridPane.valignment="CENTER"/>
                                                                             <ToggleSwitch
                                                                                     fx:id="readOnlyWritingBreakSwitch"
                                                                                     selected="true"
                                                                                     GridPane.columnIndex="1"
-                                                                                    GridPane.rowIndex="6"/>
+                                                                                    GridPane.rowIndex="8"/>
                                                                         </children>
                                                                     </GridPane>
                                                                 </children>
@@ -674,62 +703,79 @@
                                                                                         AnchorPane.rightAnchor="0.0"/>
                                                                             </children>
                                                                         </AnchorPane>
-                                                                        <children>
-                                                                            <Text text="%settings.appearance.themeVariation">
-                                                                                <VBox.margin>
-                                                                                    <Insets bottom="2.0"
-                                                                                            left="5.0"/>
-                                                                                </VBox.margin>
-                                                                            </Text>
-                                                                            <AnchorPane>
-                                                                                <children>
-                                                                                    <HBox AnchorPane.leftAnchor="0.0"
-                                                                                          AnchorPane.rightAnchor="0.0">
-                                                                                        <children>
-                                                                                            <AnchorPane
-                                                                                                    HBox.hgrow="ALWAYS">
-                                                                                                <children>
-                                                                                                    <ToggleButton
-                                                                                                            fx:id="settingsDark"
-                                                                                                            mnemonicParsing="false"
-                                                                                                            onAction="#onSettingsDark"
-                                                                                                            styleClass="left-pill"
-                                                                                                            text="Dark"
-                                                                                                            AnchorPane.leftAnchor="0.0"
-                                                                                                            AnchorPane.rightAnchor="0.0">
-                                                                                                        <graphic>
-                                                                                                            <FontIcon
-                                                                                                                    iconLiteral="mdomz-wb_sunny"/>
-                                                                                                        </graphic>
-                                                                                                    </ToggleButton>
-                                                                                                </children>
-                                                                                            </AnchorPane>
-                                                                                            <AnchorPane
-                                                                                                    HBox.hgrow="ALWAYS">
-                                                                                                <children>
-                                                                                                    <ToggleButton
-                                                                                                            fx:id="settingsLight"
-                                                                                                            mnemonicParsing="false"
-                                                                                                            onAction="#onSettingsLight"
-                                                                                                            styleClass="right-pill"
-                                                                                                            text="Light"
-                                                                                                            AnchorPane.leftAnchor="0.0"
-                                                                                                            AnchorPane.rightAnchor="0.0">
-                                                                                                        <graphic>
-                                                                                                            <FontIcon
-                                                                                                                    iconLiteral="mdrmz-wb_sunny"/>
-                                                                                                        </graphic>
-                                                                                                    </ToggleButton>
-                                                                                                </children>
-                                                                                            </AnchorPane>
-                                                                                        </children>
-                                                                                    </HBox>
-                                                                                </children>
-                                                                                <VBox.margin>
-                                                                                    <Insets bottom="20.0"/>
-                                                                                </VBox.margin>
-                                                                            </AnchorPane>
-                                                                        </children>
+                                                                        <Text text="%settings.appearance.themeVariation">
+                                                                            <VBox.margin>
+                                                                                <Insets bottom="2.0"
+                                                                                        left="5.0"/>
+                                                                            </VBox.margin>
+                                                                        </Text>
+                                                                        <AnchorPane>
+                                                                            <children>
+                                                                                <HBox AnchorPane.leftAnchor="0.0"
+                                                                                      AnchorPane.rightAnchor="0.0">
+                                                                                    <children>
+                                                                                        <AnchorPane
+                                                                                                HBox.hgrow="ALWAYS">
+                                                                                            <children>
+                                                                                                <ToggleButton
+                                                                                                        fx:id="settingsDark"
+                                                                                                        mnemonicParsing="false"
+                                                                                                        onAction="#onSettingsDark"
+                                                                                                        styleClass="left-pill"
+                                                                                                        text="%settings.appearance.dark"
+                                                                                                        AnchorPane.leftAnchor="0.0"
+                                                                                                        AnchorPane.rightAnchor="0.0">
+                                                                                                    <graphic>
+                                                                                                        <FontIcon
+                                                                                                                iconLiteral="mdomz-wb_sunny"/>
+                                                                                                    </graphic>
+                                                                                                </ToggleButton>
+                                                                                            </children>
+                                                                                        </AnchorPane>
+                                                                                        <AnchorPane
+                                                                                                HBox.hgrow="ALWAYS">
+                                                                                            <children>
+                                                                                                <ToggleButton
+                                                                                                        fx:id="settingsLight"
+                                                                                                        mnemonicParsing="false"
+                                                                                                        onAction="#onSettingsLight"
+                                                                                                        styleClass="right-pill"
+                                                                                                        text="%settings.appearance.light"
+                                                                                                        AnchorPane.leftAnchor="0.0"
+                                                                                                        AnchorPane.rightAnchor="0.0">
+                                                                                                    <graphic>
+                                                                                                        <FontIcon
+                                                                                                                iconLiteral="mdrmz-wb_sunny"/>
+                                                                                                    </graphic>
+                                                                                                </ToggleButton>
+                                                                                            </children>
+                                                                                        </AnchorPane>
+                                                                                    </children>
+                                                                                </HBox>
+                                                                            </children>
+                                                                            <VBox.margin>
+                                                                                <Insets bottom="20.0"/>
+                                                                            </VBox.margin>
+                                                                        </AnchorPane>
+                                                                        <Text text="%settings.appearance.maxNotification">
+                                                                            <VBox.margin>
+                                                                                <Insets bottom="2.0"
+                                                                                        left="5.0"/>
+                                                                            </VBox.margin>
+                                                                        </Text>
+                                                                        <AnchorPane>
+                                                                            <children>
+                                                                                <Spinner
+                                                                                        fx:id="settingsMaxNotification"
+                                                                                        editable="true"
+                                                                                        styleClass="arrows-on-right-horizontal"
+                                                                                        AnchorPane.leftAnchor="0.0"
+                                                                                        AnchorPane.rightAnchor="0.0"/>
+                                                                            </children>
+                                                                            <VBox.margin>
+                                                                                <Insets bottom="20.0"/>
+                                                                            </VBox.margin>
+                                                                        </AnchorPane>
                                                                     </VBox>
                                                                 </children>
                                                             </AnchorPane>

@@ -71,7 +71,7 @@ public class EditorController extends AbstractJArmEmuModule {
      */
     public void addNotification(String titleString, String contentString, String classString) {
 
-        if (getController().notifications.getChildren().size() > 5) return;
+        if (getController().notifications.getChildren().size() >= getSettingsController().getMaxNotification()) return;
 
         Notification notification;
 

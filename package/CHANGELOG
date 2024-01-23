@@ -6,6 +6,9 @@
 - Added BKPT instruction
 - Added BLX instruction
 - Added shortcuts and shortcut hints
+- Added code and manual breakpoint settings
+- Added i18n (English and French)
+- Added notification tray length settings
 - Improved Linux execution script (discovering and selecting JRE version)
 - Improved Syntax error message (specify file in most of the cases)
 - Fixed Legacy Parser skipping incorrect instructions when it should send a notification

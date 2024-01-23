@@ -68,7 +68,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
                 if (savingDeviation) {
                     applyLayoutSecond(lastLayout);
                 } else {
-                    getSettingsController().setLayoutSetting(getLayoutJSON());
+                    getSettingsController().setLayout(getLayoutJSON());
                 }
             })
     );
@@ -109,6 +109,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Spinner<Integer> settingsSimInterval;
     @FXML protected ToggleButton settingsRegex;
     @FXML protected ToggleButton settingsLegacy;
+    @FXML protected ToggleSwitch manualBreakSwitch;
+    @FXML protected ToggleSwitch codeBreakSwitch;
     @FXML protected ToggleSwitch autoBreakSwitch;
     @FXML protected ToggleSwitch memoryAlignBreakSwitch;
     @FXML protected ToggleSwitch stackAlignBreakSwitch;
@@ -123,6 +125,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected ChoiceBox<String> settingsFamily;
     @FXML protected ToggleButton settingsDark;
     @FXML protected ToggleButton settingsLight;
+    @FXML protected Spinner<Integer> settingsMaxNotification;
 
     @FXML protected AnchorPane stackPane;
 
@@ -170,7 +173,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     }
 
     public void registerLayoutChangeListener() {
-        applyLayout(getSettingsController().getLayoutSetting());
+        applyLayout(getSettingsController().getLayout());
 
         Platform.runLater(() -> {
             getApplication().maximizedProperty().addListener(obs -> notifyLayoutChange());
@@ -187,7 +190,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
      * Indique un changement de layout et enclenche une timeline de sauvegarde.
      */
     public void notifyLayoutChange() {
-        if (!getLayoutJSON().equals(getSettingsController().getLayoutSetting())) {
+        if (!getLayoutJSON().equals(getSettingsController().getLayout())) {
             LAYOUT_SAVING_TIMELINE.stop();
             LAYOUT_SAVING_TIMELINE.play();
         }

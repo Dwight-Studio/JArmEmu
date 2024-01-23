@@ -66,7 +66,7 @@ public class LabelsController extends AbstractJArmEmuModule {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        col0 = new TableColumn<>("File");
+        col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.file"));
         col0.setGraphic(new FontIcon(Material2OutlinedAL.INSERT_DRIVE_FILE));
         col0.setSortable(false);
         col0.setEditable(false);
@@ -77,7 +77,7 @@ public class LabelsController extends AbstractJArmEmuModule {
         col0.setCellValueFactory(c -> c.getValue().getFileIndexProperty());
         col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter(getApplication())));
 
-        col1 = new TableColumn<>("Name");
+        col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.name"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
         col1.setEditable(false);
         col1.setReorderable(false);
@@ -89,7 +89,7 @@ public class LabelsController extends AbstractJArmEmuModule {
         col1.setCellFactory(TextFieldTableCell.forTableColumn());
         col1.setSortType(TableColumn.SortType.ASCENDING);
 
-        col2 = new TableColumn<>("Address");
+        col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.address"));
         col2.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
         col2.setEditable(false);
         col2.setReorderable(false);

@@ -74,7 +74,7 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         Platform.runLater(UPDATE_ANIMATION::stop);
         Platform.runLater(UPDATE_ANIMATION::play);
          */
-            if (application.getSettingsController().getHighlightUpdatesSetting())
+            if (application.getSettingsController().getHighlightUpdates())
                 Platform.runLater(() -> setStyle("-fx-background-color: -color-warning-muted"));
         };
 

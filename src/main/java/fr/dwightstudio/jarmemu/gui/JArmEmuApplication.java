@@ -47,7 +47,10 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -59,7 +62,8 @@ public class JArmEmuApplication extends Application {
     public static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     public static final String OS_VERSION = System.getProperty("os.version").toLowerCase();
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
-    public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("fr.dwightstudio.jarmemu.Locale");
+    public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("fr.dwightstudio.jarmemu.bundles.Locale");
+    public static String LICENCE;
 
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
 
@@ -120,6 +124,9 @@ public class JArmEmuApplication extends Application {
         controller = fxmlLoader.getController();
 
         fxmlLoader.setResources(BUNDLE);
+        try {
+            LICENCE = Files.readString(Path.of(JArmEmuApplication.getResource("Licence.txt").toURI()));
+        } catch (URISyntaxException ignored) {}
 
         // Essayer d'ouvrir le fichier passé en paramètre
         if (!getParameters().getUnnamed().isEmpty()) {
@@ -385,7 +392,11 @@ public class JArmEmuApplication extends Application {
         for (String key : BUNDLE.keySet()) {
             message = message.replaceAll("%" + key, BUNDLE.getString(key));
         }
-
-        return message.formatted(args);
+        try {
+            return message.formatted(args);
+        } catch (Exception e) {
+            logger.severe(message);
+            throw e;
+        }
     }
 }

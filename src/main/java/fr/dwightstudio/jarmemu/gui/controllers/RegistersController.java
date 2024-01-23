@@ -63,7 +63,7 @@ public class RegistersController extends AbstractJArmEmuModule {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        col0 = new TableColumn<>("Register");
+        col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.register"));
         col0.setGraphic(new FontIcon(Material2OutlinedMZ.MEMORY));
         col0.setSortable(false);
         col0.setEditable(false);
@@ -74,7 +74,7 @@ public class RegistersController extends AbstractJArmEmuModule {
         col0.setCellValueFactory(c -> c.getValue().getNameProperty());
         col0.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        col1 = new TableColumn<>("Value");
+        col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.value"));
         col1.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col1.setSortable(false);
         col1.setReorderable(false);
@@ -84,7 +84,7 @@ public class RegistersController extends AbstractJArmEmuModule {
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
         col1.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
-        col2 = new TableColumn<>("Flags");
+        col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.flags"));
         col2.setGraphic(new FontIcon(Material2OutlinedAL.FLAG));
         col2.setSortable(false);
         col2.setEditable(false);

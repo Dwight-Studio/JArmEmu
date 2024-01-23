@@ -51,6 +51,8 @@ public class SettingsController extends AbstractJArmEmuModule {
     };
 
     // Valeurs par défaut
+    public static final boolean DEFAULT_MANUAL_BREAK = true;
+    public static final boolean DEFAULT_CODE_BREAK = true;
     public static final boolean DEFAULT_AUTO_BREAK = true;
     public static final boolean DEFAULT_MEMORY_ALIGN_BREAK = false;
     public static final boolean DEFAULT_STACK_ALIGN_BREAK = true;
@@ -64,6 +66,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public static final int DEFAULT_THEME_FAMILY = 0;
     public static final int DEFAULT_THEME_VARIATION = 0;
+    public static final int DEFAULT_MAX_NOTIFICATION = 4;
     public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"maximized\":true,\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
 
     public static final String VERSION_KEY = "version";
@@ -72,6 +75,8 @@ public class SettingsController extends AbstractJArmEmuModule {
     public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
     public static final String SOURCE_PARSER_KEY = "sourceParser";
 
+    public static final String MANUAL_BREAK_KEY = "manualBreakpoints";
+    public static final String CODE_BREAK_KEY = "codeBreakpoints";
     public static final String AUTO_BREAK_KEY = "automaticBreakpoints";
     public static final String MEMORY_ALIGN_BREAK_KEY = "memoryAlignmentBreakpoint";
     public static final String STACK_ALIGN_BREAK_KEY = "stackPointerAlignmentBreakpoint";
@@ -87,6 +92,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public static final String THEME_FAMILY_KEY = "themeFamily";
     public static final String THEME_VARIATION_KEY = "theme";
+    public static final String MAX_NOTIFICATION_KEY = "maxNotification";
     public static final String LAYOUT_KEY = "layout";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{"Hexadecimal (default)", "Signed Decimal", "Unsigned Decimal"};
@@ -101,6 +107,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     private SpinnerValueFactory<Integer> simIntervalValue;
     private SpinnerValueFactory<Integer> stackAddressValue;
     private SpinnerValueFactory<Integer> symbolsAddressValue;
+    private SpinnerValueFactory<Integer> maxNotificationValue;
 
     // ToggleGroup
     private ToggleGroup parserGroup;
@@ -122,14 +129,17 @@ public class SettingsController extends AbstractJArmEmuModule {
         simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.FALLBACK_UPDATE_INTERVAL, ExecutionWorker.UPDATE_THRESHOLD);
         stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
         symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
+        maxNotificationValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 20, DEFAULT_MAX_NOTIFICATION, 1);
 
         simIntervalValue.setConverter(new SpinnerStringConverter(simIntervalValue));
         stackAddressValue.setConverter(new SpinnerAddressConverter(stackAddressValue));
         symbolsAddressValue.setConverter(new SpinnerAddressConverter(symbolsAddressValue));
+        maxNotificationValue.setConverter(new SpinnerStringConverter(maxNotificationValue));
 
         getController().settingsSimInterval.setValueFactory(simIntervalValue);
         getController().settingsStackAddress.setValueFactory(stackAddressValue);
         getController().settingsSymbolsAddress.setValueFactory(symbolsAddressValue);
+        getController().settingsMaxNotification.setValueFactory(maxNotificationValue);
 
         // Gestion des ToggleGroups
         parserGroup = new ToggleGroup();
@@ -145,14 +155,16 @@ public class SettingsController extends AbstractJArmEmuModule {
         themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
         // Gestion des ToggleSwitches
-        getController().autoBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoBreakSetting(newVal));
-        getController().memoryAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setMemoryAlignBreakSetting(newVal));
-        getController().stackAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setStackAlignBreakSetting(newVal));
-        getController().programAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setProgramAlignBreakSetting(newVal));
-        getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreakSetting(newVal));
-        getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreakSetting(newVal));
+        getController().manualBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setManualBreak(newVal));
+        getController().codeBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setCodeBreak(newVal));
+        getController().autoBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoBreak(newVal));
+        getController().memoryAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setMemoryAlignBreak(newVal));
+        getController().stackAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setStackAlignBreak(newVal));
+        getController().programAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setProgramAlignBreak(newVal));
+        getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreak(newVal));
+        getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreak(newVal));
         getController().followSPSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFollowSPSetting(newVal));
-        getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHighlightUpdatesSetting(newVal));
+        getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHighlightUpdates(newVal));
 
         // Gestion des ChoiceBoxes
         getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
@@ -185,9 +197,10 @@ public class SettingsController extends AbstractJArmEmuModule {
         updateGUI();
 
         // Listeners pour les spinners
-        simIntervalValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSimulationInterval(newVal)));
-        stackAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setStackAddress(newVal)));
-        symbolsAddressValue.valueProperty().addListener(((obs, oldVal, newVal) -> setSymbolsAddress(newVal)));
+        simIntervalValue.valueProperty().addListener((obs, oldVal, newVal) -> setSimulationInterval(newVal));
+        stackAddressValue.valueProperty().addListener((obs, oldVal, newVal) -> setStackAddress(newVal));
+        symbolsAddressValue.valueProperty().addListener((obs, oldVal, newVal) -> setSymbolsAddress(newVal));
+        maxNotificationValue.valueProperty().addListener((obs, oldVal, newVal) -> setMaxNotification(newVal));
 
         initiated = true;
     }
@@ -200,26 +213,29 @@ public class SettingsController extends AbstractJArmEmuModule {
         simIntervalValue.setValue(getSimulationInterval());
         stackAddressValue.setValue(getStackAddress());
         symbolsAddressValue.setValue(getSymbolsAddress());
+        maxNotificationValue.setValue(getMaxNotification());
 
         // Toggles
         parserGroup.selectToggle(parserToggles[getSourceParserSetting()]);
         themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
         // ToggleSwitches
-        getController().autoBreakSwitch.setSelected(getAutoBreakSetting());
-        getController().memoryAlignBreakSwitch.setSelected(getMemoryAlignBreakSetting());
-        getController().stackAlignBreakSwitch.setSelected(getStackAlignBreakSetting());
-        getController().programAlignBreakSwitch.setSelected(getProgramAlignBreakSetting());
-        getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreakSetting());
-        getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreakSetting());
+        getController().manualBreakSwitch.setSelected(getManualBreak());
+        getController().codeBreakSwitch.setSelected(getCodeBreak());
+        getController().autoBreakSwitch.setSelected(getAutoBreak());
+        getController().memoryAlignBreakSwitch.setSelected(getMemoryAlignBreak());
+        getController().stackAlignBreakSwitch.setSelected(getStackAlignBreak());
+        getController().programAlignBreakSwitch.setSelected(getProgramAlignBreak());
+        getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreak());
+        getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreak());
         getController().followSPSwitch.setSelected(getFollowSPSetting());
-        getController().updateSwitch.setSelected(getHighlightUpdatesSetting());
+        getController().updateSwitch.setSelected(getHighlightUpdates());
 
         // ChoiceBoxes
         getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
         getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
 
-        if (initiated) getController().applyLayout(getLayoutSetting());
+        if (initiated) getController().applyLayout(getLayout());
     }
 
     /**
@@ -232,12 +248,14 @@ public class SettingsController extends AbstractJArmEmuModule {
         setSimulationInterval(ExecutionWorker.FALLBACK_UPDATE_INTERVAL);
         setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
 
-        setAutoBreakSetting(DEFAULT_AUTO_BREAK);
-        setMemoryAlignBreakSetting(DEFAULT_MEMORY_ALIGN_BREAK);
-        setStackAlignBreakSetting(DEFAULT_STACK_ALIGN_BREAK);
-        setProgramAlignBreakSetting(DEFAULT_PROGRAM_ALIGN_BREAK);
-        setFunctionNestingBreakSetting(DEFAULT_FUNCTION_NESTING_BREAK);
-        setReadOnlyWritingBreakSetting(DEFAULT_READ_ONLY_WRITING_BREAK);
+        setManualBreak(DEFAULT_MANUAL_BREAK);
+        setCodeBreak(DEFAULT_CODE_BREAK);
+        setAutoBreak(DEFAULT_AUTO_BREAK);
+        setMemoryAlignBreak(DEFAULT_MEMORY_ALIGN_BREAK);
+        setStackAlignBreak(DEFAULT_STACK_ALIGN_BREAK);
+        setProgramAlignBreak(DEFAULT_PROGRAM_ALIGN_BREAK);
+        setFunctionNestingBreak(DEFAULT_FUNCTION_NESTING_BREAK);
+        setReadOnlyWritingBreak(DEFAULT_READ_ONLY_WRITING_BREAK);
 
         setStackAddress(StateContainer.DEFAULT_STACK_ADDRESS);
         setSymbolsAddress(StateContainer.DEFAULT_SYMBOLS_ADDRESS);
@@ -246,7 +264,8 @@ public class SettingsController extends AbstractJArmEmuModule {
 
         setThemeFamily(DEFAULT_THEME_FAMILY);
         setThemeVariation(DEFAULT_THEME_VARIATION);
-        setLayoutSetting(DEFAULT_LAYOUT);
+        setMaxNotification(DEFAULT_MAX_NOTIFICATION);
+        setLayout(DEFAULT_LAYOUT);
     }
 
     /**
@@ -347,11 +366,27 @@ public class SettingsController extends AbstractJArmEmuModule {
         getApplication().updateUserAgentStyle(this.getThemeVariation(), nb);
     }
 
-    public boolean getAutoBreakSetting() {
+    public boolean getManualBreak() {
+        return preferences.getBoolean(MANUAL_BREAK_KEY, DEFAULT_MANUAL_BREAK);
+    }
+
+    public void setManualBreak(boolean b) {
+        preferences.putBoolean(MANUAL_BREAK_KEY, b);
+    }
+
+    public boolean getCodeBreak() {
+        return preferences.getBoolean(CODE_BREAK_KEY, DEFAULT_CODE_BREAK);
+    }
+
+    public void setCodeBreak(boolean b) {
+        preferences.putBoolean(CODE_BREAK_KEY, b);
+    }
+
+    public boolean getAutoBreak() {
         return preferences.getBoolean(AUTO_BREAK_KEY, DEFAULT_AUTO_BREAK);
     }
 
-    public void setAutoBreakSetting(boolean b) {
+    public void setAutoBreak(boolean b) {
         getController().memoryAlignBreakSwitch.setDisable(!b);
         getController().stackAlignBreakSwitch.setDisable(!b);
         getController().programAlignBreakSwitch.setDisable(!b);
@@ -360,43 +395,43 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.putBoolean(AUTO_BREAK_KEY, b);
     }
 
-    public boolean getMemoryAlignBreakSetting() {
+    public boolean getMemoryAlignBreak() {
         return preferences.getBoolean(MEMORY_ALIGN_BREAK_KEY, DEFAULT_MEMORY_ALIGN_BREAK);
     }
 
-    public void setMemoryAlignBreakSetting(boolean b) {
+    public void setMemoryAlignBreak(boolean b) {
         preferences.putBoolean(MEMORY_ALIGN_BREAK_KEY, b);
     }
 
-    public boolean getStackAlignBreakSetting() {
+    public boolean getStackAlignBreak() {
         return preferences.getBoolean(STACK_ALIGN_BREAK_KEY, DEFAULT_STACK_ALIGN_BREAK);
     }
 
-    public void setStackAlignBreakSetting(boolean b) {
+    public void setStackAlignBreak(boolean b) {
         preferences.putBoolean(STACK_ALIGN_BREAK_KEY, b);
     }
 
-    public boolean getProgramAlignBreakSetting() {
+    public boolean getProgramAlignBreak() {
         return preferences.getBoolean(PROGRAM_ALIGN_BREAK_KEY, DEFAULT_PROGRAM_ALIGN_BREAK);
     }
 
-    public void setProgramAlignBreakSetting(boolean b) {
+    public void setProgramAlignBreak(boolean b) {
         preferences.putBoolean(PROGRAM_ALIGN_BREAK_KEY, b);
     }
 
-    public boolean getFunctionNestingBreakSetting() {
+    public boolean getFunctionNestingBreak() {
         return preferences.getBoolean(FUNCTION_NESTING_BREAK_KEY, DEFAULT_FUNCTION_NESTING_BREAK);
     }
 
-    public void setFunctionNestingBreakSetting(boolean b) {
+    public void setFunctionNestingBreak(boolean b) {
         preferences.putBoolean(FUNCTION_NESTING_BREAK_KEY, b);
     }
 
-    public boolean getReadOnlyWritingBreakSetting() {
+    public boolean getReadOnlyWritingBreak() {
         return preferences.getBoolean(READ_ONLY_WRITING_BREAK_KEY, DEFAULT_READ_ONLY_WRITING_BREAK);
     }
 
-    public void setReadOnlyWritingBreakSetting(boolean b) {
+    public void setReadOnlyWritingBreak(boolean b) {
         preferences.putBoolean(READ_ONLY_WRITING_BREAK_KEY, b);
     }
 
@@ -408,19 +443,27 @@ public class SettingsController extends AbstractJArmEmuModule {
         preferences.putBoolean(FOLLOW_SP_KEY, b);
     }
 
-    public boolean getHighlightUpdatesSetting() {
+    public boolean getHighlightUpdates() {
         return preferences.getBoolean(HIGHLIGHT_UPDATES_KEY, DEFAULT_HIGHLIGHT_UPDATES);
     }
 
-    public void setHighlightUpdatesSetting(boolean b) {
+    public void setHighlightUpdates(boolean b) {
         preferences.putBoolean(HIGHLIGHT_UPDATES_KEY, b);
     }
 
-    public String getLayoutSetting() {
+    public String getLayout() {
         return preferences.get(LAYOUT_KEY, DEFAULT_LAYOUT);
     }
 
-    public void setLayoutSetting(String s) {
+    public void setLayout(String s) {
         preferences.put(LAYOUT_KEY, s);
+    }
+
+    public int getMaxNotification() {
+        return preferences.getInt(MAX_NOTIFICATION_KEY, DEFAULT_MAX_NOTIFICATION);
+    }
+
+    public void setMaxNotification(int i) {
+        preferences.putInt(MAX_NOTIFICATION_KEY, i);
     }
 }

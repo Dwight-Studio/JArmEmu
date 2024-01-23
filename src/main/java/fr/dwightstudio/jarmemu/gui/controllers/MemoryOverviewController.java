@@ -82,28 +82,20 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        TextFlow textFlow = new TextFlow(
-                new Text("You can search in memory using multiple address formats:\n"),
-                new Text("\t→ Signed decimal number (e.g. -1842)\n"),
-                new Text("\t→ Hexadecimal number (e.g. 0x01FF)\n"),
-                new Text("\t→ Binary number (e.g. 0b1001)\n"),
-                new Text("\t→ Defined constant (e.g N)\n"),
-                new Text("\t→ Defined data (e.g. data1)\n"),
-                new Text("\t→ Mathematical expression (e.g (N*4)+0xFF)")
-        );
+        TextFlow textFlow = new TextFlow(new Text(JArmEmuApplication.formatMessage("%pop.memoryHint.title")));
         textFlow.setLineSpacing(5);
         textFlow.setPrefWidth(400);
         textFlow.setPadding(new Insets(10, 0, 10, 0));
 
         hintPop = new Popover(textFlow);
-        hintPop.setTitle("Memory searching");
+        hintPop.setTitle(JArmEmuApplication.formatMessage("%pop.memoryHint.title"));
         hintPop.setHeaderAlwaysVisible(true);
         hintPop.setDetachable(false);
         hintPop.setAnimated(true);
         hintPop.setCloseButtonEnabled(true);
         hintPop.setArrowLocation(Popover.ArrowLocation.RIGHT_CENTER);
 
-        col0 = new TableColumn<>("Address");
+        col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.address"));
         col0.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
         col0.setSortable(false);
         col0.setEditable(false);
@@ -125,7 +117,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
         col1.setCellFactory(ValueTableCell.factoryStaticString(getApplication()));
         col1.setVisible(false);
 
-        col2 = new TableColumn<>("Value 0");
+        col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 0));
         col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col2.setSortable(false);
         col2.setReorderable(false);
@@ -135,7 +127,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
         col2.setCellValueFactory(c -> c.getValue().getValue0Property());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
-        col3 = new TableColumn<>("Value 1");
+        col3 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 1));
         col3.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col3.setSortable(false);
         col3.setReorderable(false);
@@ -145,7 +137,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
         col3.setCellValueFactory(c -> c.getValue().getValue1Property());
         col3.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
-        col4 = new TableColumn<>("Value 2");
+        col4 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 2));
         col4.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col4.setSortable(false);
         col4.setReorderable(false);
@@ -155,7 +147,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
         col4.setCellValueFactory(c -> c.getValue().getValue2Property());
         col4.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
 
-        col5 = new TableColumn<>("Value 3");
+        col5 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 3));
         col5.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
         col5.setSortable(false);
         col5.setReorderable(false);
