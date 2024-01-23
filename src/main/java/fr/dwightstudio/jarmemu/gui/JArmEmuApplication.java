@@ -100,9 +100,7 @@ public class JArmEmuApplication extends Application {
     private String argSave;
 
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
-    // TODO: Ajouter un toggle pour les breakpoints dans le code
-    // TODO: Finir l'i18n (erreurs, about, colonnes etc)
-    // TODO: Ajouter le Français
+    // TODO: Finir l'i18n (erreurs, fichiers, clique-droit)
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;

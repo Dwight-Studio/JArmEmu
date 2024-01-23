@@ -200,28 +200,30 @@
                                             <items>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                     <children>
-                                                        <Button fx:id="simulate" contentDisplay="CENTER"
+                                                        <Button fx:id="simulate"
                                                                 mnemonicParsing="false" onAction="#onSimulate"
                                                                 styleClass="accent" text="%toolbar.simulate">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
+                                                            <graphic>
+                                                                <FontIcon iconLiteral="mdmz-plagiarism" />
+                                                            </graphic>
                                                         </Button>
                                                     </children>
                                                 </HBox>
                                                 <HBox>
-                                                    <children>
-                                                        <Button fx:id="stepInto" disable="true"
-                                                                mnemonicParsing="false" onAction="#onStepInto"
-                                                                text="%toolbar.stepInto">
-                                                            <HBox.margin>
-                                                                <Insets left="10.0" right="10.0"/>
-                                                            </HBox.margin>
-                                                            <graphic>
-                                                                <FontIcon iconLiteral="mdomz-subdirectory_arrow_left" rotate="-90" />
-                                                            </graphic>
-                                                        </Button>
-                                                    </children>
+                                                    <Button fx:id="stepInto" disable="true"
+                                                            mnemonicParsing="false" onAction="#onStepInto"
+                                                            text="%toolbar.stepInto">
+                                                        <HBox.margin>
+                                                            <Insets left="10.0" right="10.0"/>
+                                                        </HBox.margin>
+                                                        <graphic>
+                                                            <FontIcon iconLiteral="mdomz-subdirectory_arrow_left"
+                                                                      rotate="-90"/>
+                                                        </graphic>
+                                                    </Button>
                                                 </HBox>
                                                 <HBox layoutX="10.0" layoutY="10.0">
                                                     <children>
@@ -238,52 +240,57 @@
                                                     </children>
                                                 </HBox>
                                                 <HBox layoutX="20.0" layoutY="20.0">
-                                                    <children>
-                                                        <Button fx:id="conti" contentDisplay="CENTER" disable="true"
-                                                                layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
-                                                                onAction="#onContinue" styleClass="success"
-                                                                text="%toolbar.continue" HBox.hgrow="ALWAYS">
-                                                            <HBox.margin>
-                                                                <Insets left="10.0" right="10.0"/>
-                                                            </HBox.margin>
-                                                        </Button>
-                                                        <HBox>
-                                                            <children>
-                                                                <Button fx:id="pause" contentDisplay="CENTER"
-                                                                        disable="true" layoutX="10.0" layoutY="10.0"
-                                                                        mnemonicParsing="false" onAction="#onPause"
-                                                                        styleClass="accent" text="%toolbar.pause"
-                                                                        HBox.hgrow="ALWAYS">
-                                                                    <HBox.margin>
-                                                                        <Insets left="10.0" right="10.0"/>
-                                                                    </HBox.margin>
-                                                                </Button>
-                                                            </children>
-                                                        </HBox>
-                                                    </children>
-                                                </HBox>
-                                                <HBox layoutX="10.0" layoutY="10.0">
-                                                    <children>
-                                                        <Button fx:id="stop" contentDisplay="CENTER" disable="true"
-                                                                layoutX="20.0" layoutY="20.0" mnemonicParsing="false"
-                                                                onAction="#onStop" styleClass="danger" text="%toolbar.stop">
-                                                            <HBox.margin>
-                                                                <Insets left="10.0" right="10.0"/>
-                                                            </HBox.margin>
-                                                        </Button>
-                                                    </children>
-                                                </HBox>
-                                                <HBox layoutX="20.0" layoutY="20.0">
-                                                    <children>
-                                                        <Button fx:id="restart" contentDisplay="CENTER" disable="true"
-                                                                layoutX="160.0" layoutY="10.0" mnemonicParsing="false"
-                                                                onAction="#onRestart" styleClass="danger" text="%toolbar.restart"
+                                                    <Button fx:id="conti" disable="true"
+                                                            layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
+                                                            onAction="#onContinue" styleClass="success"
+                                                            text="%toolbar.continue" HBox.hgrow="ALWAYS">
+                                                        <HBox.margin>
+                                                            <Insets left="10.0" right="10.0"/>
+                                                        </HBox.margin>
+                                                        <graphic>
+                                                            <FontIcon iconLiteral="mdmz-play_arrow" />
+                                                        </graphic>
+                                                    </Button>
+                                                    <HBox>
+                                                        <Button fx:id="pause"
+                                                                disable="true" layoutX="10.0" layoutY="10.0"
+                                                                mnemonicParsing="false" onAction="#onPause"
+                                                                styleClass="accent" text="%toolbar.pause"
                                                                 HBox.hgrow="ALWAYS">
                                                             <HBox.margin>
                                                                 <Insets left="10.0" right="10.0"/>
                                                             </HBox.margin>
+                                                            <graphic>
+                                                                <FontIcon iconLiteral="mdmz-pause" />
+                                                            </graphic>
                                                         </Button>
-                                                    </children>
+                                                    </HBox>
+                                                </HBox>
+                                                <HBox layoutX="10.0" layoutY="10.0">
+                                                    <Button fx:id="stop" disable="true"
+                                                            layoutX="20.0" layoutY="20.0" mnemonicParsing="false"
+                                                            onAction="#onStop" styleClass="danger" text="%toolbar.stop">
+                                                        <HBox.margin>
+                                                            <Insets left="10.0" right="10.0"/>
+                                                        </HBox.margin>
+                                                        <graphic>
+                                                            <FontIcon iconLiteral="mdmz-stop" />
+                                                        </graphic>
+                                                    </Button>
+                                                </HBox>
+                                                <HBox layoutX="20.0" layoutY="20.0">
+                                                    <Button fx:id="restart" contentDisplay="CENTER" disable="true"
+                                                            layoutX="160.0" layoutY="10.0" mnemonicParsing="false"
+                                                            onAction="#onRestart" styleClass="danger"
+                                                            text="%toolbar.restart"
+                                                            HBox.hgrow="ALWAYS">
+                                                        <HBox.margin>
+                                                            <Insets left="10.0" right="10.0"/>
+                                                        </HBox.margin>
+                                                        <graphic>
+                                                            <FontIcon iconLiteral="mdmz-rotate_left" />
+                                                        </graphic>
+                                                    </Button>
                                                 </HBox>
                                             </items>
                                         </ToolBar>
@@ -733,7 +740,7 @@
                                                                                                         AnchorPane.rightAnchor="0.0">
                                                                                                     <graphic>
                                                                                                         <FontIcon
-                                                                                                                iconLiteral="mdomz-wb_sunny"/>
+                                                                                                                iconLiteral="mdsal-bedtime"/>
                                                                                                     </graphic>
                                                                                                 </ToggleButton>
                                                                                             </children>
