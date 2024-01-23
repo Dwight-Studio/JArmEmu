@@ -49,7 +49,7 @@
                                     </graphic>
                                 </MenuItem>
                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="%menu.file.openAll" accelerator="Shortcut+Shift+S">
+                                <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="%menu.file.saveAll" accelerator="Shortcut+Shift+S">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-save"/>
                                     </graphic>
