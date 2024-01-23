@@ -298,7 +298,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     private void setSimulationInterval(int nb) {
         if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
-            getDialogs().warningAlert("Setting the simulation interval below " + ExecutionWorker.UPDATE_THRESHOLD + "ms disables systematic GUI update to prevent glitches with the front-end. You may see steps being skipped (this is just visual, the back-end is still running as usual).");
+            getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.simulationInterval.message", ExecutionWorker.UPDATE_THRESHOLD));
         }
         preferences.putInt(SIMULATION_INTERVAL_KEY, nb);
     }
@@ -464,6 +464,9 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public void setMaxNotification(int i) {
+        if (i == 0) {
+            getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.maxNotification.message"));
+        }
         preferences.putInt(MAX_NOTIFICATION_KEY, i);
     }
 }
