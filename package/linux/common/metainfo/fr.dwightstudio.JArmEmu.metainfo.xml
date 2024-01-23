@@ -93,6 +93,28 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-01-23" version="0.1.10">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.10</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Added ADR instruction</li>
+                    <li>Added BFC instruction</li>
+                    <li>Added BFI instruction</li>
+                    <li>Added BKPT instruction</li>
+                    <li>Added BLX instruction</li>
+                    <li>Added shortcuts and shortcut hints</li>
+                    <li>Added code and manual breakpoint settings</li>
+                    <li>Added i18n (English and French)</li>
+                    <li>Added notification tray length settings</li>
+                    <li>Improved Linux execution script (discovering and selecting JRE version)</li>
+                    <li>Improved Syntax error message (specify file in most of the cases)</li>
+                    <li>Fixed Legacy Parser skipping incorrect instructions when it should send a notification</li>
+                    <li>Fixed Step Over task GUI (buttons stayed enabled)</li>
+                </ul>
+            </description>
+        </release>
         <release date="2023-12-12" version="0.1.9">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.9</url>
             <description>
