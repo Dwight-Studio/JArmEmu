@@ -84,7 +84,7 @@ public class MemoryDetailsController extends AbstractJArmEmuModule {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        TextFlow textFlow = new TextFlow(new Text(JArmEmuApplication.formatMessage("%pop.memoryHint.message")));
+        TextFlow textFlow = new TextFlow(new Text(JArmEmuApplication.formatMessage("%pop.memoryHint.message", "→")));
         textFlow.setLineSpacing(5);
         textFlow.setPrefWidth(400);
         textFlow.setPadding(new Insets(10, 0, 10, 0));
