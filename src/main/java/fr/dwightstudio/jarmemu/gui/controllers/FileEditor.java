@@ -36,20 +36,27 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Popup;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.event.MouseOverTextEvent;
+import org.fxmisc.richtext.model.StyleSpan;
+import org.fxmisc.richtext.model.StyleSpans;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactfx.Subscription;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -105,7 +112,11 @@ public class FileEditor extends AbstractJArmEmuModule {
                         logger.log(Level.WARNING, ExceptionUtils.getStackTrace(t.getFailure()));
                         return Optional.empty();
                     }
-                }).subscribe((highlighting) -> codeArea.setStyleSpans(0, highlighting));
+                }).subscribe((highlighting) -> {
+                    codeArea.setStyleSpans(0, highlighting);
+                    // TODO: Ajouter l'autocompletion avec analyse dans les parsers
+                    //logger.info(codeArea.getText(codeArea.getCurrentParagraph()));
+                });
 
         fileTab.setOnCloseRequest(event -> {
             getController().filesTabPane.getSelectionModel().select(fileTab);

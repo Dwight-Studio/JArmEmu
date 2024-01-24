@@ -83,11 +83,9 @@ public class ComputeHightlightsTask extends Task<StyleSpans<Collection<String>>>
     protected StyleSpans<Collection<String>> call() {
         Matcher matcher = PATTERN.matcher(fileEditor.getCodeArea().getText());
         int lastKwEnd = 0;
-        int line = 0;
         StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
         while (matcher.find()) {
             if (matcher.group("NEWLINE") != null) {
-                line++;
                 continue;
             }
 
