@@ -181,8 +181,9 @@ public class JArmEmuApplication extends Application {
             splashScreen.close();
         }
 
-        logger.info("Startup finished");
         status.set(Status.EDITING);
+        getController().initLayout();
+        logger.info("Startup finished");
     }
 
     public void updateTitle() {

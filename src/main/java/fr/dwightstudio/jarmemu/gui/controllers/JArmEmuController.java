@@ -61,17 +61,12 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private boolean savingDeviation = false;
-    private JSONObject lastLayout;
+    private final Timeline LAYOUT_INIT_TIMELINE = new Timeline(
+            new KeyFrame(Duration.ZERO, event -> applyLayout(getSettingsController().getLayout())),
+            new KeyFrame(Duration.millis(500), event -> registerLayoutChangeListener())
+    );
     private final Timeline LAYOUT_SAVING_TIMELINE = new Timeline(
-            new KeyFrame(Duration.millis(250), event -> {
-                if (savingDeviation) {
-                    applyLayoutSecond(lastLayout);
-                } else {
-                    logger.info("Saving layout");
-                    getSettingsController().setLayout(getLayoutJSON());
-                }
-            })
+            new KeyFrame(Duration.millis(2000), event -> saveLayout())
     );
 
 
@@ -168,12 +163,11 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         getLabelsController().attach(getCodeInterpreter().getStateContainer());
         getSymbolsController().attach(getCodeInterpreter().getStateContainer());
 
-        Platform.runLater(this::registerLayoutChangeListener);
-
         getExecutionWorker().revive();
     }
 
     public void registerLayoutChangeListener() {
+        logger.info("Initializing layout listeners");
         applyLayout(getSettingsController().getLayout());
 
         Platform.runLater(() -> {
@@ -184,6 +178,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
             getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
             getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+
+            Platform.runLater(LAYOUT_SAVING_TIMELINE::stop);
         });
     }
 
@@ -237,29 +233,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
             boolean maximized = layout.getBoolean(MAXIMIZED_KEY);
 
             if (maximized != getApplication().isMaximized()) {
-                lastLayout = layout;
-                savingDeviation = true;
                 getApplication().setMaximized(maximized);
-            } else {
-                applyLayoutSecond(layout);
             }
-        } catch (JSONException exception) {
-            logger.severe("Error while parsing layout");
-            logger.severe(ExceptionUtils.getStackTrace(exception));
-        }
 
-        LAYOUT_SAVING_TIMELINE.stop();
-    }
-
-    /**
-     * Applique le layout après maximisation.
-     *
-     * @param layout le JSONObject contenant le layout
-     */
-    public void applyLayoutSecond(JSONObject layout) {
-        savingDeviation = false;
-
-        try {
             JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
 
             JSONArray mainSplitPaneData = splitPanes.getJSONArray(MAIN_SPLIT_PANE_KEY);
@@ -287,8 +263,27 @@ public class JArmEmuController extends AbstractJArmEmuModule {
             logger.severe("Error while parsing layout");
             logger.severe(ExceptionUtils.getStackTrace(exception));
         }
+
+        LAYOUT_SAVING_TIMELINE.stop();
     }
 
+    /**
+     * Sauvegarde le layout actuel.
+     */
+    public void saveLayout() {
+        if (!getLayoutJSON().equals(getSettingsController().getLayout())) {
+            logger.info("Saving layout");
+            getSettingsController().setLayout(getLayoutJSON());
+        }
+    }
+
+    /**
+     * Initialise le layout.
+     */
+    public void initLayout() {
+        logger.info("Initialising layout");
+        LAYOUT_INIT_TIMELINE.play();
+    }
 
     public void openDialogFront(ModalDialog dialog) {
         modalPaneFront.show(dialog.getModalBox());
