@@ -69,27 +69,27 @@
     <screenshots>
         <screenshot type="default">
             <caption>Editor: Primer Dark theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/primer-dark.png</image>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/PRIMER_DARK.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Primer Light theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/primer-light.png</image>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/PRIMER_LIGHT.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Nord Dark theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/nord-dark.png</image>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/NORD_DARK.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Nord Light theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/nord-light.png</image>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/NORD_LIGHT.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Cupertino Dark theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/cupertino-dark.png</image>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_DARK.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Cupertino Light theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/showcase/cupertino-light.png</image>
+            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_LIGHT.png</image>
         </screenshot>
     </screenshots>
     <releases>
