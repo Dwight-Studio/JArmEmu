@@ -60,14 +60,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %{_bindir}/jarmemu
 
-%{_datadir}/icons/hicolor/128x128/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/16x16/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/24x24/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/256x256/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/32x32/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/48x48/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/512x512/apps/fr.dwightstudio.JArmEmu.png
-%{_datadir}/icons/hicolor/64x64/apps/fr.dwightstudio.JArmEmu.png
+%{_datadir}/icons/hicolor/scalable/apps/fr.dwightstudio.JArmEmu.svg
 
 %{_datadir}/applications/fr.dwightstudio.JArmEmu.desktop
 
