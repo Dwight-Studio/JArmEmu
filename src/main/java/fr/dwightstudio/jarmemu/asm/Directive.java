@@ -23,9 +23,9 @@
 
 package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.asm.dire.DirectiveExecutor;
-import fr.dwightstudio.jarmemu.asm.dire.DirectiveExecutors;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.oasm.dire.DirectiveExecutor;
+import fr.dwightstudio.jarmemu.oasm.dire.DirectiveExecutors;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 

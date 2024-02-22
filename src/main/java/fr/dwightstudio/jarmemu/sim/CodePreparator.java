@@ -25,7 +25,8 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.*;

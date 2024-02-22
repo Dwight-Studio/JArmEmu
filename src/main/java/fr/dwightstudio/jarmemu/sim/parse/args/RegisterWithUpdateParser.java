@@ -23,13 +23,14 @@
 
 package fr.dwightstudio.jarmemu.sim.parse.args;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.BadArgumentsASMException;
+import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 // Correspond à "reg!", à utiliser avec ShiftParser
-public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.UpdatableRegister> {
+public class
+RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpdateParser.UpdatableRegister> {
 
     @Override
     public UpdatableRegister parse(@NotNull StateContainer stateContainer, @NotNull String string) {
@@ -45,7 +46,7 @@ public class RegisterWithUpdateParser implements ArgumentParser<RegisterWithUpda
 
     @Override
     public UpdatableRegister none() {
-        throw new BadArgumentsASMException("missing register");
+        throw new BadArgumentASMException("missing register");
     }
 
     public static final class UpdatableRegister extends Register {

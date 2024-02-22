@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 

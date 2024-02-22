@@ -23,15 +23,14 @@
 
 package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.asm.inst.BKPTExecutor;
-import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
+import fr.dwightstudio.jarmemu.oasm.inst.InstructionExecutor;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static fr.dwightstudio.jarmemu.asm.inst.InstructionExecutors.*;
+import static fr.dwightstudio.jarmemu.oasm.inst.InstructionExecutors.*;
 import static fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers.*;
 
 public enum Instruction {

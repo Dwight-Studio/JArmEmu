@@ -24,8 +24,8 @@
 package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;

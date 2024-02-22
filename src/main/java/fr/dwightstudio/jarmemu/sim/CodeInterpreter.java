@@ -23,13 +23,14 @@
 
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.argument.AddressArgument;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 
 import java.util.List;
@@ -67,8 +68,7 @@ public class CodeInterpreter {
     public synchronized void executeCurrentLine(boolean forceExecution) throws ExecutionASMException {
 
         // Remise à zéro des drapeaux de ligne des parseurs
-        AddressParser.reset(this.stateContainer);
-
+        stateContainer.resetAddressRegisterUpdateValue();
 
         ExecutionASMException executionException = null;
         List<ParsedInstruction> instructions = codePreparator.getInstructionMemory();

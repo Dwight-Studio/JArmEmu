@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.sim.parse.args;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.junit.jupiter.api.BeforeEach;

@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.obj;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -60,6 +60,7 @@ public class StateContainer {
     private int nestingCount;
     private int lastAddressROData;
     private int currentfileIndex;
+    private Integer addressRegisterUpdateValue;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -453,5 +454,23 @@ public class StateContainer {
 
     public Register[] getRegisters() {
         return registers;
+    }
+
+    public Integer getAddressRegisterUpdateValue() {
+        int rtn = addressRegisterUpdateValue;
+        addressRegisterUpdateValue = null;
+        return rtn;
+    }
+
+    public void setAddressRegisterUpdateValue(int addressRegisterUpdateValue) {
+        this.addressRegisterUpdateValue = addressRegisterUpdateValue;
+    }
+
+    public void resetAddressRegisterUpdateValue() {
+        addressRegisterUpdateValue = null;
+    }
+
+    public boolean hasAddressRegisterUpdate() {
+        return this.addressRegisterUpdateValue != null;
     }
 }

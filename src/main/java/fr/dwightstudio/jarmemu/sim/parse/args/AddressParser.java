@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.parse.args;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -102,41 +102,5 @@ public class AddressParser implements ArgumentParser<AddressParser.UpdatableInte
     @Override
     public AddressParser.UpdatableInteger none() {
         return null;
-    }
-
-    public static final class UpdatableInteger {
-
-        private final int integer;
-        private final StateContainer stateContainer;
-        private final Register register;
-        private boolean update;
-
-        /**
-         * Crée un UpdatableInteger qui s'occupe de mettre à jour
-         *
-         * @param integer l'entier contenu
-         * @param stateContainer le conteneur d'état associé à cet Updatable
-         * @param update vrai si on autorise l'update du registre à l'appel de update()
-         * @param updateNow si l'update doit se faire à la création de l'objet
-         * @param register le registre à appeler
-         */
-        public UpdatableInteger(int integer, StateContainer stateContainer, boolean update, boolean updateNow, Register register) {
-            this.integer = integer;
-            this.register = register;
-            this.update = update;
-            this.stateContainer = stateContainer;
-
-            if (updateNow) register.setData(integer);
-        }
-
-        public int toInt() {
-            return integer;
-        }
-
-        public void update() {
-            if (register == null) return;
-            if (update && updateValue.containsKey(stateContainer)) register.setData(updateValue.get(stateContainer));
-            update = false;
-        }
     }
 }

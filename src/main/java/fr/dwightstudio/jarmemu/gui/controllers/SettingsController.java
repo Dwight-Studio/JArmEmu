@@ -27,7 +27,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerAddressConverter;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerStringConverter;
 import javafx.beans.value.ChangeListener;

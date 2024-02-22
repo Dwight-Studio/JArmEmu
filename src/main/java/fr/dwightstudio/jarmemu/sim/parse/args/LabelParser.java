@@ -23,8 +23,8 @@
 
 package fr.dwightstudio.jarmemu.sim.parse.args;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.BadArgumentsASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ public class LabelParser implements ArgumentParser<Integer> {
 
     @Override
     public Integer none() {
-        throw new BadArgumentsASMException("missing label identifier");
+        throw new BadArgumentASMException("missing label identifier");
     }
 
 }
