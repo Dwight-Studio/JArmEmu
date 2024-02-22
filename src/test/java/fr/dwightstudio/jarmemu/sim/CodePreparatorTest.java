@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.Condition;
-import fr.dwightstudio.jarmemu.asm.Instruction;
+import fr.dwightstudio.jarmemu.asm.OInstruction;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
@@ -54,19 +54,19 @@ public class CodePreparatorTest {
 
     @Test
     public void convertMovToShiftTest() {
-        ParsedInstruction add = new ParsedInstruction(Instruction.ADD, Condition.AL, false, null, null, "r0", "r0", null, null, 0);
+        ParsedInstruction add = new ParsedInstruction(OInstruction.ADD, Condition.AL, false, null, null, "r0", "r0", null, null, 0);
         instr.put(0, add);
         parsedFile.getParsedObjects().put(0, add);
         codePreparator.getParsedFiles().add(parsedFile);
         codePreparator.replaceMovShifts(stateContainer);
         assertEquals(instr, codePreparator.getParsedFiles().getFirst().getParsedObjects());
-        ParsedInstruction mov = new ParsedInstruction(Instruction.MOV, Condition.EQ, true, null, null, "r1", "r0", null, null, 0);
+        ParsedInstruction mov = new ParsedInstruction(OInstruction.MOV, Condition.EQ, true, null, null, "r1", "r0", null, null, 0);
         instr.put(1, mov);
         parsedFile.getParsedObjects().put(1, mov);
         codePreparator.replaceMovShifts(stateContainer);
         assertEquals(instr, codePreparator.getParsedFiles().getFirst().getParsedObjects());
-        ParsedInstruction movShift = new ParsedInstruction(Instruction.MOV, Condition.AL, true, null, null, "r1", "r0", "LSL#5", null, 0);
-        ParsedInstruction Shift = new ParsedInstruction(Instruction.LSL, Condition.AL, true, null, null, "r1", "r0", "#5", null, 0);
+        ParsedInstruction movShift = new ParsedInstruction(OInstruction.MOV, Condition.AL, true, null, null, "r1", "r0", "LSL#5", null, 0);
+        ParsedInstruction Shift = new ParsedInstruction(OInstruction.LSL, Condition.AL, true, null, null, "r1", "r0", "#5", null, 0);
         instr.put(2, Shift);
         parsedFile.getParsedObjects().put(2, movShift);
         codePreparator.replaceMovShifts(stateContainer);

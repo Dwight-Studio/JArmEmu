@@ -56,12 +56,12 @@ public class RegexSourceParserTest extends JArmEmuTest {
         parser.currentSection.setValue(Section.TEXT);
 
         assertEquals(
-                new ParsedInstruction(Instruction.ADD, Condition.AL, false, null, null, "R1", "R0", null, null, 0),
+                new ParsedInstruction(OInstruction.ADD, Condition.AL, false, null, null, "R1", "R0", null, null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.ADC, Condition.CC, true, null, null, "R2", "R1", "R3", null, 0),
+                new ParsedInstruction(OInstruction.ADC, Condition.CC, true, null, null, "R2", "R1", "R3", null, 0),
                 parser.parseOneLine()
         );
     }
@@ -74,17 +74,17 @@ public class RegexSourceParserTest extends JArmEmuTest {
         parser.currentSection.setValue(Section.TEXT);
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1", "[R2]", null, null, 0),
+                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R2]", null, null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.ADD, Condition.CC, false, null, null, "R1", "[R2]", null, null, 0),
+                new ParsedInstruction(OInstruction.ADD, Condition.CC, false, null, null, "R1", "[R2]", null, null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.ADD, Condition.EQ, false, DataMode.BYTE, null, "R1", "[R2]", null, null, 0),
+                new ParsedInstruction(OInstruction.ADD, Condition.EQ, false, DataMode.BYTE, null, "R1", "[R2]", null, null, 0),
                 parser.parseOneLine()
         );
 
@@ -98,12 +98,12 @@ public class RegexSourceParserTest extends JArmEmuTest {
         parser.currentSection.setValue(Section.TEXT);
 
         assertEquals(
-                new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "r2", "r0", "r1", null, 0),
+                new ParsedInstruction(OInstruction.SUB, Condition.AL, false, null, null, "r2", "r0", "r1", null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.SUB, Condition.AL, false, null, null, "r0", "r1", null, null, 0),
+                new ParsedInstruction(OInstruction.SUB, Condition.AL, false, null, null, "r0", "r1", null, null, 0),
                 parser.parseOneLine()
         );
     }
@@ -116,37 +116,37 @@ public class RegexSourceParserTest extends JArmEmuTest {
         parser.currentSection.setValue(Section.TEXT);
 
         assertEquals(
-                new ParsedInstruction(Instruction.ADD, Condition.CC, true, null, null, "r0", "r9", "#2", null, 0),
+                new ParsedInstruction(OInstruction.ADD, Condition.CC, true, null, null, "r0", "r9", "#2", null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.MLA, Condition.EQ, false, null, null, "r0", "r0", "r1", "r2", 0),
+                new ParsedInstruction(OInstruction.MLA, Condition.EQ, false, null, null, "r0", "r0", "r1", "r2", 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.SMLAL, Condition.AL, true, null, null, "r4", "r5", "r6", "r7", 0),
+                new ParsedInstruction(OInstruction.SMLAL, Condition.AL, true, null, null, "r4", "r5", "r6", "r7", 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.BIC, Condition.LO, false, null, null, "r5", "r6", "#5", null, 0),
+                new ParsedInstruction(OInstruction.BIC, Condition.LO, false, null, null, "r5", "r6", "#5", null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, DataMode.BYTE, null, "r0", "=x", null, null, 0),
+                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, DataMode.BYTE, null, "r0", "=x", null, null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.STM, Condition.AL, false, null, UpdateMode.FD, "sp!", "{r0,r1,r2}", null, null, 0),
+                new ParsedInstruction(OInstruction.STM, Condition.AL, false, null, UpdateMode.FD, "sp!", "{r0,r1,r2}", null, null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.B, Condition.AL, false, null, null, "etiquette", null, null, null, 0),
+                new ParsedInstruction(OInstruction.B, Condition.AL, false, null, null, "etiquette", null, null, null, 0),
                 parser.parseOneLine()
         );
 
@@ -156,17 +156,17 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[R0,R1,LSL#2]", null, null, 0),
+                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R0,R1,LSL#2]", null, null, 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1","[R0]", "R1" ,"LSL#2", 0),
+                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R0]", "R1" , "LSL#2", 0),
                 parser.parseOneLine()
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.STR, Condition.AL, false, null, null, "fp","[sp,#-4]!", null ,null, 0),
+                new ParsedInstruction(OInstruction.STR, Condition.AL, false, null, null, "fp", "[sp,#-4]!", null , null, 0),
                 parser.parseOneLine()
         );
     }
@@ -243,7 +243,7 @@ public class RegexSourceParserTest extends JArmEmuTest {
         );
 
         assertEquals(
-                new ParsedInstruction(Instruction.LDR, Condition.AL, false, null, null, "R1", "=b", null, null, 0),
+                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "=b", null, null, 0),
                 parser.parseOneLine()
         );
 

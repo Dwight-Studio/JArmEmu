@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 public class LegacySourceParser implements SourceParser {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    protected Instruction instruction;
+    protected OInstruction instruction;
     protected boolean updateFlags;
     protected SourceScanner sourceScanner;
     protected LegacySectionParser legacySectionParser;
@@ -223,8 +223,8 @@ public class LegacySourceParser implements SourceParser {
                     instructionString = this.removeFlags(instructionString);
                     instructionString = this.removeCondition(instructionString);
 
-                    Instruction[] instructions = Instruction.values();
-                    for (Instruction instruction:instructions) {
+                    OInstruction[] instructions = OInstruction.values();
+                    for (OInstruction instruction:instructions) {
                         if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
                     }
 

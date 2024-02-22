@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 public class ParsedInstruction extends ParsedObject {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private final Instruction instruction;
+    private final OInstruction instruction;
     private final String[] originalArgs;
     private final String[] processedArgs;
     private final Condition condition;
@@ -50,7 +50,7 @@ public class ParsedInstruction extends ParsedObject {
 
     private final Pattern PSEUDO_OP_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]\\{\\}]+)");
 
-    public ParsedInstruction(@NotNull Instruction instruction, @NotNull Condition conditionExec, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4, int fileIndex) {
+    public ParsedInstruction(@NotNull OInstruction instruction, @NotNull Condition conditionExec, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4, int fileIndex) {
         this.instruction = instruction;
         this.condition = conditionExec;
         this.updateFlags = updateFlags;
@@ -192,7 +192,7 @@ public class ParsedInstruction extends ParsedObject {
         return true;
     }
 
-    public Instruction getInstruction() {
+    public OInstruction getInstruction() {
         return instruction;
     }
 
@@ -236,12 +236,12 @@ public class ParsedInstruction extends ParsedObject {
     }
 
     public ParsedInstruction convertMovToShift(StateContainer stateContainer) {
-        if (this.instruction == Instruction.MOV) {
+        if (this.instruction == OInstruction.MOV) {
             ArgumentParser[] argParsers = instruction.getArgParsers();
             if (originalArgs[2] == null) return this;
             if (argParsers[2].parse(stateContainer, originalArgs[2].toUpperCase()) instanceof ShiftParser.ShiftFunction){
                 try {
-                    return new ParsedInstruction(Instruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null, fileIndex);
+                    return new ParsedInstruction(OInstruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null, fileIndex);
                 } catch (Exception e) {
                     logger.severe(e.getMessage());
                 }
