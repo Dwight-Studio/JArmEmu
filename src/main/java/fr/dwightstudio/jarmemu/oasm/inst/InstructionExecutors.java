@@ -25,8 +25,6 @@ package fr.dwightstudio.jarmemu.oasm.inst;
 
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
-import fr.dwightstudio.jarmemu.sim.parse.args.RegisterWithUpdateParser;
-import fr.dwightstudio.jarmemu.sim.parse.args.ShiftParser;
 
 public class InstructionExecutors {
 

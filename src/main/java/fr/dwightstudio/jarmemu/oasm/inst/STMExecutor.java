@@ -29,7 +29,6 @@ import fr.dwightstudio.jarmemu.asm.exception.IllegalDataWritingASMException;
 import fr.dwightstudio.jarmemu.asm.exception.MemoryAccessMisalignedASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.args.RegisterWithUpdateParser;
 
 public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser.UpdatableRegister, Register[], Object, Object> {
     @Override

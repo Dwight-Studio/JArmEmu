@@ -29,7 +29,6 @@ import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
-import fr.dwightstudio.jarmemu.sim.parse.args.ShiftParser;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 

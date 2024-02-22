@@ -45,8 +45,8 @@ public class ImmediateArgument extends ParsedArgument<Integer> {
                 if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21 && value != -2048)
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
 
-            } else if (originalString.startsWith("=")) {
-                throw new RuntimeException(JArmEmuApplication.formatMessage("%exception.argument.unprocessedPseudo"));
+            } else if (originalString.startsWith("=") || originalString.startsWith("*")) {
+                throw new RuntimeException(JArmEmuApplication.formatMessage("%exception.argument.illegalPseudo"));
             } else {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidValue", originalString));
             }
