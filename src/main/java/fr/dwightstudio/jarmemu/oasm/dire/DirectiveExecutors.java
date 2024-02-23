@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.oasm.dire;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.directive.SpaceExecutor;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 

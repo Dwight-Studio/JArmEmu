@@ -97,8 +97,8 @@ public class JArmEmuApplication extends Application {
     private String argSave;
 
     // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
-    // TODO: Finir l'i18n (erreurs)
-    // TODO: Ajouter JLink
+    // TODO: Ajouter l'Autocompletion (style intelliJ)
+
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;

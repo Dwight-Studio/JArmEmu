@@ -1,38 +1,55 @@
-/*
- *            ____           _       __    __     _____ __            ___
- *           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
- *          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
- *         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
- *        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
- *                         /____/
- *     Copyright (C) 2024 Dwight Studio
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-
-package fr.dwightstudio.jarmemu.oasm.inst;
+package fr.dwightstudio.jarmemu.asm.instruction;
 
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
+import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.asm.argument.RegisterArrayArgument;
+import fr.dwightstudio.jarmemu.asm.argument.RegisterWithUpdateArgument;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.IllegalDataWritingASMException;
 import fr.dwightstudio.jarmemu.asm.exception.MemoryAccessMisalignedASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
-public class STMExecutor implements InstructionExecutor<RegisterWithUpdateParser.UpdatableRegister, Register[], Object, Object> {
+public class STMInstruction extends ParsedInstruction<RegisterWithUpdateArgument.UpdatableRegister, Register[], Object, Object> {
+    public STMInstruction(boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+        super(updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
-    public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, RegisterWithUpdateParser.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) {
+    protected Class<? extends ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister>> getParsedArg0Class() {
+        return RegisterWithUpdateArgument.class;
+    }
+
+    @Override
+    protected Class<? extends ParsedArgument<Register[]>> getParsedArg1Class() {
+        return RegisterArrayArgument.class;
+    }
+
+    @Override
+    protected Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
+        return NullArgument.class;
+    }
+
+    @Override
+    protected Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
+        return NullArgument.class;
+    }
+
+    @Override
+    public boolean doModifyPC() {
+        return false;
+    }
+
+    @Override
+    public boolean hasWorkingRegister() {
+        return false;
+    }
+
+    @Override
+    protected void execute(StateContainer stateContainer, boolean forceExecution, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws ASMException {
         int length = arg2.length;
         int value = 0;
         int address = arg1.getData();

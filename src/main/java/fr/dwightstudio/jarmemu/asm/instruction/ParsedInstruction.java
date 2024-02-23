@@ -72,7 +72,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject {
      * @param forceExecution pour forcer l'exécution
      * @throws ExecutionASMException en cas d'erreur
      */
-    public final void execute(StateContainer stateContainer, boolean forceExecution) throws ExecutionASMException {
+    public final void execute(StateContainer stateContainer, boolean forceExecution) throws ASMException {
         this.execute(
                 stateContainer,
                 forceExecution,
@@ -93,7 +93,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject {
      */
     public abstract boolean hasWorkingRegister();
 
-    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
+    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ASMException;
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
