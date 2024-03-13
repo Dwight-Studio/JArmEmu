@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.parser;
 
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
@@ -42,12 +43,12 @@ public interface SourceParser {
      * Méthode principale
      * Lecture du fichier et renvoie des objets parsés non vérifiés
      */
-    ParsedFile parse();
+    ParsedFile parse() throws ASMException;
 
     /**
      * Lecture d'une ligne et teste de tous ses arguments
      *
      * @return un ParsedObject non vérifié
      */
-    ParsedObject parseOneLine();
+    ParsedObject parseOneLine() throws ASMException;
 }

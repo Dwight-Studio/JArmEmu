@@ -25,12 +25,12 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.*;
-import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -61,8 +61,8 @@ public class CodePreparator {
      * @param fileSources les scanneurs de sources
      * @return la liste des erreurs
      */
-    public SyntaxASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
-        ArrayList<SyntaxASMException> exceptions = new ArrayList<>();
+    public ASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
+        ArrayList<ASMException> exceptions = new ArrayList<>();
 
         this.parsedFiles.clear();
 
@@ -71,12 +71,12 @@ public class CodePreparator {
                 source.goTo(0);
                 sourceParser.setSource(source);
                 this.parsedFiles.add(sourceParser.parse());
-            } catch(SyntaxASMException exception){
+            } catch(ASMException exception){
                 exceptions.add(exception);
             }
         }
 
-        if (!exceptions.isEmpty()) return exceptions.toArray(new SyntaxASMException[0]);
+        if (!exceptions.isEmpty()) return exceptions.toArray(new ASMException[0]);
 
         instructionMemory = new ArrayList<>();
         instructionPosition = new ArrayList<>();

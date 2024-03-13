@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.sim.obj;
 
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -141,7 +142,7 @@ public class StateContainer {
         spsr.setData(0);
     }
 
-    public int evalWithAccessibleConsts(String expString) {
+    public int evalWithAccessibleConsts(String expString) throws SyntaxASMException {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
 
@@ -155,11 +156,11 @@ public class StateContainer {
 
             return (int) exp.evaluate();
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Malformed math expression '" + expString + "'");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.math.malformed", expString, exception.getMessage()));
         }
     }
 
-    public int evalWithAll(String expString) {
+    public int evalWithAll(String expString) throws SyntaxASMException {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
 
@@ -180,11 +181,11 @@ public class StateContainer {
 
             return (int) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Malformed math expression '" + expString + "' (" + exception.getMessage() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.math.malformed", expString, exception.getMessage()));
         }
     }
 
-    public int evalWithAccessible(String expString) {
+    public int evalWithAccessible(String expString) throws SyntaxASMException {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
 
@@ -203,7 +204,7 @@ public class StateContainer {
 
             return (int) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException("Malformed math expression '" + expString + "' (" + exception.getMessage() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.math.malformed", expString, exception.getMessage()));
         }
     }
 
@@ -213,7 +214,6 @@ public class StateContainer {
 
         return SPECIAL_VALUE_PATTERN.matcher(s).replaceAll(matchResult -> {
             String valueString = matchResult.group("VALUE").toUpperCase();
-            try {
                 if (valueString.startsWith("0B")) {
                     valueString = valueString.substring(2).strip();
 
@@ -229,9 +229,6 @@ public class StateContainer {
                 } else if (valueString.startsWith("'")) {
                     return String.valueOf((int) matchResult.group("VALUE").charAt(1));
                 }
-            } catch (NumberFormatException exception) {
-                throw new SyntaxASMException("Malformed math expression '" + valueString + "' (" + exception.getMessage() + ")");
-            }
             return valueString;
         }).toUpperCase();
 
