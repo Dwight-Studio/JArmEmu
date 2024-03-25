@@ -99,6 +99,8 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
         } catch (IndexOutOfBoundsException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
         }
+
+        super.verify(stateSupplier, currentLine);
     }
 
     public static class ShiftFunction {

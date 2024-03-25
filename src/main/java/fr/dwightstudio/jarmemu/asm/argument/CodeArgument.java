@@ -29,5 +29,7 @@ public class CodeArgument extends ParsedArgument<Integer> {
     @Override
     public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
         value = stateSupplier.get().evalWithAccessibleConsts(originalString);
+
+        super.verify(stateSupplier, currentLine);
     }
 }

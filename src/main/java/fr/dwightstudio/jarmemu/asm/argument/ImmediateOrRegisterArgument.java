@@ -14,7 +14,7 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
     private ImmediateArgument immediateArgument;
     private RegisterArgument registerArgument;
 
-    public ImmediateOrRegisterArgument(String originalString) {
+    public ImmediateOrRegisterArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
         immediate = originalString.startsWith("#") || originalString.startsWith("=") || originalString.startsWith("*");
@@ -47,5 +47,7 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
         } else {
             registerArgument.verify(stateSupplier, currentLine);
         }
+
+        super.verify(stateSupplier, currentLine);
     }
 }

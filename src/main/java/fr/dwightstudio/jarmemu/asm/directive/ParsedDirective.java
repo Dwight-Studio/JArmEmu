@@ -21,9 +21,11 @@ public abstract class ParsedDirective extends ParsedObject {
         generated = false;
     }
 
+    public abstract void execute() throws ASMException;
+
     @Override
     public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-
+        execute();
     }
 
     public boolean isGenerated() {

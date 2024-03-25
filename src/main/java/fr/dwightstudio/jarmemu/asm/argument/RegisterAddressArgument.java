@@ -37,6 +37,7 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
     @Override
     public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
         argument.verify(stateSupplier, currentLine);
+
         super.verify(stateSupplier, currentLine);
     }
 }

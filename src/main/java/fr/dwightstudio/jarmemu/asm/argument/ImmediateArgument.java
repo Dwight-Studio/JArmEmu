@@ -48,5 +48,7 @@ public class ImmediateArgument extends ParsedArgument<Integer> {
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidValue", originalString) + " (" + exception.getMessage() + ")");
         }
+
+        super.verify(stateSupplier, currentLine);
     }
 }

@@ -27,6 +27,8 @@ public class LabelArgument extends ParsedArgument<Integer> {
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-        if (stateSupplier.get().getAccessibleLabels().get(originalString) == null) throw new SyntaxASMException("Unknown label '" + originalString +"' (is it defined in this file?)");
+        if (stateSupplier.get().getAccessibleLabels().get(originalString) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
+
+        super.verify(stateSupplier, currentLine);
     }
 }

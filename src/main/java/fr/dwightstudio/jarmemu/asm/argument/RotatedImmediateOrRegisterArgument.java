@@ -49,5 +49,7 @@ public class RotatedImmediateOrRegisterArgument extends ParsedArgument<Integer> 
         } else {
             registerArgument.verify(stateSupplier, currentLine);
         }
+
+        super.verify(stateSupplier, currentLine);
     }
 }

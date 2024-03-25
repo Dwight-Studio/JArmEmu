@@ -46,6 +46,8 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidRotatedValue", originalString) + " (" + exception.getMessage() + ")");
         }
+
+        super.verify(stateSupplier, currentLine);
     }
 
     private void checkOverflow(int value, String string) throws SyntaxASMException {
