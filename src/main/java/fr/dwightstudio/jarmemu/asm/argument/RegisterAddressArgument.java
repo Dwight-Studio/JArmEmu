@@ -13,12 +13,9 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
 
     RegisterArgument argument;
 
-    public RegisterAddressArgument(String originalString) {
+    public RegisterAddressArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         if (originalString.startsWith("[") && originalString.endsWith("]")) {
             String string = originalString.substring(1, originalString.length()-1).strip();
             argument = new RegisterArgument(string);

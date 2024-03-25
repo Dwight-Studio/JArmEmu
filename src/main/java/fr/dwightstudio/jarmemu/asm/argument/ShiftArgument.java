@@ -18,12 +18,9 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
     private boolean rrx;
     private ImmediateOrRegisterArgument argument;
 
-    public ShiftArgument(String originalString) {
+    public ShiftArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         try {
             type = originalString.substring(0, 3);
             shift = originalString.substring(3).strip();
@@ -52,7 +49,7 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
                 argument = new ImmediateOrRegisterArgument(shift);
             }
 
-        } catch (IndexOutOfBoundsException exception) {
+        } catch (IndexOutOfBoundsException | SyntaxASMException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
         }
     }

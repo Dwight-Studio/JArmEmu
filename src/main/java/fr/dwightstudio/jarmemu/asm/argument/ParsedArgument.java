@@ -13,16 +13,14 @@ public abstract class ParsedArgument<T> extends ParsedObject {
 
     protected final String originalString;
 
-    public ParsedArgument(String originalString) {
-        this.originalString = originalString;
-    }
-
     /**
      * Analyse la chaîne de caractères en entrée pour définir les paramètres internes de l'argument.
      *
      * @param originalString la chaîne de caractères
      */
-    protected abstract void parse(String originalString) throws SyntaxASMException;
+    public ParsedArgument(String originalString) {
+        this.originalString = originalString;
+    }
 
     /**
      * @param stateContainer le conteneur d'état courant

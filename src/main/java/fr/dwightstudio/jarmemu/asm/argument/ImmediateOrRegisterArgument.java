@@ -16,10 +16,7 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
 
     public ImmediateOrRegisterArgument(String originalString) {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         immediate = originalString.startsWith("#") || originalString.startsWith("=") || originalString.startsWith("*");
 
         if (immediate) {

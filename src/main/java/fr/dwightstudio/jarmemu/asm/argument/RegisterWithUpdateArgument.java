@@ -15,12 +15,9 @@ public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdat
     boolean update;
     RegisterArgument argument;
 
-    public RegisterWithUpdateArgument(String originalString) {
+    public RegisterWithUpdateArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         update = false;
 
         String string = originalString;

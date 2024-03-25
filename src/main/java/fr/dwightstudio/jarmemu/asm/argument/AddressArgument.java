@@ -22,12 +22,9 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     private RegisterArgument registerArgument2;
     private ShiftArgument shiftArgument;
 
-    public AddressArgument(String originalString) {
+    public AddressArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         String string = originalString;
 
         if (originalString.startsWith("*")) {

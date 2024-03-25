@@ -16,11 +16,6 @@ public class LabelArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    protected void parse(String originalString) throws SyntaxASMException {
-
-    }
-
-    @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return stateContainer.getAccessibleLabels().get(originalString);
     }

@@ -23,12 +23,9 @@
 
 package fr.dwightstudio.jarmemu.sim.parse;
 
-import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -38,14 +35,12 @@ public class ParsedDirective extends ParsedObject {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
 
-    private final Directive directive;
     private final String args;
     private boolean generated;
     private String hash;
     private final Section section;
 
-    public ParsedDirective(@NotNull Directive directive, @NotNull String args, Section section) {
-        this.directive = directive;
+    public ParsedDirective(@NotNull String args, Section section) {
         this.args = args;
         this.section = section;
     }
@@ -55,12 +50,12 @@ public class ParsedDirective extends ParsedObject {
         StateContainer stateContainer = stateSupplier.get();
 
         try {
-            apply(stateContainer, FilePos.ZERO.clone());
+            apply(stateContainer);
             return null;
         } catch (SyntaxASMException exception) {
             return exception.with(this);
         } finally {
-            AddressParser.reset(stateContainer);
+            stateContainer.resetAddressRegisterUpdateValue();
         }
     }
 
@@ -68,7 +63,7 @@ public class ParsedDirective extends ParsedObject {
      * Application de la directive
      * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
      */
-    public void apply(StateContainer stateContainer, FilePos currentPos) {
+    public void apply(StateContainer stateContainer) {
         directive.apply(stateContainer, this.args, currentPos.freeze(), section);
 
         if (generated) {
@@ -76,10 +71,6 @@ public class ParsedDirective extends ParsedObject {
         }
 
         directive.computeDataLength(stateContainer, args, currentPos, section);
-    }
-
-    public Directive getDirective() {
-        return directive;
     }
 
     public boolean isGenerated() {

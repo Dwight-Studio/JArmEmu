@@ -18,11 +18,6 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    protected void parse(String originalString) throws SyntaxASMException {
-
-    }
-
-    @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return value;
     }

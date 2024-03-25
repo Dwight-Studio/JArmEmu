@@ -14,12 +14,9 @@ public class RotatedImmediateOrRegisterArgument extends ParsedArgument<Integer> 
     private RotatedImmediateArgument immediateArgument;
     private RegisterArgument registerArgument;
 
-    public RotatedImmediateOrRegisterArgument(String originalString) {
+    public RotatedImmediateOrRegisterArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         immediate = originalString.startsWith("#") || originalString.startsWith("=") || originalString.startsWith("*");
 
         if (immediate) {

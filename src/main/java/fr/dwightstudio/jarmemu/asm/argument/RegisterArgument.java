@@ -13,12 +13,9 @@ public class RegisterArgument extends ParsedArgument<Register> {
     
     private Function<StateContainer, Register> registerReference;
 
-    public RegisterArgument(String originalString) {
+    public RegisterArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         registerReference = switch (originalString) {
             case "R0" -> stateContainer -> stateContainer.getRegister(0);
             case "R1" -> stateContainer -> stateContainer.getRegister(1);

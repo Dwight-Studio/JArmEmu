@@ -19,12 +19,9 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
 
     ArrayList<RegisterArgument> arguments;
 
-    public RegisterArrayArgument(String originalString) {
+    public RegisterArrayArgument(String originalString) throws SyntaxASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         if (originalString.startsWith("{") && originalString.endsWith("}")) {
             arguments = new ArrayList<>();
 

@@ -60,7 +60,7 @@ public class StateContainer {
     private final HashMap<String, Integer> globals; // Symbols globaux -> Indice de fichier
     private int nestingCount;
     private int lastAddressROData;
-    private int currentfileIndex;
+    private FilePos currentfilePos; // Position dans la mémoire et fichier en cours de lecture
     private Integer addressRegisterUpdateValue;
 
     // Registers
@@ -86,7 +86,6 @@ public class StateContainer {
         globals = new HashMap<>();
         nestingCount = 0;
         lastAddressROData = 0;
-        currentfileIndex = 0;
 
         // Initializing registers
         cpsr = new PSR();
@@ -115,7 +114,7 @@ public class StateContainer {
 
         this.pseudoData.putAll(stateContainer.pseudoData);
         this.globals.putAll(stateContainer.globals);
-        this.currentfileIndex = stateContainer.currentfileIndex;
+        this.currentfilePos = new FilePos(stateContainer.currentfilePos);
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
             registers[i].setData(stateContainer.getRegister(i).getData());
@@ -150,7 +149,7 @@ public class StateContainer {
 
             Expression exp = builder.build();
 
-            for (Map.Entry<String, Integer> entry : consts.get(currentfileIndex).entrySet()) {
+            for (Map.Entry<String, Integer> entry : consts.get(currentfilePos.getFileIndex()).entrySet()) {
                 exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
@@ -328,21 +327,21 @@ public class StateContainer {
      * @return les constantes accessibles dans le fichier actuel
      */
     public AccessibleValueMap getAccessibleConsts() {
-        return new AccessibleValueMap(consts, globals, currentfileIndex);
+        return new AccessibleValueMap(consts, globals, currentfilePos.getFileIndex());
     }
 
     /**
      * @return les données accessibles dans le fichier actuel
      */
     public AccessibleValueMap getAccessibleData() {
-        return new AccessibleValueMap(data, globals, currentfileIndex);
+        return new AccessibleValueMap(data, globals, currentfilePos.getFileIndex());
     }
 
     /**
      * @return les données définies dans le fichier actuel (exclusion des globals)
      */
     public HashMap<String, Integer> getRestrainedData() {
-        return data.get(currentfileIndex);
+        return data.get(currentfilePos.getFileIndex());
     }
 
     /**
@@ -356,14 +355,14 @@ public class StateContainer {
      * @return les labels accessibles dans le fichier actuel
      */
     public AccessibleValueMap getAccessibleLabels() {
-        return new AccessibleValueMap(labels, globals, currentfileIndex);
+        return new AccessibleValueMap(labels, globals, currentfilePos.getFileIndex());
     }
 
     /**
      * @return les labels définis dans le fichier actuel (exclusion des globals)
      */
     public HashMap<String, Integer> getRestrainedLabels() {
-        return labels.get(currentfileIndex);
+        return labels.get(currentfilePos.getFileIndex());
     }
 
     /**
@@ -403,14 +402,14 @@ public class StateContainer {
      * @param i l'indice du fichier courant
      */
     public void setFileIndex(int i) {
-        currentfileIndex = i;
+        currentfilePos.setFileIndex(i);
     }
 
     /**
      * @return l'indice du fichier courant
      */
     public int getCurrentFileIndex() {
-        return currentfileIndex;
+        return currentfilePos.getFileIndex();
     }
 
     public Register getRegister(int i) {

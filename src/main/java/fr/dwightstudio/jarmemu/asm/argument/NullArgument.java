@@ -10,12 +10,9 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import java.util.function.Supplier;
 
 public class NullArgument extends ParsedArgument<Object> {
-    public NullArgument(String originalString) {
+    public NullArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
-    }
 
-    @Override
-    protected void parse(String originalString) throws SyntaxASMException {
         throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpected", originalString));
     }
 
