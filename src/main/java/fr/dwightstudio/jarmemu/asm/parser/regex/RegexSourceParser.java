@@ -24,10 +24,10 @@
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.TreeMap;

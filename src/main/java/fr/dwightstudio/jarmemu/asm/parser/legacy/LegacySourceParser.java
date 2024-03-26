@@ -24,11 +24,12 @@
 package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.parse.*;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;

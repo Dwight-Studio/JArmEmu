@@ -24,10 +24,13 @@
 package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.parse.*;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;
+import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectivePack;
 
 public class LegacyDirectiveParser {
 

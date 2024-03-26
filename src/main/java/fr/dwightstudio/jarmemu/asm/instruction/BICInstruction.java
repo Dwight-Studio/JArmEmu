@@ -1,21 +1,20 @@
 package fr.dwightstudio.jarmemu.asm.instruction;
 
+import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
-import fr.dwightstudio.jarmemu.asm.argument.*;
+import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.asm.argument.RotatedImmediateOrRegisterArgument;
+import fr.dwightstudio.jarmemu.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class BICInstruction extends ParsedInstruction<Register, Register, Integer, ShiftArgument.ShiftFunction> {
-    public BICInstruction(boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
-        super(updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-    }
-
-    @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg0Class() {
-        return RegisterArgument.class;
+    public BICInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -24,12 +23,17 @@ public class BICInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
+    protected Class<? extends ParsedArgument<Register>> getParsedArg2Class() {
+        return RegisterArgument.class;
+    }
+
+    @Override
+    protected Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
+    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
         return ShiftArgument.class;
     }
 

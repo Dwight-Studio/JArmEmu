@@ -46,6 +46,13 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        for (RegisterArgument argument : arguments) {
+            argument.contextualize(stateContainer);
+        }
+    }
+
+    @Override
     public Register[] getValue(StateContainer stateContainer) throws ExecutionASMException {
         ArrayList<Register> rtn = new ArrayList<>();
 
@@ -67,11 +74,11 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         for (RegisterArgument argument : arguments) {
-            argument.verify(stateSupplier, currentLine);
+            argument.verify(stateSupplier);
         }
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 }

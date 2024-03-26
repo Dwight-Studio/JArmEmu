@@ -23,15 +23,11 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
-import fr.dwightstudio.jarmemu.asm.Condition;
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
+import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
 import java.util.Objects;
@@ -40,7 +36,7 @@ import java.util.regex.Pattern;
 
 public class ASMParser {
 
-    private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(OInstruction.values(), false);
+    private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values(), false);
     private static final String[] CONDITIONS = EnumUtils.getFromEnum(Condition.values(), true);
     private static final String[] DATA_MODES = EnumUtils.getFromEnum(DataMode.values(), false);
     private static final String[] UPDATE_MODES = EnumUtils.getFromEnum(UpdateMode.values(), false);
@@ -95,8 +91,8 @@ public class ASMParser {
      * @param line la ligne à parser
      * @return un ParsedObject à verifier.
      */
-    public ParsedObject parseOneLine(SourceScanner sourceScanner, String line) {
-        OInstruction instruction;
+    public ParsedObject[] parseOneLine(SourceScanner sourceScanner, String line) throws ASMException {
+        Instruction instruction;
         boolean updateFlags = false;
         DataMode dataMode = null;
         UpdateMode updateMode = null;
@@ -123,7 +119,7 @@ public class ASMParser {
             arg4 = matcherInst.group("ARG4");
 
             try {
-                instruction = OInstruction.valueOf(instructionString.toUpperCase());
+                instruction = Instruction.valueOf(instructionString.toUpperCase());
             } catch (IllegalArgumentException exception) {
                 throw new SyntaxASMException("Unknown instruction '" + instructionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
             }
@@ -153,7 +149,7 @@ public class ASMParser {
 
             instructionPos++;
         } else if (matcherLabel.find()) {
-            return new ParsedLabel(matcherLabel.group("LABEL").strip().toUpperCase());
+            return new ParsedLabel(, matcherLabel.group("LABEL").strip().toUpperCase());
         } else {
             throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
         }
@@ -182,7 +178,7 @@ public class ASMParser {
             if (arg4.isEmpty()) arg4 = null;
         }
 
-        ParsedInstruction parsedInstruction = new ParsedInstruction(instruction, condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex());
+        ParsedInstruction<?, ?, ?, ?> parsedInstruction = instruction.create(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
 
         if (matcherLabel.find()) {
             return new ParsedLabel(matcherLabel.group("LABEL").strip().toUpperCase()).withInstruction(parsedInstruction);

@@ -74,6 +74,9 @@ public class CodeInterpreter {
         if (getPC().getData() % 4 == 0 && getPC().getData() >= 0 && (getPC().getData() / 4) < instructions.size()) {
             ParsedInstruction instruction = instructions.get(getPC().getData() / 4);
 
+            // Mise à jour de l'indice du fichier
+            stateContainer.setFileIndex(instruction.getFile().getIndex());
+
             try {
                 instruction.execute(stateContainer, forceExecution);
             } catch (ExecutionASMException exception) {

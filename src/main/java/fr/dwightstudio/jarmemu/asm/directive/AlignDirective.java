@@ -21,39 +21,45 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class GlobalExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
+public class AlignDirective extends ParsedDirective {
+
+    private int offset;
+
+    public AlignDirective(Section section, @NotNull String args) {
+        super(section, args);
+
+        offset = 4;
+    }
+
     @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        if (args.matches("[A-Za-z_0-9]+")) {
-            stateContainer.addGlobal(args.toUpperCase().strip(), currentPos.getFileIndex());
-        } else {
-            throw new SyntaxASMException("Invalid argument '" + args + "'");
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        if (!args.isEmpty()) {
+            offset = stateContainer.evalWithAccessibleConsts(args);
         }
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {}
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        if (!args.isEmpty()) {
+            stateContainer.evalWithAccessibleConsts(args);
+        }
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        currentPos.incrementPos((offset - (currentPos.getPos() % offset)) % offset);
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
+    }
 }

@@ -25,9 +25,9 @@ package fr.dwightstudio.jarmemu.sim.parse;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

@@ -25,10 +25,10 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;

@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.argument;
 
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
@@ -37,6 +38,11 @@ public class RegisterArgument extends ParsedArgument<Register> {
             case "SPSR" -> StateContainer::getSPSR;
             default -> throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownRegister", originalString));
         };
+    }
+
+    @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+
     }
 
     @Override

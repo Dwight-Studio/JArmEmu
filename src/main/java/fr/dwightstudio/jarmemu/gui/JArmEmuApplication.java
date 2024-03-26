@@ -25,13 +25,13 @@ package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.*;
 import fr.dwightstudio.jarmemu.Status;
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
-import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
-import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -96,7 +96,8 @@ public class JArmEmuApplication extends Application {
     public Scene scene;
     private String argSave;
 
-    // TODO: Refaire les tests pour les initializers de données (pour un argument vide, plusieurs arguments, avec une section incorrecte etc)
+    // TODO: Finir l'I18N (Directives)
+    // TODO: Refaire les tests (Instructions, Arguments, Directives)
     // TODO: Ajouter l'Autocompletion (style intelliJ)
 
     @Override

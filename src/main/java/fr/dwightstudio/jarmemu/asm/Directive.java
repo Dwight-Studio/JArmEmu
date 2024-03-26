@@ -23,61 +23,41 @@
 
 package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.oasm.dire.DirectiveExecutor;
-import fr.dwightstudio.jarmemu.oasm.dire.DirectiveExecutors;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.asm.directive.*;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import org.jetbrains.annotations.NotNull;
+
+import java.lang.reflect.InvocationTargetException;
 
 public enum Directive {
     // Consts
-    SET(DirectiveExecutors.EQUIVALENT, true), EQU(DirectiveExecutors.EQUIVALENT, true), EQUIV(DirectiveExecutors.EQUIVALENT, true), EQV(DirectiveExecutors.EQUIVALENT, true), // Définir une constante
-    GLOBAL(DirectiveExecutors.GLOBAL, true), GLOBL(DirectiveExecutors.GLOBAL, true), EXPORT(DirectiveExecutors.GLOBAL, true),
+    SET(EquivalentDirective.class), EQU(EquivalentDirective.class), EQUIV(EquivalentDirective.class), EQV(EquivalentDirective.class), // Définir une constante
+    GLOBAL(GlobalDirective.class), GLOBL(GlobalDirective.class), EXPORT(GlobalDirective.class),
 
     // Data
-    WORD(DirectiveExecutors.WORD, false), // Donnée sur 32bits
-    HALF(DirectiveExecutors.HALF, false), // Donnée sur 16bits
-    BYTE(DirectiveExecutors.BYTE, false), // Donnée sur 8bits
-    SPACE(DirectiveExecutors.SPACE, false), SKIP(DirectiveExecutors.SPACE, false), // Vide sur nbits
-    ASCII(DirectiveExecutors.ASCII, false), // Chaîne de caractères
-    ASCIZ(DirectiveExecutors.ASCIZ, false), // Chaîne de caractère finissant par '\0'
-    FILL(DirectiveExecutors.FILL, false), // Remplir n fois, un nombre de taille x, de valeur y
+    WORD(WordDirective.class), // Donnée sur 32bits
+    HALF(HalfDirective.class), // Donnée sur 16bits
+    BYTE(ByteDirective.class), // Donnée sur 8bits
+    SPACE(SpaceDirective.class), SKIP(SpaceDirective.class), // Vide sur nbits
+    ASCII(ASCIIDirective.class), // Chaîne de caractères
+    ASCIZ(ASCIIDirective.class), // Chaîne de caractère finissant par '\0'
+    FILL(FillDirective.class), // Remplir n fois, un nombre de taille x, de valeur y
 
     // Other
-    ALIGN(DirectiveExecutors.ALIGN, false); // Alignement des données sur la grille des 4 bytes
+    ALIGN(AlignDirective.class); // Alignement des données sur la grille des 4 bytes
 
-    private final DirectiveExecutor executor;
-    private final boolean sectionIndifferent;
+    private final Class<? extends ParsedDirective> directiveClass;
 
-    Directive(DirectiveExecutor executor, boolean sectionIndifferent) {
-        this.executor = executor;
-        this.sectionIndifferent = sectionIndifferent;
+    Directive(Class<? extends ParsedDirective> directiveClass) {
+        this.directiveClass = directiveClass;
     }
 
-    /**
-     * Calcul de la place en mémoire nécessaire pour cette directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args la chaine d'arguments
-     * @param currentPos la position actuelle dans la mémoire
-     */
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) throws SyntaxASMException {
-        executor.computeDataLength(stateContainer, args, currentPos, section);
-    }
-
-    /**
-     * Application de la directive
-     *
-     * 
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     */
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        executor.apply(stateContainer, args, currentPos.freeze(), section);
-    }
-
-    public boolean isSectionIndifferent() {
-        return sectionIndifferent;
+    public ParsedDirective create(Section section, @NotNull String args) throws ASMException {
+        try {
+            return this.directiveClass.getDeclaredConstructor(Section.class, String.class).newInstance(section, args);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

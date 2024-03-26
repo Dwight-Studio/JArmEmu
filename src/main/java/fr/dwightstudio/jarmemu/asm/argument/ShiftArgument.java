@@ -55,6 +55,43 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        try {
+            if (!rrx) {
+                argument.contextualize(stateContainer);
+                int value = argument.getValue(stateContainer);
+
+                func = switch (type) {
+                    case "LSL" -> {
+                        if (value < 0 || value > 31)
+                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift0to31", shift));
+                        yield ((container, i) -> i << value);
+                    }
+                    case "LSR" -> {
+                        if (value < 1 || value > 32)
+                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                        yield ((container, i) -> i >>> value);
+                    }
+                    case "ASR" -> {
+                        if (value < 1 || value > 32)
+                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                        yield ((container, i) -> i >> value);
+                    }
+                    case "ROR" -> {
+                        if (value < 1 || value > 31)
+                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                        yield ((container, i) -> Integer.rotateRight(i, value));
+                    }
+                    default ->
+                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
+                };
+            }
+        } catch (IndexOutOfBoundsException exception) {
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
+        }
+    }
+
+    @Override
     public ShiftFunction getValue(StateContainer stateContainer) throws ExecutionASMException {
         return new ShiftFunction(stateContainer, func);
     }
@@ -65,42 +102,12 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-        try {
-            if (!rrx) {
-                argument.verify(stateSupplier, currentLine);
-                int value = argument.getValue(stateSupplier.get());
-
-                func = switch (type) {
-                    case "LSL" -> {
-                        if (value < 0 || value > 31)
-                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift0to31", shift));
-                        yield ((stateContainer, i) -> i << value);
-                    }
-                    case "LSR" -> {
-                        if (value < 1 || value > 32)
-                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
-                        yield ((stateContainer, i) -> i >>> value);
-                    }
-                    case "ASR" -> {
-                        if (value < 1 || value > 32)
-                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
-                        yield ((stateContainer, i) -> i >> value);
-                    }
-                    case "ROR" -> {
-                        if (value < 1 || value > 31)
-                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
-                        yield ((stateContainer, i) -> Integer.rotateRight(i, value));
-                    }
-                    default ->
-                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
-                };
-            }
-        } catch (IndexOutOfBoundsException exception) {
-            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        if (!rrx) {
+            argument.verify(stateSupplier);
         }
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 
     public static class ShiftFunction {

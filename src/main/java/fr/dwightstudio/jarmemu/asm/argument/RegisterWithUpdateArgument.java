@@ -31,6 +31,11 @@ public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdat
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        argument.contextualize(stateContainer);
+    }
+
+    @Override
     public UpdatableRegister getValue(StateContainer stateContainer) throws ExecutionASMException {
         return new UpdatableRegister(argument.getValue(stateContainer), update);
     }
@@ -41,10 +46,10 @@ public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdat
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-        argument.verify(stateSupplier, currentLine);
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        argument.verify(stateSupplier);
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 
     public static final class UpdatableRegister extends Register {

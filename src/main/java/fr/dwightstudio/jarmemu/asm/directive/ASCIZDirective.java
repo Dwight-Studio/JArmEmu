@@ -21,42 +21,46 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.parse;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.function.Supplier;
+public class ASCIZDirective extends ParsedDirective {
 
-public class ParsedSection extends ParsedObject {
+    private final ASCIIDirective asciiDirective;
 
-    private final Section section;
+    public ASCIZDirective(Section section, @NotNull String args) throws SyntaxASMException {
+        super(section, args);
 
-    public ParsedSection(Section section) {
-        this.section = section;
-    }
+        if (!args.isBlank() && !section.allowDataInitialisation()) {
+            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+        }
 
-    /**
-     * Vérifie la syntaxe de l'objet et renvoie les erreurs.
-     *
-     * @param line          le numéro de la ligne
-     * @param stateSupplier un fournisseur de conteneur d'état
-     * @return les erreurs détectées
-     */
-    @Override
-    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
-        return null;
-    }
-
-    public Section getSection() {
-        return section;
+        asciiDirective = new ASCIIDirective(section, args + '\0');
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof ParsedSection parsedSection)) return false;
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        asciiDirective.contextualize(stateContainer);
+    }
 
-        return parsedSection.section == section;
+    @Override
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        asciiDirective.execute(stateContainer, currentPos);
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        asciiDirective.offsetMemory(stateContainer, currentPos);
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
     }
 }

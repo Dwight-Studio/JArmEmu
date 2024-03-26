@@ -21,42 +21,38 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class ByteExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
-    @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+public class ByteDirective extends ParsedDirective {
 
-        if (args.isBlank()) {
-            return;
-        } else if (!section.allowDataInitialisation()) {
+    private final String[] arg;
+    private final byte[] byteArray;
+
+    public ByteDirective(Section section, @NotNull String args) throws SyntaxASMException {
+        super(section, args);
+
+        if (!args.isBlank() && !section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
+        arg = args.split(",");
+        byteArray = new byte[args.split(",").length];
+    }
+
+    @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
-            String[] arg = args.split(",");
-
-            FilePos tempPos = currentPos.clone();
-
-            for (String string : arg) {
-                int data = stateContainer.evalWithAccessible(string.strip());
+            for (int i = 0; i < arg.length; i++) {
+                int data = stateContainer.evalWithAccessible(arg[i].strip());
                 if (Integer.numberOfLeadingZeros(data) >= 24) {
-                    byte half = (byte) data;
-                    stateContainer.getMemory().putByte(tempPos.getPos(), half);
-                    tempPos.incrementPos(1);
+                    byteArray[i] = (byte) data;
                 } else {
                     throw new SyntaxASMException("Overflowing Byte value '" + args + "'");
                 }
@@ -66,18 +62,23 @@ public class ByteExecutor implements DirectiveExecutor {
         }
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        FilePos tempPos = currentPos.clone();
+        for (byte b : byteArray) {
+            stateContainer.getMemory().putByte(tempPos.getPos(), b);
+            tempPos.incrementPos(1);
+        }
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
         if (args.isBlank()) currentPos.incrementPos();
-        String[] arg = args.split(",");
         currentPos.incrementPos(arg.length);
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
     }
 }

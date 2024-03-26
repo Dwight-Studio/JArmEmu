@@ -24,23 +24,19 @@
 package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class SpaceExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
+public class SpaceDirective extends ParsedDirective {
+    public SpaceDirective(Section section, @NotNull String args) {
+        super(section, args);
+    }
+
     @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        // Rien à faire, on veut juste laisser de la place
-
+    public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
             stateContainer.evalWithAccessible(args);
         } catch (Exception e) {
@@ -48,18 +44,20 @@ public class SpaceExecutor implements DirectiveExecutor {
         }
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
         try {
             currentPos.incrementPos(stateContainer.evalWithAccessibleConsts(args));
         } catch (Exception ignored) {}
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
     }
 }

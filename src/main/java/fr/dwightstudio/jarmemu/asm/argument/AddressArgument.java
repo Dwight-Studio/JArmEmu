@@ -72,6 +72,23 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        registerArgument1.contextualize(stateContainer);
+
+        if (immediateArgument != null) {
+            immediateArgument.contextualize(stateContainer);
+        }
+
+        if (registerArgument2 != null) {
+            registerArgument2.contextualize(stateContainer);
+        }
+
+        if (shiftArgument != null) {
+            shiftArgument.contextualize(stateContainer);
+        }
+    }
+
+    @Override
     public AddressArgument.UpdatableInteger getValue(StateContainer stateContainer) throws ExecutionASMException {
         switch (mode) {
             case 1 -> {
@@ -126,22 +143,22 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-        registerArgument1.verify(stateSupplier, currentLine);
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        registerArgument1.verify(stateSupplier);
 
         if (immediateArgument != null) {
-            immediateArgument.verify(stateSupplier, currentLine);
+            immediateArgument.verify(stateSupplier);
         }
 
         if (registerArgument2 != null) {
-            registerArgument2.verify(stateSupplier, currentLine);
+            registerArgument2.verify(stateSupplier);
         }
 
         if (shiftArgument != null) {
-            shiftArgument.verify(stateSupplier, currentLine);
+            shiftArgument.verify(stateSupplier);
         }
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 
     /**

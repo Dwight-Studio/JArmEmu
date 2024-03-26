@@ -21,62 +21,64 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class HalfExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
-    @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        if (args.isBlank()) {
-            return;
-        } else if (!section.allowDataInitialisation()) {
+public class HalfDirective extends ParsedDirective {
+
+    private final String[] arg;
+    private final short[] shortArray;
+
+    public HalfDirective(Section section, @NotNull String args) throws SyntaxASMException {
+        super(section, args);
+
+        if (!args.isBlank() && !section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
+        arg = args.split(",");
+        shortArray = new short[args.split(",").length];
+    }
+
+    @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
-            String[] arg = args.split(",");
-
-            FilePos tempPos = currentPos.clone();
-
-            for (String string : arg) {
-                int data = stateContainer.evalWithAccessible(string.strip());
+            for (int i = 0; i < arg.length; i++) {
+                int data = stateContainer.evalWithAccessible(arg[i].strip());
                 if (Integer.numberOfLeadingZeros(data) >= 16) {
-                    short half = (short) data;
-                    stateContainer.getMemory().putHalf(tempPos.getPos(), half);
-                    tempPos.incrementPos( 2);
+                    shortArray[i] = (short) data;
                 } else {
                     throw new SyntaxASMException("Overflowing Half value '" + args + "'");
                 }
             }
         } catch (NumberFormatException exception) {
-            throw new SyntaxASMException("Invalid Word value '" + args + "'");
+            throw new SyntaxASMException("Invalid Half value '" + args + "'");
         }
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        FilePos tempPos = currentPos.clone();
+        for (short s : shortArray) {
+            stateContainer.getMemory().putHalf(tempPos.getPos(), s);
+            tempPos.incrementPos(2);
+        }
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
         if (args.isBlank()) currentPos.incrementPos(2);
-        String[] arg = args.split(",");
         currentPos.incrementPos(arg.length * 2);
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
     }
 }

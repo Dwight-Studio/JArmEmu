@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.instruction;
 
+import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.LabelArgument;
@@ -14,27 +15,27 @@ import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class ADRInstruction extends ParsedInstruction<Register, Integer, Object, Object> {
-    public ADRInstruction(boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
-        super(updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public ADRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg0Class() {
+    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
+    protected Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
         return LabelArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
+    protected Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
         return NullArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
+    protected Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
         return NullArgument.class;
     }
 

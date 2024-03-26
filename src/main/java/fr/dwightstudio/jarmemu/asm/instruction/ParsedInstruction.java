@@ -1,8 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.instruction;
 
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.ParsedObject;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
@@ -11,9 +9,15 @@ import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
-public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject {
+public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject implements Contextualized {
 
+    private static final Pattern PSEUDO_OP_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]\\{\\}]+)");
+    private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getName());
+
+    protected final Condition condition;
     protected final boolean updateFlags;
     protected final DataMode dataMode;
     protected UpdateMode updateMode;
@@ -22,48 +26,78 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject {
     protected final ParsedArgument<C> arg3;
     protected final ParsedArgument<D> arg4;
 
-    public ParsedInstruction(boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
         try {
+            this.condition = condition;
             this.updateFlags = updateFlags;
             this.dataMode = dataMode;
             this.updateMode = updateMode;
 
-            if (arg1 != null) {
-                this.arg1 = getParsedArg0Class().getDeclaredConstructor(String.class).newInstance(arg1);
-            } else {
-                this.arg1 = null;
+            ParsedArgument<A> arg1Temp = null;
+            ParsedArgument<B> arg2Temp = null;
+            ParsedArgument<C> arg3Temp = null;
+            ParsedArgument<D> arg4Temp = null;
+
+            try {
+                if (arg1 != null) {
+                    arg1Temp = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg1);
+                }
+
+                if (arg2 != null) {
+                    arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
+                }
+
+                if (arg3 != null) {
+                    arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
+                }
+
+                if (arg4 != null) {
+                    arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
+                }
+            } catch (InvocationTargetException exception) {
+                if (hasWorkingRegister()) {
+                    arg4 = arg3;
+                    arg3 = arg2;
+                    arg2 = arg1;
+
+                    if (arg1 != null) {
+                        arg1Temp = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg1);
+                    }
+
+                    if (arg1 != null) {
+                        arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
+                    }
+
+                    if (arg3 != null) {
+                        arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
+                    }
+
+                    if (arg4 != null) {
+                        arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
+                    }
+                } else {
+                    throw new RuntimeException(exception.getTargetException());
+                }
             }
 
-            if (arg2 != null) {
-                this.arg2 = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg2);
-            } else {
-                this.arg2 = null;
-            }
+            this.arg1 = arg1Temp;
+            this.arg2 = arg2Temp;
+            this.arg3 = arg3Temp;
+            this.arg4 = arg4Temp;
 
-            if (arg3 != null) {
-                this.arg3 = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg3);
-            } else {
-                this.arg3 = null;
-            }
-
-            if (arg4 != null) {
-                this.arg4 = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg4);
-            } else {
-                this.arg4 = null;
-            }
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException exception) {
             throw new RuntimeException("Incorrect state: can't find ParsedArgument constructor");
         }
     }
 
-    protected abstract Class<? extends ParsedArgument<A>> getParsedArg0Class();
+    protected abstract Class<? extends ParsedArgument<A>> getParsedArg1Class();
 
-    protected abstract Class<? extends ParsedArgument<B>> getParsedArg1Class();
+    protected abstract Class<? extends ParsedArgument<B>> getParsedArg2Class();
 
-    protected abstract Class<? extends ParsedArgument<C>> getParsedArg2Class();
+    protected abstract Class<? extends ParsedArgument<C>> getParsedArg3Class();
 
-    protected abstract Class<? extends ParsedArgument<D>> getParsedArg3Class();
+    protected abstract Class<? extends ParsedArgument<D>> getParsedArg4Class();
 
     /**
      * Exécute l'instruction sur le conteneur d'état
@@ -73,14 +107,16 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject {
      * @throws ExecutionASMException en cas d'erreur
      */
     public final void execute(StateContainer stateContainer, boolean forceExecution) throws ASMException {
-        this.execute(
-                stateContainer,
-                forceExecution,
-                arg1.getValue(stateContainer),
-                arg2.getValue(stateContainer),
-                arg3.getValue(stateContainer),
-                arg4.getValue(stateContainer)
-        );
+        if (condition.eval(stateContainer)) {
+                this.execute(
+                        stateContainer,
+                        forceExecution,
+                        arg1 != null ? arg1.getValue(stateContainer) : null,
+                        arg2 != null ? arg2.getValue(stateContainer) : null,
+                        arg3 != null ? arg3.getValue(stateContainer) : null,
+                        arg4 != null ? arg4.getValue(stateContainer) : null
+                );
+        }
     }
 
     /**
@@ -93,24 +129,108 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject {
      */
     public abstract boolean hasWorkingRegister();
 
-    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ASMException;
-
-    @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
+    /**
+     * Contextualise l'instruction dans le conteneur d'état initial, après définition des constantes.
+     *
+     * @param stateContainer le conteneur d'état initial
+     */
+    public void contextualize(StateContainer stateContainer) throws ASMException {
         if (arg1 != null) {
-            arg1.verify(stateSupplier, currentLine);
+            arg1.contextualize(stateContainer);
         }
 
         if (arg2 != null) {
-            arg2.verify(stateSupplier, currentLine);
+            arg2.contextualize(stateContainer);
         }
 
         if (arg3 != null) {
-            arg3.verify(stateSupplier, currentLine);
+            arg3.contextualize(stateContainer);
         }
 
         if (arg4 != null) {
-            arg4.verify(stateSupplier, currentLine);
+            arg4.contextualize(stateContainer);
         }
+    }
+
+    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ASMException;
+
+    @Override
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        try {
+            if (arg1 != null) {
+                arg1.verify(stateSupplier);
+            }
+
+            if (arg2 != null) {
+                arg2.verify(stateSupplier);
+            }
+
+            if (arg3 != null) {
+                arg3.verify(stateSupplier);
+            }
+
+            if (arg4 != null) {
+                arg4.verify(stateSupplier);
+            }
+        } catch (ASMException exception) {
+            throw exception.with(this);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ParsedInstruction<?, ?, ?, ?> pInst)) return false;
+
+        if (!(pInst.updateFlags == this.updateFlags)) {
+            if (ParsedObject.VERBOSE) logger.info("Difference: Flags");
+            return false;
+        }
+
+        if (pInst.dataMode == null) {
+            if (!(this.dataMode == null)) {
+                if (VERBOSE) logger.info("Difference: DataMode (Null)");
+                return false;
+            }
+        } else {
+            if (!(pInst.dataMode.equals(this.dataMode))) {
+                if (VERBOSE) logger.info("Difference: DataMode");
+                return false;
+            }
+        }
+
+        if (pInst.updateMode == null) {
+            if (!(this.updateMode == null)) {
+                if (VERBOSE) logger.info("Difference: UpdateMode (Null)");
+                return false;
+            }
+        } else {
+            if (!(pInst.updateMode.equals(this.updateMode))) {
+                if (VERBOSE) logger.info("Difference: UpdateMode");
+                return false;
+            }
+        }
+
+        if (!(pInst.condition == this.condition)) {
+            if (VERBOSE) logger.info("Difference: Condition");
+            return false;
+        }
+
+        if (!(pInst.arg1.equals(arg1))) {
+            if (VERBOSE) logger.info("Difference: Arg1");
+        }
+
+        if (!(pInst.arg2.equals(arg2))) {
+            if (VERBOSE) logger.info("Difference: Arg2");
+        }
+
+        if (!(pInst.arg3.equals(arg3))) {
+            if (VERBOSE) logger.info("Difference: Arg3");
+        }
+
+        if (!(pInst.arg4.equals(arg4))) {
+            if (VERBOSE) logger.info("Difference: Arg4");
+        }
+
+        return true;
     }
 }

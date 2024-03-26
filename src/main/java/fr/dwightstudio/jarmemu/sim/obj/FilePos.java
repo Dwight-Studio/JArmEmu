@@ -23,7 +23,9 @@
 
 package fr.dwightstudio.jarmemu.sim.obj;
 
-public class FilePos {
+import org.jetbrains.annotations.NotNull;
+
+public class FilePos implements Comparable<FilePos> {
     public static final FilePos ZERO = new FilePos(0, 0).freeze();
 
     private int file;
@@ -99,6 +101,15 @@ public class FilePos {
 
     public FilePos clone() {
         return new FilePos(this);
+    }
+
+    @Override
+    public int compareTo(@NotNull FilePos o) {
+        if (file == o.file) {
+            return Integer.compare(pos, o.pos);
+        } else {
+            return Integer.compare(file, o.file);
+        }
     }
 
     public static class FrozenFilePos extends FilePos {

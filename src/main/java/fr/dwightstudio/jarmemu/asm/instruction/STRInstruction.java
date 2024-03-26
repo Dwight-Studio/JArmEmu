@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.asm.instruction;
 
+import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.*;
@@ -11,27 +12,27 @@ import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class STRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
-    public STRInstruction(boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
-        super(updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public STRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg0Class() {
+    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg1Class() {
+    protected Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
         return AddressArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
+    protected Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
+    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
         return ShiftArgument.class;
     }
 

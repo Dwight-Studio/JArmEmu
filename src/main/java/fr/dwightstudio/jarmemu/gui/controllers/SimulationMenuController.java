@@ -25,9 +25,9 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.Status;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 
 import java.util.logging.Logger;
 

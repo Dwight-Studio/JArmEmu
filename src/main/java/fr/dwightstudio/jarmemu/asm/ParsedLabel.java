@@ -21,62 +21,59 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.parse;
+package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
-public class ParsedDirectiveLabel extends ParsedObject {
+public class ParsedLabel extends ParsedObject {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    private final String name;
+
     private final Section section;
+    private final String name;
+    private FilePos memoryPos;
 
-    public ParsedDirectiveLabel(String name, Section section) {
-        this.name = name.toUpperCase();
+    public ParsedLabel(Section section, String name) {
         this.section = section;
-    }
-
-    /**
-     * Vérifie la syntaxe de l'objet et renvoie les erreurs.
-     *
-     * @param line          le numéro de la ligne
-     * @param stateSupplier un fournisseur de conteneur d'état
-     * @return les erreurs détectées
-     */
-    @Override
-    public SyntaxASMException verify(int line, Supplier<StateContainer> stateSupplier) {
-        StateContainer container = stateSupplier.get();
-
-        if (container.getAccessibleData().get(this.name) == null) {
-            throw new IllegalStateException("Unable to verify directive label (incorrectly registered in the StateContainer)");
-        }
-
-        return null;
+        this.name = name;
     }
 
     /**
      * Enregistre le label dans le conteneur d'état
      *
-     * @param stateContainer le conteur d'état
-     * @param currentPos la position actuelle dans la mémoire
+     * @param stateContainer le conteneur d'état
+     * @param pos la position dans le programme ou dans la mémoire
      */
-    public void register(StateContainer stateContainer, int currentPos) {
-        stateContainer.getAccessibleData().put(name.strip().toUpperCase(), currentPos);
+    public void register(StateContainer stateContainer, FilePos pos) throws ASMException {
+        if (section != Section.TEXT) {
+            stateContainer.getAccessibleData().put(name.strip().toUpperCase(), pos.getPos());
+        } else {
+            this.memoryPos = pos.freeze();
+            if (stateContainer.getAccessibleLabels().put(name.strip().toUpperCase(), this.memoryPos.toByteValue()) != null)
+                throw new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
+        }
     }
 
     @Override
-    public String toString() {
-        return "DirectiveLabel";
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        StateContainer container = stateSupplier.get();
+
+        if (container.getRestrainedLabels().get(this.name.toUpperCase()) == null) {
+            throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
+        } else if (container.getRestrainedLabels().get(this.name) != this.memoryPos.toByteValue()) {
+            throw new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
+        }
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ParsedDirectiveLabel label)) return false;
+        if (!(obj instanceof ParsedLabel label)) return false;
 
         if (label.name == null) {
             if (this.name != null) {
@@ -88,6 +85,11 @@ public class ParsedDirectiveLabel extends ParsedObject {
                 if (VERBOSE) logger.info("Difference: Name");
                 return false;
             }
+        }
+
+        if (label.memoryPos != this.memoryPos) {
+            if (VERBOSE) logger.info("Difference: Pos (" + label.memoryPos + "/" + this.memoryPos + ")");
+            return false;
         }
 
         if (label.section == null) {
@@ -103,9 +105,5 @@ public class ParsedDirectiveLabel extends ParsedObject {
         }
 
         return true;
-    }
-
-    public Section getSection() {
-        return section;
     }
 }

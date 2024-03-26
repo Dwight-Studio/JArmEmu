@@ -1,6 +1,9 @@
 package fr.dwightstudio.jarmemu.asm;
 
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.*;
+
+import java.lang.reflect.InvocationTargetException;
 
 public enum Instruction {
 
@@ -67,10 +70,10 @@ public enum Instruction {
         this.instructionClass = instructionClass;
     }
 
-    public ParsedInstruction<?, ?, ?, ?> create(boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) {
+    public ParsedInstruction<?, ?, ?, ?> create(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
-            return this.instructionClass.getDeclaredConstructor(Boolean.class, DataMode.class, UpdateMode.class, String.class, String.class, String.class, String.class).newInstance(updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-        } catch (Exception e) {
+            return this.instructionClass.getDeclaredConstructor(Condition.class, Boolean.class, DataMode.class, UpdateMode.class, String.class, String.class, String.class, String.class).newInstance(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

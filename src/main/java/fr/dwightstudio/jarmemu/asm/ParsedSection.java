@@ -21,42 +21,34 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
-public class AlignExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
-    @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        if (!args.isEmpty()) {
-            stateContainer.evalWithAccessibleConsts(args);
-        }
+import java.util.function.Supplier;
+
+public class ParsedSection extends ParsedObject {
+
+    private final Section section;
+
+    public ParsedSection(Section section) {
+        this.section = section;
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
+    public Section getSection() {
+        return section;
+    }
+
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        int d = 4;
-        if (!args.isEmpty()) {
-            d = stateContainer.evalWithAccessibleConsts(args);
-        }
-        currentPos.incrementPos((d - (currentPos.getPos() % d)) % d);
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ParsedSection parsedSection)) return false;
+
+        return parsedSection.section == section;
+    }
+
+    @Override
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+
     }
 }

@@ -21,40 +21,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.parse;
+package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
-import java.util.TreeMap;
+public interface Contextualized {
 
-public class ParsedFile{
-
-    private final TreeMap<Integer, ParsedObject> parsedObjects;
-    private SourceScanner sourceScanner;
-
-    public ParsedFile(SourceScanner sourceScanner) {
-        this.sourceScanner = sourceScanner;
-        this.parsedObjects = new TreeMap<>();
-    }
-
-    public ParsedFile(SourceScanner sourceScanner, TreeMap<Integer, ParsedObject> parsedObjects) {
-        this.sourceScanner = sourceScanner;
-        this.parsedObjects = parsedObjects;
-    }
-
-    public int getIndex() {
-        return sourceScanner.getFileIndex();
-    }
-
-    public TreeMap<Integer, ParsedObject> getParsedObjects() {
-        return this.parsedObjects;
-    }
-
-    public SourceScanner getSourceScanner() {
-        return this.sourceScanner;
-    }
-
-    public String getName() {
-        return this.sourceScanner.getName() == null ? "Unknown" : this.sourceScanner.getName();
-    }
+    /**
+     * Contextualise l'objet dans le conteneur d'état initial, après définition des constantes.
+     *
+     * @param stateContainer le conteneur d'état initial
+     */
+    void contextualize(StateContainer stateContainer) throws ASMException;
 }

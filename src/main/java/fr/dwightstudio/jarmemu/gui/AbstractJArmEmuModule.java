@@ -23,10 +23,10 @@
 
 package fr.dwightstudio.jarmemu.gui;
 
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
-import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import javafx.fxml.Initializable;
 
 import java.net.URL;

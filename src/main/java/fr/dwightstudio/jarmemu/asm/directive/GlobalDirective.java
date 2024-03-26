@@ -21,49 +21,41 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class EquivalentExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
+public class GlobalDirective extends ParsedDirective {
+    public GlobalDirective(Section section, @NotNull String args) {
+        super(section, args);
+    }
+
     @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        String[] arg = args.split(",");
+    public void contextualize(StateContainer stateContainer) throws ASMException {
 
-        if (arg.length == 2) {
-            String symbol = arg[0].toUpperCase();
+    }
 
-            if (!symbol.matches("[A-Za-z_0-9]+")) {
-                throw new SyntaxASMException("Invalid symbol name '" + symbol + "'");
-            } else {
-                int val = stateContainer.evalWithAccessibleConsts(arg[1]);
-
-                stateContainer.getAccessibleConsts().put(symbol, val);
-            }
+    @Override
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        if (stateContainer.getRestrainedData().containsKey(args.toUpperCase().strip()) || stateContainer.getRestrainedLabels().containsKey(args.toUpperCase().strip())) {
+            stateContainer.addGlobal(args.toUpperCase().strip(), currentPos.getFileIndex());
         } else {
-            throw new SyntaxASMException("Invalid arguments '" + args + "' for Equivalent directive");
+            throw new SyntaxASMException("Invalid argument '" + args + "'");
         }
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {}
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return true;
+    }
 }

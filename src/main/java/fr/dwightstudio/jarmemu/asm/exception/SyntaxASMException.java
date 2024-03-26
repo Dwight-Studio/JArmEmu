@@ -24,65 +24,11 @@
 package fr.dwightstudio.jarmemu.asm.exception;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 
 public class SyntaxASMException extends ASMException {
 
-    int line;
-    ParsedObject parsedObject;
-    private ParsedFile file;
-
     public SyntaxASMException(String s) {
         super(s);
-        line = -1;
-    }
-
-    public boolean isLineSpecified() {
-        return line != -1;
-    }
-
-    public boolean isFileSpecified() {
-        return file != null;
-    }
-
-    public int getLine() {
-        return line;
-    }
-
-    public ParsedFile getFile() {
-        return file;
-    }
-
-    public void setLine(int line) {
-        this.line = line;
-    }
-
-    public void setFile(ParsedFile file) {
-        this.file = file;
-    }
-
-    public ParsedObject getObject() {
-        return parsedObject;
-    }
-
-    public void setObject(ParsedObject obj) {
-        this.parsedObject = obj;
-    }
-
-    public SyntaxASMException with(ParsedObject parsedObject) {
-        this.parsedObject = parsedObject;
-        return this;
-    }
-
-    public SyntaxASMException with(int line) {
-        this.line = line;
-        return this;
-    }
-
-    public SyntaxASMException with(ParsedFile file) {
-        this.file = file;
-        return this;
     }
 
     public String getTitle() {

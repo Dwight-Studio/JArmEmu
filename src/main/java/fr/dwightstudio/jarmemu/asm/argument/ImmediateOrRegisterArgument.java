@@ -27,6 +27,15 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        if (immediate) {
+            immediateArgument.contextualize(stateContainer);
+        } else {
+            registerArgument.contextualize(stateContainer);
+        }
+    }
+
+    @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         if (immediate) {
             return immediateArgument.getValue(stateContainer);
@@ -41,13 +50,13 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         if (immediate) {
-            immediateArgument.verify(stateSupplier, currentLine);
+            immediateArgument.verify(stateSupplier);
         } else {
-            registerArgument.verify(stateSupplier, currentLine);
+            registerArgument.verify(stateSupplier);
         }
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 }

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public class ParsedDirectiveLabel extends ParsedObject {
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
 
     }
 }

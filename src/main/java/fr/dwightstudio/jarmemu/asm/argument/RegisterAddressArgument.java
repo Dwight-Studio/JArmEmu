@@ -25,6 +25,11 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        argument.contextualize(stateContainer);
+    }
+
+    @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return argument.getValue(stateContainer).getData();
     }
@@ -35,9 +40,9 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-        argument.verify(stateSupplier, currentLine);
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        argument.verify(stateSupplier);
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 }

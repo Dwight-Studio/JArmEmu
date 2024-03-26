@@ -7,8 +7,6 @@ import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
-import java.util.function.Supplier;
-
 public class RotatedImmediateArgument extends ParsedArgument<Integer> {
 
     private int value;
@@ -18,19 +16,7 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
-        return value;
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRotatedValue"));
-    }
-
-    @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
-        StateContainer stateContainer = stateSupplier.get();
-
+    public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
             if (originalString.startsWith("#")) {
                 String valueString = originalString.substring(1).strip();
@@ -46,8 +32,16 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidRotatedValue", originalString) + " (" + exception.getMessage() + ")");
         }
+    }
 
-        super.verify(stateSupplier, currentLine);
+    @Override
+    public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
+        return value;
+    }
+
+    @Override
+    public Integer getNullValue() throws BadArgumentASMException {
+        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRotatedValue"));
     }
 
     private void checkOverflow(int value, String string) throws SyntaxASMException {

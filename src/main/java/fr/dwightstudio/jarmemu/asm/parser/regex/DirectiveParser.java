@@ -24,9 +24,11 @@
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.asm.ParsedSection;
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 

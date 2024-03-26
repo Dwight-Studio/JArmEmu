@@ -1,15 +1,15 @@
 package fr.dwightstudio.jarmemu.asm.argument;
 
+import fr.dwightstudio.jarmemu.asm.Contextualized;
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 import java.util.function.Supplier;
 
-public abstract class ParsedArgument<T> extends ParsedObject {
+public abstract class ParsedArgument<T> extends ParsedObject implements Contextualized {
 
     protected final String originalString;
 
@@ -21,6 +21,13 @@ public abstract class ParsedArgument<T> extends ParsedObject {
     public ParsedArgument(String originalString) {
         this.originalString = originalString;
     }
+
+    /**
+     * Contextualise l'argument dans le conteneur d'état initial, après définition des constantes.
+     *
+     * @param stateContainer le conteneur d'état initial
+     */
+    public abstract void contextualize(StateContainer stateContainer) throws ASMException;
 
     /**
      * @param stateContainer le conteneur d'état courant
@@ -38,7 +45,7 @@ public abstract class ParsedArgument<T> extends ParsedObject {
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         getValue(stateSupplier.get());
     }
 }

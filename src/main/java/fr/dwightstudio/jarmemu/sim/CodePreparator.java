@@ -24,9 +24,12 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
@@ -43,7 +46,7 @@ public class CodePreparator {
     private final int stackAddress;
     private final int symbolsAddress;
     private final ArrayList<ParsedFile> parsedFiles;
-    private ArrayList<ParsedInstruction> instructionMemory;
+    private ArrayList<ParsedInstruction<?, ?, ?, ?>> instructionMemory;
     private ArrayList<FilePos> instructionPosition;
 
     public CodePreparator(int stackAddress, int symbolsAddress) {
@@ -82,8 +85,8 @@ public class CodePreparator {
         instructionPosition = new ArrayList<>();
 
         for (ParsedFile parsedFile : parsedFiles) {
-            for (Map.Entry<Integer, ParsedObject> obj : parsedFile.getParsedObjects().entrySet()) {
-                if (obj.getValue() instanceof ParsedInstruction instruction) {
+            for (Map.Entry<Integer, ParsedObject> obj : parsedFile.getParsedObjects()) {
+                if (obj.getValue() instanceof ParsedInstruction<?, ?, ?, ?> instruction) {
                     instructionMemory.add(instruction);
                     instructionPosition.add(new FilePos(parsedFile.getIndex(), obj.getKey()).freeze());
                 } else if (obj.getValue() instanceof  ParsedLabel parsedLabel) {
@@ -122,8 +125,8 @@ public class CodePreparator {
 
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
-                SyntaxASMException e = inst.getValue().verify(inst.getKey(), () -> new StateContainer(stateContainer));
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
+                SyntaxASMException e = inst.getValue().verify(inst.getKey());
                 if (e != null) rtn.add(e.with(inst.getKey()).with(file));
             }
         }
@@ -143,7 +146,7 @@ public class CodePreparator {
 
             for (ParsedFile file : parsedFiles) {
                 stateContainer.setFileIndex(file.getIndex());
-                for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+                for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                     if (inst.getValue() instanceof ParsedDirective directive) {
                         if (directive.getDirective() == Directive.GLOBAL) {
                             line = Math.max(line, inst.getKey());
@@ -193,13 +196,13 @@ public class CodePreparator {
         // Suppression des directives générées
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            file.getParsedObjects().replaceAll((k, v) -> {
+            file.filter((k, v) -> {
                 if (v instanceof ParsedDirective directive) {
-                    if (directive.isGenerated()) return null;
+                    return !directive.isGenerated();
                 } else if (v instanceof ParsedDirectivePack pack) {
-                    if (pack.containsGenerated()) return null;
+                    return !pack.containsGenerated();
                 }
-                return v;
+                return true;
             });
         }
 
@@ -207,7 +210,7 @@ public class CodePreparator {
         pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 try {
                     if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                         if (parsedDirective.getDirective().isSectionIndifferent()) {
@@ -230,7 +233,7 @@ public class CodePreparator {
         pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 try {
                     if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                         if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.RODATA) {
@@ -254,7 +257,7 @@ public class CodePreparator {
         pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
                     pos.incrementPos(parsedInstruction.isPseudoInstruction() ? 4 : 0);
                 }
@@ -269,7 +272,7 @@ public class CodePreparator {
         pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 try {
                     if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                         if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.DATA) {
@@ -292,7 +295,7 @@ public class CodePreparator {
         pos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 try {
                     if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                         if (!parsedDirective.getDirective().isSectionIndifferent() && parsedDirective.getSection() == Section.BSS) {
@@ -314,7 +317,7 @@ public class CodePreparator {
         for (ParsedFile file : parsedFiles) {
             HashMap<Integer, ParsedObject> temp = new HashMap<>();
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
                     ParsedDirectivePack pack = parsedInstruction.convertValueToDirective(stateContainer);
                     if (!pack.isEmpty()) {
@@ -331,14 +334,14 @@ public class CodePreparator {
                     }
                 }
             }
-            file.getParsedObjects().putAll(temp);
+            file.putAll(temp);
         }
 
         // Application des directives générée
         generateDataPos.setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 try {
                     if (inst.getValue() instanceof ParsedDirective parsedDirective) {
                         if (parsedDirective.isGenerated()) {
@@ -364,7 +367,7 @@ public class CodePreparator {
     protected void replaceMovShifts(StateContainer stateContainer) {
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 if (inst.getValue() instanceof ParsedInstruction parsedInstruction) {
                     inst.setValue(parsedInstruction.convertMovToShift(stateContainer));
                 } else if (inst.getValue() instanceof ParsedLabel parsedLabel) {
@@ -384,7 +387,7 @@ public class CodePreparator {
 
         for (ParsedFile file : parsedFiles) {
             stateContainer.setFileIndex(file.getIndex());
-            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects().entrySet()) {
+            for (Map.Entry<Integer, ParsedObject> inst : file.getParsedObjects()) {
                 if (inst.getValue() instanceof ParsedLabel label) {
                     label.register(stateContainer, lastInstruction.freeze());
                     if (label.getInstruction() != null) {

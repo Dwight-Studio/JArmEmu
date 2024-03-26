@@ -23,10 +23,10 @@
 
 package fr.dwightstudio.jarmemu.asm.parser;
 
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedFile;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 
 public interface SourceParser {
 

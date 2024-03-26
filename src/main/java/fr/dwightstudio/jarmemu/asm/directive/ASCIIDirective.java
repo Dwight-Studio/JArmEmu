@@ -21,55 +21,57 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class ASCIIExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
-    @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+import java.util.stream.Collectors;
+
+public class ASCIIDirective extends ParsedDirective {
+
+    private final ByteDirective byteDirective;
+
+    public ASCIIDirective(Section section, @NotNull String args) throws SyntaxASMException {
+        super(section, args);
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        FilePos tempPos = currentPos.clone();
-
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
             String del = String.valueOf(args.charAt(0));
-            String str = args.substring(1, args.length()-1);
-            if (str.contains(del)) throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
-            for (char c : str.toCharArray()) {
-                DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) c), tempPos, section);
-                tempPos.incrementPos();
-            }
+            String writingString = args.substring(1, args.length()-1);
+            if (writingString.contains(del)) throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+
+            byteDirective = new ByteDirective(section, writingString.chars().mapToObj(String::valueOf).collect(Collectors.joining(", ")));
+
         } else {
             throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
         }
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        String str = args.substring(1, args.length() - 1);
-        currentPos.incrementPos(str.length());
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        byteDirective.contextualize(stateContainer);
+    }
+
+    @Override
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        byteDirective.execute(stateContainer, currentPos);
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        byteDirective.offsetMemory(stateContainer, currentPos);
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
     }
 }

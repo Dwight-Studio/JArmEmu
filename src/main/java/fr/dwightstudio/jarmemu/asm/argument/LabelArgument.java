@@ -16,6 +16,11 @@ public class LabelArgument extends ParsedArgument<Integer> {
     }
 
     @Override
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+
+    }
+
+    @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return stateContainer.getAccessibleLabels().get(originalString);
     }
@@ -26,9 +31,9 @@ public class LabelArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier, int currentLine) throws ASMException {
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         if (stateSupplier.get().getAccessibleLabels().get(originalString) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
 
-        super.verify(stateSupplier, currentLine);
+        super.verify(stateSupplier);
     }
 }

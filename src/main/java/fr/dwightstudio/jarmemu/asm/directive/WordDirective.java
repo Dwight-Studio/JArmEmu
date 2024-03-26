@@ -21,47 +21,59 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.obj.FilePos;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
-public class ASCIZExecutor implements DirectiveExecutor {
-    /**
-     * Application de la directive
-     *
-     * @param stateContainer Le conteneur d'état sur lequel appliquer la directive
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle dans la mémoire
-     * @param section
-     */
-    @Override
-    public void apply(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
+public class WordDirective extends ParsedDirective {
+
+    private final String[] arg;
+    private final int[] intArray;
+
+    public WordDirective(Section section, @NotNull String args) throws SyntaxASMException {
+        super(section, args);
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        FilePos tempPos = currentPos.clone();
-        DirectiveExecutors.ASCII.apply(stateContainer, args, tempPos, section);
-
-        DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, tempPos, section);
-        DirectiveExecutors.BYTE.apply(stateContainer, String.valueOf((int) '\0'), tempPos, section);
+        arg = args.split(",");
+        intArray = new int[args.split(",").length];
     }
 
-    /**
-     * Calcul de la taille prise en mémoire
-     *
-     * @param stateContainer Le conteneur d'état sur lequel calculer
-     * @param args           la chaine d'arguments
-     * @param currentPos     la position actuelle
-     * @param section
-     */
     @Override
-    public void computeDataLength(StateContainer stateContainer, String args, FilePos currentPos, Section section) {
-        DirectiveExecutors.ASCII.computeDataLength(stateContainer, args, currentPos, section);
-        currentPos.incrementPos();
+    public void contextualize(StateContainer stateContainer) throws ASMException {
+        try {
+            for (int i = 0; i < arg.length; i++) {
+                intArray[i] = stateContainer.evalWithAccessible(arg[i].strip());
+            }
+        } catch (NumberFormatException exception) {
+            throw new SyntaxASMException("Invalid Word value '" + args + "'");
+        }
+    }
+
+    @Override
+    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        FilePos tempPos = currentPos.clone();
+        for (int i : intArray) {
+            stateContainer.getMemory().putWord(tempPos.getPos(), i);
+            tempPos.incrementPos(4);
+        }
+    }
+
+    @Override
+    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+        if (args.isBlank()) currentPos.incrementPos(4);
+        currentPos.incrementPos(arg.length * 4);
+    }
+
+    @Override
+    public boolean isContextBuilder() {
+        return false;
     }
 }
