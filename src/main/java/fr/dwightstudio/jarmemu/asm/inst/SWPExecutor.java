@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 
 public class SWPExecutor implements InstructionExecutor<Register, Register, Integer, Object> {
+    //TODO: Replace String by a translatable Message
     @Override
     public void execute(StateContainer stateContainer, boolean forceExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, Register arg1, Register arg2, Integer arg3, Object arg4) {
         throw new SyntaxASMException("SWP instruction is deprecated");

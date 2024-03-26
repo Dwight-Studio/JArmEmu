@@ -52,6 +52,7 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Register, Integer, ShiftParser.ShiftFunction> BIC_EXECUTOR = new BICExecutor();
     public static final InstructionExecutor<Register, Integer, Integer, Object> BFC_EXECUTOR = new BFCExecutor();
     public static final InstructionExecutor<Register, Register, Integer, Integer> BFI_EXECUTOR = new BFIExecutor();
+    public static final InstructionExecutor<Register, Register, Object, Object> CLZ_EXECUTOR = new CLZExecutor();
 
     //Shifter
     public static final InstructionExecutor<Register, Register, Integer, Object> LSL_EXECUTOR = new LSLExecutor();
@@ -65,6 +66,8 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> CMN_EXECUTOR = new CMNExecutor();
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> TST_EXECUTOR = new TSTExecutor();
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> TEQ_EXECUTOR = new TEQExecutor();
+    public static final InstructionExecutor<Register, Integer, Object, Object> CBZ_EXECUTOR = new CBZExecutor();
+    public static final InstructionExecutor<Register, Integer, Object, Object> CBNZ_EXECUTOR = new CBNZExecutor();
 
     // Data movement
     public static final InstructionExecutor<Register, Integer, ShiftParser.ShiftFunction, Object> MOV_EXECUTOR = new MOVExecutor();
@@ -84,8 +87,9 @@ public class InstructionExecutors {
     public static final InstructionExecutor<Register, Object, Object, Object> BLX_EXECUTOR = new BLXExecutor();
     public static final InstructionExecutor<Register, Object, Object, Object> BX_EXECUTOR = new BXExecutor();
     public static final InstructionExecutor<Integer, Object, Object, Object> SWI_EXECUTOR = new SWIExecutor();
+    public static final InstructionExecutor<Register, Object, Object, Object> BXJ_EXECUTOR = new BXJExecutor();
 
     // Others
     public static final InstructionExecutor<Integer, Object, Object, Object> BKPT_EXECUTOR = new BKPTExecutor();
-
+    public static final InstructionExecutor<Object, Object, Object, Object> CLREX_EXECUTOR = new CLREXExecutor();
 }

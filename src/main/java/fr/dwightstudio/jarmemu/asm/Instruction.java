@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.inst.BKPTExecutor;
 import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
+import fr.dwightstudio.jarmemu.sim.obj.Register;
 import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
 import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
 
@@ -58,6 +59,7 @@ public enum Instruction {
     BIC(BIC_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
     BFC(BFC_EXECUTOR, false, false, REGISTER, IMM, IMM, NULL),
     BFI(BFI_EXECUTOR, false, false, REGISTER, REGISTER, IMM, IMM),
+    CLZ(CLZ_EXECUTOR, false, false, REGISTER, REGISTER, NULL, NULL),
 
     //Shifter
     LSL(LSL_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, NULL),
@@ -71,6 +73,8 @@ public enum Instruction {
     CMN(CMN_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
     TST(TST_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
     TEQ(TEQ_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
+    CBZ(CBZ_EXECUTOR, true, false, REGISTER, LABEL, NULL, NULL),
+    CBNZ(CBNZ_EXECUTOR, true, false, REGISTER, LABEL, NULL, NULL),
 
     // Data movement
     MOV(MOV_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
@@ -90,9 +94,11 @@ public enum Instruction {
     BLX(BLX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
     BX(BX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
     SWI(SWI_EXECUTOR, false, false, CODE, NULL, NULL, NULL),
+    BXJ(BXJ_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
 
     // Others
-    BKPT(BKPT_EXECUTOR, false, false, IMM_OR_REGISTER, NULL, NULL, NULL);
+    BKPT(BKPT_EXECUTOR, false, false, IMM_OR_REGISTER, NULL, NULL, NULL),
+    CLREX(CLREX_EXECUTOR, false, false, NULL, NULL, NULL, NULL);
 
     private final ArgumentParser[] args;
     private final InstructionExecutor executor;
