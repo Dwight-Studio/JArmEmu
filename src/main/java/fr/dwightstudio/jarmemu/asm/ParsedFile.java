@@ -26,8 +26,12 @@ package fr.dwightstudio.jarmemu.asm;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 public class ParsedFile implements Collection<ParsedObject> {
 
@@ -52,9 +56,8 @@ public class ParsedFile implements Collection<ParsedObject> {
         return this.sourceScanner.getName() == null ? "Unknown" : this.sourceScanner.getName();
     }
 
-    public void put(int add, ParsedObject object) {
-        object.setFile(this);
-        object.setLineNumber(add);
+    public SourceScanner getSourceScanner() {
+        return sourceScanner;
     }
 
     @Override
@@ -128,6 +131,8 @@ public class ParsedFile implements Collection<ParsedObject> {
             }
         }
 
+        parsedObject.setFile(this);
+
         return true;
     }
 
@@ -190,5 +195,13 @@ public class ParsedFile implements Collection<ParsedObject> {
     public void clear() {
         this.content = new ParsedObject[INITIAL_SIZE];
         this.size = 0;
+    }
+
+    public void filter(Predicate<ParsedObject> predicate) {
+        ArrayList<ParsedObject> toDelete = new ArrayList<>();
+        this.forEach(obj -> {
+            if (!predicate.test(obj)) toDelete.add(obj);
+        });
+        removeAll(toDelete);
     }
 }

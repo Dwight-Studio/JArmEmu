@@ -27,11 +27,12 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
 public class SyntaxASMException extends ASMException {
 
-    public SyntaxASMException(String s) {
-        super(s);
-    }
-
+    @Override
     public String getTitle() {
         return JArmEmuApplication.formatMessage("%exception.syntax");
+    }
+
+    public SyntaxASMException(String s) {
+        super(s);
     }
 }

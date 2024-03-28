@@ -23,16 +23,13 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
-import fr.dwightstudio.jarmemu.asm.Directive;
-import fr.dwightstudio.jarmemu.asm.ParsedFile;
-import fr.dwightstudio.jarmemu.asm.ParsedSection;
-import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.directive.ParsedDirective;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.*;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,36 +41,29 @@ public class DirectiveParser {
     private static final String DIRECTIVE_REGEX = String.join("|", DIRECTIVES);
     private static final String SSECTION_REGEX = "SECTION";
     private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
-    private static final String ARGS_REGEX = "[^\n\\.]*";
+    private static final String ARGS_REGEX = "[^\n.]*";
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile(
             "(?i)"
-                    + "("
-                    + "(^[ \t]*(?<LABEL>" + LABEL_REGEX + ")[ \t]*:)|"
-                    + "([ \t]*\\.(?<SSECTION>" + SSECTION_REGEX + ") +)|"
-                    + "([ \t]*\\.(?<SECTION>" + SECTION_REGEX + ") +)|"
-                    + "([ \t]*\\.(?<DIRECTIVE>" + DIRECTIVE_REGEX + "))"
-                    + "(([ \t]+(?<ARGS>" + ARGS_REGEX + ") +)|)"
-                    + ")"
-                    + "(?-i)"
+            + "("
+            + "(^[ \t]*(?<LABEL>" + LABEL_REGEX + ")[ \t]*:)|"
+            + "([ \t]*\\.(?<SSECTION>" + SSECTION_REGEX + ") *)|"
+            + "([ \t]*\\.(?<SECTION>" + SECTION_REGEX + ") *)|"
+            + "([ \t]*\\.(?<DIRECTIVE>" + DIRECTIVE_REGEX + "))"
+            + "(([ \t]+(?<ARGS>" + ARGS_REGEX + ") *)|)"
+            + ")"
+            + "(?-i)"
     );
-    private final Logger logger = Logger.getLogger(getClass().getName());
-
-    public DirectiveParser() {
-
-    }
 
     /**
      * Lecture d'une ligne avec Directive
      *
-     * @param sourceScanner le SourceScanner associé
-     * @param line la ligne à parser
-     * @return un ParsedObject à verifier.
+     * @param parser l'instance de l'analyser
+     * @param sourceScanner le scanneur de fichier
+     * @param parsedFile le fichier à analyser
      */
-    public ParsedObject parseOneLine(SourceScanner sourceScanner, String line, RegexSourceParser.CurrentSection currentSection) {
-
+    protected static boolean parseOneLine(RegexSourceParser parser, String line, SourceScanner sourceScanner, ParsedFile parsedFile) throws ASMException {
+        boolean rtn = false;
         Matcher matcher = DIRECTIVE_PATTERN.matcher(line);
-
-        ParsedDirectivePack directives = new ParsedDirectivePack();
 
         boolean flag = false;
         while (matcher.find()) {
@@ -85,34 +75,37 @@ public class DirectiveParser {
             String argsString = matcher.group("ARGS");
 
             if (ssectionString != null && !ssectionString.isEmpty()) {
+                rtn = true;
                 // Rien à faire, on ignore cette directive
             } else if (sectionString != null && !sectionString.isEmpty()) {
+                rtn = true;
                 try {
                     Section section = Section.valueOf(sectionString.toUpperCase());
-                    currentSection.setValue(section);
-                    ParsedSection parsedSection = new ParsedSection(section);
-                    directives.add(parsedSection);
+                    parser.currentSection = section;
+                    parsedFile.add(new ParsedSection(section).withLineNumber(sourceScanner.getLineNumber()));
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown section '" + sectionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
+                    throw new SyntaxASMException("Unknown section '" + sectionString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
                 }
             } else if (labelString != null && !labelString.isEmpty()) {
-                if (currentSection.getValue().shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase(), currentSection.getValue()));
-
+                rtn = true;
+                if (parser.currentSection.shouldParseDirective()) {
+                    parsedFile.add(new ParsedLabel(parser.currentSection, labelString.strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
+                }
             } else if (directiveString != null && !directiveString.isEmpty()) {
+                rtn = true;
                 try {
                     Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                    ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip(), currentSection.getValue());
-                    directives.add(parsedDirective);
+                    parsedFile.add(directive.create(parser.currentSection, argsString == null ? "" : argsString.strip()).withLineNumber(sourceScanner.getLineNumber()));
                 } catch (IllegalArgumentException exception) {
-                    if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
+                    if (parser.currentSection.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
                 }
             }
         }
 
         if (!flag) {
-            if (currentSection.getValue().shouldParseDirective()) throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
+            if (parser.currentSection.shouldParseDirective()) throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
         }
 
-        return directives.close();
+        return rtn;
     }
 }

@@ -26,8 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Collectors;
@@ -61,13 +60,13 @@ public class ASCIIDirective extends ParsedDirective {
     }
 
     @Override
-    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
-        byteDirective.execute(stateContainer, currentPos);
+    public void execute(StateContainer stateContainer) throws ASMException {
+        byteDirective.execute(stateContainer);
     }
 
     @Override
-    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
-        byteDirective.offsetMemory(stateContainer, currentPos);
+    public void offsetMemory(StateContainer stateContainer) throws ASMException {
+        byteDirective.offsetMemory(stateContainer);
     }
 
     @Override

@@ -6,13 +6,13 @@ import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class BInstruction extends ParsedInstruction<Integer, Object, Object, Object> {
-    public BInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public BInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
@@ -47,8 +47,13 @@ public class BInstruction extends ParsedInstruction<Integer, Object, Object, Obj
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Integer arg1, Object arg2, Object arg3, Object arg4) throws ASMException {
+    protected void execute(StateContainer stateContainer, boolean forceExecution, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
         if (arg1 == stateContainer.getPC().getData()) throw new StuckExecutionASMException();
         stateContainer.getPC().setData(arg1); // PC = arg1
+    }
+
+    @Override
+    protected void verify(StateContainer stateContainer, Integer arg1, Object arg2, Object arg3, Object arg4) {
+
     }
 }

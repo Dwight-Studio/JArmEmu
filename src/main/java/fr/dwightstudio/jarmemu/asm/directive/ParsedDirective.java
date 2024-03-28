@@ -5,8 +5,7 @@ import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -35,17 +34,15 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
 
     /**
      * @param stateContainer le conteneur d'état sur lequel appliquer la directive
-     * @param currentPos la position actuelle dans la mémoire
      */
-    public abstract void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException;
+    public abstract void execute(StateContainer stateContainer) throws ASMException;
 
     /**
      * Alloue la place nécessaire dans la mémoire, en fonction des données analysées.
      *
      * @param stateContainer le conteneur d'état sur lequel appliquer la directive
-     * @param currentPos la position actuelle dans la mémoire
      */
-    public abstract void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException;
+    public abstract void offsetMemory(StateContainer stateContainer) throws ASMException;
 
     /**
      * @return vrai si la directive est responsable de la construction du contexte.
@@ -55,27 +52,10 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         try {
-            execute(stateSupplier.get(), getFilePos());
+            execute(stateSupplier.get());
         } catch (ASMException exception) {
             exception.with(this);
         }
-    }
-
-    /**
-     * @return vrai si la directive a été générée
-     */
-    public boolean isGenerated() {
-        return generated;
-    }
-
-    /**
-     * Définie la directive comme générée en l'associant à un hash.
-     *
-     * @param hash le hash de la pseudo-instruction
-     */
-    public void setGenerated(String hash) {
-        this.hash = hash;
-        this.generated = true;
     }
 
     public Section getSection() {
@@ -121,5 +101,10 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
         }
 
         return true;
+    }
+
+    public ParsedDirective withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
     }
 }

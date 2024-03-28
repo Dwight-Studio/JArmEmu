@@ -23,11 +23,10 @@ module fr.dwightstudio.jarmemu {
     exports fr.dwightstudio.jarmemu.gui;
     exports fr.dwightstudio.jarmemu.gui.controllers;
     exports fr.dwightstudio.jarmemu.sim;
-    exports fr.dwightstudio.jarmemu.sim.obj;
-    exports fr.dwightstudio.jarmemu.sim.parse;
+    exports fr.dwightstudio.jarmemu.sim.entity;
     exports fr.dwightstudio.jarmemu.asm;
     exports fr.dwightstudio.jarmemu.asm.parser.regex;
-    exports fr.dwightstudio.jarmemu.asm.parser.legacy;
+    //exports fr.dwightstudio.jarmemu.asm.parser.legacy;
     exports fr.dwightstudio.jarmemu.asm.exception;
     exports fr.dwightstudio.jarmemu.asm.instruction;
     exports fr.dwightstudio.jarmemu.asm.directive;
@@ -43,4 +42,5 @@ module fr.dwightstudio.jarmemu {
     opens fr.dwightstudio.jarmemu.gui.factory to javafx.fxml;
     exports fr.dwightstudio.jarmemu.gui.editor;
     opens fr.dwightstudio.jarmemu.gui.editor to javafx.fxml;
+    exports fr.dwightstudio.jarmemu.sim.prepare;
 }

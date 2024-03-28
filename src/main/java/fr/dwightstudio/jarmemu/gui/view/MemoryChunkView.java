@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.view;
 
-import fr.dwightstudio.jarmemu.sim.obj.MemoryAccessor;
+import fr.dwightstudio.jarmemu.sim.entity.MemoryAccessor;
 import fr.dwightstudio.jarmemu.util.converters.WordASCIIStringConverter;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.IntegerProperty;

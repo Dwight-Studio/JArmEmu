@@ -5,14 +5,14 @@ import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class MLSInstruction extends ParsedInstruction<Register, Register, Register, Register> {
 
-    public MLSInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public MLSInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
@@ -49,5 +49,10 @@ public class MLSInstruction extends ParsedInstruction<Register, Register, Regist
     @Override
     protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Register arg2, Register arg3, Register arg4) throws ExecutionASMException {
         arg1.setData(arg4.getData() - arg3.getData() * arg2.getData()); // arg1 = arg4 - (arg3 * arg2)
+    }
+
+    @Override
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Register arg3, Register arg4) {
+
     }
 }

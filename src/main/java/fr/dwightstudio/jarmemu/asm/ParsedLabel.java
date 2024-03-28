@@ -25,8 +25,8 @@ package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -105,5 +105,14 @@ public class ParsedLabel extends ParsedObject {
         }
 
         return true;
+    }
+
+    public ParsedLabel withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
+    }
+
+    public Section getSection() {
+        return section;
     }
 }

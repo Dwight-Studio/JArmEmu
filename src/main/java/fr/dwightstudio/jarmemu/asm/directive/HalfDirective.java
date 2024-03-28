@@ -26,8 +26,8 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class HalfDirective extends ParsedDirective {
@@ -63,8 +63,8 @@ public class HalfDirective extends ParsedDirective {
     }
 
     @Override
-    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
-        FilePos tempPos = currentPos.clone();
+    public void execute(StateContainer stateContainer) throws ASMException {
+        FilePos tempPos = stateContainer.getCurrentFilePos().clone();
         for (short s : shortArray) {
             stateContainer.getMemory().putHalf(tempPos.getPos(), s);
             tempPos.incrementPos(2);
@@ -72,9 +72,9 @@ public class HalfDirective extends ParsedDirective {
     }
 
     @Override
-    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
-        if (args.isBlank()) currentPos.incrementPos(2);
-        currentPos.incrementPos(arg.length * 2);
+    public void offsetMemory(StateContainer stateContainer) throws ASMException {
+        if (args.isBlank()) stateContainer.getCurrentFilePos().incrementPos(2);
+        stateContainer.getCurrentFilePos().incrementPos(arg.length * 2);
     }
 
     @Override

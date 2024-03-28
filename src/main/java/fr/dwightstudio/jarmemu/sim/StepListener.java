@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 
 public interface StepListener {
     void step(FilePos pos);

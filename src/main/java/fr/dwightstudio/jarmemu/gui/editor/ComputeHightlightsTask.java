@@ -40,7 +40,7 @@ import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
 public class ComputeHightlightsTask extends Task<StyleSpans<Collection<String>>> {
 
-    private static final String[] INSTRUCTIONS = getFromEnum(OInstruction.values(), false);
+    private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
     private static final String[] KEYWORDS = ArrayUtils.addAll(getFromEnum(Directive.values(), false), getFromEnum(Section.values(), false));
     private static final String[] REGISTERS = getFromEnum(RegisterUtils.values(), false);
     private static final String[] CONDITIONS = getFromEnum(Condition.values(), true);

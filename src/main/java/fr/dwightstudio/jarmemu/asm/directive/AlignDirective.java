@@ -25,8 +25,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class AlignDirective extends ParsedDirective {
@@ -47,15 +46,15 @@ public class AlignDirective extends ParsedDirective {
     }
 
     @Override
-    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+    public void execute(StateContainer stateContainer) throws ASMException {
         if (!args.isEmpty()) {
             stateContainer.evalWithAccessibleConsts(args);
         }
     }
 
     @Override
-    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
-        currentPos.incrementPos((offset - (currentPos.getPos() % offset)) % offset);
+    public void offsetMemory(StateContainer stateContainer) throws ASMException {
+        stateContainer.getCurrentFilePos().incrementPos((offset - (stateContainer.getCurrentFilePos().getPos() % offset)) % offset);
     }
 
     @Override

@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.Status;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
@@ -60,10 +61,10 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode de rappel si la préparation de la simulation s'est effectué avec succès
      * @param errors les erreurs rencontrées lors de l'analyse du code
      */
-    public void launchSimulation(SyntaxASMException[] errors) {
+    public void launchSimulation(ASMException[] errors) {
         getEditorController().clearNotifs();
 
-        if (errors.length == 0) {
+        if (errors == null || errors.length == 0) {
             if (getCodeInterpreter().getInstructionCount() == 0) {
                 getController().simulate.setDisable(false);
                 getEditorController().addNotification(
@@ -99,7 +100,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
             }
         } else {
             getController().simulate.setDisable(false);
-            for (SyntaxASMException error : errors) {
+            for (ASMException error : errors) {
                 getEditorController().addError(error);
             }
         }
@@ -208,7 +209,6 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getEditorController().clearNotifs();
         getEditorController().clearAllLineMarkings();
 
-        getCodeInterpreter().resetState();
         getCodeInterpreter().restart();
 
         getEditorController().markForward(getCodeInterpreter().getCurrentLine());

@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.obj;
+package fr.dwightstudio.jarmemu.sim.entity;
 
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.MultiSet;

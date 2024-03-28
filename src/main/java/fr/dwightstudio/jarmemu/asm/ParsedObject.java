@@ -1,9 +1,8 @@
 package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import org.jetbrains.annotations.NotNull;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 
@@ -13,6 +12,7 @@ public abstract class ParsedObject {
 
     private ParsedFile file;
     private int lineNumber;
+    private boolean generated;
 
     /**
      * Effectue un test pour vérifier la capacité d'exécution
@@ -43,5 +43,19 @@ public abstract class ParsedObject {
      */
     public FilePos getFilePos() {
         return new FilePos(file.getIndex(), lineNumber).freeze();
+    }
+
+    /**
+     * @return vrai si l'objet a été généré
+     */
+    public boolean isGenerated() {
+        return generated;
+    }
+
+    /**
+     * Définie l'objet comme généré
+     */
+    public void setGenerated() {
+        this.generated = true;
     }
 }

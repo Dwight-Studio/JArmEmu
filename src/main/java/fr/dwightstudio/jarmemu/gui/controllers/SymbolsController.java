@@ -29,7 +29,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.SymbolView;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.converters.FileNameStringConverter;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -137,13 +137,13 @@ public class SymbolsController extends AbstractJArmEmuModule {
         if (stateContainer != null) {
 
             for (int i = 0 ; i < stateContainer.getLabelsInFiles().size() ; i++) {
-                stateContainer.setFileIndex(i);
+                stateContainer.getCurrentFilePos().setFileIndex(i);
                 for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleConsts().entrySet()) {
-                    views.add(new SymbolView(entry,  stateContainer.getCurrentFileIndex()));
+                    views.add(new SymbolView(entry,  stateContainer.getCurrentFilePos().getFileIndex()));
                 }
 
                 for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleData().entrySet()) {
-                    views.add(new SymbolView(entry,  stateContainer.getCurrentFileIndex()));
+                    views.add(new SymbolView(entry,  stateContainer.getCurrentFilePos().getFileIndex()));
                 }
             }
 

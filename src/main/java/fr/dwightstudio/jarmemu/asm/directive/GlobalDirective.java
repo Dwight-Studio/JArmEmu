@@ -26,8 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class GlobalDirective extends ParsedDirective {
@@ -41,16 +40,16 @@ public class GlobalDirective extends ParsedDirective {
     }
 
     @Override
-    public void execute(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+    public void execute(StateContainer stateContainer) throws ASMException {
         if (stateContainer.getRestrainedData().containsKey(args.toUpperCase().strip()) || stateContainer.getRestrainedLabels().containsKey(args.toUpperCase().strip())) {
-            stateContainer.addGlobal(args.toUpperCase().strip(), currentPos.getFileIndex());
+            stateContainer.addGlobal(args.toUpperCase().strip(), stateContainer.getCurrentFilePos().getFileIndex());
         } else {
             throw new SyntaxASMException("Invalid argument '" + args + "'");
         }
     }
 
     @Override
-    public void offsetMemory(StateContainer stateContainer, FilePos currentPos) throws ASMException {
+    public void offsetMemory(StateContainer stateContainer) throws ASMException {
 
     }
 

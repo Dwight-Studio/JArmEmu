@@ -3,9 +3,10 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
@@ -14,7 +15,6 @@ import java.util.regex.Pattern;
 
 public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject implements Contextualized {
 
-    private static final Pattern PSEUDO_OP_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]\\{\\}]+)");
     private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getName());
 
     protected final Condition condition;
@@ -26,7 +26,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     protected final ParsedArgument<C> arg3;
     protected final ParsedArgument<D> arg4;
 
-    public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
             this.condition = condition;
             this.updateFlags = updateFlags;
@@ -76,6 +76,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
                         arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
                     }
                 } else {
+                    if (exception.getCause() instanceof ASMException ex) throw ex;
                     throw new RuntimeException(exception.getTargetException());
                 }
             }
@@ -106,7 +107,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
      * @param forceExecution pour forcer l'exécution
      * @throws ExecutionASMException en cas d'erreur
      */
-    public final void execute(StateContainer stateContainer, boolean forceExecution) throws ASMException {
+    public final void execute(StateContainer stateContainer, boolean forceExecution) throws ExecutionASMException {
         if (condition.eval(stateContainer)) {
                 this.execute(
                         stateContainer,
@@ -152,10 +153,12 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
     }
 
-    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ASMException;
+    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
+
+    protected abstract void verify(StateContainer stateContainer, A arg1, B arg2, C arg3, D arg4) throws ASMException;
 
     @Override
-    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+    public final void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         try {
             if (arg1 != null) {
                 arg1.verify(stateSupplier);
@@ -172,6 +175,14 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
             if (arg4 != null) {
                 arg4.verify(stateSupplier);
             }
+
+            StateContainer stateContainer = stateSupplier.get();
+            this.verify(stateContainer,
+                    arg1 != null ? arg1.getValue(stateContainer) : null,
+                    arg2 != null ? arg2.getValue(stateContainer) : null,
+                    arg3 != null ? arg3.getValue(stateContainer) : null,
+                    arg4 != null ? arg4.getValue(stateContainer) : null
+            );
         } catch (ASMException exception) {
             throw exception.with(this);
         }
@@ -232,5 +243,10 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
 
         return true;
+    }
+
+    public ParsedInstruction<A, B, C, D> withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
     }
 }

@@ -6,14 +6,14 @@ import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class BLXInstruction extends ParsedInstruction<Register, Object, Object, Object> {
-    public BLXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public BLXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
@@ -48,11 +48,16 @@ public class BLXInstruction extends ParsedInstruction<Register, Object, Object, 
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Object arg2, Object arg3, Object arg4) throws ASMException {
+    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
         if (arg1.equals(stateContainer.getPC())) throw new StuckExecutionASMException();
         stateContainer.getLR().setData(stateContainer.getPC().getData() + 4);
         stateContainer.getPC().setData(arg1.getData()); // PC = arg1
         stateContainer.getCPSR().setT(arg1.get(0));
         stateContainer.branch();
+    }
+
+    @Override
+    protected void verify(StateContainer stateContainer, Register arg1, Object arg2, Object arg3, Object arg4) {
+
     }
 }

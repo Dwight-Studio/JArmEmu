@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 
@@ -50,5 +50,10 @@ public class ParsedSection extends ParsedObject {
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
 
+    }
+
+    public ParsedSection withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
     }
 }

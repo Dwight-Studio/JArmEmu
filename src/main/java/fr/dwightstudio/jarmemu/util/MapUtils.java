@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.util;
 
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 
 import java.util.Map;
 

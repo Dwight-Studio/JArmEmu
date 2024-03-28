@@ -5,8 +5,8 @@ import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -17,7 +17,6 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     private boolean updateNow;
     private RegisterArgument registerArgument1;
 
-    private String symbol;
     private ImmediateArgument immediateArgument;
     private RegisterArgument registerArgument2;
     private ShiftArgument shiftArgument;
@@ -27,9 +26,9 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
         String string = originalString;
 
-        if (originalString.startsWith("*")) {
+        if (originalString.startsWith("=")) {
             mode = 1;
-            symbol = originalString.substring(1).strip().toUpperCase();
+            return;
         } else if (!originalString.startsWith("[")) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
         }
@@ -92,11 +91,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     public AddressArgument.UpdatableInteger getValue(StateContainer stateContainer) throws ExecutionASMException {
         switch (mode) {
             case 1 -> {
-                return new UpdatableInteger(stateContainer.getPseudoData().get(symbol),
-                                            stateContainer,
-                                            false,
-                                            false,
-                                            null);
+                return null; // On retourne null car c'est une pseudo-instruction, l'adresse est ignorée
             }
 
             case 2 -> {
@@ -197,5 +192,9 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
                 register.setData(stateContainer.getAddressRegisterUpdateValue());
             update = false;
         }
+    }
+
+    public boolean isPseudoInstruction() {
+        return mode == 1;
     }
 }

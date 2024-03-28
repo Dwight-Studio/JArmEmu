@@ -6,13 +6,13 @@ import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class RRXInstruction extends ParsedInstruction<Register, Register, Object, Object> {
-    public RRXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public RRXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
@@ -47,7 +47,7 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Register arg2, Object arg3, Object arg4) throws ASMException {
+    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Register arg2, Object arg3, Object arg4) throws ExecutionASMException {
         int i = Integer.rotateRight(arg2.getData(), 1);
         boolean c = ((i >> 31) & 1) == 1;
         if (stateContainer.getCPSR().getC()) {
@@ -62,5 +62,10 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
             stateContainer.getCPSR().setC(c);
         }
+    }
+
+    @Override
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Object arg3, Object arg4) {
+
     }
 }

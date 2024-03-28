@@ -5,13 +5,13 @@ import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class MLAInstruction extends ParsedInstruction<Register, Register, Register, Register> {
-    public MLAInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws BadArgumentASMException {
+    public MLAInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
@@ -53,5 +53,10 @@ public class MLAInstruction extends ParsedInstruction<Register, Register, Regist
             stateContainer.getCPSR().setN(arg1.getData() < 0);
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
         }
+    }
+
+    @Override
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Register arg3, Register arg4) {
+
     }
 }

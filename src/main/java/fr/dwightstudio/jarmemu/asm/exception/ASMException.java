@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.asm.exception;
 
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
 public class ASMException extends Exception {
     int line;
@@ -16,6 +17,10 @@ public class ASMException extends Exception {
     public ASMException() {
         super();
         line = -1;
+    }
+
+    public String getTitle() {
+        return JArmEmuApplication.formatMessage("%exception.base");
     }
 
     public boolean isLineSpecified() {

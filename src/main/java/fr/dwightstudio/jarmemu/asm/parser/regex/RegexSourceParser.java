@@ -23,42 +23,21 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.asm.ParsedFile;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedObject;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.TreeMap;
 
 public class RegexSourceParser implements SourceParser {
 
-    private SourceScanner sourceScanner;
-    protected CurrentSection currentSection;
-    private ASMParser asmParser;
-    private DirectiveParser directiveParser;
+    protected Section currentSection;
+    protected int instructionPos;
 
     public RegexSourceParser() {
-        currentSection= new CurrentSection();
-
-        asmParser = new ASMParser();
-        directiveParser = new DirectiveParser();
-    }
-
-    public RegexSourceParser(SourceScanner sourceScanner) {
-        this();
-        this.sourceScanner = sourceScanner;
-    }
-
-    /**
-     * Définie la liste des fichiers
-     *
-     * @param source le SourceScanner utilisé
-     */
-    @Override
-    public void setSource(SourceScanner source) {
-        this.sourceScanner = source;
+        currentSection = Section.NONE;
+        instructionPos = 0;
     }
 
     /**
@@ -66,40 +45,26 @@ public class RegexSourceParser implements SourceParser {
      * Lecture du fichier et renvoie des objets parsés non vérifiés
      */
     @Override
-    public ParsedFile parse() {
-        TreeMap<Integer, ParsedObject> rtn = new TreeMap<>();
-        asmParser = new ASMParser();
-        directiveParser = new DirectiveParser();
-
+    public ParsedFile parse(SourceScanner sourceScanner) throws ASMException {
+        ParsedFile file = new ParsedFile(sourceScanner);
         sourceScanner.goTo(-1);
-        currentSection = new CurrentSection();
-        while (this.sourceScanner.hasNextLine()){
-            ParsedObject parsed = parseOneLine();
-            if (parsed != null) {
-                rtn.put(sourceScanner.getCurrentInstructionValue(), parsed);
+        currentSection = Section.NONE;
+
+        while (sourceScanner.hasNextLine()){
+            String line = sourceScanner.nextLine();
+
+            line = prepare(line);
+            if (line.isEmpty()) continue;
+
+            try {
+                boolean found = DirectiveParser.parseOneLine(this, line, sourceScanner, file);
+                if (!found && currentSection == Section.TEXT) ASMParser.parseOneLine(this, line, sourceScanner, file);
+            } catch (ASMException exception) {
+                throw exception.with(file).with(sourceScanner.getLineNumber());
             }
         }
 
-        return new ParsedFile(sourceScanner, rtn);
-    }
-
-    /**
-     * Lecture d'une ligne et teste de tous ses arguments
-     *
-     * @return un ParsedObject non vérifié
-     */
-    @Override
-    public ParsedObject parseOneLine() {
-        String line = sourceScanner.nextLine();
-        line = prepare(line);
-
-        if (line.isEmpty()) return null;
-
-        ParsedObject directives = directiveParser.parseOneLine(sourceScanner, line + " ", currentSection);
-        if (directives != null) return directives;
-
-        if (currentSection.getValue() == Section.TEXT) return asmParser.parseOneLine(sourceScanner, line);
-        return null;
+        return file;
     }
 
     /**
@@ -110,21 +75,5 @@ public class RegexSourceParser implements SourceParser {
      */
     public static String prepare(@NotNull String line) {
         return line.split("@")[0].strip();
-    }
-
-    public static class CurrentSection {
-        private Section value;
-
-        public CurrentSection() {
-            this.value = Section.NONE;
-        }
-
-        public Section getValue() {
-            return value == null ? Section.NONE : value;
-        }
-
-        public void setValue(Section value) {
-            this.value = value;
-        }
     }
 }

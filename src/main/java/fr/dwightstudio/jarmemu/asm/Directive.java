@@ -55,9 +55,9 @@ public enum Directive {
     public ParsedDirective create(Section section, @NotNull String args) throws ASMException {
         try {
             return this.directiveClass.getDeclaredConstructor(Section.class, String.class).newInstance(section, args);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException e) {
-            throw new RuntimeException(e);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            if (e.getCause() instanceof ASMException ex) throw ex;
+            else throw  new RuntimeException(e);
         }
     }
 }

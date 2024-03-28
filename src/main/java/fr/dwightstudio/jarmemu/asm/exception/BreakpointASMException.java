@@ -23,6 +23,8 @@
 
 package fr.dwightstudio.jarmemu.asm.exception;
 
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+
 public class BreakpointASMException extends ExecutionASMException {
 
     private int value;

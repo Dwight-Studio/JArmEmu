@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.gui;
 import atlantafx.base.theme.*;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
-import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
@@ -99,6 +98,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Finir l'I18N (Directives)
     // TODO: Refaire les tests (Instructions, Arguments, Directives)
     // TODO: Ajouter l'Autocompletion (style intelliJ)
+    // TODO: Ajouter un switch pour les instructions non implémentées
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -347,9 +347,9 @@ public class JArmEmuApplication extends Application {
 
     public void newSourceParser() {
         if (getSettingsController().getSourceParserSetting() == 1) {
-            sourceParser = new LegacySourceParser(new SourceScanner("", null, 0));
+            //sourceParser = new LegacySourceParser(new SourceScanner("", null, 0));
         } else {
-            sourceParser = new RegexSourceParser(new SourceScanner("", null, 0));
+            sourceParser = new RegexSourceParser();
         }
     }
 

@@ -21,9 +21,9 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.obj;
+package fr.dwightstudio.jarmemu.sim.entity;
 
-public class PSR extends Register {
+public class ProgramStatusRegister extends Register {
 
     public void setN(boolean value) {
         this.set(31, value);

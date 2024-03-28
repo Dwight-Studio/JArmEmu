@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.oasm.inst;
 
 import fr.dwightstudio.jarmemu.asm.exception.BreakpointASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

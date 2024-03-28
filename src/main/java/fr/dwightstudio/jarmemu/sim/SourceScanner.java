@@ -29,7 +29,7 @@ import java.util.Arrays;
 
 public class SourceScanner {
 
-    private int currentInstructionValue;
+    private int lineNumber;
     private final ArrayList<String> code;
     private final int fileIndex;
     private final String fileName;
@@ -38,41 +38,41 @@ public class SourceScanner {
         this.code = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new FileReader(file));
         code.addAll(reader.lines().toList());
-        this.currentInstructionValue = -1;
+        this.lineNumber = -1;
         this.fileIndex = fileIndex;
         fileName = file.getName();
     }
 
     public SourceScanner(String code, String fileName, int fileIndex) {
         this.code = new ArrayList<>(Arrays.stream(code.split("\n")).toList());
-        this.currentInstructionValue = -1;
+        this.lineNumber = -1;
         this.fileIndex = fileIndex;
         this.fileName = fileName;
     }
 
     public String nextLine() {
-        this.currentInstructionValue++;
-        return this.code.get(this.currentInstructionValue);
+        this.lineNumber++;
+        return this.code.get(this.lineNumber);
     }
 
     public boolean hasNextLine() {
-        return this.currentInstructionValue < this.code.size() - 1;
+        return this.lineNumber < this.code.size() - 1;
     }
 
     public void goTo(int lineNb) {
-        this.currentInstructionValue = lineNb;
+        this.lineNumber = lineNb;
     }
 
     /**
      * Déplace le curseur de lecture à la ligne spécifiée. Attention, invalide le comptage d'instruction !
      */
     public String goToValue(int lineNb) {
-        this.currentInstructionValue = lineNb;
-        return this.code.get(this.currentInstructionValue);
+        this.lineNumber = lineNb;
+        return this.code.get(this.lineNumber);
     }
 
-    public int getCurrentInstructionValue() {
-        return this.currentInstructionValue;
+    public int getLineNumber() {
+        return this.lineNumber;
     }
 
     public String exportCode() {

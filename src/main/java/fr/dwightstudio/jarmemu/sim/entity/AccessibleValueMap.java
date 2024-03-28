@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.obj;
+package fr.dwightstudio.jarmemu.sim.entity;
 
 import fr.dwightstudio.jarmemu.util.MapUtils;
 import org.jetbrains.annotations.NotNull;

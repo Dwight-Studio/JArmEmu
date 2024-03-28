@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public interface Contextualized {
 

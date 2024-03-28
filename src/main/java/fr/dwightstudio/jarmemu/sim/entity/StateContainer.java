@@ -21,7 +21,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.obj;
+package fr.dwightstudio.jarmemu.sim.entity;
 
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
@@ -55,19 +55,19 @@ public class StateContainer {
     // ASM
     private final ArrayList<HashMap<String, Integer>> consts; // Indice de fichier -> Nom -> Constantes
     private final ArrayList<HashMap<String, Integer>> data; // Indice de fichier -> Nom -> Données ajoutées dans la mémoire par directive
-    private final HashMap<String, Integer> pseudoData; // Code -> Données ajoutées dans la mémoire par pseudo-op
     private final ArrayList<HashMap<String, Integer>> labels; // Indice de fichier -> Label -> Position dans la mémoire
     private final HashMap<String, Integer> globals; // Symbols globaux -> Indice de fichier
     private int nestingCount;
     private int lastAddressROData;
+    private int firstAddressPseudoInstruction;
     private FilePos currentfilePos; // Position dans la mémoire et fichier en cours de lecture
     private Integer addressRegisterUpdateValue;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
     private final Register[] registers;
-    private final PSR cpsr;
-    private final PSR spsr;
+    private final ProgramStatusRegister cpsr;
+    private final ProgramStatusRegister spsr;
 
     // Memory
     private final MemoryAccessor memory;
@@ -82,14 +82,15 @@ public class StateContainer {
         labels = new ArrayList<>();
         consts = new ArrayList<>();
         data = new ArrayList<>();
-        pseudoData = new HashMap<>();
         globals = new HashMap<>();
         nestingCount = 0;
         lastAddressROData = 0;
+        firstAddressPseudoInstruction = 0;
+        currentfilePos = new FilePos(0, 0);
 
         // Initializing registers
-        cpsr = new PSR();
-        spsr = new PSR();
+        cpsr = new ProgramStatusRegister();
+        spsr = new ProgramStatusRegister();
 
         this.registers = new Register[REGISTER_NUMBER];
         clearRegisters();
@@ -112,7 +113,6 @@ public class StateContainer {
         stateContainer.labels.forEach(map -> this.labels.add(new HashMap<>(map)));
         stateContainer.data.forEach(map -> this.data.add(new HashMap<>(map)));
 
-        this.pseudoData.putAll(stateContainer.pseudoData);
         this.globals.putAll(stateContainer.globals);
         this.currentfilePos = new FilePos(stateContainer.currentfilePos);
 
@@ -122,6 +122,9 @@ public class StateContainer {
 
         cpsr.setData(stateContainer.getCPSR().getData());
         spsr.setData(stateContainer.spsr.getData());
+
+        stateContainer.lastAddressROData = lastAddressROData;
+        stateContainer.firstAddressPseudoInstruction = firstAddressPseudoInstruction;
     }
 
     public void clearRegisters() {
@@ -319,8 +322,22 @@ public class StateContainer {
         return lastAddressROData;
     }
 
-    public void setLastAddressROData(int lastAddressROData) {
-        this.lastAddressROData = lastAddressROData;
+    /**
+     * Fixe la dernière adresse de la plage de lecture seule à partir de la position courante
+     */
+    public void closeReadOnlyRange() {
+        this.lastAddressROData = currentfilePos.getPos();
+    }
+
+    public int getFirstAddressPIData() {
+        return firstAddressPseudoInstruction;
+    }
+
+    /**
+     * Fixe la première adresse de la plage d'allocation pour les pseudo-instructions à partir de la position courante
+     */
+    public void startPseudoInstructionAllocation() {
+        this.firstAddressPseudoInstruction = currentfilePos.getPos();
     }
 
     /**
@@ -342,13 +359,6 @@ public class StateContainer {
      */
     public HashMap<String, Integer> getRestrainedData() {
         return data.get(currentfilePos.getFileIndex());
-    }
-
-    /**
-     * @return les pseudo données générées par directive (tous fichiers confondus)
-     */
-    public HashMap<String, Integer> getPseudoData() {
-        return pseudoData;
     }
 
     /**
@@ -397,19 +407,12 @@ public class StateContainer {
     }
 
     /**
-     * Modifie le fichier courant.
+     * Retourne la position courante (indice de fichier / adresse mémoire), utilisé lors de la construction du conteneur d'état
      *
-     * @param i l'indice du fichier courant
+     * @return la position courante
      */
-    public void setFileIndex(int i) {
-        currentfilePos.setFileIndex(i);
-    }
-
-    /**
-     * @return l'indice du fichier courant
-     */
-    public int getCurrentFileIndex() {
-        return currentfilePos.getFileIndex();
+    public FilePos getCurrentFilePos() {
+        return currentfilePos;
     }
 
     public Register getRegister(int i) {
@@ -436,11 +439,11 @@ public class StateContainer {
         return registers[RegisterUtils.LR.getN()];
     }
 
-    public PSR getCPSR() {
+    public ProgramStatusRegister getCPSR() {
         return cpsr;
     }
 
-    public PSR getSPSR() {
+    public ProgramStatusRegister getSPSR() {
         return spsr;
     }
 
