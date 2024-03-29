@@ -142,10 +142,8 @@ public class CodeInterpreter {
      */
     public ASMException[] initiate(int stackAddress, int symbolsAddress) {
         logger.info("Initiating state container");
-        new StateContainer(stackAddress, symbolsAddress);
-        ASMException[] rtn = codePreparator.initiate(stateContainer);
-        initialState = new StateContainer(stateContainer);
-        return rtn;
+        initialState = new StateContainer(stackAddress, symbolsAddress);
+        return codePreparator.initiate(initialState);
     }
 
     private Register getPC() {

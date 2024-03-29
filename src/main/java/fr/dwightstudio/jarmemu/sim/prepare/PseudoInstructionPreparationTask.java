@@ -30,13 +30,17 @@ import fr.dwightstudio.jarmemu.asm.instruction.PseudoInstruction;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 public class PseudoInstructionPreparationTask extends InstructionPreparationTask {
+
+    private static final Logger logger = Logger.getLogger(PseudoInstructionPreparationTask.class.getName());
     protected PseudoInstructionPreparationTask(PreparationStream stream) {
         super(stream);
     }
 
     public PreparationStream allocate(StateContainer container) throws ASMException {
+        logger.info("Allocating for Pseudo-Instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof PseudoInstruction ins) {
                 if (test((ParsedInstruction<?, ?, ?, ?>) ins)) ins.allocate(container);
@@ -46,6 +50,7 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
     }
 
     public PreparationStream generate(StateContainer container) throws ASMException {
+        logger.info("Generating Pseudo-Instructions" + getDescription());
         ArrayList<ParsedObject> objects = new ArrayList<>();
         for (ParsedObject obj : stream.file) {
             if (obj instanceof PseudoInstruction ins) {

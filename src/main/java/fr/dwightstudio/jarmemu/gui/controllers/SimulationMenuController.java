@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 
 import java.util.logging.Logger;
 
@@ -95,6 +96,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().memoryOverviewPane.setDisable(false);
                 getController().labelsPane.setDisable(false);
                 getController().symbolsPane.setDisable(false);
+
+                getExecutionWorker().restart();
 
                 application.status.set(Status.SIMULATING);
             }

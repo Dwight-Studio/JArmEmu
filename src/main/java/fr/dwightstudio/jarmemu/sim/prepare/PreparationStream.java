@@ -26,7 +26,11 @@ package fr.dwightstudio.jarmemu.sim.prepare;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
+import java.util.logging.Logger;
+
 public class PreparationStream {
+
+    private static final Logger logger = Logger.getLogger(PreparationStream.class.getName());
 
     protected final ParsedFile file;
 
@@ -47,17 +51,20 @@ public class PreparationStream {
     }
 
     public PreparationStream closeReadOnlyRange(StateContainer stateContainer) {
+        logger.info("Setting read only range ending address to " + stateContainer.getCurrentFilePos());
         stateContainer.closeReadOnlyRange();
         return this;
     }
 
     public PreparationStream startPseudoInstructionAllocation(StateContainer stateContainer) {
+        logger.info("Setting Pseudo-Instruction allocation starting address to " + stateContainer.getCurrentFilePos());
         stateContainer.startPseudoInstructionAllocation();
         return this;
     }
 
     public PreparationStream resetPos(StateContainer stateContainer) {
-        stateContainer.getCurrentFilePos().setPos(0);
+        logger.info("Resetting state data pointer");
+        stateContainer.getCurrentFilePos().setPos(stateContainer.getSymbolsAddress());
         return this;
     }
 }

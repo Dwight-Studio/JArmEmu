@@ -78,18 +78,18 @@ public class CodePreparator {
         instructionMemory = new ArrayList<>();
         instructionPosition = new ArrayList<>();
 
-        int lastNum = 0;
+        int lastMem = 0;
 
         for (ParsedFile file : parsedFiles) {
             for (ParsedObject obj : file) {
                 try {
                     if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                         instructionMemory.add(ins);
-                        lastNum = ins.getLineNumber();
-                        instructionPosition.add(new FilePos(file.getIndex(), lastNum).freeze());
+                        lastMem = instructionMemory.size();
+                        instructionPosition.add(new FilePos(file.getIndex(), ins.getLineNumber()).freeze());
                     } else if (obj instanceof ParsedLabel label) {
                         if (label.getSection() == Section.TEXT) {
-                            label.register(stateContainer, new FilePos(file.getIndex(), lastNum).freeze());
+                            label.register(stateContainer, new FilePos(file.getIndex(), lastMem).freeze());
                         }
                     }
                 } catch (ASMException e) {
@@ -107,7 +107,7 @@ public class CodePreparator {
         }
 
         if (!stateContainer.getGlobals().contains("_END")) {
-            FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastNum);
+            FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastMem);
             stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
             stateContainer.addGlobal("_END", parsedFiles.size() - 1);
             logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());

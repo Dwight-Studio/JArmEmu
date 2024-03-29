@@ -621,7 +621,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void attachControllers() {
             application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
             application.getMemoryDetailsController().attach(application.getCodeInterpreter().stateContainer);
-            application.getMemoryOverviewController().attach(application.getCodeInterpreter().getStateContainer());
+            application.getMemoryOverviewController().attach(application.getCodeInterpreter().stateContainer);
             application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
             application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
         }

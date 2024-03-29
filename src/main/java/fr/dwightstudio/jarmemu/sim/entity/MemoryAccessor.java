@@ -34,11 +34,11 @@ import java.util.HashSet;
 public class MemoryAccessor {
 
     private final HashMap<Integer, IntegerProperty> memory;
-    private final HashSet<Integer> initiationMap;
+    private final HashSet<Integer> initiationSet;
 
     public MemoryAccessor() {
         memory = new HashMap<>();
-        initiationMap = new HashSet<>();
+        initiationSet = new HashSet<>();
     }
 
     public byte getByte(int add) {
@@ -80,7 +80,7 @@ public class MemoryAccessor {
 
         buffer.put(rAdd, b);
         property.set(buffer.getInt(0));
-        initiationMap.add(add);
+        initiationSet.add(add);
     }
 
     public void putHalf(int add, short s) {
@@ -106,7 +106,7 @@ public class MemoryAccessor {
     }
 
     public boolean isByteInitiated(int address) {
-        return initiationMap.contains(address);
+        return initiationSet.contains(address);
     }
 
     public boolean isHalfInitiated(int address) {
@@ -128,4 +128,7 @@ public class MemoryAccessor {
         }
     }
 
+    public void putAll(MemoryAccessor acc) {
+        acc.initiationSet.forEach(add -> putByte(add, acc.getByte(add)));
+    }
 }

@@ -30,10 +30,13 @@ import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+
 public class WordDirective extends ParsedDirective {
 
     private final String[] arg;
     private final int[] intArray;
+    private FilePos tempPos;
 
     public WordDirective(Section section, @NotNull String args) throws SyntaxASMException {
         super(section, args);
@@ -59,7 +62,7 @@ public class WordDirective extends ParsedDirective {
 
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
-        FilePos tempPos = stateContainer.getCurrentFilePos().clone();
+        tempPos = stateContainer.getCurrentFilePos().clone();
         for (int i : intArray) {
             stateContainer.getMemory().putWord(tempPos.getPos(), i);
             tempPos.incrementPos(4);
@@ -75,5 +78,9 @@ public class WordDirective extends ParsedDirective {
     @Override
     public boolean isContextBuilder() {
         return false;
+    }
+
+    public FilePos getLastPos() {
+        return tempPos.freeze();
     }
 }

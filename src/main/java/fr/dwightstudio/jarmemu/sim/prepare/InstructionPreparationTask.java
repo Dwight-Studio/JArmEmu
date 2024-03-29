@@ -32,8 +32,11 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class InstructionPreparationTask extends PreparationTask<ParsedInstruction<?, ?, ?, ?>> {
+
+    private static final Logger logger = Logger.getLogger(InstructionPreparationTask.class.getName());
 
     private Boolean modifyPC;
     private Boolean workingRegister;
@@ -50,6 +53,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
 
     @Override
     public PreparationStream contextualize(StateContainer container) throws ASMException {
+        logger.info("Contextualizing instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                 if (test(ins)) ins.contextualize(container);
@@ -60,6 +64,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
 
     @Override
     public PreparationStream verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        logger.info("Verifying instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                 if (test(ins)) ins.verify(stateSupplier);
@@ -70,6 +75,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
 
     @Override
     public PreparationStream perform(Consumer<ParsedInstruction<?, ?, ?, ?>> consumer) {
+        logger.info("Performing operation on instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                 if (test(ins)) consumer.accept(ins);
@@ -88,6 +94,28 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         if (ifTrue != null && !ifTrue.test(ins)) return false;
 
         return true;
+    }
+
+    protected String getDescription() {
+        StringBuilder builder = new StringBuilder();
+
+        if (generated != null) builder.append(" which are ").append(generated ? "generated" : "not generated");
+
+        if (modifyPC != null) {
+            if (generated != null) builder.append(" and ");
+            else builder.append(" which ");
+            builder.append(modifyPC ? "do modify PC" : "don't modify PC");
+        }
+
+        if (workingRegister != null) {
+            if (generated != null | modifyPC != null) builder.append(" and ");
+            else builder.append(" which ");
+            builder.append(workingRegister ? "have working register" : "haven't working register");
+        }
+
+        if (ifTrue != null) builder.append(" (filtered by condition)");
+
+        return builder.toString();
     }
 
     public InstructionPreparationTask doModifyPC(boolean b) {

@@ -86,7 +86,7 @@ public class StateContainer {
         nestingCount = 0;
         lastAddressROData = 0;
         firstAddressPseudoInstruction = 0;
-        currentfilePos = new FilePos(0, 0);
+        currentfilePos = new FilePos(0, symbolsAddress);
 
         // Initializing registers
         cpsr = new ProgramStatusRegister();
@@ -120,11 +120,14 @@ public class StateContainer {
             registers[i].setData(stateContainer.getRegister(i).getData());
         }
 
-        cpsr.setData(stateContainer.getCPSR().getData());
-        spsr.setData(stateContainer.spsr.getData());
+        this.cpsr.setData(stateContainer.getCPSR().getData());
+        this.spsr.setData(stateContainer.spsr.getData());
 
-        stateContainer.lastAddressROData = lastAddressROData;
-        stateContainer.firstAddressPseudoInstruction = firstAddressPseudoInstruction;
+        this.lastAddressROData = stateContainer.lastAddressROData;
+        this.firstAddressPseudoInstruction = stateContainer.firstAddressPseudoInstruction;
+        this.addressRegisterUpdateValue = stateContainer.addressRegisterUpdateValue;
+
+        this.memory.putAll(stateContainer.memory);
     }
 
     public void clearRegisters() {

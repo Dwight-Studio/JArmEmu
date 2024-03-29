@@ -33,8 +33,11 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
+
+    private static final Logger logger = Logger.getLogger(DirectivePreparationTask.class.getName());
 
     private Section section;
     private Section notSection;
@@ -52,6 +55,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
 
     @Override
     public PreparationStream contextualize(StateContainer container) throws ASMException {
+        logger.info("Contextualizing directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir)) dir.contextualize(container);
@@ -66,6 +70,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
      * @param container le conteneur d'état sur lequel effectuer l'opération
      */
     public PreparationStream execute(StateContainer container) throws ASMException {
+        logger.info("Executing directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir))  {
@@ -83,6 +88,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
      * @param container le conteneur d'état sur lequel effectuer l'opération
      */
     public PreparationStream registerLabels(StateContainer container) throws ASMException {
+        logger.info("Registering labels" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedLabel label) {
                 if (test(label)) label.register(container, container.getCurrentFilePos());
@@ -98,6 +104,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
 
     @Override
     public PreparationStream verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        logger.info("Verifying directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir)) dir.verify(stateSupplier);
@@ -108,6 +115,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
 
     @Override
     public PreparationStream perform(Consumer<ParsedDirective> consumer) {
+        logger.info("Performing operation on directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir)) consumer.accept(dir);
@@ -142,6 +150,26 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         if (ifTrue != null) return false;
 
         return true;
+    }
+
+    protected String getDescription() {
+        StringBuilder builder = new StringBuilder();
+
+        if (section != null) builder.append(" in ").append(section.name());
+
+        if (notSection != null) builder.append(" not in ").append(notSection.name());
+
+        if (generated != null) builder.append(" which are ").append(generated ? "generated" : "not generated");
+
+        if (contextBuilder != null) {
+            if (generated != null) builder.append(" and ");
+            else builder.append(" which are ");
+            builder.append(contextBuilder ? "context builders" : "not context builders");
+        }
+
+        if (ifTrue != null) builder.append(" (filtered by condition)");
+
+        return builder.toString();
     }
 
     public DirectivePreparationTask inSection(Section section) {
