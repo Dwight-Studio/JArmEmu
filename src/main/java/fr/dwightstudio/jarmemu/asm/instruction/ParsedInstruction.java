@@ -33,48 +33,26 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
             this.dataMode = dataMode;
             this.updateMode = updateMode;
 
-            ParsedArgument<A> arg1Temp = null;
-            ParsedArgument<B> arg2Temp = null;
-            ParsedArgument<C> arg3Temp = null;
-            ParsedArgument<D> arg4Temp = null;
+            ParsedArgument<A> arg1Temp;
+            ParsedArgument<B> arg2Temp;
+            ParsedArgument<C> arg3Temp;
+            ParsedArgument<D> arg4Temp;
 
             try {
-                if (arg1 != null) {
-                    arg1Temp = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg1);
-                }
-
-                if (arg2 != null) {
-                    arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
-                }
-
-                if (arg3 != null) {
-                    arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
-                }
-
-                if (arg4 != null) {
-                    arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
-                }
+                arg1Temp = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg1);
+                arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
+                arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
+                arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
             } catch (InvocationTargetException exception) {
                 if (hasWorkingRegister()) {
                     arg4 = arg3;
                     arg3 = arg2;
                     arg2 = arg1;
 
-                    if (arg1 != null) {
-                        arg1Temp = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg1);
-                    }
-
-                    if (arg1 != null) {
-                        arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
-                    }
-
-                    if (arg3 != null) {
-                        arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
-                    }
-
-                    if (arg4 != null) {
-                        arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
-                    }
+                    arg1Temp = getParsedArg1Class().getDeclaredConstructor(String.class).newInstance(arg1);
+                    arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
+                    arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
+                    arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
                 } else {
                     if (exception.getCause() instanceof ASMException ex) throw ex;
                     throw new RuntimeException(exception.getTargetException());
@@ -112,10 +90,10 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
                 this.execute(
                         stateContainer,
                         forceExecution,
-                        arg1 != null ? arg1.getValue(stateContainer) : null,
-                        arg2 != null ? arg2.getValue(stateContainer) : null,
-                        arg3 != null ? arg3.getValue(stateContainer) : null,
-                        arg4 != null ? arg4.getValue(stateContainer) : null
+                        arg1.getValue(stateContainer),
+                        arg2.getValue(stateContainer),
+                        arg3.getValue(stateContainer),
+                        arg4.getValue(stateContainer)
                 );
         }
     }
@@ -136,20 +114,13 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
      * @param stateContainer le conteneur d'état initial
      */
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        if (arg1 != null) {
+        try {
             arg1.contextualize(stateContainer);
-        }
-
-        if (arg2 != null) {
             arg2.contextualize(stateContainer);
-        }
-
-        if (arg3 != null) {
             arg3.contextualize(stateContainer);
-        }
-
-        if (arg4 != null) {
             arg4.contextualize(stateContainer);
+        } catch (ASMException exception) {
+            throw exception.with(getLineNumber()).with(this).with(getFile());
         }
     }
 
@@ -160,28 +131,17 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     @Override
     public final void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         try {
-            if (arg1 != null) {
-                arg1.verify(stateSupplier);
-            }
-
-            if (arg2 != null) {
-                arg2.verify(stateSupplier);
-            }
-
-            if (arg3 != null) {
-                arg3.verify(stateSupplier);
-            }
-
-            if (arg4 != null) {
-                arg4.verify(stateSupplier);
-            }
+            arg1.verify(stateSupplier);
+            arg2.verify(stateSupplier);
+            arg3.verify(stateSupplier);
+            arg4.verify(stateSupplier);
 
             StateContainer stateContainer = stateSupplier.get();
             this.verify(stateContainer,
-                    arg1 != null ? arg1.getValue(stateContainer) : null,
-                    arg2 != null ? arg2.getValue(stateContainer) : null,
-                    arg3 != null ? arg3.getValue(stateContainer) : null,
-                    arg4 != null ? arg4.getValue(stateContainer) : null
+                    arg1.getValue(stateContainer),
+                    arg2.getValue(stateContainer),
+                    arg3.getValue(stateContainer),
+                    arg4.getValue(stateContainer)
             );
         } catch (ASMException exception) {
             throw exception.with(this);

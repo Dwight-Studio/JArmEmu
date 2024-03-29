@@ -11,8 +11,10 @@ public class ImmediateArgument extends ParsedArgument<Integer> {
 
     private int value;
 
-    public ImmediateArgument(String originalString) {
+    public ImmediateArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
+
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingValue"));
     }
 
     @Override
@@ -39,10 +41,5 @@ public class ImmediateArgument extends ParsedArgument<Integer> {
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return value;
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingValue"));
     }
 }

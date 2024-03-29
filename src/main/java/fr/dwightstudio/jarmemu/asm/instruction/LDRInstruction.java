@@ -6,15 +6,14 @@ import fr.dwightstudio.jarmemu.asm.directive.WordDirective;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.MemoryAccessMisalignedASMException;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
-import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> implements PseudoInstruction {
-    private static final Pattern PSEUDO_OP_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]\\{\\}]+)");
+    private static final Pattern PSEUDO_INS_PATTERN = Pattern.compile("=(?<VALUE>[^\n\\[\\]{}]+)");
 
     public LDRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
@@ -93,8 +92,9 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     public ParsedObject generate(StateContainer container) throws ASMException {
-        MatchResult matchResult = PSEUDO_OP_PATTERN.matcher(arg2.getOriginalString()).toMatchResult();
-        int value = container.evalWithAccessible(matchResult.group("VALUE"));
+        Matcher matcher = PSEUDO_INS_PATTERN.matcher(arg2.getOriginalString());
+        if (!matcher.find()) throw new IllegalStateException("Can't find Pseudo-Instruction");
+        int value = container.evalWithAccessible(matcher.group("VALUE"));
         WordDirective dir = new WordDirective(Section.RODATA, Integer.toString(value));
         dir.setGenerated();
         dir.setLineNumber(this.getLineNumber());

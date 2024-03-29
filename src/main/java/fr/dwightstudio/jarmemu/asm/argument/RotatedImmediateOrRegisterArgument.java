@@ -17,48 +17,53 @@ public class RotatedImmediateOrRegisterArgument extends ParsedArgument<Integer> 
     public RotatedImmediateOrRegisterArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
-        immediate = originalString.startsWith("#") || originalString.startsWith("=") || originalString.startsWith("*");
+        if (originalString != null) {
+            immediate = originalString.startsWith("#") || originalString.startsWith("=") || originalString.startsWith("*");
 
-        if (immediate) {
-            immediateArgument = new RotatedImmediateArgument(originalString);
-        } else {
-            registerArgument = new RegisterArgument(originalString);
+            if (immediate) {
+                immediateArgument = new RotatedImmediateArgument(originalString);
+            } else {
+                registerArgument = new RegisterArgument(originalString);
+            }
         }
     }
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        if (immediate) {
-            immediateArgument.contextualize(stateContainer);
-        } else {
-            registerArgument.contextualize(stateContainer);
+        if (originalString != null) {
+            if (immediate) {
+                immediateArgument.contextualize(stateContainer);
+            } else {
+                registerArgument.contextualize(stateContainer);
+            }
         }
     }
 
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
-        if (immediate) {
-            stateContainer.setAddressRegisterUpdateValue(immediateArgument.getValue(stateContainer));
-            return immediateArgument.getValue(stateContainer);
+        if (originalString != null) {
+            if (immediate) {
+                stateContainer.setAddressRegisterUpdateValue(immediateArgument.getValue(stateContainer));
+                return immediateArgument.getValue(stateContainer);
+            } else {
+                stateContainer.setAddressRegisterUpdateValue(registerArgument.getValue(stateContainer).getData());
+                return registerArgument.getValue(stateContainer).getData();
+            }
         } else {
-            stateContainer.setAddressRegisterUpdateValue(registerArgument.getValue(stateContainer).getData());
-            return registerArgument.getValue(stateContainer).getData();
+            return 0; // FIXME: Pas sûr de ça, est-ce que cela pose un problème si il n'y a pas d'argument?
         }
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        return 0; // FIXME: Pas sûr de ça, est-ce que cela pose un problème si il n'y a pas d'argument?
     }
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        if (immediate) {
-            immediateArgument.verify(stateSupplier);
-        } else {
-            registerArgument.verify(stateSupplier);
-        }
+        if (originalString != null) {
+            if (immediate) {
+                immediateArgument.verify(stateSupplier);
+            } else {
+                registerArgument.verify(stateSupplier);
+            }
 
-        super.verify(stateSupplier);
+            super.verify(stateSupplier);
+        }
     }
 }

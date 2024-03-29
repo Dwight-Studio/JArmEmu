@@ -11,8 +11,11 @@ import java.util.function.Supplier;
 
 public class LabelArgument extends ParsedArgument<Integer> {
 
-    public LabelArgument(String originalString) {
-        super(originalString);
+    public LabelArgument(String originalString) throws BadArgumentASMException {
+        super(originalString.strip().toUpperCase());
+
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingLabel"));
+
     }
 
     @Override
@@ -23,11 +26,6 @@ public class LabelArgument extends ParsedArgument<Integer> {
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return stateContainer.getAccessibleLabels().get(originalString);
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingLabel"));
     }
 
     @Override

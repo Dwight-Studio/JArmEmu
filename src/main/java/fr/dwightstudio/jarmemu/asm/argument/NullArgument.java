@@ -10,7 +10,7 @@ public class NullArgument extends ParsedArgument<Object> {
     public NullArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
 
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpected", originalString));
+        if (originalString != null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpected", originalString));
     }
 
     @Override
@@ -20,11 +20,6 @@ public class NullArgument extends ParsedArgument<Object> {
 
     @Override
     public Object getValue(StateContainer stateContainer) throws ExecutionASMException {
-        return null;
-    }
-
-    @Override
-    public Object getNullValue() throws BadArgumentASMException {
         return null;
     }
 

@@ -41,7 +41,7 @@ public class ParsedLabel extends ParsedObject {
 
     public ParsedLabel(Section section, String name) {
         this.section = section;
-        this.name = name;
+        this.name = name.strip().toUpperCase();
     }
 
     /**
@@ -52,10 +52,10 @@ public class ParsedLabel extends ParsedObject {
      */
     public void register(StateContainer stateContainer, FilePos pos) throws ASMException {
         if (section != Section.TEXT) {
-            stateContainer.getAccessibleData().put(name.strip().toUpperCase(), pos.getPos());
+            stateContainer.getAccessibleData().put(name, pos.getPos());
         } else {
             this.memoryPos = pos.freeze();
-            if (stateContainer.getAccessibleLabels().put(name.strip().toUpperCase(), this.memoryPos.toByteValue()) != null)
+            if (stateContainer.getAccessibleLabels().put(name, this.memoryPos.toByteValue()) != null)
                 throw new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
         }
     }
@@ -64,7 +64,7 @@ public class ParsedLabel extends ParsedObject {
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         StateContainer container = stateSupplier.get();
 
-        if (container.getRestrainedLabels().get(this.name.toUpperCase()) == null) {
+        if (container.getRestrainedLabels().get(this.name) == null) {
             throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
         } else if (container.getRestrainedLabels().get(this.name) != this.memoryPos.toByteValue()) {
             throw new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
@@ -114,5 +114,9 @@ public class ParsedLabel extends ParsedObject {
 
     public Section getSection() {
         return section;
+    }
+
+    public String getName() {
+        return this.name;
     }
 }

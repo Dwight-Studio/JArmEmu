@@ -570,9 +570,9 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                         attachControllers();
                         application.getEditorController().prepareSimulation();
                         updateGUI();
-                        Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors2));
-                    } else {
                         Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(null));
+                    } else {
+                        Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors2));
                     }
                 } else {
                     Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors1));

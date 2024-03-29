@@ -55,4 +55,9 @@ public class PreparationStream {
         stateContainer.startPseudoInstructionAllocation();
         return this;
     }
+
+    public PreparationStream resetPos(StateContainer stateContainer) {
+        stateContainer.getCurrentFilePos().setPos(0);
+        return this;
+    }
 }

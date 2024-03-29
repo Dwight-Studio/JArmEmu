@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInteger> {
 
-    private int mode;
+    private final int mode;
     private boolean updateNow;
     private RegisterArgument registerArgument1;
 
@@ -24,66 +24,72 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     public AddressArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
-        String string = originalString;
+        if (originalString != null) {
+            String string = originalString;
 
-        if (originalString.startsWith("=")) {
-            mode = 1;
-            return;
-        } else if (!originalString.startsWith("[")) {
-            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
-        }
-
-        updateNow = string.endsWith("!");
-
-        if (updateNow) string = string.substring(0, string.length() - 1);
-
-        if (string.endsWith("]")) {
-            String mem = string.substring(1, string.length() - 1);
-            String[] mems = mem.split(",");
-
-            mems = Arrays.stream(mems).map(String::strip).toArray(String[]::new);
-
-            registerArgument1 = new RegisterArgument(mems[0]);
-
-            if (mems.length == 1) {
-                mode = 2;
-
-            } else if (mems.length == 2) {
-                if (mems[1].startsWith("#")) {
-                    immediateArgument = new ImmediateArgument(mems[1]);
-                    mode = 3;
-                } else {
-                    registerArgument2 = new RegisterArgument(mems[1]);
-                    mode = 4;
-                }
-
-            } else if (mems.length == 3) {
-                shiftArgument = new ShiftArgument(mems[2]);
-                registerArgument2 = new RegisterArgument(mems[1]);
-                mode = 5;
-            } else {
+            if (originalString.startsWith("=")) {
+                mode = 1;
+                return;
+            } else if (!originalString.startsWith("[")) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
             }
 
+            updateNow = string.endsWith("!");
+
+            if (updateNow) string = string.substring(0, string.length() - 1);
+
+            if (string.endsWith("]")) {
+                String mem = string.substring(1, string.length() - 1);
+                String[] mems = mem.split(",");
+
+                mems = Arrays.stream(mems).map(String::strip).toArray(String[]::new);
+
+                registerArgument1 = new RegisterArgument(mems[0]);
+
+                if (mems.length == 1) {
+                    mode = 2;
+
+                } else if (mems.length == 2) {
+                    if (mems[1].startsWith("#")) {
+                        immediateArgument = new ImmediateArgument(mems[1]);
+                        mode = 3;
+                    } else {
+                        registerArgument2 = new RegisterArgument(mems[1]);
+                        mode = 4;
+                    }
+
+                } else if (mems.length == 3) {
+                    shiftArgument = new ShiftArgument(mems[2]);
+                    registerArgument2 = new RegisterArgument(mems[1]);
+                    mode = 5;
+                } else {
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
+                }
+
+            } else {
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
+            }
         } else {
-            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
+            throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingAddress"));
         }
     }
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        registerArgument1.contextualize(stateContainer);
+        if (mode != 1) {
+            registerArgument1.contextualize(stateContainer);
 
-        if (immediateArgument != null) {
-            immediateArgument.contextualize(stateContainer);
-        }
+            if (immediateArgument != null) {
+                immediateArgument.contextualize(stateContainer);
+            }
 
-        if (registerArgument2 != null) {
-            registerArgument2.contextualize(stateContainer);
-        }
+            if (registerArgument2 != null) {
+                registerArgument2.contextualize(stateContainer);
+            }
 
-        if (shiftArgument != null) {
-            shiftArgument.contextualize(stateContainer);
+            if (shiftArgument != null) {
+                shiftArgument.contextualize(stateContainer);
+            }
         }
     }
 
@@ -133,24 +139,21 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     }
 
     @Override
-    public AddressArgument.UpdatableInteger getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingAddress"));
-    }
-
-    @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        registerArgument1.verify(stateSupplier);
+        if (mode != 1) {
+            registerArgument1.verify(stateSupplier);
 
-        if (immediateArgument != null) {
-            immediateArgument.verify(stateSupplier);
-        }
+            if (immediateArgument != null) {
+                immediateArgument.verify(stateSupplier);
+            }
 
-        if (registerArgument2 != null) {
-            registerArgument2.verify(stateSupplier);
-        }
+            if (registerArgument2 != null) {
+                registerArgument2.verify(stateSupplier);
+            }
 
-        if (shiftArgument != null) {
-            shiftArgument.verify(stateSupplier);
+            if (shiftArgument != null) {
+                shiftArgument.verify(stateSupplier);
+            }
         }
 
         super.verify(stateSupplier);

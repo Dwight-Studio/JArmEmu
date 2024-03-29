@@ -11,8 +11,10 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
 
     private int value;
 
-    public RotatedImmediateArgument(String originalString) {
+    public RotatedImmediateArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
+
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRotatedValue"));
     }
 
     @Override
@@ -37,11 +39,6 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return value;
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRotatedValue"));
     }
 
     private void checkOverflow(int value, String string) throws SyntaxASMException {

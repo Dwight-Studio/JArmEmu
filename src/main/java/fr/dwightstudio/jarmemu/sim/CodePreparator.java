@@ -75,29 +75,42 @@ public class CodePreparator {
         ArrayList<ASMException> exceptions = new ArrayList<>();
 
         // Constitution de la mémoire de programme
-        if (!exceptions.isEmpty()) {
-            instructionMemory = new ArrayList<>();
-            instructionPosition = new ArrayList<>();
+        instructionMemory = new ArrayList<>();
+        instructionPosition = new ArrayList<>();
 
-            int lastNum = 0;
+        int lastNum = 0;
 
-            for (ParsedFile file : parsedFiles) {
-                for (ParsedObject obj : file) {
-                    try {
-                        if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                            instructionMemory.add(ins);
-                            lastNum = ins.getLineNumber();
-                            instructionPosition.add(new FilePos(file.getIndex(), lastNum).freeze());
-                        } else if (obj instanceof ParsedLabel label) {
-                            if (label.getSection() == Section.TEXT) {
-                                label.register(stateContainer, new FilePos(file.getIndex(), lastNum).freeze());
-                            }
+        for (ParsedFile file : parsedFiles) {
+            for (ParsedObject obj : file) {
+                try {
+                    if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
+                        instructionMemory.add(ins);
+                        lastNum = ins.getLineNumber();
+                        instructionPosition.add(new FilePos(file.getIndex(), lastNum).freeze());
+                    } else if (obj instanceof ParsedLabel label) {
+                        if (label.getSection() == Section.TEXT) {
+                            label.register(stateContainer, new FilePos(file.getIndex(), lastNum).freeze());
                         }
-                    } catch (ASMException e) {
-                        exceptions.add(e);
                     }
+                } catch (ASMException e) {
+                    exceptions.add(e);
                 }
             }
+        }
+
+        // Ajout des labels _START et _END
+
+        if (!stateContainer.getGlobals().contains("_START")) {
+            stateContainer.getLabelsInFiles().getFirst().put("_START", 0);
+            stateContainer.addGlobal("_START", 0);
+            logger.info("Can't find label '_START', setting one at 0");
+        }
+
+        if (!stateContainer.getGlobals().contains("_END")) {
+            FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastNum);
+            stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
+            stateContainer.addGlobal("_END", parsedFiles.size() - 1);
+            logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());
         }
 
         // Suppression des directives générées
@@ -116,16 +129,18 @@ public class CodePreparator {
             try {
                 new PreparationStream(file)
                         .forDirectives().isContextBuilder(true).contextualize(stateContainer)
+                        .forDirectives().notInSection(Section.TEXT).registerLabels(stateContainer)
+                        .resetPos(stateContainer)
                         .forDirectives().isContextBuilder(false).contextualize(stateContainer)
-                        .forDirectives().inSection(Section.RODATA).executeAndRegisterLabels(stateContainer)
+                        .forDirectives().inSection(Section.RODATA).execute(stateContainer)
                         .startPseudoInstructionAllocation(stateContainer)
                         .forPseudoInstructions().allocate(stateContainer)
                         .closeReadOnlyRange(stateContainer)
-                        .forDirectives().inSection(Section.DATA).executeAndRegisterLabels(stateContainer)
-                        .forDirectives().inSection(Section.BSS).executeAndRegisterLabels(stateContainer)
+                        .forDirectives().inSection(Section.DATA).execute(stateContainer)
+                        .forDirectives().inSection(Section.BSS).execute(stateContainer)
                         .forPseudoInstructions().generate(stateContainer)
                         .forDirectives().isGenerated(true).contextualize(stateContainer)
-                        .forDirectives().isGenerated(true).executeAndRegisterLabels(stateContainer)
+                        .forDirectives().isGenerated(true).execute(stateContainer)
                         .forInstructions().contextualize(stateContainer)
                         .forInstructions().verify(() -> new StateContainer(stateContainer));
             } catch (ASMException exception) {

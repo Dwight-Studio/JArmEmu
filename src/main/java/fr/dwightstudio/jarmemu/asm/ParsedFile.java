@@ -26,10 +26,7 @@ package fr.dwightstudio.jarmemu.asm;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 
@@ -114,24 +111,38 @@ public class ParsedFile implements Collection<ParsedObject> {
         return rtn;
     }
 
+    public ParsedObject[] get(int line) {
+        ArrayList<ParsedObject> rtn = new ArrayList<>();
+        this.forEach(parsedObject -> {
+            if (parsedObject.getFilePos().getPos() == line) rtn.add(parsedObject);
+        });
+
+        return rtn.toArray(new ParsedObject[0]);
+    }
+
     @Override
     public boolean add(ParsedObject parsedObject) {
         if (parsedObject == null) return false;
 
+        parsedObject.setFile(this);
+
         if (content.length <= size) expand();
 
-        for (int i = size++; i >= 0; i--) {
-            if (content[i] != null) {
-                if (parsedObject.getFilePos().compareTo(content[i].getFilePos()) > 0) {
-                    content[i+1] = parsedObject;
-                    break;
-                } else {
-                    content[i+1] = content[i];
+        if (size > 0) {
+            for (int i = size++; i >= 0; i--) {
+                if (content[i] != null) {
+                    if (parsedObject.getFilePos().compareTo(content[i].getFilePos()) > 0) {
+                        content[i + 1] = parsedObject;
+                        break;
+                    } else {
+                        content[i + 1] = content[i];
+                    }
                 }
             }
+        } else {
+            content[0] = parsedObject;
+            size++;
         }
-
-        parsedObject.setFile(this);
 
         return true;
     }
@@ -156,8 +167,8 @@ public class ParsedFile implements Collection<ParsedObject> {
 
         if (i == size - 1 && !content[i].equals(parsedObject)) return false;
 
-        for (int e = i; e < size-1; e++) {
-            content[e] = content[e+1];
+        for (int e = i; e < size - 1; e++) {
+            content[e] = content[e + 1];
         }
 
         return true;

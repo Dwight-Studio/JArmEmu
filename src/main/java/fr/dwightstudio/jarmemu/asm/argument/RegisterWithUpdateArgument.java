@@ -18,6 +18,8 @@ public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdat
     public RegisterWithUpdateArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegister"));
+
         update = false;
 
         String string = originalString;
@@ -38,11 +40,6 @@ public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdat
     @Override
     public UpdatableRegister getValue(StateContainer stateContainer) throws ExecutionASMException {
         return new UpdatableRegister(argument.getValue(stateContainer), update);
-    }
-
-    @Override
-    public UpdatableRegister getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegister"));
     }
 
     @Override

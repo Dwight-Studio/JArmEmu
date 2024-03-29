@@ -16,6 +16,8 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
     public RegisterAddressArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegisterAddress"));
+
         if (originalString.startsWith("[") && originalString.endsWith("]")) {
             String string = originalString.substring(1, originalString.length()-1).strip();
             argument = new RegisterArgument(string);
@@ -32,11 +34,6 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return argument.getValue(stateContainer).getData();
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegisterAddress"));
     }
 
     @Override

@@ -17,6 +17,8 @@ public class RegisterArgument extends ParsedArgument<Register> {
     public RegisterArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegister"));
+
         registerReference = switch (originalString.toUpperCase()) {
             case "R0" -> stateContainer -> stateContainer.getRegister(0);
             case "R1" -> stateContainer -> stateContainer.getRegister(1);
@@ -48,10 +50,5 @@ public class RegisterArgument extends ParsedArgument<Register> {
     @Override
     public Register getValue(StateContainer stateContainer) throws ExecutionASMException {
         return registerReference.apply(stateContainer);
-    }
-
-    @Override
-    public Register getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegister"));
     }
 }

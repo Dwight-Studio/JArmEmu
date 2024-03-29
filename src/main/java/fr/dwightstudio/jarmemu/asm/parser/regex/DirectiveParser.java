@@ -87,8 +87,8 @@ public class DirectiveParser {
                     throw new SyntaxASMException("Unknown section '" + sectionString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
                 }
             } else if (labelString != null && !labelString.isEmpty()) {
-                rtn = true;
                 if (parser.currentSection.shouldParseDirective()) {
+                    rtn = true;
                     parsedFile.add(new ParsedLabel(parser.currentSection, labelString.strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
                 }
             } else if (directiveString != null && !directiveString.isEmpty()) {

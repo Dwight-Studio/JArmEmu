@@ -22,6 +22,8 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
     public RegisterArrayArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegisterArray"));
+
         if (originalString.startsWith("{") && originalString.endsWith("}")) {
             arguments = new ArrayList<>();
 
@@ -66,11 +68,6 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
         }
 
         return rtn.toArray(new Register[0]);
-    }
-
-    @Override
-    public Register[] getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegisterArray"));
     }
 
     @Override

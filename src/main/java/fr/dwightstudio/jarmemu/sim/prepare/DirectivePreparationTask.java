@@ -82,11 +82,13 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
      *
      * @param container le conteneur d'état sur lequel effectuer l'opération
      */
-    public PreparationStream executeAndRegisterLabels(StateContainer container) throws ASMException {
+    public PreparationStream registerLabels(StateContainer container) throws ASMException {
         for (ParsedObject obj : stream.file) {
+            if (obj instanceof ParsedLabel label) {
+                if (test(label)) label.register(container, container.getCurrentFilePos());
+            }
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir))  {
-                    dir.execute(container);
                     dir.offsetMemory(container);
                 }
             }

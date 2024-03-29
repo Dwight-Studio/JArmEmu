@@ -63,17 +63,11 @@ public class ASMParser {
             + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)";
 
-    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
-            "(?i)[ \t]*"
-                    + COMPLETE_INSTRUCTION_REGEX
-                    + "[ \t]*$(?-i)"
-    );
-
     private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
 
-    private static final Pattern LABEL_PATTERN = Pattern.compile(
+    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
             "(?i)[ \t]*"
-            + "(?<LABEL>" + LABEL_REGEX + ")[ \t]*:[ \t]*"
+            + "(((?<LABEL>" + LABEL_REGEX + ")[ \t]*:)|)[ \t]*"
             + "((" + COMPLETE_INSTRUCTION_REGEX + ")|)"
             + "[ \t]*$(?-i)"
     );
@@ -96,86 +90,83 @@ public class ASMParser {
         String arg4;
 
         Matcher matcherInst = INSTRUCTION_PATTERN.matcher(line);
-        Matcher matcherLabel = LABEL_PATTERN.matcher(line);
 
         if (matcherInst.find()) {
             String instructionString = matcherInst.group("INSTRUCTION");
-            String conditionString = matcherInst.group("CONDITION");
-            String flagString = matcherInst.group("FLAG");
-            String dataString = matcherInst.group("DATA");
-            String updateString = matcherInst.group("UPDATE");
+            String labelString = matcherInst.group("LABEL");
 
-            arg1 = matcherInst.group("ARG1");
-            arg2 = matcherInst.group("ARG2");
-            arg3 = matcherInst.group("ARG3");
-            arg4 = matcherInst.group("ARG4");
-
-            try {
-                instruction = Instruction.valueOf(instructionString.toUpperCase());
-                System.out.println(instructionString.toUpperCase());
-            } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown instruction '" + instructionString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+            if (labelString != null && !labelString.isEmpty()) {
+                parsedFile.add(new ParsedLabel(parser.currentSection, labelString).withLineNumber(sourceScanner.getLineNumber()));
             }
 
-            try {
-                if (Objects.equals(conditionString, "")) conditionString = null;
-                if (conditionString != null) condition = Condition.valueOf(conditionString.toUpperCase());
-            } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown condition '" + conditionString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+            if (instructionString != null && !instructionString.isEmpty()) {
+                String conditionString = matcherInst.group("CONDITION");
+                String flagString = matcherInst.group("FLAG");
+                String dataString = matcherInst.group("DATA");
+                String updateString = matcherInst.group("UPDATE");
+
+                arg1 = matcherInst.group("ARG1");
+                arg2 = matcherInst.group("ARG2");
+                arg3 = matcherInst.group("ARG3");
+                arg4 = matcherInst.group("ARG4");
+
+                try {
+                    instruction = Instruction.valueOf(instructionString.toUpperCase());
+                } catch (IllegalArgumentException exception) {
+                    throw new SyntaxASMException("Unknown instruction '" + instructionString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                }
+
+                try {
+                    if (Objects.equals(conditionString, "")) conditionString = null;
+                    if (conditionString != null) condition = Condition.valueOf(conditionString.toUpperCase());
+                } catch (IllegalArgumentException exception) {
+                    throw new SyntaxASMException("Unknown condition '" + conditionString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                }
+
+                if (flagString != null) updateFlags = flagString.equalsIgnoreCase("S");
+
+                try {
+                    if (Objects.equals(dataString, "")) dataString = null;
+                    if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase());
+                } catch (IllegalArgumentException exception) {
+                    throw new SyntaxASMException("Unknown data mode '" + dataString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                }
+
+                try {
+                    if (Objects.equals(updateString, "")) updateString = null;
+                    if (updateString != null) updateMode = UpdateMode.valueOf(updateString.toUpperCase());
+                } catch (IllegalArgumentException exception) {
+                    throw new SyntaxASMException("Unknown update mode '" + updateString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                }
+
+                if (arg1 != null) {
+                    arg1 = arg1.replaceAll("\\s+","");
+                    arg1 = arg1.replaceAll("''","' '");
+                    if (arg1.isEmpty()) arg1 = null;
+                }
+
+                if (arg2 != null) {
+                    arg2 = arg2.replaceAll("\\s+","");
+                    arg2 = arg2.replaceAll("''","' '");
+                    if (arg2.isEmpty()) arg2 = null;
+                }
+
+                if (arg3 != null) {
+                    arg3 = arg3.replaceAll("\\s+","");
+                    arg3 = arg3.replaceAll("''","' '");
+                    if (arg3.isEmpty()) arg3 = null;
+                }
+
+                if (arg4 != null) {
+                    arg4 = arg4.replaceAll("\\s+","");
+                    arg4 = arg4.replaceAll("''","' '");
+                    if (arg4.isEmpty()) arg4 = null;
+                }
+
+                parsedFile.add(instruction.create(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
             }
-
-            if (flagString != null) updateFlags = flagString.equalsIgnoreCase("S");
-
-            try {
-                if (Objects.equals(dataString, "")) dataString = null;
-                if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase());
-            } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown data mode '" + dataString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
-            }
-
-            try {
-                if (Objects.equals(updateString, "")) updateString = null;
-                if (updateString != null) updateMode = UpdateMode.valueOf(updateString.toUpperCase());
-            } catch (IllegalArgumentException exception) {
-                throw new SyntaxASMException("Unknown update mode '" + updateString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
-            }
-
-            parser.instructionPos++;
-        } else if (matcherLabel.find()) {
-            parsedFile.add(new ParsedLabel(parser.currentSection, matcherLabel.group("LABEL").strip().toUpperCase()));
-            return;
         } else {
             throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
         }
-
-        if (arg1 != null) {
-            arg1 = arg1.replaceAll("\\s+","");
-            arg1 = arg1.replaceAll("''","' '");
-            if (arg1.isEmpty()) arg1 = null;
-        }
-
-        if (arg2 != null) {
-            arg2 = arg2.replaceAll("\\s+","");
-            arg2 = arg2.replaceAll("''","' '");
-            if (arg2.isEmpty()) arg2 = null;
-        }
-
-        if (arg3 != null) {
-            arg3 = arg3.replaceAll("\\s+","");
-            arg3 = arg3.replaceAll("''","' '");
-            if (arg3.isEmpty()) arg3 = null;
-        }
-
-        if (arg4 != null) {
-            arg4 = arg4.replaceAll("\\s+","");
-            arg4 = arg4.replaceAll("''","' '");
-            if (arg4.isEmpty()) arg4 = null;
-        }
-
-        if (matcherLabel.find()) {
-            parsedFile.add(new ParsedLabel(parser.currentSection, matcherLabel.group("LABEL").strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
-        }
-
-        ParsedInstruction<?, ?, ?, ?> parsedInstruction = instruction.create(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber());
     }
 }

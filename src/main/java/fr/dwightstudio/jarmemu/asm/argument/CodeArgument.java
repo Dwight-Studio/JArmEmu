@@ -9,8 +9,10 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 public class CodeArgument extends ParsedArgument<Integer> {
     private int value;
 
-    public CodeArgument(String originalString) {
+    public CodeArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
+        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingCode"));
+
     }
 
     @Override
@@ -21,10 +23,5 @@ public class CodeArgument extends ParsedArgument<Integer> {
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
         return value;
-    }
-
-    @Override
-    public Integer getNullValue() throws BadArgumentASMException {
-        throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingCode"));
     }
 }

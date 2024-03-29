@@ -49,8 +49,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import java.util.regex.Matcher;
@@ -391,9 +393,11 @@ public class JArmEmuApplication extends Application {
     }
 
     public static String formatMessage(String message, Object ... args) {
-        for (String key : BUNDLE.keySet()) {
-            message = message.replaceAll("%" + key, Matcher.quoteReplacement(BUNDLE.getString(key)));
-        }
+        AtomicReference<String> string = new AtomicReference<>(message);
+        BUNDLE.keySet().stream().sorted((s1, s2) -> -Integer.compare(s1.length(), s2.length())).forEach(key -> {
+            string.set(string.get().replaceAll("%" + key, Matcher.quoteReplacement(BUNDLE.getString(key))));
+        });
+        message = string.get();
         try {
             return message.formatted(args);
         } catch (Exception e) {

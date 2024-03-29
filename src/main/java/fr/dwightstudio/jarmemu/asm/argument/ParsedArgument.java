@@ -35,11 +35,6 @@ public abstract class ParsedArgument<T> extends ParsedObject implements Contextu
      */
     public abstract T getValue(StateContainer stateContainer) throws ExecutionASMException;
 
-    /**
-     * @return la valeur nulle par défaut
-     */
-    public abstract T getNullValue() throws BadArgumentASMException;
-
     public final String getOriginalString() {
         return originalString;
     }

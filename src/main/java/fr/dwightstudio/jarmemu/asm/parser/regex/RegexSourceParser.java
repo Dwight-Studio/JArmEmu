@@ -33,11 +33,9 @@ import org.jetbrains.annotations.NotNull;
 public class RegexSourceParser implements SourceParser {
 
     protected Section currentSection;
-    protected int instructionPos;
 
     public RegexSourceParser() {
         currentSection = Section.NONE;
-        instructionPos = 0;
     }
 
     /**
