@@ -37,6 +37,7 @@ public class WordDirective extends ParsedDirective {
     private final String[] arg;
     private final int[] intArray;
     private FilePos tempPos;
+    private FilePos lastPos;
 
     public WordDirective(Section section, @NotNull String args) throws SyntaxASMException {
         super(section, args);
@@ -63,6 +64,7 @@ public class WordDirective extends ParsedDirective {
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
         tempPos = stateContainer.getCurrentFilePos().clone();
+        lastPos = tempPos.freeze();
         for (int i : intArray) {
             stateContainer.getMemory().putWord(tempPos.getPos(), i);
             tempPos.incrementPos(4);
@@ -81,6 +83,6 @@ public class WordDirective extends ParsedDirective {
     }
 
     public FilePos getLastPos() {
-        return tempPos.freeze();
+        return lastPos;
     }
 }
