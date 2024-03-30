@@ -36,16 +36,17 @@ public class GlobalDirective extends ParsedDirective {
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-
+        String name = args.toUpperCase().strip();
+        if (stateContainer.getRestrainedData().containsKey(name) || stateContainer.getRestrainedLabels().containsKey(name)) {
+            stateContainer.addGlobal(name, stateContainer.getCurrentFilePos().getFileIndex());
+        } else {
+            throw new SyntaxASMException("Invalid argument '" + args + "'");
+        }
     }
 
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
-        if (stateContainer.getRestrainedData().containsKey(args.toUpperCase().strip()) || stateContainer.getRestrainedLabels().containsKey(args.toUpperCase().strip())) {
-            stateContainer.addGlobal(args.toUpperCase().strip(), stateContainer.getCurrentFilePos().getFileIndex());
-        } else {
-            throw new SyntaxASMException("Invalid argument '" + args + "'");
-        }
+
     }
 
     @Override

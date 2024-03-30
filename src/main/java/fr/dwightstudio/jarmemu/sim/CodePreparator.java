@@ -98,32 +98,6 @@ public class CodePreparator {
             }
         }
 
-        // Ajout des labels _START et _END
-
-        if (!stateContainer.getGlobals().contains("_START")) {
-            stateContainer.getLabelsInFiles().getFirst().put("_START", 0);
-            stateContainer.addGlobal("_START", 0);
-            logger.info("Can't find label '_START', setting one at 0");
-        }
-
-        if (!stateContainer.getGlobals().contains("_END")) {
-            FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastMem);
-            stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
-            stateContainer.addGlobal("_END", parsedFiles.size() - 1);
-            logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());
-        }
-
-        // Suppression des directives générées
-        stateContainer.getCurrentFilePos().setFileIndex(0);
-        for (ParsedFile file : parsedFiles) {
-            file.filter(obj -> {
-                if (obj instanceof ParsedDirective dir) {
-                    return !dir.isGenerated();
-                } else return true;
-            });
-            stateContainer.getCurrentFilePos().incrementFileIndex();
-        }
-
         stateContainer.getCurrentFilePos().setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             try {
@@ -147,6 +121,21 @@ public class CodePreparator {
                 exceptions.add(exception);
             }
             stateContainer.getCurrentFilePos().incrementFileIndex();
+        }
+
+        // Ajout du label _START
+        if (!stateContainer.getGlobals().contains("_START")) {
+            stateContainer.getLabelsInFiles().getFirst().put("_START", 0);
+            stateContainer.addGlobal("_START", 0);
+            logger.info("Can't find label '_START', setting one at 0");
+        }
+
+        // Ajout du label _END
+        if (!stateContainer.getGlobals().contains("_END")) {
+            FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastMem);
+            stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
+            stateContainer.addGlobal("_END", parsedFiles.size() - 1);
+            logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());
         }
 
         return exceptions.toArray(new ASMException[0]);

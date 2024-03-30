@@ -74,7 +74,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
             case BYTE -> arg1.setData(stateContainer.getMemory().getByte(address));
         }
 
-        arg2.update();
+        if (!isPseudoInstruction()) arg2.update();
     }
 
     @Override

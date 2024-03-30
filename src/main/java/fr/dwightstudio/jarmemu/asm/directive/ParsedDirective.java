@@ -16,13 +16,11 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
 
     protected final Section section;
     protected final String args;
-    private boolean generated;
     protected String hash;
 
     public ParsedDirective(Section section, String args) {
         this.args = args;
         this.section = section;
-        generated = false;
     }
 
     /**
@@ -71,7 +69,7 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
             return false;
         }
 
-        if (dir.generated != this.generated) {
+        if (dir.isGenerated() != this.isGenerated()) {
             if (VERBOSE) logger.info("Difference: Generated flag");
             return false;
         }
