@@ -418,6 +418,16 @@ public class StateContainer {
         return currentfilePos;
     }
 
+    /**
+     * Réinitialise la position courante (indice de fichier / adresse mémoire), utilisé lors de la construction du conteneur d'état
+     *
+     * @return la position courante
+     */
+    public FilePos resetFilePos() {
+        currentfilePos.setPos(getSymbolsAddress());
+        return currentfilePos;
+    }
+
     public Register getRegister(int i) {
         return registers[i];
     }

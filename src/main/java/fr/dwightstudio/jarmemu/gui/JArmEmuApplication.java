@@ -101,6 +101,8 @@ public class JArmEmuApplication extends Application {
     // TODO: Refaire les tests (Instructions, Arguments, Directives)
     // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour les instructions non implémentées
+    // TODO: Ajouter un detection des boucles infinies
+    // TODO: Ajouter un menu "miroir" du la toolbar dans un onglet "Simulation"
 
     @Override
     public void start(Stage stage) throws IOException {

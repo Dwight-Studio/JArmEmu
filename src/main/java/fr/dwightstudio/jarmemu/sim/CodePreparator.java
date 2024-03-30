@@ -101,20 +101,41 @@ public class CodePreparator {
         for (ParsedFile file : parsedFiles) {
             try {
                 new PreparationStream(file)
+                        // Construction du contexte
                         .forDirectives().isContextBuilder(true).contextualize(stateContainer)
-                        .forDirectives().notInSection(Section.TEXT).registerLabels(stateContainer)
+
+                        .forDirectives().inSection(Section.RODATA).registerLabels(stateContainer)
+
+                        .forPseudoInstructions().allocate(stateContainer)
+
+                        .forDirectives().inSection(Section.DATA).registerLabels(stateContainer)
+
+                        .forDirectives().inSection(Section.BSS).registerLabels(stateContainer)
+
                         .resetPos(stateContainer)
+
+                        // Exécution des directives
                         .forDirectives().isContextBuilder(false).contextualize(stateContainer)
+
                         .forDirectives().inSection(Section.RODATA).execute(stateContainer)
+
                         .startPseudoInstructionRange(stateContainer)
                         .forPseudoInstructions().allocate(stateContainer)
                         .closeReadOnlyRange(stateContainer)
+
                         .forDirectives().inSection(Section.DATA).execute(stateContainer)
+
                         .forDirectives().inSection(Section.BSS).execute(stateContainer)
+
+                        // Préparation et exécution des Pseudo-Instructions
                         .forPseudoInstructions().generate(stateContainer)
+
                         .goToPseudoInstructionPos(stateContainer)
+
                         .forDirectives().isGenerated(true).contextualize(stateContainer)
                         .forDirectives().isGenerated(true).execute(stateContainer)
+
+                        // Préparation et vérification des instructions
                         .forInstructions().contextualize(stateContainer)
                         .forInstructions().verify(() -> new StateContainer(stateContainer));
             } catch (ASMException exception) {
@@ -127,7 +148,7 @@ public class CodePreparator {
         if (!stateContainer.getGlobals().contains("_START")) {
             stateContainer.getLabelsInFiles().getFirst().put("_START", 0);
             stateContainer.addGlobal("_START", 0);
-            logger.info("Can't find label '_START', setting one at 0");
+            logger.info("Can't find label '_START', setting one at 0:0");
         }
 
         // Ajout du label _END
@@ -135,7 +156,7 @@ public class CodePreparator {
             FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastMem);
             stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
             stateContainer.addGlobal("_END", parsedFiles.size() - 1);
-            logger.info("Can't find label '_END', setting one at " + lastInstruction.toByteValue());
+            logger.info("Can't find label '_END', setting one at 0:" + lastInstruction.toByteValue());
         }
 
         return exceptions.toArray(new ASMException[0]);

@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.directive.ParsedDirective;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.function.Consumer;
@@ -78,7 +79,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir))  {
-                    logger.info("Executing " + dir);
+                    logger.info("Executing " + dir + " (" + container.getCurrentFilePos() + " in memory)");
                     dir.execute(container);
                     dir.offsetMemory(container);
                 }
@@ -94,17 +95,21 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
      * @param container le conteneur d'état sur lequel effectuer l'opération
      */
     public PreparationStream registerLabels(StateContainer container) throws ASMException {
-        logger.info("Registering labels" + getDescription());
+        logger.info("Registering directive labels" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedLabel label) {
+                if (label.getSection() == Section.TEXT) continue;
                 if (test(label)) {
-                    logger.info("Registering " + label);
+                    logger.info("Registering " + label + " (" + container.getCurrentFilePos() + " in memory)");
                     label.register(container, container.getCurrentFilePos());
                 }
             }
             if (obj instanceof ParsedDirective dir) {
+                if (dir.getSection() == Section.TEXT) continue;
                 if (test(dir))  {
+                    FilePos lastPos = container.getCurrentFilePos().freeze();
                     dir.offsetMemory(container);
+                    logger.info("Allocated memory for " + dir + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
                 }
             }
         }

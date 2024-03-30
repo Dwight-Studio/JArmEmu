@@ -64,7 +64,7 @@ public class PreparationStream {
 
     public PreparationStream resetPos(StateContainer stateContainer) {
         logger.info("Resetting state data pointer");
-        stateContainer.getCurrentFilePos().setPos(stateContainer.getSymbolsAddress());
+        stateContainer.resetFilePos();
         return this;
     }
 

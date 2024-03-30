@@ -72,7 +72,9 @@ public class StackController extends AbstractJArmEmuModule {
         col0.setSortable(false);
         col0.setEditable(false);
         col0.setReorderable(false);
+        col0.setMinWidth(35);
         col0.setMaxWidth(35);
+        col0.setPrefWidth(35);
         col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col0.setCellValueFactory(c -> c.getValue().getCursorProperty());
         col0.setCellFactory(CursorTableCell.factory());

@@ -129,9 +129,10 @@ public class ParsedFile implements Collection<ParsedObject> {
         if (content.length <= size) expand();
 
         if (size > 0) {
-            for (int i = size++; i >= 0; i--) {
+            size++;
+            for (int i = size-2; i >= 0; i--) {
                 if (content[i] != null) {
-                    if (parsedObject.getFilePos().compareTo(content[i].getFilePos()) > 0) {
+                    if (parsedObject.getFilePos().compareTo(content[i].getFilePos()) >= 0) {
                         content[i + 1] = parsedObject;
                         break;
                     } else {

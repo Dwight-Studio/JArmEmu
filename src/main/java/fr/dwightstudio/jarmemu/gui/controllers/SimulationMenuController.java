@@ -77,6 +77,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getEditorController().clearAllLineMarkings();
                 getEditorController().markForward(getCodeInterpreter().getCurrentLine());
                 getController().memoryDetailsAddressField.setDisable(false);
+                getController().memoryOverviewAddressField.setDisable(false);
                 getEditorController().onLaunch();
                 getController().stepInto.setDisable(false);
                 getController().stepOver.setDisable(false);
@@ -142,6 +143,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(false);
         getController().restart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
+        getController().memoryOverviewAddressField.setDisable(true);
         getEditorController().onContinueOrStepOver();}
 
     /**
@@ -156,6 +158,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(false);
         getController().restart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
+        getController().memoryOverviewAddressField.setDisable(true);
         getEditorController().onContinueOrStepOver();
     }
 
@@ -170,6 +173,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().pause.setDisable(true);
         getController().restart.setDisable(false);
         getController().memoryDetailsAddressField.setDisable(false);
+        getController().memoryOverviewAddressField.setDisable(false);
         getEditorController().onPause();
     }
 
@@ -188,6 +192,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().stop.setDisable(true);
         getController().restart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
+        getController().memoryOverviewAddressField.setDisable(true);
         getController().settingsRegex.setDisable(false);
         getController().settingsLegacy.setDisable(false);
         getController().settingsStackAddress.setDisable(false);

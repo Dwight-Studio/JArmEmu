@@ -67,6 +67,7 @@ public class ByteDirective extends ParsedDirective {
         FilePos tempPos = stateContainer.getCurrentFilePos().clone();
         for (byte b : byteArray) {
             stateContainer.getMemory().putByte(tempPos.getPos(), b);
+            tempPos.incrementPos();
         }
     }
 
