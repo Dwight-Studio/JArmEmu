@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 
 public class PreparationStream {
 
-    private static final Logger logger = Logger.getLogger(PreparationStream.class.getName());
+    private static final Logger logger = Logger.getLogger(PreparationStream.class.getSimpleName());
 
     protected final ParsedFile file;
 
@@ -56,15 +56,21 @@ public class PreparationStream {
         return this;
     }
 
-    public PreparationStream startPseudoInstructionAllocation(StateContainer stateContainer) {
-        logger.info("Setting Pseudo-Instruction allocation starting address to " + stateContainer.getCurrentFilePos());
-        stateContainer.startPseudoInstructionAllocation();
+    public PreparationStream startPseudoInstructionRange(StateContainer stateContainer) {
+        logger.info("Setting Pseudo-Instruction range starting address to " + stateContainer.getCurrentFilePos());
+        stateContainer.startPseudoInstructionRange();
         return this;
     }
 
     public PreparationStream resetPos(StateContainer stateContainer) {
         logger.info("Resetting state data pointer");
         stateContainer.getCurrentFilePos().setPos(stateContainer.getSymbolsAddress());
+        return this;
+    }
+
+    public PreparationStream goToPseudoInstructionPos(StateContainer stateContainer) {
+        logger.info("Setting state data pointer to Pseudo-Instruction range starting address");
+        stateContainer.getCurrentFilePos().setPos(stateContainer.getFirstAddressPIRange());
         return this;
     }
 }

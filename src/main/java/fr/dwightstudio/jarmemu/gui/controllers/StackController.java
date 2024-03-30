@@ -53,7 +53,7 @@ public class StackController extends AbstractJArmEmuModule {
 
     private static final int MAX_NUMBER = 500;
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<MemoryWordView, Boolean> col0;
     private TableColumn<MemoryWordView, Number> col1;
     private TableColumn<MemoryWordView, Number> col2;

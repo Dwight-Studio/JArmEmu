@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject implements Contextualized {
 
-    private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getName());
+    private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getSimpleName());
 
     protected final Condition condition;
     protected final boolean updateFlags;
@@ -95,6 +95,8 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
                         arg3.getValue(stateContainer),
                         arg4.getValue(stateContainer)
                 );
+        } else {
+            if (doModifyPC()) stateContainer.getPC().add(4);
         }
     }
 
@@ -146,6 +148,16 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         } catch (ASMException exception) {
             throw exception.with(this);
         }
+    }
+
+    public ParsedInstruction<A, B, C, D> withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " at " + getFilePos();
     }
 
     @Override
@@ -203,10 +215,5 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
 
         return true;
-    }
-
-    public ParsedInstruction<A, B, C, D> withLineNumber(int lineNumber) {
-        setLineNumber(lineNumber);
-        return this;
     }
 }

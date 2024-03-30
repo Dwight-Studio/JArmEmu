@@ -65,7 +65,7 @@ public class STMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() - 4 * (i + 1);
                     stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
-                    if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
+                    if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = - 4 * length;
             }
@@ -73,7 +73,7 @@ public class STMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * (i + 1);
                     stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
-                    if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
+                    if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = 4 * length;
             }
@@ -81,7 +81,7 @@ public class STMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() - 4 * i;
                     stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
-                    if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
+                    if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = - 4 * length;
             }
@@ -89,7 +89,7 @@ public class STMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * i;
                     stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
-                    if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
+                    if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = 4 * length;
             }

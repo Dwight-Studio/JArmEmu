@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 public class ParsedLabel extends ParsedObject {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private final Section section;
     private final String name;
@@ -71,6 +71,24 @@ public class ParsedLabel extends ParsedObject {
         }
     }
 
+    public ParsedLabel withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " at " + getFilePos();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ParsedLabel label)) return false;
@@ -105,18 +123,5 @@ public class ParsedLabel extends ParsedObject {
         }
 
         return true;
-    }
-
-    public ParsedLabel withLineNumber(int lineNumber) {
-        setLineNumber(lineNumber);
-        return this;
-    }
-
-    public Section getSection() {
-        return section;
-    }
-
-    public String getName() {
-        return this.name;
     }
 }

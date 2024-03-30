@@ -102,7 +102,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     };
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
     public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private boolean initiated;
 
     private Preferences preferences;

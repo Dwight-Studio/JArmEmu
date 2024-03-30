@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 
 public class LabelsController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<SymbolView, Number> col0;
     private TableColumn<SymbolView, String> col1;
     private TableColumn<SymbolView, Number> col2;

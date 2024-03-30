@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public abstract class ParsedDirective extends ParsedObject implements Contextualized {
 
-    private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getName());
+    private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getSimpleName());
 
     protected final Section section;
     protected final String args;
@@ -60,6 +60,16 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
         return section;
     }
 
+    public ParsedDirective withLineNumber(int lineNumber) {
+        setLineNumber(lineNumber);
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " at " + getFilePos();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ParsedDirective dir)) return false;
@@ -99,10 +109,5 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
         }
 
         return true;
-    }
-
-    public ParsedDirective withLineNumber(int lineNumber) {
-        setLineNumber(lineNumber);
-        return this;
     }
 }

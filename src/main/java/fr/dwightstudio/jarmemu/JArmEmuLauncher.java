@@ -31,7 +31,7 @@ import java.util.logging.Logger;
 
 public class JArmEmuLauncher {
 
-    private static Logger logger = Logger.getLogger(JArmEmuLauncher.class.getName());
+    private static Logger logger = Logger.getLogger(JArmEmuLauncher.class.getSimpleName());
 
     public static void main(String[] args) throws IOException {
         setUpLogger();

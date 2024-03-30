@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 
 public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
 
-    private static final Logger logger = Logger.getLogger(DirectivePreparationTask.class.getName());
+    private static final Logger logger = Logger.getLogger(DirectivePreparationTask.class.getSimpleName());
 
     private Section section;
     private Section notSection;
@@ -58,9 +58,13 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         logger.info("Contextualizing directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
-                if (test(dir)) dir.contextualize(container);
+                if (test(dir))  {
+                    logger.info("Contextualizing " + dir);
+                    dir.contextualize(container);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -74,11 +78,13 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir))  {
+                    logger.info("Executing " + dir);
                     dir.execute(container);
                     dir.offsetMemory(container);
                 }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -91,7 +97,10 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         logger.info("Registering labels" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedLabel label) {
-                if (test(label)) label.register(container, container.getCurrentFilePos());
+                if (test(label)) {
+                    logger.info("Registering " + label);
+                    label.register(container, container.getCurrentFilePos());
+                }
             }
             if (obj instanceof ParsedDirective dir) {
                 if (test(dir))  {
@@ -99,6 +108,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
                 }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -107,9 +117,13 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         logger.info("Verifying directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
-                if (test(dir)) dir.verify(stateSupplier);
+                if (test(dir)) {
+                    logger.info("Verifying " + dir);
+                    dir.verify(stateSupplier);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -118,9 +132,13 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
         logger.info("Performing operation on directives" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedDirective dir) {
-                if (test(dir)) consumer.accept(dir);
+                if (test(dir)) {
+                    logger.info("Performing on " + dir);
+                    consumer.accept(dir);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 

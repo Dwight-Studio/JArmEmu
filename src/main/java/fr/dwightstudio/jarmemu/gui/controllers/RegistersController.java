@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 
 public class RegistersController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<RegisterView, String> col0;
     private TableColumn<RegisterView, Number> col1;
     private TableColumn<RegisterView, Register> col2;

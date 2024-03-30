@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 
 public class PseudoInstructionPreparationTask extends InstructionPreparationTask {
 
-    private static final Logger logger = Logger.getLogger(PseudoInstructionPreparationTask.class.getName());
+    private static final Logger logger = Logger.getLogger(PseudoInstructionPreparationTask.class.getSimpleName());
     protected PseudoInstructionPreparationTask(PreparationStream stream) {
         super(stream);
     }
@@ -43,9 +43,13 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
         logger.info("Allocating for Pseudo-Instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof PseudoInstruction ins) {
-                if (test((ParsedInstruction<?, ?, ?, ?>) ins)) ins.allocate(container);
+                if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
+                    logger.info("Allocating for " + ins);
+                    ins.allocate(container);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -55,12 +59,14 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
         for (ParsedObject obj : stream.file) {
             if (obj instanceof PseudoInstruction ins) {
                 if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
+                    logger.info("Generating for " + ins);
                     ParsedObject gen = ins.generate(container);
                     objects.add(gen);
                 }
             }
         }
         stream.file.addAll(objects);
+        logger.info("Done!");
         return stream;
     }
 

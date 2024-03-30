@@ -67,7 +67,7 @@ public class JArmEmuApplication extends Application {
     public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("fr.dwightstudio.jarmemu.bundles.Locale");
     public static String LICENCE;
 
-    public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getName());
+    public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getSimpleName());
 
     // Controllers
     private JArmEmuController controller;

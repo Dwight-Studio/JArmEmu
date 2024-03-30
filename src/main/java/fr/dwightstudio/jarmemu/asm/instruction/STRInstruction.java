@@ -61,7 +61,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
             }
 
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
-            if (address < stateContainer.getLastAddressROData() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
+            if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
         }
 
         switch (dataMode){

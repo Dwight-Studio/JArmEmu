@@ -35,7 +35,7 @@ import java.util.logging.Logger;
 
 public class SimulationMenuController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public SimulationMenuController(JArmEmuApplication application) {
         super(application);

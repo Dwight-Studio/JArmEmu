@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 public class EditorController extends AbstractJArmEmuModule {
     public static final String SAMPLE_CODE = String.join("\n", new String[]{".global _start", ".text", "_start:", "\t@ Beginning of the program"});
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final ArrayList<FileEditor> fileEditors;
     private FileEditor lastScheduledEditor;
     private FileEditor lastExecutedEditor;

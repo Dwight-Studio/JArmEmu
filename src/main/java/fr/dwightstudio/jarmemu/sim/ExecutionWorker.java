@@ -52,7 +52,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     private static final int RESTART = 6;
     private static final int UPDATE_FORMAT = 7;
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private ExecutionThead daemon;
 
@@ -193,7 +193,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     }
 
     private static class ExecutionThead extends Thread {
-        private final Logger logger = Logger.getLogger(getClass().getName());
+        private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
         private final JArmEmuApplication application;
         private final AtomicInteger nextTask = new AtomicInteger();

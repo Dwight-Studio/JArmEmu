@@ -65,7 +65,7 @@ public class CompleteTest extends JArmEmuTest {
                     "$(?-i)"
     );
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     ArrayList<SourceScanner> sources;
     SourceParser parser;

@@ -39,7 +39,7 @@ import java.util.logging.Logger;
 
 public class MainMenuController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private File lastFile;
 

@@ -321,7 +321,7 @@ public class StateContainer {
         if (this.nestingCount < 0) this.nestingCount = 0;
     }
 
-    public int getLastAddressROData() {
+    public int getLastAddressRORange() {
         return lastAddressROData;
     }
 
@@ -332,14 +332,14 @@ public class StateContainer {
         this.lastAddressROData = currentfilePos.getPos();
     }
 
-    public int getFirstAddressPIData() {
+    public int getFirstAddressPIRange() {
         return firstAddressPseudoInstruction;
     }
 
     /**
      * Fixe la première adresse de la plage d'allocation pour les pseudo-instructions à partir de la position courante
      */
-    public void startPseudoInstructionAllocation() {
+    public void startPseudoInstructionRange() {
         this.firstAddressPseudoInstruction = currentfilePos.getPos();
     }
 

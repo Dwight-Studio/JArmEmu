@@ -36,7 +36,7 @@ import java.util.logging.Logger;
 
 public class InstructionPreparationTask extends PreparationTask<ParsedInstruction<?, ?, ?, ?>> {
 
-    private static final Logger logger = Logger.getLogger(InstructionPreparationTask.class.getName());
+    private static final Logger logger = Logger.getLogger(InstructionPreparationTask.class.getSimpleName());
 
     private Boolean modifyPC;
     private Boolean workingRegister;
@@ -56,9 +56,13 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         logger.info("Contextualizing instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                if (test(ins)) ins.contextualize(container);
+                if (test(ins)) {
+                    logger.info("Contextualizing " + ins);
+                    ins.contextualize(container);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -67,9 +71,13 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         logger.info("Verifying instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                if (test(ins)) ins.verify(stateSupplier);
+                if (test(ins)) {
+                    logger.info("Verifying " + ins);
+                    ins.verify(stateSupplier);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 
@@ -78,9 +86,13 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         logger.info("Performing operation on instructions" + getDescription());
         for (ParsedObject obj : stream.file) {
             if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                if (test(ins)) consumer.accept(ins);
+                if (test(ins)) {
+                    logger.info("Performing on " + ins);
+                    consumer.accept(ins);
+                }
             }
         }
+        logger.info("Done!");
         return stream;
     }
 

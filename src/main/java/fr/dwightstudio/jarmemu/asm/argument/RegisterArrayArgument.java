@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 
 public class RegisterArrayArgument extends ParsedArgument<Register[]> {
 
-    protected final Logger logger = Logger.getLogger(getClass().getName());
+    protected final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     ArrayList<RegisterArgument> arguments;
 

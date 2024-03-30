@@ -60,7 +60,7 @@ import java.util.regex.Pattern;
 
 public class FileEditor extends AbstractJArmEmuModule {
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     // GUI
     private final CodeArea codeArea;

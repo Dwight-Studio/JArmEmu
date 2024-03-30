@@ -59,7 +59,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     public static final String MEMORY_DETAILS_KEY = "memoryDetails";
     public static final String MEMORY_OVERVIEW_KEY = "memoryOverview";
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private final Timeline LAYOUT_INIT_TIMELINE = new Timeline(
             new KeyFrame(Duration.ZERO, event -> applyLayout(getSettingsController().getLayout())),

@@ -24,7 +24,6 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.directive.ParsedDirective;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
 
 public class CodePreparator {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final ArrayList<ParsedFile> parsedFiles;
     private ArrayList<ParsedInstruction<?, ?, ?, ?>> instructionMemory;
     private ArrayList<FilePos> instructionPosition;
@@ -107,12 +106,13 @@ public class CodePreparator {
                         .resetPos(stateContainer)
                         .forDirectives().isContextBuilder(false).contextualize(stateContainer)
                         .forDirectives().inSection(Section.RODATA).execute(stateContainer)
-                        .startPseudoInstructionAllocation(stateContainer)
+                        .startPseudoInstructionRange(stateContainer)
                         .forPseudoInstructions().allocate(stateContainer)
                         .closeReadOnlyRange(stateContainer)
                         .forDirectives().inSection(Section.DATA).execute(stateContainer)
                         .forDirectives().inSection(Section.BSS).execute(stateContainer)
                         .forPseudoInstructions().generate(stateContainer)
+                        .goToPseudoInstructionPos(stateContainer)
                         .forDirectives().isGenerated(true).contextualize(stateContainer)
                         .forDirectives().isGenerated(true).execute(stateContainer)
                         .forInstructions().contextualize(stateContainer)
