@@ -103,6 +103,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter un menu "miroir" du la toolbar dans un onglet "Simulation"
+    // TODO: Améliorer les performances en utilisant un stockage des préférences
 
     @Override
     public void start(Stage stage) throws IOException {

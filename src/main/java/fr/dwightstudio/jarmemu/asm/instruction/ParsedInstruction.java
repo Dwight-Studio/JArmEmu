@@ -146,7 +146,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
                     arg4.getValue(stateContainer)
             );
         } catch (ASMException exception) {
-            throw exception.with(this);
+            throw exception.with(getLineNumber()).with(this).with(getFile());
         }
     }
 

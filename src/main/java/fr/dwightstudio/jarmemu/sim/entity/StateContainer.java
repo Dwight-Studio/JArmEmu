@@ -83,9 +83,11 @@ public class StateContainer {
         consts = new ArrayList<>();
         data = new ArrayList<>();
         globals = new HashMap<>();
+
         nestingCount = 0;
         lastAddressROData = 0;
         firstAddressPseudoInstruction = 0;
+        addressRegisterUpdateValue = null;
         currentfilePos = new FilePos(0, symbolsAddress);
 
         // Initializing registers
@@ -108,12 +110,16 @@ public class StateContainer {
         this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
 
         clearAndInitFiles(0);
-
-        stateContainer.consts.forEach(map -> this.consts.add(new HashMap<>(map)));
+        
         stateContainer.labels.forEach(map -> this.labels.add(new HashMap<>(map)));
+        stateContainer.consts.forEach(map -> this.consts.add(new HashMap<>(map)));
         stateContainer.data.forEach(map -> this.data.add(new HashMap<>(map)));
-
         this.globals.putAll(stateContainer.globals);
+
+        this.nestingCount = stateContainer.nestingCount;
+        this.lastAddressROData = stateContainer.lastAddressROData;
+        this.firstAddressPseudoInstruction = stateContainer.firstAddressPseudoInstruction;
+        this.addressRegisterUpdateValue = stateContainer.addressRegisterUpdateValue;
         this.currentfilePos = new FilePos(stateContainer.currentfilePos);
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
@@ -122,10 +128,6 @@ public class StateContainer {
 
         this.cpsr.setData(stateContainer.getCPSR().getData());
         this.spsr.setData(stateContainer.spsr.getData());
-
-        this.lastAddressROData = stateContainer.lastAddressROData;
-        this.firstAddressPseudoInstruction = stateContainer.firstAddressPseudoInstruction;
-        this.addressRegisterUpdateValue = stateContainer.addressRegisterUpdateValue;
 
         this.memory.putAll(stateContainer.memory);
     }

@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.prepare;
 
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.Section;
@@ -57,13 +58,17 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
     @Override
     public PreparationStream contextualize(StateContainer container) throws ASMException {
         logger.info("Contextualizing directives" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedDirective dir) {
-                if (test(dir))  {
-                    logger.info("Contextualizing " + dir);
-                    dir.contextualize(container);
+        container.getCurrentFilePos().setFileIndex(0);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedDirective dir) {
+                    if (test(dir)) {
+                        logger.info("Contextualizing " + dir);
+                        dir.contextualize(container);
+                    }
                 }
             }
+            container.getCurrentFilePos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -76,14 +81,18 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
      */
     public PreparationStream execute(StateContainer container) throws ASMException {
         logger.info("Executing directives" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedDirective dir) {
-                if (test(dir))  {
-                    logger.info("Executing " + dir + " (" + container.getCurrentFilePos() + " in memory)");
-                    dir.execute(container);
-                    dir.offsetMemory(container);
+        container.getCurrentFilePos().setFileIndex(0);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedDirective dir) {
+                    if (test(dir)) {
+                        logger.info("Executing " + dir + " (" + container.getCurrentFilePos() + " in memory)");
+                        dir.execute(container);
+                        dir.offsetMemory(container);
+                    }
                 }
             }
+            container.getCurrentFilePos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -96,22 +105,26 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
      */
     public PreparationStream registerLabels(StateContainer container) throws ASMException {
         logger.info("Registering directive labels" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedLabel label) {
-                if (label.getSection() == Section.TEXT) continue;
-                if (test(label)) {
-                    logger.info("Registering " + label + " (" + container.getCurrentFilePos() + " in memory)");
-                    label.register(container, container.getCurrentFilePos());
+        container.getCurrentFilePos().setFileIndex(0);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedLabel label) {
+                    if (label.getSection() == Section.TEXT) continue;
+                    if (test(label)) {
+                        logger.info("Registering " + label + " (" + container.getCurrentFilePos() + " in memory)");
+                        label.register(container, container.getCurrentFilePos());
+                    }
+                }
+                if (obj instanceof ParsedDirective dir) {
+                    if (dir.getSection() == Section.TEXT) continue;
+                    if (test(dir)) {
+                        FilePos lastPos = container.getCurrentFilePos().freeze();
+                        dir.offsetMemory(container);
+                        logger.info("Allocated memory for " + dir + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
+                    }
                 }
             }
-            if (obj instanceof ParsedDirective dir) {
-                if (dir.getSection() == Section.TEXT) continue;
-                if (test(dir))  {
-                    FilePos lastPos = container.getCurrentFilePos().freeze();
-                    dir.offsetMemory(container);
-                    logger.info("Allocated memory for " + dir + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
-                }
-            }
+            container.getCurrentFilePos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -120,13 +133,23 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
     @Override
     public PreparationStream verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         logger.info("Verifying directives" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedDirective dir) {
-                if (test(dir)) {
-                    logger.info("Verifying " + dir);
-                    dir.verify(stateSupplier);
+        int fi = 0;
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedDirective dir) {
+                    if (test(dir)) {
+                        logger.info("Verifying " + dir);
+                        int finalFi = fi;
+                        dir.verify(() -> {
+                            StateContainer container = stateSupplier.get();
+                            container.getCurrentFilePos().setFileIndex(finalFi);
+                            return container;
+                        });
+                    }
                 }
             }
+            fi++;
+
         }
         logger.info("Done!");
         return stream;
@@ -135,11 +158,13 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
     @Override
     public PreparationStream perform(Consumer<ParsedDirective> consumer) {
         logger.info("Performing operation on directives" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedDirective dir) {
-                if (test(dir)) {
-                    logger.info("Performing on " + dir);
-                    consumer.accept(dir);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedDirective dir) {
+                    if (test(dir)) {
+                        logger.info("Performing on " + dir);
+                        consumer.accept(dir);
+                    }
                 }
             }
         }

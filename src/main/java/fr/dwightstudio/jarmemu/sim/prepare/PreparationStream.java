@@ -26,16 +26,17 @@ package fr.dwightstudio.jarmemu.sim.prepare;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class PreparationStream {
 
     private static final Logger logger = Logger.getLogger(PreparationStream.class.getSimpleName());
 
-    protected final ParsedFile file;
+    protected final List<ParsedFile> files;
 
-    public PreparationStream(ParsedFile file) {
-        this.file = file;
+    public PreparationStream(List<ParsedFile> files) {
+        this.files = files;
     }
 
     public DirectivePreparationTask forDirectives() {

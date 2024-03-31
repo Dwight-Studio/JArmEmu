@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.prepare;
 
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
@@ -42,14 +43,18 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
 
     public PreparationStream allocate(StateContainer container) throws ASMException {
         logger.info("Allocating for Pseudo-Instructions" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof PseudoInstruction ins) {
-                if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
-                    FilePos lastPos = container.getCurrentFilePos().freeze();
-                    ins.allocate(container);
-                    logger.info("Allocated memory for " + ins + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
+        container.getCurrentFilePos().setFileIndex(0);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof PseudoInstruction ins) {
+                    if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
+                        FilePos lastPos = container.getCurrentFilePos().freeze();
+                        ins.allocate(container);
+                        logger.info("Allocated memory for " + ins + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
+                    }
                 }
             }
+            container.getCurrentFilePos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -57,17 +62,21 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
 
     public PreparationStream generate(StateContainer container) throws ASMException {
         logger.info("Generating Pseudo-Instructions" + getDescription());
-        ArrayList<ParsedObject> objects = new ArrayList<>();
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof PseudoInstruction ins) {
-                if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
-                    logger.info("Generating for " + ins);
-                    ParsedObject gen = ins.generate(container);
-                    objects.add(gen);
+        container.getCurrentFilePos().setFileIndex(0);
+        for (ParsedFile file : stream.files) {
+            ArrayList<ParsedObject> objects = new ArrayList<>();
+            for (ParsedObject obj : file) {
+                if (obj instanceof PseudoInstruction ins) {
+                    if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
+                        logger.info("Generating for " + ins);
+                        ParsedObject gen = ins.generate(container);
+                        objects.add(gen);
+                    }
                 }
             }
+            file.addAll(objects);
+            container.getCurrentFilePos().incrementFileIndex();
         }
-        stream.file.addAll(objects);
         logger.info("Done!");
         return stream;
     }

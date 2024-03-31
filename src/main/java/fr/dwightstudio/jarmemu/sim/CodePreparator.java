@@ -77,8 +77,10 @@ public class CodePreparator {
         instructionMemory = new ArrayList<>();
         instructionPosition = new ArrayList<>();
 
-        int lastMem = 0;
+        stateContainer.clearAndInitFiles(parsedFiles.size());
 
+        int lastMem = 0;
+        stateContainer.getCurrentFilePos().setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             for (ParsedObject obj : file) {
                 try {
@@ -95,12 +97,13 @@ public class CodePreparator {
                     exceptions.add(e);
                 }
             }
+            stateContainer.getCurrentFilePos().incrementFileIndex();
         }
 
         stateContainer.getCurrentFilePos().setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
             try {
-                new PreparationStream(file)
+                new PreparationStream(parsedFiles)
                         // Construction du contexte
                         .forDirectives().isContextBuilder(true).contextualize(stateContainer)
 

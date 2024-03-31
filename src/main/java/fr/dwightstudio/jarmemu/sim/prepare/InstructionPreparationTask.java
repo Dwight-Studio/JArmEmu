@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.prepare;
 
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.directive.ParsedDirective;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
@@ -54,13 +55,17 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     @Override
     public PreparationStream contextualize(StateContainer container) throws ASMException {
         logger.info("Contextualizing instructions" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                if (test(ins)) {
-                    logger.info("Contextualizing " + ins);
-                    ins.contextualize(container);
+        container.getCurrentFilePos().setFileIndex(0);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
+                    if (test(ins)) {
+                        logger.info("Contextualizing " + ins);
+                        ins.contextualize(container);
+                    }
                 }
             }
+            container.getCurrentFilePos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -69,13 +74,22 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     @Override
     public PreparationStream verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         logger.info("Verifying instructions" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                if (test(ins)) {
-                    logger.info("Verifying " + ins);
-                    ins.verify(stateSupplier);
+        int fi = 0;
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
+                    if (test(ins)) {
+                        int finalFi = fi;
+                        logger.info("Verifying " + ins);
+                        ins.verify(() -> {
+                            StateContainer container = stateSupplier.get();
+                            container.getCurrentFilePos().setFileIndex(finalFi);
+                            return container;
+                        });
+                    }
                 }
             }
+            fi++;
         }
         logger.info("Done!");
         return stream;
@@ -84,11 +98,13 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     @Override
     public PreparationStream perform(Consumer<ParsedInstruction<?, ?, ?, ?>> consumer) {
         logger.info("Performing operation on instructions" + getDescription());
-        for (ParsedObject obj : stream.file) {
-            if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
-                if (test(ins)) {
-                    logger.info("Performing on " + ins);
-                    consumer.accept(ins);
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
+                    if (test(ins)) {
+                        logger.info("Performing on " + ins);
+                        consumer.accept(ins);
+                    }
                 }
             }
         }
