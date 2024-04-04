@@ -34,10 +34,14 @@ import java.util.function.Supplier;
 
 public class LabelArgument extends ParsedArgument<Integer> {
 
+    private final String cleanString;
+
     public LabelArgument(String originalString) throws BadArgumentASMException {
-        super(originalString.strip().toUpperCase());
+        super(originalString);
 
         if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingLabel"));
+
+        cleanString = originalString.strip().toUpperCase();
 
     }
 
@@ -48,12 +52,12 @@ public class LabelArgument extends ParsedArgument<Integer> {
 
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
-        return stateContainer.getAccessibleLabels().get(originalString);
+        return stateContainer.getAccessibleLabels().get(cleanString);
     }
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        if (stateSupplier.get().getAccessibleLabels().get(originalString) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
+        if (stateSupplier.get().getAccessibleLabels().get(cleanString) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
 
         super.verify(stateSupplier);
     }

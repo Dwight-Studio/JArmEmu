@@ -92,7 +92,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
             e.setStackTrace(exception.getStackTrace());
             throw e;
         } catch (InvocationTargetException exception) {
-            if (exception.getCause() instanceof ASMException ex) throw ex;
+            if (exception.getTargetException() instanceof ASMException ex) throw ex;
             throw new RuntimeException(exception.getTargetException());
         }
     }

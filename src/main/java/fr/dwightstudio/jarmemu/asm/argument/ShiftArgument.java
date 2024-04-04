@@ -41,18 +41,20 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
     private boolean rrx;
     private ImmediateOrRegisterArgument argument;
 
+    private String cleanString;
+
     public ShiftArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
         if (originalString != null) {
-            originalString = originalString.toUpperCase();
+            cleanString = originalString.toUpperCase();
             try {
-                type = originalString.substring(0, 3);
-                shift = originalString.substring(3).strip();
+                type = cleanString.substring(0, 3);
+                shift = cleanString.substring(3).strip();
 
-                if (originalString.length() == 3) {
+                if (cleanString.length() == 3) {
                     rrx = true;
-                    if (originalString.equals("RRX")) {
+                    if (cleanString.equals("RRX")) {
                         func = (stateContainer, i) -> {
                             i = Integer.rotateRight(i, 1);
                             boolean c = ((i >> 31) & 1) == 1;

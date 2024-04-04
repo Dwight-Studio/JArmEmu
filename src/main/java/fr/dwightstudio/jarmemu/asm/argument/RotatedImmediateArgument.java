@@ -50,7 +50,7 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
                 checkOverflow(value, originalString);
 
             } else if (originalString.startsWith("=")) {
-                throw new RuntimeException(JArmEmuApplication.formatMessage("%exception.argument.unprocessedPseudo"));
+                throw new IllegalStateException(JArmEmuApplication.formatMessage("%exception.argument.unprocessedPseudo"));
             } else {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidRotatedValue", originalString));
             }

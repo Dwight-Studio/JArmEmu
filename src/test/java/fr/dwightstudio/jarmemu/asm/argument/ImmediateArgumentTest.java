@@ -23,5 +23,29 @@
 
 package fr.dwightstudio.jarmemu.asm.argument;
 
-public class ImmediateArgumentTest {
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+public class ImmediateArgumentTest extends ArgumentTest<Integer> {
+    public ImmediateArgumentTest() {
+        super(ImmediateArgument.class);
+    }
+
+    @Test
+    public void normalTest() throws ASMException {
+        Assertions.assertEquals(2047, parse("#2047"));
+        Assertions.assertEquals(256, parse("#256"));
+        Assertions.assertEquals(-2048, parse("#-2048"));
+        Assertions.assertEquals(0, parse("#00000"));
+    }
+
+    @Test
+    public void overflowTest() {
+        Assertions.assertThrows(SyntaxASMException.class, () -> parse("#-2049"));
+        Assertions.assertThrows(SyntaxASMException.class, () -> parse("#4096"));
+        Assertions.assertThrows(SyntaxASMException.class, () -> parse("#2048"));
+        Assertions.assertThrows(SyntaxASMException.class, () -> parse("#4096"));
+    }
 }

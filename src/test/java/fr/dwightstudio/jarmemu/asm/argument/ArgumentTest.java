@@ -40,15 +40,19 @@ public class ArgumentTest<T> {
     @BeforeEach
     void setUp() {
         stateContainer = new StateContainer();
+        stateContainer.clearAndInitFiles(1);
     }
 
-    protected T parse(String s) {
+    protected T parse(String s) throws ASMException {
             try {
                 ParsedArgument<T> arg = parsedArgumentClass.getDeclaredConstructor(String.class).newInstance(s);
                 arg.contextualize(stateContainer);
+                arg.verify(() -> new StateContainer(stateContainer));
                 return arg.getValue(stateContainer);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException | ASMException e) {
+            } catch (InvocationTargetException e) {
+                if (e.getTargetException() instanceof ASMException ex) throw ex;
+                throw new RuntimeException(e.getTargetException());
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
     }
