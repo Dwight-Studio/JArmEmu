@@ -87,9 +87,13 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
             this.arg3 = arg3Temp;
             this.arg4 = arg4Temp;
 
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException exception) {
-            throw new RuntimeException("Incorrect state: can't find ParsedArgument constructor");
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException exception) {
+            RuntimeException e = new RuntimeException("Incorrect state: can't find ParsedArgument constructor (" + exception + ")");
+            e.setStackTrace(exception.getStackTrace());
+            throw e;
+        } catch (InvocationTargetException exception) {
+            if (exception.getCause() instanceof ASMException ex) throw ex;
+            throw new RuntimeException(exception.getTargetException());
         }
     }
 
@@ -178,6 +182,11 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         return this;
     }
 
+    public ParsedInstruction<A, B, C, D> withFile(ParsedFile parsedFile) {
+        setFile(parsedFile);
+        return this;
+    }
+
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " at " + getFilePos();
@@ -186,6 +195,8 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof ParsedInstruction<?, ?, ?, ?> pInst)) return false;
+
+        if (!(this.getClass().isInstance(pInst))) return false;
 
         if (!(pInst.updateFlags == this.updateFlags)) {
             if (ParsedObject.VERBOSE) logger.info("Difference: Flags");
@@ -223,18 +234,22 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
         if (!(pInst.arg1.equals(arg1))) {
             if (VERBOSE) logger.info("Difference: Arg1");
+            return false;
         }
 
         if (!(pInst.arg2.equals(arg2))) {
             if (VERBOSE) logger.info("Difference: Arg2");
+            return false;
         }
 
         if (!(pInst.arg3.equals(arg3))) {
             if (VERBOSE) logger.info("Difference: Arg3");
+            return false;
         }
 
         if (!(pInst.arg4.equals(arg4))) {
             if (VERBOSE) logger.info("Difference: Arg4");
+            return false;
         }
 
         return true;

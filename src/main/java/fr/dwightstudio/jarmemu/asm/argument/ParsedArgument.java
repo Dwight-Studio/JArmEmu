@@ -28,8 +28,10 @@ import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class ParsedArgument<T> extends ParsedObject implements Contextualized {
@@ -65,5 +67,16 @@ public abstract class ParsedArgument<T> extends ParsedObject implements Contextu
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         getValue(stateSupplier.get());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this.getClass().isInstance(obj)) {
+            ParsedArgument<?> arg = (ParsedArgument<?>) obj;
+            if (originalString == null) {
+                return arg.originalString == null;
+            }
+            return originalString.equalsIgnoreCase(arg.originalString);
+        } else return false;
     }
 }

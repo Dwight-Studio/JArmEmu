@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.instruction.MOVInstruction;
 import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
@@ -84,6 +85,11 @@ public class CodePreparator {
         for (ParsedFile file : parsedFiles) {
             for (ParsedObject obj : file) {
                 try {
+                    if (obj instanceof MOVInstruction ins) {
+                        if (ins.isShiftInstruction()) {
+                            obj = ins.getShiftInstruction();
+                        }
+                    }
                     if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                         instructionMemory.add(ins);
                         lastMem = instructionMemory.size();

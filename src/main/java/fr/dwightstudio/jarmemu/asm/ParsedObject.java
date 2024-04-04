@@ -65,7 +65,7 @@ public abstract class ParsedObject {
      * @return la position dans le programme (fichier et ligne)
      */
     public FilePos getFilePos() {
-        return new FilePos(file.getIndex(), lineNumber).freeze();
+        return new FilePos(file == null ? -1 : file.getIndex(), lineNumber).freeze();
     }
 
     /**

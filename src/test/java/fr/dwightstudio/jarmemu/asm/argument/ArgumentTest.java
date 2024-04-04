@@ -21,31 +21,35 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.asm.argument;
 
-public enum Section {
-    NONE(false, false),
-    BSS(true, false), // Uninitialized read-write data.
-    COMMENT(false, false), // Version control information.
-    DATA(true, true), // Initialized read-write data.
-    RODATA(true, true), // Read-only data.
-    TEXT(false, false), // Executable instructions.
-    NOTE(false, false), // Special information from vendors or system builders.
-    END(false, false); // End of source file.
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.junit.jupiter.api.BeforeEach;
 
-    private final boolean onlyDirective;
-    private final boolean dataInitialisation;
+import java.lang.reflect.InvocationTargetException;
 
-    Section(boolean onlyDirective, boolean dataInitialisation) {
-        this.onlyDirective = onlyDirective;
-        this.dataInitialisation = dataInitialisation;
+public class ArgumentTest<T> {
+    private final Class<? extends ParsedArgument<T>> parsedArgumentClass;
+    protected StateContainer stateContainer;
+
+    public ArgumentTest(Class<? extends ParsedArgument<T>> parsedArgumentClass) {
+        this.parsedArgumentClass = parsedArgumentClass;
     }
 
-    public boolean onlyDirectivesAllowed() {
-        return onlyDirective;
+    @BeforeEach
+    void setUp() {
+        stateContainer = new StateContainer();
     }
 
-    public boolean allowDataInitialisation() {
-        return dataInitialisation;
+    protected T parse(String s) {
+            try {
+                ParsedArgument<T> arg = parsedArgumentClass.getDeclaredConstructor(String.class).newInstance(s);
+                arg.contextualize(stateContainer);
+                return arg.getValue(stateContainer);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                     NoSuchMethodException | ASMException e) {
+                throw new RuntimeException(e);
+            }
     }
 }

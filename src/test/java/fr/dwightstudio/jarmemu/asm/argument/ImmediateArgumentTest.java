@@ -21,31 +21,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.asm.argument;
 
-public enum Section {
-    NONE(false, false),
-    BSS(true, false), // Uninitialized read-write data.
-    COMMENT(false, false), // Version control information.
-    DATA(true, true), // Initialized read-write data.
-    RODATA(true, true), // Read-only data.
-    TEXT(false, false), // Executable instructions.
-    NOTE(false, false), // Special information from vendors or system builders.
-    END(false, false); // End of source file.
-
-    private final boolean onlyDirective;
-    private final boolean dataInitialisation;
-
-    Section(boolean onlyDirective, boolean dataInitialisation) {
-        this.onlyDirective = onlyDirective;
-        this.dataInitialisation = dataInitialisation;
-    }
-
-    public boolean onlyDirectivesAllowed() {
-        return onlyDirective;
-    }
-
-    public boolean allowDataInitialisation() {
-        return dataInitialisation;
-    }
+public class ImmediateArgumentTest {
 }

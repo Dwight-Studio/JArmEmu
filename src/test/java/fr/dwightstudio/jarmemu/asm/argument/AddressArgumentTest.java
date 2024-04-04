@@ -21,10 +21,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.parse.args;
+package fr.dwightstudio.jarmemu.asm.argument;
 
-import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +34,13 @@ import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class AddressParserTest extends JArmEmuTest {
-    private StateContainer stateContainer;
-    private static final AddressParser ADDRESS = new AddressParser();
-    private static final ShiftParser SHIFT = new ShiftParser();
+public class AddressArgumentTest extends ArgumentTest<AddressArgument.UpdatableInteger> {
+
     private boolean testR4 = true;
+
+    public AddressArgumentTest() {
+        super(AddressArgument.class);
+    }
 
     @BeforeEach
     public void setUp() {
@@ -51,109 +54,117 @@ class AddressParserTest extends JArmEmuTest {
         stateContainer.getSPSR().setData(17);
     }
 
-    private void testAllRegister(Function<Integer, String> repFunc, Function<Integer, Integer> testFunc, BiConsumer<Integer, AddressParser.UpdatableInteger> beforeFunc, BiConsumer<Integer, AddressParser.UpdatableInteger> afterFunc) {
+    private void testAllRegister(Function<Integer, String> repFunc, Function<Integer, Integer> testFunc, boolean applyShift, BiConsumer<Integer, AddressArgument.UpdatableInteger> afterFunc) throws ASMException {
         for (int i = 0 ; i < 16 ; i++) {
             if (i == 4 && !testR4) continue;
-            AddressParser.UpdatableInteger integer = ADDRESS.parse(stateContainer, repFunc.apply(i));
-            assertEquals(testFunc.apply(i), integer.toInt());
-            beforeFunc.accept(i, integer);
+            AddressArgument address = new AddressArgument(repFunc.apply(i));
+            ShiftArgument shift = new ShiftArgument("LSL#2");
+            
+            address.contextualize(stateContainer);
+            shift.contextualize(stateContainer);
+            
+            AddressArgument.UpdatableInteger integer = address.getValue(stateContainer);
+
+            Assertions.assertEquals(testFunc.apply(i), integer.toInt());
+            
+            if (applyShift) shift.getValue(stateContainer).apply(integer.toInt());
             integer.update();
             afterFunc.accept(i, integer);
         }
     }
 
     @Test
-    public void simpleTest() {
+    public void simpleTest() throws ASMException {
         testAllRegister(
                 i -> "[R" + i + "]",
                 i -> stateContainer.getRegister(i).getData(),
-                (i, in) -> {},
+                false,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == i));
     }
 
     @Test
-    public void constOffsetTest() {
+    public void constOffsetTest() throws ASMException {
         testAllRegister(
                 i -> "[R" + i + ",#4]",
                 i -> stateContainer.getRegister(i).getData()+4,
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == i + 4));
     }
 
     @Test
-    public void varOffsetTest() {
+    public void varOffsetTest() throws ASMException {
         testAllRegister(
                 i -> "[R" + i + ",R4]",
                 i -> stateContainer.getRegister(i).getData() + stateContainer.getRegister(4).getData(),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == stateContainer.getRegister(i).getData() + stateContainer.getRegister(4).getData()));
     }
 
     @Test
-    public void shiftedOffsetTest() {
+    public void shiftedOffsetTest() throws ASMException {
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]",
                 i -> stateContainer.getRegister(i).getData() + (stateContainer.getRegister(4).getData() << 1),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i && in.toInt() == stateContainer.getRegister(i).getData() + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
-    public void preUpdatedConstOffsetTest() {
+    public void preUpdatedConstOffsetTest() throws ASMException {
         testAllRegister(
                 i -> "[R" + i + ",#4]!",
                 i -> i+4,
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i+4 && in.toInt() == i + 4));
     }
 
     @Test
-    public void preUpdatedVarOffsetTest() {
+    public void preUpdatedVarOffsetTest() throws ASMException {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4]!",
                 i -> i + stateContainer.getRegister(4).getData(),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + stateContainer.getRegister(4).getData() && in.toInt() == i + stateContainer.getRegister(4).getData()));
     }
 
     @Test
-    public void preUpdatedShiftedOffsetTest() {
+    public void preUpdatedShiftedOffsetTest() throws ASMException {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
                 i -> i + (stateContainer.getRegister(4).getData() << 1),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
-    public void postUpdatedConstOffsetTest() {
+    public void postUpdatedConstOffsetTest() throws ASMException {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
                 i -> i + (stateContainer.getRegister(4).getData() << 1),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
-    public void postUpdatedVarOffsetTest() {
+    public void postUpdatedVarOffsetTest() throws ASMException {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
                 i -> i + (stateContainer.getRegister(4).getData() << 1),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 
     @Test
-    public void postUpdatedShiftedOffsetTest() {
+    public void postUpdatedShiftedOffsetTest() throws ASMException {
         testR4 = false;
         testAllRegister(
                 i -> "[R" + i + ",R4,LSL#1]!",
                 i -> i + (stateContainer.getRegister(4).getData() << 1),
-                (i, in) -> SHIFT.parse(stateContainer, "LSL#2").apply(in.toInt()),
+                true,
                 (i, in) -> assertTrue(stateContainer.getRegister(i).getData() == i + (stateContainer.getRegister(4).getData() << 1) && in.toInt() == i + (stateContainer.getRegister(4).getData() << 1)));
     }
 }

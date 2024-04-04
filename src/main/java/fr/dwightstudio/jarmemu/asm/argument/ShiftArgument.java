@@ -123,7 +123,7 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
         if (originalString != null) {
             return new ShiftFunction(stateContainer, func);
         } else {
-            return new ShiftFunction(new StateContainer(), (StateContainer, i) -> i);
+            return new ShiftFunction(null, (StateContainer, i) -> i);
         }
     }
 
@@ -138,7 +138,7 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
         }
     }
 
-    public class ShiftFunction {
+    public static class ShiftFunction {
 
         private final StateContainer stateContainer;
         private final BiFunction<StateContainer, Integer, Integer> shift;
@@ -153,7 +153,7 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
         public final int apply(int i) {
             if (called) throw new IllegalStateException("ShiftFunctions are single-use functions");
             int rtn = this.shift.apply(stateContainer, i);
-            stateContainer.setAddressRegisterUpdateValue(rtn);
+            if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
             called = true;
             return rtn;
         }

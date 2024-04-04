@@ -21,11 +21,11 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.sim.parse;
+package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,7 +38,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class RegexSourceParserTest extends JArmEmuTest {
+public class LegacySourceParserTest extends JArmEmuTest {
 
     StateContainer container;
 
@@ -51,8 +51,8 @@ public class RegexSourceParserTest extends JArmEmuTest {
     public void TestFormatLine() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/singleLine.s")).toURI());
 
-        RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file, 0));
-        parser.currentSection.setValue(Section.TEXT);
+        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(OInstruction.ADD, Condition.AL, false, null, null, "R1", "R0", null, null, 0),
@@ -63,14 +63,15 @@ public class RegexSourceParserTest extends JArmEmuTest {
                 new ParsedInstruction(OInstruction.ADC, Condition.CC, true, null, null, "R2", "R1", "R3", null, 0),
                 parser.parseOneLine()
         );
+
     }
 
     @Test
     public void TestReadInstruction() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
 
-        RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file, 0));
-        parser.currentSection.setValue(Section.TEXT);
+        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R2]", null, null, 0),
@@ -93,8 +94,8 @@ public class RegexSourceParserTest extends JArmEmuTest {
     public void TestReadInstructionSub() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
 
-        RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file, 0));
-        parser.currentSection.setValue(Section.TEXT);
+        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(OInstruction.SUB, Condition.AL, false, null, null, "r2", "r0", "r1", null, 0),
@@ -111,8 +112,8 @@ public class RegexSourceParserTest extends JArmEmuTest {
     public void TestReadInstructionComplexer() throws URISyntaxException, IOException {
         File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
 
-        RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file, 0));
-        parser.currentSection.setValue(Section.TEXT);
+        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
+        parser.currentSection = Section.TEXT;
 
         assertEquals(
                 new ParsedInstruction(OInstruction.ADD, Condition.CC, true, null, null, "r0", "r9", "#2", null, 0),
@@ -172,16 +173,21 @@ public class RegexSourceParserTest extends JArmEmuTest {
 
     @Test
     public void TestReadDirectives() throws URISyntaxException, IOException {
-        File file = new File(Objects.requireNonNull(getClass().getResource("/directiveMultipleLines.s")).toURI());
+        File file = new File(Objects.requireNonNull(getClass().getResource("/directiveMultipleLinesLegacy.s")).toURI());
 
-        RegexSourceParser parser = new RegexSourceParser(new SourceScanner(file, 0));
+        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
 
-        ParsedDirectivePack parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedSection(Section.BSS));
-        parsedDirectivePack.add(new ParsedSection(Section.DATA));
+        ParsedDirectivePack parsedDirectivePack;
+        parser.parseOneLine();
         assertEquals(
-                parsedDirectivePack.close(),
-                parser.parseOneLine()
+                Section.BSS,
+                parser.currentSection
+        );
+
+        parser.parseOneLine();
+        assertEquals(
+                Section.DATA,
+                parser.currentSection
         );
 
         assertEquals(
@@ -189,15 +195,29 @@ public class RegexSourceParserTest extends JArmEmuTest {
                 parser.parseOneLine()
         );
 
+        parser.currentSection = Section.TEXT;
         assertEquals(
-                new ParsedDirectiveLabel("A", Section.DATA),
+                new ParsedLabel("A"),
+                parser.parseOneLine()
+        );
+
+        parser.currentSection = Section.DATA;
+        parsedDirectivePack = new ParsedDirectivePack();
+        parsedDirectivePack.add(new ParsedDirectiveLabel("b", Section.DATA));
+        parsedDirectivePack.add(new ParsedDirective(Directive.WORD, "3", Section.DATA));
+        assertEquals(
+                parsedDirectivePack.close(),
                 parser.parseOneLine()
         );
 
         parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirectiveLabel("b", Section.DATA));
-        parsedDirectivePack.add(new ParsedDirective(Directive.WORD, "3", Section.DATA));
         parsedDirectivePack.add(new ParsedDirective(Directive.BYTE, "'x'", Section.DATA));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        parsedDirectivePack = new ParsedDirectivePack();
         parsedDirectivePack.add(new ParsedDirective(Directive.GLOBAL, "Test", Section.DATA));
         assertEquals(
                 parsedDirectivePack.close(),
@@ -206,6 +226,12 @@ public class RegexSourceParserTest extends JArmEmuTest {
 
         parsedDirectivePack = new ParsedDirectivePack();
         parsedDirectivePack.add(new ParsedDirective(Directive.ASCII, "", Section.DATA));
+        assertEquals(
+                parsedDirectivePack.close(),
+                parser.parseOneLine()
+        );
+
+        parsedDirectivePack = new ParsedDirectivePack();
         parsedDirectivePack.add(new ParsedDirective(Directive.ASCIZ, "\"\"", Section.DATA));
         assertEquals(
                 parsedDirectivePack.close(),
@@ -217,14 +243,16 @@ public class RegexSourceParserTest extends JArmEmuTest {
                 parser.parseOneLine()
         );
 
+        parser.parseOneLine();
         assertEquals(
-                new ParsedSection(Section.DATA),
-                parser.parseOneLine()
+                Section.DATA,
+                parser.currentSection
         );
 
+        parser.parseOneLine();
         assertEquals(
-                new ParsedSection(Section.COMMENT),
-                parser.parseOneLine()
+                Section.COMMENT,
+                parser.currentSection
         );
 
         assertNull(
@@ -236,9 +264,10 @@ public class RegexSourceParserTest extends JArmEmuTest {
                 parser.parseOneLine()
         );
 
+        parser.parseOneLine();
         assertEquals(
-                new ParsedSection(Section.TEXT),
-                parser.parseOneLine()
+                Section.TEXT,
+                parser.currentSection
         );
 
         assertEquals(
@@ -246,9 +275,11 @@ public class RegexSourceParserTest extends JArmEmuTest {
                 parser.parseOneLine()
         );
 
+        parser.parseOneLine();
         assertEquals(
-                new ParsedSection(Section.END),
-                parser.parseOneLine()
+                Section.END,
+                parser.currentSection
         );
     }
+
 }

@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 
 import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
+import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.*;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
@@ -33,23 +34,6 @@ import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 //FIXME: Ajouter la transcription en Shift
-
-/*
-    public ParsedInstruction convertMovToShift(StateContainer stateContainer) {
-        if (this.instruction == OInstruction.MOV) {
-            ArgumentParser[] argParsers = instruction.getArgParsers();
-            if (originalArgs[2] == null) return this;
-            if (argParsers[2].parse(stateContainer, originalArgs[2].toUpperCase()) instanceof ShiftParser.ShiftFunction){
-                try {
-                    return new ParsedInstruction(OInstruction.valueOf(originalArgs[2].substring(0, 3).toUpperCase()), this.condition, this.updateFlags, this.dataMode, this.updateMode, originalArgs[0], originalArgs[1], originalArgs[2].substring(3), null, fileIndex);
-                } catch (Exception e) {
-                    logger.severe(e.getMessage());
-                }
-            }
-        }
-        return this;
-    }
- */
 
 public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftArgument.ShiftFunction, Object> {
     public MOVInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -101,5 +85,14 @@ public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     @Override
     protected void verify(StateContainer stateContainer, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) {
 
+    }
+
+    public boolean isShiftInstruction() {
+        return this.arg3.getOriginalString() != null;
+    }
+
+    public ParsedInstruction<?, ?, ?, ?> getShiftInstruction() throws ASMException {
+        String argString = this.arg3.getOriginalString();
+        return Instruction.valueOf(argString.substring(0, 3)).create(this.condition, this.updateFlags, this.dataMode, this.updateMode, arg1.getOriginalString(), arg2.getOriginalString(), argString.substring(3), arg4.getOriginalString()).withLineNumber(this.getLineNumber()).withFile(this.getFile());
     }
 }

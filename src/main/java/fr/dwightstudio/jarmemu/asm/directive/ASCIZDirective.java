@@ -40,7 +40,13 @@ public class ASCIZDirective extends ParsedDirective {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        asciiDirective = new ASCIIDirective(section, args + '\0');
+        if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
+            asciiDirective = new ASCIIDirective(section, "\"" + args.substring(1,args.length()-1) + "\0\"");
+        } else if (!args.isBlank()) {
+            throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+        } else {
+            asciiDirective = new ASCIIDirective(section, args);
+        }
     }
 
     @Override

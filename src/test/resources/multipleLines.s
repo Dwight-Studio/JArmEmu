@@ -1,3 +1,4 @@
+.TEXT
 ADDCCS r0, r9, #2
     MLAEQ r0, r0,r1,    r2
   SMLALALS r4, r5, r6, r7

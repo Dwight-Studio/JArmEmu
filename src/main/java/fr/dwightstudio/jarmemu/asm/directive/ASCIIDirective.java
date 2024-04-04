@@ -49,8 +49,10 @@ public class ASCIIDirective extends ParsedDirective {
 
             byteDirective = new ByteDirective(section, writingString.chars().mapToObj(String::valueOf).collect(Collectors.joining(", ")));
 
-        } else {
+        } else if (!args.isBlank()) {
             throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+        } else {
+            byteDirective = new ByteDirective(section, args);
         }
     }
 

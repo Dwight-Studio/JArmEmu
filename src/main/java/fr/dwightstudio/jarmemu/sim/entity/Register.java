@@ -65,7 +65,7 @@ public class Register {
     }
 
     public void add(int value) {
-        dataProperty.add(value);
+        dataProperty.setValue(dataProperty.get() + value);
     }
 
     public boolean isPSR() {
