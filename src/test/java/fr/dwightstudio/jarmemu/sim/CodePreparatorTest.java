@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.ADDInstruction;
@@ -36,7 +37,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class CodePreparatorTest {
+public class CodePreparatorTest extends JArmEmuTest {
 
     CodePreparator codePreparator;
     StateContainer stateContainer;

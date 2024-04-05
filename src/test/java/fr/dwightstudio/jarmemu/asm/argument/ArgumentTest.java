@@ -23,13 +23,14 @@
 
 package fr.dwightstudio.jarmemu.asm.argument;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 
 import java.lang.reflect.InvocationTargetException;
 
-public class ArgumentTest<T> {
+public class ArgumentTest<T> extends JArmEmuTest {
     private final Class<? extends ParsedArgument<T>> parsedArgumentClass;
     protected StateContainer stateContainer;
 
