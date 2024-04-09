@@ -21,32 +21,23 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.inst;
+package fr.dwightstudio.jarmemu.asm.instruction;
 
-import fr.dwightstudio.jarmemu.JArmEmuTest;
+import fr.dwightstudio.jarmemu.asm.argument.ShiftArgument;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ADCExecutorTest extends JArmEmuTest {
+class ADCInstructionTest extends InstructionTest<Register, Register, Integer, ShiftArgument.ShiftFunction> {
 
-    private StateContainer stateContainer;
-    private StateContainer stateContainerBis;
-    private ADCExecutor adcExecutor;
-
-    @BeforeEach
-    public void setUp() {
-        stateContainer = new StateContainer();
-        stateContainerBis = new StateContainer();
-        adcExecutor = new ADCExecutor();
+    public ADCInstructionTest() {
+        super(ADCInstruction.class);
     }
 
     @Test
-    public void simpleAdcTest() {
+    public void simpleAdcTest() throws ASMException {
         stateContainer.getRegister(0).setData(25);
         Register r0 = stateContainerBis.getRegister(0);
         r0.setData(99);
@@ -54,11 +45,11 @@ public class ADCExecutorTest extends JArmEmuTest {
         r1.setData(5);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(20);
-        adcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
+        execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), stateContainerBis.getRegister(0).getData());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
-        adcExecutor.execute(stateContainerBis, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainerBis, false, true, null, null, r2, r1, r0.getData(), shift());
         assertFalse(stateContainerBis.getCPSR().getN());
         assertTrue(stateContainerBis.getCPSR().getZ());
         assertTrue(stateContainerBis.getCPSR().getC());
@@ -66,7 +57,7 @@ public class ADCExecutorTest extends JArmEmuTest {
         stateContainer.getRegister(0).setData(26);
         r1.setData(5);
         r2.setData(20);
-        adcExecutor.execute(stateContainerBis, false, true, null, null, r0, r1, r2.getData(), shift());
+        execute(stateContainerBis, false, true, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), stateContainerBis.getRegister(0).getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -75,7 +66,7 @@ public class ADCExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    public void shiftRegisterTest() {
+    public void shiftRegisterTest() throws ASMException {
         stateContainer.getRegister(0).setData(560);
         Register r0 = stateContainerBis.getRegister(0);
         r0.setData(99);
@@ -83,52 +74,51 @@ public class ADCExecutorTest extends JArmEmuTest {
         r1.setData(13);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(456);
-        adcExecutor.execute(stateContainerBis, false, false, null, null, r0, r2, r1.getData(), shift(stateContainerBis, "LSL#3"));
+        execute(stateContainerBis, false, false, null, null, r0, r2, r1.getData(), shift(stateContainerBis, "LSL#3"));
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
-        adcExecutor.execute(stateContainerBis, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainerBis, false, true, null, null, r2, r1, r0.getData(), shift());
         stateContainer.getRegister(0).setData(561);
         r1.setData(13);
         r2.setData(456);
-        adcExecutor.execute(stateContainerBis, false, false, null, null, r0, r2, r1.getData(), shift(stateContainerBis, "LSL#3"));
+        execute(stateContainerBis, false, false, null, null, r0, r2, r1.getData(), shift(stateContainerBis, "LSL#3"));
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
     @Test
-    public void flagsTest() {
+    public void flagsTest() throws ASMException {
         Register r0 = stateContainer.getRegister(0);
         Register r1 = stateContainer.getRegister(1);
         Register r2 = stateContainer.getRegister(2);
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
-        adcExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
         assertTrue(stateContainer.getCPSR().getC());
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(0);
-        adcExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         assertFalse(stateContainer.getCPSR().getC());
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
-        adcExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         assertTrue(stateContainer.getCPSR().getC());
         assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
-        adcExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
         assertTrue(stateContainer.getCPSR().getC());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0);
-        adcExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         assertTrue(stateContainer.getCPSR().getC());
         assertFalse(stateContainer.getCPSR().getV());
     }
-
 }

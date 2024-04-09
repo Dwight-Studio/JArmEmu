@@ -32,6 +32,14 @@
     <metadata_license>CC0-1.0</metadata_license>
     <content_rating type="oars-1.1"/>
     <url type="homepage">https://dwightstudio.fr/jarmemu</url>
+    <url type="bugtracker">https://github.com/Dwight-Studio/JArmEmu/issues</url>
+    <url type="vcs-browser">https://github.com/Dwight-Studio/JArmEmu</url>
+    <url type="help">https://discord.dwightstudio.fr</url>
+    <requires>
+        <control>keyboard</control>
+        <control>pointing</control>
+        <display_length compare="ge">medium</display_length>
+    </requires>
     <description>
         <p>JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a
             simulated ARMv7 architecture.

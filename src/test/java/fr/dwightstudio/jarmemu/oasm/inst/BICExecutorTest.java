@@ -54,7 +54,7 @@ public class BICExecutorTest extends JArmEmuTest {
         r1.setData(0b00000000000000000000000011111111);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(0b00000000000000000000000000000011);
-        bicExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        bicExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -65,13 +65,13 @@ public class BICExecutorTest extends JArmEmuTest {
         Register r2 = stateContainer.getRegister(2);
         r0.setData(0b11111111111111100000000000000000);
         r1.setData(0b00000000000000011111111111111111);
-        bicExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        bicExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0b11111111111111100000000000000000, r2.getData());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        bicExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), ArgumentParsers.SHIFT.none());
+        bicExecutor.execute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());

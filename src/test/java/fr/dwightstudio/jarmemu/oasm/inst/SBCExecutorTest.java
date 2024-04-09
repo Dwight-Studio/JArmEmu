@@ -54,23 +54,23 @@ public class SBCExecutorTest extends JArmEmuTest {
         r1.setData(5);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(20);
-        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainer.getRegister(0).setData(0b01111111111111111111111111111110);
         r1.setData(0b10000000000000000000000000000000);
         r2.setData(1);
-        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainerBis.getCPSR().setC(true);
         r1.setData(5);
         r2.setData(20);
         stateContainer.getRegister(0).setData(-15);
-        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainer.getRegister(0).setData(0b01111111111111111111111111111111);
         r1.setData(0b10000000000000000000000000000000);
         r2.setData(1);
-        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -81,7 +81,7 @@ public class SBCExecutorTest extends JArmEmuTest {
         Register r2 = stateContainer.getRegister(2);
         r0.setData(0b10000000000000000000000000000000);
         r1.setData(1);
-        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0b01111111111111111111111111111110, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -89,7 +89,7 @@ public class SBCExecutorTest extends JArmEmuTest {
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
@@ -97,7 +97,7 @@ public class SBCExecutorTest extends JArmEmuTest {
         assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0b10000000000000000000000000000000, r2.getData());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -105,7 +105,7 @@ public class SBCExecutorTest extends JArmEmuTest {
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(-2);
-        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        sbcExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());

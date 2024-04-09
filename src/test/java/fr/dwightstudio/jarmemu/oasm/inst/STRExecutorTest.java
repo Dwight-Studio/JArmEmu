@@ -56,11 +56,11 @@ public class STRExecutorTest extends JArmEmuTest {
         r1.setData(104);
         r2.setData(106);
         r3.setData(54);
-        strExecutor.execute(stateContainer, false, false, null, null, r3, new AddressParser.UpdatableInteger(r0.getData(), stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
+        strExecutor.execute(stateContainer, false, false, null, null, r3, new AddressParser.UpdatableInteger(r0.getData(), stateContainer, false, false, null), 0, shift());
         assertEquals(54, stateContainer.getMemory().getWord(100));
-        strExecutor.execute(stateContainer, false, false, HALF_WORD, null, r3, new AddressParser.UpdatableInteger(r1.getData(), stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
+        strExecutor.execute(stateContainer, false, false, HALF_WORD, null, r3, new AddressParser.UpdatableInteger(r1.getData(), stateContainer, false, false, null), 0, shift());
         assertEquals(54, stateContainer.getMemory().getHalf(104));
-        strExecutor.execute(stateContainer, false, false, BYTE, null, r3, new AddressParser.UpdatableInteger(r2.getData(), stateContainer, false, false, null), 0, ArgumentParsers.SHIFT.none());
+        strExecutor.execute(stateContainer, false, false, BYTE, null, r3, new AddressParser.UpdatableInteger(r2.getData(), stateContainer, false, false, null), 0, shift());
         assertEquals(54, stateContainer.getMemory().getByte(106));
     }
 

@@ -54,12 +54,12 @@ public class SUBExecutorTest extends JArmEmuTest {
         r1.setData(5);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(20);
-        subExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), ArgumentParsers.SHIFT.none());
+        subExecutor.execute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainer.getRegister(0).setData(0b01111111111111111111111111111111);
         r0.setData(0b10000000000000000000000000000000);
         r1.setData(1);
-        subExecutor.execute(stateContainerBis, false, false, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        subExecutor.execute(stateContainerBis, false, false, null, null, r2, r0, r1.getData(), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r2.getData());
     }
 
@@ -70,7 +70,7 @@ public class SUBExecutorTest extends JArmEmuTest {
         Register r2 = stateContainer.getRegister(2);
         r0.setData(0b10000000000000000000000000000000);
         r1.setData(1);
-        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0b01111111111111111111111111111111, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -78,7 +78,7 @@ public class SUBExecutorTest extends JArmEmuTest {
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
@@ -86,7 +86,7 @@ public class SUBExecutorTest extends JArmEmuTest {
         assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(0b10000000000000000000000000000000, r2.getData());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -94,7 +94,7 @@ public class SUBExecutorTest extends JArmEmuTest {
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(5);
         r1.setData(3);
-        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), ArgumentParsers.SHIFT.none());
+        subExecutor.execute(stateContainer, false, true, null, null, r2, r0, r1.getData(), shift());
         assertEquals(2, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
