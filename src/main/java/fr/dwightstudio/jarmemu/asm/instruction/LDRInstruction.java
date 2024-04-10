@@ -111,7 +111,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     public boolean isPseudoInstruction() {
-        return ((AddressArgument) arg2).isPseudoInstruction();
+        return arg2 != null && ((AddressArgument) arg2).isPseudoInstruction();
     }
 
     @Override

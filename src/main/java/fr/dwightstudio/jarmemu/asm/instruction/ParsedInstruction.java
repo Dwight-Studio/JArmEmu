@@ -188,6 +188,10 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
     }
 
+    public final void verify(Supplier<StateContainer> stateSupplier, A arg1, B arg2, C arg3, D arg4) throws ASMException {
+        this.verify(stateSupplier.get(), arg1, arg2, arg3, arg4);
+    }
+
     public ParsedInstruction<A, B, C, D> withLineNumber(int lineNumber) {
         setLineNumber(lineNumber);
         return this;

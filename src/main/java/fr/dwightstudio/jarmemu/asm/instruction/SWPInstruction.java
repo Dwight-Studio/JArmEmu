@@ -42,8 +42,9 @@ public class SWPInstruction extends ParsedInstruction<Register, Register, Intege
         throw new SyntaxASMException("SWP instruction is deprecated");
     }
 
-    public SWPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) {
+    public SWPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        throw new SyntaxASMException("SWP instruction is deprecated");
     }
 
     @Override

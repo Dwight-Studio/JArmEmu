@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BFIInstructionTest extends InstructionTest<Register, Register, Integer, Integer> {
 
-    protected BFIInstructionTest(Class<? extends ParsedInstruction<Register, Register, Integer, Integer>> instructionClass) {
-        super(instructionClass);
+    protected BFIInstructionTest() {
+        super(BFIInstruction.class);
     }
 
     @Test
