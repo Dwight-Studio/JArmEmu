@@ -124,7 +124,7 @@
                                 </MenuItem>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.simulation.simulate">
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.simulation.title">
                             <items>
                                 <MenuItem fx:id="menuSimulate" mnemonicParsing="false" onAction="#onSimulate" text="%menu.simulation.simulate" accelerator="F2">
                                     <graphic>
