@@ -42,6 +42,10 @@ public class ADRInstruction extends ParsedInstruction<Register, Integer, Object,
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public ADRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -73,7 +77,7 @@ public class ADRInstruction extends ParsedInstruction<Register, Integer, Object,
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Integer arg2, Object arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Integer arg2, Object arg3, Object arg4) throws ExecutionASMException {
         arg1.setData(arg2);
     }
 

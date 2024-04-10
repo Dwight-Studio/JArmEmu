@@ -39,6 +39,10 @@ public class CMNInstruction extends ParsedInstruction<Register, Integer, ShiftAr
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public CMNInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -70,7 +74,7 @@ public class CMNInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
         int i1 = arg3.apply(arg2);
 
         int result = arg1.getData() + i1; // result = arg1 + (arg3 SHIFT arg2)

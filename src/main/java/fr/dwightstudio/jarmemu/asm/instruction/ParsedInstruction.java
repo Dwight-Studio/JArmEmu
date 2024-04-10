@@ -49,6 +49,17 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     protected final ParsedArgument<C> arg3;
     protected final ParsedArgument<D> arg4;
 
+    public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<A> arg1, ParsedArgument<B> arg2, ParsedArgument<C> arg3, ParsedArgument<D> arg4) {
+        this.condition = condition;
+        this.updateFlags = updateFlags;
+        this.dataMode = dataMode;
+        this.updateMode = updateMode;
+        this.arg1 = arg1;
+        this.arg2 = arg2;
+        this.arg3 = arg3;
+        this.arg4 = arg4;
+    }
+
     public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
             this.condition = condition;
@@ -153,7 +164,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
     }
 
-    protected abstract void execute(StateContainer stateContainer, boolean forceExecution, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
+    protected abstract void execute(StateContainer stateContainer, boolean ignoreExceptions, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
 
     protected abstract void verify(StateContainer stateContainer, A arg1, B arg2, C arg3, D arg4) throws ASMException;
 

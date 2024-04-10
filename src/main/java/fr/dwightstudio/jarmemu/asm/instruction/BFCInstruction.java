@@ -42,6 +42,10 @@ public class BFCInstruction extends ParsedInstruction<Register, Integer, Integer
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public BFCInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -73,7 +77,7 @@ public class BFCInstruction extends ParsedInstruction<Register, Integer, Integer
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Integer arg2, Integer arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Integer arg2, Integer arg3, Object arg4) throws ExecutionASMException {
         if (arg3 == 32) {
             arg1.setData(0);
         } else {

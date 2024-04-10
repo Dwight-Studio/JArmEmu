@@ -41,6 +41,10 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Intege
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public SBCInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -72,7 +76,7 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Register arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
         int carry = stateContainer.getCPSR().getC() ? 0 : 1;
         int shiftedValue = arg4.apply(arg3);
         int i1 = shiftedValue + carry;

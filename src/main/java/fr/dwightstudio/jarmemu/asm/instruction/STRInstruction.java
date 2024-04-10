@@ -39,6 +39,10 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public STRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -70,11 +74,11 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, AddressArgument.UpdatableInteger arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, AddressArgument.UpdatableInteger arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
         int i1 = arg4.apply(arg3);
         int address = arg2.toInt() + i1;
 
-        if (!forceExecution) {
+        if (!ignoreExceptions) {
             int dataLength;
 
             switch (dataMode) {

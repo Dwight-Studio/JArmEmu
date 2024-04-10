@@ -39,6 +39,10 @@ public class BInstruction extends ParsedInstruction<Integer, Object, Object, Obj
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public BInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
         return LabelArgument.class;
@@ -70,7 +74,7 @@ public class BInstruction extends ParsedInstruction<Integer, Object, Object, Obj
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
         if (arg1 == stateContainer.getPC().getData()) throw new StuckExecutionASMException();
         stateContainer.getPC().setData(arg1); // PC = arg1
     }

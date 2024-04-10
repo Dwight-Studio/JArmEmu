@@ -27,6 +27,7 @@ import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Condition;
 import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
+import fr.dwightstudio.jarmemu.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
@@ -72,7 +73,17 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
         }
     }
 
-    protected void execute(StateContainer container, boolean forcedExecution, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, A arg1, B arg2, C arg3, D arg4) throws ASMException {
+    protected Integer label(StateContainer c, String s) {
+        try {
+            LabelArgument arg = new LabelArgument(s);
+            arg.contextualize(c);
+            return arg.getValue(stateContainer);
+        } catch (ASMException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void execute(StateContainer container, boolean ignoreExceptions, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, A arg1, B arg2, C arg3, D arg4) throws ASMException {
         try {
             Constructor<?>[] c = instructionClass.getConstructors();
             ParsedInstruction<A, B, C, D> ins = instructionClass.getDeclaredConstructor(Condition.class,
@@ -84,9 +95,7 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
                             ParsedArgument.class,
                             ParsedArgument.class)
                     .newInstance(Condition.AL, updateFlags, dataMode, updateMode, null, null, null, null);
-
-            ins.verify(() -> new StateContainer(container));
-            ins.execute(container, forcedExecution, arg1, arg2, arg3, arg4);
+            ins.execute(container, ignoreExceptions, arg1, arg2, arg3, arg4);
         } catch (InstantiationException | NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {

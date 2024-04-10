@@ -39,6 +39,10 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public RRXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -70,7 +74,7 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Register arg2, Object arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Object arg3, Object arg4) throws ExecutionASMException {
         int i = Integer.rotateRight(arg2.getData(), 1);
         boolean c = ((i >> 31) & 1) == 1;
         if (stateContainer.getCPSR().getC()) {

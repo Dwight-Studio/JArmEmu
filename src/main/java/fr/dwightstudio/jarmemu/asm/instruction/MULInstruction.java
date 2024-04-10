@@ -39,6 +39,10 @@ public class MULInstruction extends ParsedInstruction<Register, Register, Regist
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public MULInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Register> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -70,7 +74,7 @@ public class MULInstruction extends ParsedInstruction<Register, Register, Regist
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Register arg2, Register arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Register arg3, Object arg4) throws ExecutionASMException {
         arg1.setData(arg2.getData() * arg3.getData()); // arg1 = arg2 * arg3
 
         if (updateFlags) {

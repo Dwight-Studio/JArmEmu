@@ -39,6 +39,10 @@ public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, 
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public BKPTInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
         return ImmediateOrRegisterArgument.class;
@@ -70,8 +74,8 @@ public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, 
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
-        if (!forceExecution) throw new BreakpointASMException(arg1);
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
+        if (!ignoreExceptions) throw new BreakpointASMException(arg1);
     }
 
     @Override

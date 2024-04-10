@@ -40,6 +40,10 @@ public class BXInstruction extends ParsedInstruction<Register, Object, Object, O
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public BXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
@@ -71,7 +75,7 @@ public class BXInstruction extends ParsedInstruction<Register, Object, Object, O
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
         if (arg1.equals(stateContainer.getPC())) throw new StuckExecutionASMException();
         stateContainer.getPC().setData(arg1.getData()); // PC = arg1
         stateContainer.getCPSR().setT(arg1.get(0));

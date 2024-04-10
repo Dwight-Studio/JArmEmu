@@ -33,10 +33,13 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
-//FIXME: Ajouter la transcription en Shift
 
 public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftArgument.ShiftFunction, Object> {
     public MOVInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
+    public MOVInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
@@ -71,7 +74,7 @@ public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
         int i1 = arg3.apply(arg2);
 
         arg1.setData(i1); // arg1 = (arg3 SHIFT arg2)

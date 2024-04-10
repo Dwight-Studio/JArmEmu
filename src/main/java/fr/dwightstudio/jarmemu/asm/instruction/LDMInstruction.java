@@ -41,6 +41,10 @@ public class LDMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
     }
 
+    public LDMInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister> arg1, ParsedArgument<Register[]> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    }
+
     @Override
     protected Class<? extends ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister>> getParsedArg1Class() {
         return RegisterWithUpdateArgument.class;
@@ -72,12 +76,12 @@ public class LDMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean forceExecution, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws ExecutionASMException {
         int length = arg2.length;
         int value = 0;
         int address = arg1.getData();
 
-        if (!forceExecution) {
+        if (!ignoreExceptions) {
             int dataLength = 4;
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
         }
