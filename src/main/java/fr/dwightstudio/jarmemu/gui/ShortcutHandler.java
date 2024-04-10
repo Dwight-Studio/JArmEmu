@@ -45,7 +45,16 @@ public class ShortcutHandler extends AbstractJArmEmuModule {
                     case N -> getMainMenuController().onNewFile();
                 }
             }
+        } else {
+            switch (event.getCode()) {
+                case F2 -> getSimulationMenuController().onSimulate();
+                case F3 -> getSimulationMenuController().onStepInto();
+                case F4 -> getSimulationMenuController().onStepOver();
+                case F5 -> getSimulationMenuController().onContinue();
+                case F6 -> getSimulationMenuController().onPause();
+                case F7 -> getSimulationMenuController().onStop();
+                case F8 -> getSimulationMenuController().onRestart();
+            }
         }
-
     }
 }

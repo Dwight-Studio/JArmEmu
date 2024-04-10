@@ -97,13 +97,12 @@ public class JArmEmuApplication extends Application {
     public Scene scene;
     private String argSave;
 
-    // TODO: Finir l'I18N (Directives)
-    // TODO: Refaire les tests (Instructions, Arguments, Directives)
+    // TODO: Finir l'I18N (Directives et erreurs)
+    // TODO: Refaire les tests (Directives)
     // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
-    // TODO: Ajouter un menu "miroir" du la toolbar dans un onglet "Simulation" avec des raccourcis
-    // TODO: Améliorer les performances d'exécution (en utilisant un stockage des préférences???)
+    // TODO: Améliorer les performances d'exécution (correction du bug multi-fichiers)
 
     @Override
     public void start(Stage stage) throws IOException {
