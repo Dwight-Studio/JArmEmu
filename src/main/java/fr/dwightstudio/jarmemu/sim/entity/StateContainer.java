@@ -103,7 +103,7 @@ public class StateContainer {
     }
 
     public StateContainer() {
-        this(DEFAULT_STACK_ADDRESS,DEFAULT_SYMBOLS_ADDRESS);
+        this(DEFAULT_STACK_ADDRESS, DEFAULT_SYMBOLS_ADDRESS);
     }
 
     public StateContainer(StateContainer stateContainer) {

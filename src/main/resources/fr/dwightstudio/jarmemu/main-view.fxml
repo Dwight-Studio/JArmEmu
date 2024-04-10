@@ -124,6 +124,41 @@
                                 </MenuItem>
                             </items>
                         </Menu>
+                        <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.edit.simulate">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onSimulate" text="%toolbar.simulate" accelerator="F2">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-plagiarism" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onStepInto" text="%toolbar.stepInto" accelerator="F3">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdomz-subdirectory_arrow_left"
+                                                  rotate="-90"/>
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onStepOver" text="%toolbar.stepOver" accelerator="F4">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-redo" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onContinue" text="%toolbar.continue" accelerator="F5">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-play_arrow" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onPause" text="%toolbar.pause" accelerator="F6">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-pause" />
+                                    </graphic>
+                                </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onRestart" text="%toolbar.restart" accelerator="F7">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdmz-rotate_left" />
+                                    </graphic>
+                                </MenuItem>
+                            </items>
+                        </Menu>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.view.title">
                             <items>
                                 <Menu fx:id="memoryOverviewMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"

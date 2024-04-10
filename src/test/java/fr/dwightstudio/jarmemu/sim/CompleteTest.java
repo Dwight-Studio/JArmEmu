@@ -164,7 +164,7 @@ public class CompleteTest extends JArmEmuTest {
                 sources
         ));
 
-        codeInterpreter.initiate(0, 0);
+        codeInterpreter.initiate();
         codeInterpreter.restart();
 
         // Execution

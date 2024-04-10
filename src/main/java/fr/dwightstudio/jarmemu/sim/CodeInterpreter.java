@@ -146,6 +146,17 @@ public class CodeInterpreter {
         return codePreparator.initiate(initialState);
     }
 
+    /**
+     * Initialise le conteneur d'état à l'aide du préparateur de code
+     *
+     * @return les erreurs
+     */
+    public ASMException[] initiate() {
+        logger.info("Initiating state container");
+        initialState = new StateContainer();
+        return codePreparator.initiate(initialState);
+    }
+
     private Register getPC() {
         if (stateContainer == null) {
             throw new IllegalStateException("Can't get PC from null state");
