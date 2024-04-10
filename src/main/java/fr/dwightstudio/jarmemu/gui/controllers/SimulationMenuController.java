@@ -43,6 +43,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSimulate() {
+        if (getController().menuSimulate.isDisable()) return;
+
         getController().toolSimulate.setDisable(true);
         getController().menuSimulate.setDisable(true);
         getEditorController().clearNotifs();
@@ -135,6 +137,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onStepInto() {
+        if (getController().menuStepInto.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().stepInto();
     }
@@ -143,6 +146,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onStepOver() {
+        if (getController().menuStepOver.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().stepOver();
         getController().toolStepInto.setDisable(true);
@@ -163,6 +167,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onContinue() {
+        if (getController().menuContinue.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().conti();
         getController().toolStepInto.setDisable(true);
@@ -184,6 +189,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onPause() {
+        if (getController().menuPause.isDisable()) return;
         getExecutionWorker().pause();
         getController().toolStepInto.setDisable(false);
         getController().menuStepInto.setDisable(false);
@@ -204,6 +210,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onStop() {
+        if (getController().menuStop.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().pause();
         getEditorController().onStop();
@@ -244,6 +251,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onRestart() {
+        if (getController().menuRestart.isDisable()) return;
         getEditorController().clearNotifs();
         getEditorController().clearAllLineMarkings();
 

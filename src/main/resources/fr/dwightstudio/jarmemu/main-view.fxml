@@ -147,12 +147,12 @@
                                         <FontIcon iconLiteral="mdmz-play_arrow" />
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem fx:id="menuPause" disable="true" mnemonicParsing="false" onAction="#onPause" text="%menu.simulation.pause" accelerator="F7">
+                                <MenuItem fx:id="menuPause" disable="true" mnemonicParsing="false" onAction="#onPause" text="%menu.simulation.pause" accelerator="F6">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-pause" />
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem fx:id="menuStop" disable="true" mnemonicParsing="false" onAction="#onStop" text="%menu.simulation.stop" accelerator="F6">
+                                <MenuItem fx:id="menuStop" disable="true" mnemonicParsing="false" onAction="#onStop" text="%menu.simulation.stop" accelerator="F7">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-stop" />
                                     </graphic>
