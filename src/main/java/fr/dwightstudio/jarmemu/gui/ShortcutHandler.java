@@ -34,17 +34,18 @@ public class ShortcutHandler extends AbstractJArmEmuModule {
         if (event.isShortcutDown()) {
             if (event.isShiftDown()) {
                 switch (event.getCode()) {
+                    case S -> getMainMenuController().onSaveAll();
+                    case R -> getMainMenuController().onReloadAll();
+                }
+            } else {
+                switch (event.getCode()) {
                     case S -> getMainMenuController().onSave();
                     case O -> getMainMenuController().onOpen();
                     case R -> getMainMenuController().onReload();
                     case N -> getMainMenuController().onNewFile();
                 }
-            } else {
-                switch (event.getCode()) {
-                    case S -> getMainMenuController().onSaveAll();
-                    case R -> getMainMenuController().onReloadAll();
-                }
             }
         }
+
     }
 }

@@ -102,7 +102,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
-    // TODO: Ajouter un menu "miroir" du la toolbar dans un onglet "Simulation"
+    // TODO: Ajouter un menu "miroir" du la toolbar dans un onglet "Simulation" avec des raccourcis
     // TODO: Améliorer les performances d'exécution (en utilisant un stockage des préférences???)
 
     @Override
