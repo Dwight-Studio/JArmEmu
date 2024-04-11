@@ -21,67 +21,60 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
+import fr.dwightstudio.jarmemu.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class WordExecutorTest {
-
-    WordExecutor WORD = new WordExecutor();
-    StateContainer container;
-
-    @BeforeEach
-    void setUp() {
-        container = new StateContainer();
+class WordDirectiveTest extends DirectiveTest {
+    public WordDirectiveTest() {
+        super(WordDirective.class);
     }
 
     @Test
-    void normalTest() {
+    void normalTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            FilePos pos = new FilePos(0, i*4);
-            WORD.apply(container, "" + r, pos, Section.DATA);
+            execute(container,  Section.DATA, "" + r);
             assertEquals(r, container.getMemory().getWord(i*4));
         }
 
-        FilePos pos = new FilePos(0, 32*4);
-        WORD.apply(container, "'c'", pos, Section.DATA);
+        execute(container,  Section.DATA, "'c'");
         assertEquals(99, container.getMemory().getWord(32*4));
     }
 
     @Test
-    void constTest() {
-        FilePos pos = new FilePos(0, 100);
-        DirectiveExecutors.EQUIVALENT.apply(container, "N, 4", FilePos.ZERO, Section.DATA);
-        WORD.apply(container, "N", pos, Section.DATA);
-        assertEquals(4, container.getMemory().getWord(100));
+    void constTest() throws ASMException {
+        EquivalentDirective dir = new EquivalentDirective(Section.DATA, "N, 4");
+        dir.contextualize(container);
+        dir.execute(container);
+        execute(container,  Section.DATA, "N");
+        assertEquals(4, container.getMemory().getWord(0));
     }
 
     @Test
-    void labelTest() {
-        FilePos pos = new FilePos(0, 100);
-        ParsedDirectiveLabel l = new ParsedDirectiveLabel("TEST", Section.NONE);
-        l.register(container, 99);
-        WORD.apply(container, "=TEST", pos, Section.DATA);
-        assertEquals(99, container.getMemory().getWord(100));
+    void labelTest() throws ASMException {
+        FilePos pos = new FilePos(0, 99);
+        ParsedLabel l = new ParsedLabel(Section.NONE,"TEST");
+        l.register(container, pos);
+        execute(container,  Section.DATA, "=TEST");
+        assertEquals(99, container.getMemory().getWord(0));
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> WORD.apply(container, "12 * 1 * 9^4", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> WORD.apply(container, "HIHI", FilePos.ZERO.clone(), Section.DATA));
+        assertDoesNotThrow(() -> execute(container,  Section.DATA, "12 * 1 * 9^4"));
+        assertThrows(SyntaxASMException.class, () -> execute(container,  Section.BSS, "12 * 1 * 9^4"));
+        assertThrows(SyntaxASMException.class, () -> execute(container,  Section.DATA, "HIHI"));
     }
-
 }

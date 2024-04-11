@@ -42,8 +42,13 @@ public class ByteDirective extends ParsedDirective {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        arg = args.split(",");
-        byteArray = new byte[args.split(",").length];
+        if (args.isBlank()) {
+            arg = new String[0];
+            byteArray = new byte[0];
+        } else {
+            arg = args.split(",");
+            byteArray = new byte[arg.length];
+        }
     }
 
     @Override

@@ -102,7 +102,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
-    // TODO: Améliorer les performances d'exécution (correction du bug multi-fichiers)
 
     @Override
     public void start(Stage stage) throws IOException {

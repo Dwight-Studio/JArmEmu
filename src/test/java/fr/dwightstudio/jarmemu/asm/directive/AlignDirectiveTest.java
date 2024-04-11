@@ -21,46 +21,41 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AlignExecutorTest extends JArmEmuTest {
+public class AlignDirectiveTest extends DirectiveTest {
 
-    AlignExecutor ALIGN = new AlignExecutor();
-    StateContainer container;
-
-    @BeforeEach
-    void setUp() {
-        container = new StateContainer();
+    public AlignDirectiveTest() {
+        super(AlignDirective.class);
     }
 
     @Test
-    void normalTest() {
+    void normalTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i++) {
-            FilePos pos = new FilePos(0, random.nextInt());
+            container.getCurrentFilePos().setPos(random.nextInt());
 
-            ALIGN.computeDataLength(container, "", pos, Section.DATA);
+            execute(container, Section.DATA, "");
 
-            assertEquals(0, pos.getPos() % 4);
+            assertEquals(0, container.getCurrentFilePos().getPos() % 4);
         }
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> ALIGN.apply(container, "", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> ALIGN.apply(container, "HIHI", FilePos.ZERO.clone(), Section.DATA));
+        assertDoesNotThrow(() -> execute(container, Section.DATA, ""));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "HIHI"));
     }
 }

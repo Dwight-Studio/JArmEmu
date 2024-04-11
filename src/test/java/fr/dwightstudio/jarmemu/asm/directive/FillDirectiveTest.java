@@ -21,42 +21,42 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
-import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
-import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
-class FillExecutorTest extends JArmEmuTest {
-
-    FillExecutor FILL = new FillExecutor();
-    StateContainer container;
+class FillDirectiveTest extends DirectiveTest {
+    public FillDirectiveTest() {
+        super(FillDirective.class);
+    }
 
     @BeforeEach
     void setUp() {
-        container = new StateContainer();
-
+        super.setUp();
         for (int i = -1024 ; i < 1024 ; i += 4) {
             container.getMemory().putWord(i, -1);
         }
+
+        container.getCurrentFilePos().setPos(0);
     }
 
     @Test
-    void normalTest() {
+    void normalTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, String.valueOf(r), FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, String.valueOf(r));
 
             for (int j = 0 ; j < r ; j++) {
                 assertEquals((byte) 0, container.getMemory().getByte(j));
@@ -68,14 +68,14 @@ class FillExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    void oneSizeTest() {
+    void oneSizeTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111, 1", FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, r + ", 0b00101111, 1");
 
             for (int j = 0 ; j < r ; j++) {
                 assertEquals((byte) 0b00101111, container.getMemory().getByte(j));
@@ -87,14 +87,14 @@ class FillExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    void twoSizeTest() {
+    void twoSizeTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b0010111100001010, 2", FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, r + ", 0b0010111100001010, 2");
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 2 == 0) assertEquals((byte) 0b00101111, container.getMemory().getByte(j));
@@ -107,14 +107,14 @@ class FillExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    void threeSizeTest() {
+    void threeSizeTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b001011110000101011111111, 3", FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, r + ", 0b001011110000101011111111, 3");
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 3 == 0) assertEquals((byte) 0b00101111, container.getMemory().getByte(j));
@@ -128,14 +128,14 @@ class FillExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    void fourSizeTest() {
+    void fourSizeTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 4", FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, r + ", 0b00101111000010101111111100000001, 4");
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 4 == 0) assertEquals((byte) 0b00101111, container.getMemory().getByte(j));
@@ -150,14 +150,14 @@ class FillExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    void highSizeTest() {
+    void highSizeTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 17", FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, r + ", 0b00101111000010101111111100000001, 17");
 
             for (int j = 0 ; j < r ; j++) {
                 if (j % 17 == 13) assertEquals((byte) 0b00101111, container.getMemory().getByte(j));
@@ -173,14 +173,14 @@ class FillExecutorTest extends JArmEmuTest {
     }
 
     @Test
-    void higherSizeTest() {
+    void higherSizeTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i ++) {
             setUp();
             int r = random.nextInt(100);
 
-            FILL.apply(container, r + ", 0b00101111000010101111111100000001, 123", FilePos.ZERO.clone(), Section.DATA);
+            execute(container, Section.DATA, r + ", 0b00101111000010101111111100000001, 123");
 
             for (int j = 0 ; j < r ; j++) {
                 assertEquals((byte) 0b00000000, container.getMemory().getByte(j));
@@ -191,4 +191,9 @@ class FillExecutorTest extends JArmEmuTest {
         }
     }
 
+    @Test
+    void failTest() {
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.BSS, "1, 2, 123"));
+        assertDoesNotThrow(() -> execute(container, Section.BSS, "1, 0, 123"));
+    }
 }

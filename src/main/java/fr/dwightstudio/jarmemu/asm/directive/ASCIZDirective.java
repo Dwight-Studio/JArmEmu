@@ -36,12 +36,13 @@ public class ASCIZDirective extends ParsedDirective {
     public ASCIZDirective(Section section, @NotNull String args) throws SyntaxASMException {
         super(section, args);
 
-        if (!args.isBlank() && !section.allowDataInitialisation()) {
+        if (!section.allowDataInitialisation()) {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
-            asciiDirective = new ASCIIDirective(section, "\"" + args.substring(1,args.length()-1) + "\0\"");
+            String sep = String.valueOf(args.charAt(0));
+            asciiDirective = new ASCIIDirective(section, sep + args.substring(1,args.length()-1) + "\0" + sep);
         } else if (!args.isBlank()) {
             throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
         } else {

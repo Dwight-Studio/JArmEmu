@@ -86,7 +86,7 @@ public class ParsedLabel extends ParsedObject {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + " at " + getFilePos();
+        return getClass().getSimpleName() + "  (" + name + ") at " + getFilePos();
     }
 
     @Override

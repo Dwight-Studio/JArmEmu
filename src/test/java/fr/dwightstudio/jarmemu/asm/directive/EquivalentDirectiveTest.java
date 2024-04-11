@@ -21,53 +21,47 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
-import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class EquivalentExecutorTest extends JArmEmuTest {
-    EquivalentExecutor EQUIVALENT = new EquivalentExecutor();
-    StateContainer container;
-
-    @BeforeEach
-    void setUp() {
-        container = new StateContainer();
+class EquivalentDirectiveTest extends DirectiveTest {
+    public EquivalentDirectiveTest() {
+        super(EquivalentDirective.class);
     }
 
     @Test
-    void normalTest() {
+    void normalTest() throws ASMException {
         Random random = new Random();
         FilePos posZ = FilePos.ZERO.clone();
+
+        container.getCurrentFilePos().setPos(0);
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
             FilePos pos = new FilePos(0, r);
             String s = RandomStringUtils.randomAlphabetic(i+1).toUpperCase();
-            EQUIVALENT.apply(container, s + ", " + r, pos, Section.DATA);
+            execute(container, Section.DATA, s + ", " + r);
             assertEquals(r, container.getAccessibleConsts().get(s));
         }
 
-        EQUIVALENT.computeDataLength(container, "HEY, 31", posZ, Section.DATA);
-
-        assertEquals(0, posZ.getPos());
+        assertEquals(0, container.getCurrentFilePos().getPos());
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> EQUIVALENT.computeDataLength(container, "HEY,", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> EQUIVALENT.apply(container, "HEY, p", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> EQUIVALENT.apply(container, "/, 3", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> EQUIVALENT.apply(container, ", 0", FilePos.ZERO.clone(), Section.DATA));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "HEY,"));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "HEY, p"));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "/, 3"));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, ", 0"));
     }
 }

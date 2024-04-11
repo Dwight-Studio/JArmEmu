@@ -23,46 +23,44 @@
 
 package fr.dwightstudio.jarmemu.asm.directive;
 
+import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
-import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 
-public class SpaceDirective extends ParsedDirective {
-    public SpaceDirective(Section section, @NotNull String args) {
-        super(section, args);
+import java.lang.reflect.InvocationTargetException;
+
+public class DirectiveTest extends JArmEmuTest {
+
+    private final Class<? extends ParsedDirective> clazz;
+
+    protected StateContainer container;
+
+    public DirectiveTest(Class<? extends ParsedDirective> clazz) {
+        this.clazz = clazz;
     }
 
-    private int value;
+    @BeforeEach
+    void setUp() {
+        container = new StateContainer();
+        container.getCurrentFilePos().setPos(0);
+    }
 
-    @Override
-    public void contextualize(StateContainer stateContainer) throws ASMException {
+    protected void execute(StateContainer container, Section section, String args) throws ASMException {
         try {
-            if (args.isBlank()) {
-                value = 1;
-            } else {
-                value = stateContainer.evalWithAccessible(args);
+            ParsedDirective dir = clazz.getDeclaredConstructor(Section.class, String.class).newInstance(section, args);
+            dir.contextualize(container);
+            dir.verify(() -> new StateContainer(container));
+            dir.execute(container);
+            dir.offsetMemory(container);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            if (e.getTargetException() instanceof ASMException ex) {
+                throw ex;
             }
-        } catch (Exception e) {
-            throw new SyntaxASMException("Invalid argument '" + args + "'");
+            throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void execute(StateContainer stateContainer) throws ASMException {
-
-    }
-
-    @Override
-    public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        try {
-            stateContainer.getCurrentFilePos().incrementPos(value);
-        } catch (Exception ignored) {}
-    }
-
-    @Override
-    public boolean isContextBuilder() {
-        return false;
     }
 }

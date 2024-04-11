@@ -21,45 +21,38 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HalfExecutorTest {
-
-    HalfExecutor HALF = new HalfExecutor();
-    StateContainer container;
-
-    @BeforeEach
-    void setUp() {
-        container = new StateContainer();
+class SpaceDirectiveTest extends DirectiveTest {
+    public SpaceDirectiveTest() {
+        super(SpaceDirective.class);
     }
 
     @Test
-    void normalTest() {
+    void normalTest() throws ASMException {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i++) {
-            int r = random.nextInt();
-            FilePos pos = new FilePos(0, i*2);
-            HALF.apply(container, "" + (r & 0xFFFF), pos, Section.DATA);
-            assertEquals((short) (r & 0xFFFF), container.getMemory().getHalf(i*2));
+            setUp();
+
+            int r = Math.abs(random.nextInt());
+            execute(container, Section.DATA,"" + r);
+            assertEquals(r, container.getCurrentFilePos().getPos());
         }
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> HALF.apply(container, "12", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> HALF.apply(container, "HIHI", FilePos.ZERO.clone(), Section.DATA));
+        assertDoesNotThrow(() -> execute(container, Section.DATA,""));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA,"ODdad$ù"));
     }
-
 }

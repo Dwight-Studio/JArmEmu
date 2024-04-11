@@ -46,8 +46,13 @@ public class WordDirective extends ParsedDirective {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        arg = args.split(",");
-        intArray = new int[args.split(",").length];
+        if (args.isBlank()) {
+            arg = new String[0];
+            intArray = new int[0];
+        } else {
+            arg = args.split(",");
+            intArray = new int[arg.length];
+        }
     }
 
     @Override

@@ -83,7 +83,6 @@ public class CodePreparator {
         int lastMem = 0;
         stateContainer.getCurrentFilePos().setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
-            System.out.println(file.getIndex() + " " + stateContainer.getCurrentFilePos());
             for (ParsedObject obj : file) {
                 try {
                     if (obj instanceof MOVInstruction ins) {

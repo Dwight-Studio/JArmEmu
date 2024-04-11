@@ -21,43 +21,38 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.oasm.dire;
+package fr.dwightstudio.jarmemu.asm.directive;
 
-import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GlobalExecutorTest extends JArmEmuTest {
-
-    GlobalExecutor GLOBAL = new GlobalExecutor();
-    StateContainer container;
-
-    @BeforeEach
-    void setUp() {
-        container = new StateContainer();
+class HalfDirectiveTest extends DirectiveTest {
+    public HalfDirectiveTest() {
+        super(HalfDirective.class);
     }
 
     @Test
-    void normalTest() {
-        FilePos pos = FilePos.ZERO.clone();
+    void normalTest() throws ASMException {
+        Random random = new Random();
 
-        GLOBAL.apply(container, "ExEMpLE", pos, Section.DATA);
-        assertEquals("EXEMPLE", container.getGlobals().getFirst());
-
-        GLOBAL.computeDataLength(container,"EXEMPLE", pos, Section.DATA);
-        assertEquals(0, pos.getPos());
+        for (int i = 0 ; i < 32 ; i++) {
+            int r = random.nextInt();
+            execute(container, Section.DATA, "" + (r & 0xFFFF));
+            assertEquals((short) (r & 0xFFFF), container.getMemory().getHalf(i*2));
+        }
     }
 
     @Test
     void failTest() {
-        assertDoesNotThrow(() -> GLOBAL.apply(container, "AHHHHHHHHHHHHHHH", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "", FilePos.ZERO.clone(), Section.DATA));
-        assertThrows(SyntaxASMException.class, () -> GLOBAL.apply(container, "/.", FilePos.ZERO.clone(), Section.DATA));
+        assertDoesNotThrow(() -> execute(container, Section.DATA, "12"));
+        assertDoesNotThrow(() -> execute(container, Section.BSS, ""));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "HIHI"));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.BSS, "12"));
     }
 }

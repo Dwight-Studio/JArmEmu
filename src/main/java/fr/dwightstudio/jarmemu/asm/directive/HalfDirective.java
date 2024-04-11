@@ -42,8 +42,13 @@ public class HalfDirective extends ParsedDirective {
             throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
         }
 
-        arg = args.split(",");
-        shortArray = new short[args.split(",").length];
+        if (args.isBlank()) {
+            arg = new String[0];
+            shortArray = new short[0];
+        } else {
+            arg = args.split(",");
+            shortArray = new short[arg.length];
+        }
     }
 
     @Override
