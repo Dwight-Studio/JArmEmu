@@ -64,7 +64,7 @@ public class CodePreparator {
             try {
                 source.goTo(0);
                 this.parsedFiles.add(sourceParser.parse(source));
-            } catch(ASMException exception){
+            } catch (ASMException exception) {
                 exceptions.add(exception);
             }
         }
@@ -83,6 +83,7 @@ public class CodePreparator {
         int lastMem = 0;
         stateContainer.getCurrentFilePos().setFileIndex(0);
         for (ParsedFile file : parsedFiles) {
+            System.out.println(file.getIndex() + " " + stateContainer.getCurrentFilePos());
             for (ParsedObject obj : file) {
                 try {
                     if (obj instanceof MOVInstruction ins) {
@@ -107,50 +108,47 @@ public class CodePreparator {
         }
 
         stateContainer.getCurrentFilePos().setFileIndex(0);
-        for (ParsedFile file : parsedFiles) {
-            try {
-                new PreparationStream(parsedFiles)
-                        // Construction du contexte
-                        .forDirectives().isContextBuilder(true).contextualize(stateContainer)
+        try {
+            new PreparationStream(parsedFiles)
+                    // Construction du contexte
+                    .forDirectives().isContextBuilder(true).contextualize(stateContainer)
 
-                        .forDirectives().inSection(Section.RODATA).registerLabels(stateContainer)
+                    .forDirectives().inSection(Section.RODATA).registerLabels(stateContainer)
 
-                        .forPseudoInstructions().allocate(stateContainer)
+                    .forPseudoInstructions().allocate(stateContainer)
 
-                        .forDirectives().inSection(Section.DATA).registerLabels(stateContainer)
+                    .forDirectives().inSection(Section.DATA).registerLabels(stateContainer)
 
-                        .forDirectives().inSection(Section.BSS).registerLabels(stateContainer)
+                    .forDirectives().inSection(Section.BSS).registerLabels(stateContainer)
 
-                        .resetPos(stateContainer)
+                    .resetPos(stateContainer)
 
-                        // Exécution des directives
-                        .forDirectives().isContextBuilder(false).contextualize(stateContainer)
+                    // Exécution des directives
+                    .forDirectives().isContextBuilder(false).contextualize(stateContainer)
 
-                        .forDirectives().inSection(Section.RODATA).execute(stateContainer)
+                    .forDirectives().inSection(Section.RODATA).execute(stateContainer)
 
-                        .startPseudoInstructionRange(stateContainer)
-                        .forPseudoInstructions().allocate(stateContainer)
-                        .closeReadOnlyRange(stateContainer)
+                    .startPseudoInstructionRange(stateContainer)
+                    .forPseudoInstructions().allocate(stateContainer)
+                    .closeReadOnlyRange(stateContainer)
 
-                        .forDirectives().inSection(Section.DATA).execute(stateContainer)
+                    .forDirectives().inSection(Section.DATA).execute(stateContainer)
 
-                        .forDirectives().inSection(Section.BSS).execute(stateContainer)
+                    .forDirectives().inSection(Section.BSS).execute(stateContainer)
 
-                        // Préparation et exécution des Pseudo-Instructions
-                        .forPseudoInstructions().generate(stateContainer)
+                    // Préparation et exécution des Pseudo-Instructions
+                    .forPseudoInstructions().generate(stateContainer)
 
-                        .goToPseudoInstructionPos(stateContainer)
+                    .goToPseudoInstructionPos(stateContainer)
 
-                        .forDirectives().isGenerated(true).contextualize(stateContainer)
-                        .forDirectives().isGenerated(true).execute(stateContainer)
+                    .forDirectives().isGenerated(true).contextualize(stateContainer)
+                    .forDirectives().isGenerated(true).execute(stateContainer)
 
-                        // Préparation et vérification des instructions
-                        .forInstructions().contextualize(stateContainer)
-                        .forInstructions().verify(() -> new StateContainer(stateContainer));
-            } catch (ASMException exception) {
-                exceptions.add(exception);
-            }
-            stateContainer.getCurrentFilePos().incrementFileIndex();
+                    // Préparation et vérification des instructions
+                    .forInstructions().contextualize(stateContainer)
+                    .forInstructions().verify(() -> new StateContainer(stateContainer));
+        } catch (ASMException exception) {
+            exceptions.add(exception);
         }
 
         // Ajout du label _START
@@ -162,7 +160,7 @@ public class CodePreparator {
 
         // Ajout du label _END
         if (!stateContainer.getGlobals().contains("_END")) {
-            FilePos lastInstruction = new FilePos(parsedFiles.size()-1, lastMem);
+            FilePos lastInstruction = new FilePos(parsedFiles.size() - 1, lastMem);
             stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
             stateContainer.addGlobal("_END", parsedFiles.size() - 1);
             logger.info("Can't find label '_END', setting one at 0:" + lastInstruction.toByteValue());

@@ -131,7 +131,7 @@
                                         <FontIcon iconLiteral="mdmz-plagiarism" />
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem fx:id="menuStepInto" mnemonicParsing="false" onAction="#onStepInto" text="%menu.simulation.stepInto" accelerator="F3">
+                                <MenuItem fx:id="menuStepInto" disable="true" mnemonicParsing="false" onAction="#onStepInto" text="%menu.simulation.stepInto" accelerator="F3">
                                     <graphic>
                                         <FontIcon iconLiteral="mdomz-subdirectory_arrow_left"
                                                   rotate="-90"/>

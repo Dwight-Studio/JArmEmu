@@ -149,7 +149,6 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
                 }
             }
             fi++;
-
         }
         logger.info("Done!");
         return stream;
