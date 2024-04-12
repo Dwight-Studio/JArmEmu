@@ -188,12 +188,12 @@ public class LegacySourceParser implements SourceParser {
                 hasDirectives = this.legacyDirectiveParser.parseOneLine(sourceScanner, currentLine, this, file);
             }
 
+            if (currentLine.contains(":")){
+                this.label = currentLine.substring(0, currentLine.indexOf(":")).strip().toUpperCase();
+                currentLine = currentLine.substring(currentLine.indexOf(":")+1).strip();
+            }
 
             if (currentSection == Section.TEXT && this.section == null && !hasDirectives){
-                if (currentLine.contains(":")){
-                    this.label = currentLine.substring(0, currentLine.indexOf(":")).strip().toUpperCase();
-                    currentLine = currentLine.substring(currentLine.indexOf(":")+1).strip();
-                }
                 if(!currentLine.isEmpty()){
                     String oldInstructionString = currentLine.split(" ")[0];
                     instructionString = oldInstructionString.toUpperCase();
