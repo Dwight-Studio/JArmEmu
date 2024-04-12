@@ -297,17 +297,18 @@ public class LegacySourceParser implements SourceParser {
     public void parseOneLine(ParsedFile file) throws ASMException {
         readOneLineASM(file);
 
-        if (this.section != null) {
-            this.currentSection = this.section;
-            return;
-        }
-
         String arg1 = null;
         String arg2 = null;
         String arg3 = null;
         String arg4 = null;
 
         if (!this.label.isEmpty()) file.add(new ParsedLabel(currentSection, this.label).withLineNumber(sourceScanner.getLineNumber()));
+
+        if (this.section != null) {
+            this.currentSection = this.section;
+            file.add(new ParsedSection(section).withLineNumber(sourceScanner.getLineNumber()));
+            return;
+        }
 
         try {
             arg1 = arguments.get(0);
