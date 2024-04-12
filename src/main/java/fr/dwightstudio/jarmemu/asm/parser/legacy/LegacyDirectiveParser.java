@@ -34,7 +34,12 @@ public class LegacyDirectiveParser {
 
     public boolean parseOneLine(SourceScanner sourceScanner, String line, LegacySourceParser parser, ParsedFile parsedFile) throws ASMException {
 
-        if (line.endsWith(":")) return false;
+        boolean rtn = false;
+
+        if (line.endsWith(":")) {
+            parsedFile.add(new ParsedLabel(parser.currentSection, line.strip().toUpperCase().substring(0, line.strip().length()-1)).withLineNumber(sourceScanner.getLineNumber()));
+            return true;
+        }
 
         String labelString = null;
         String directiveString;
@@ -61,20 +66,21 @@ public class LegacyDirectiveParser {
             }
         }
 
-        if (labelString != null && !labelString.isEmpty() && parser.currentSection.onlyDirectivesAllowed())  {
+        if (labelString != null && !labelString.isEmpty())  {
             parsedFile.add(new ParsedLabel(parser.currentSection, labelString.strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
-            return true;
-        } else if (!directiveString.isEmpty()) {
+            rtn = true;
+        }
+        if (!directiveString.isEmpty()) {
             try {
                 Directive directive = Directive.valueOf(directiveString.toUpperCase());
                 parsedFile.add(directive.create(parser.currentSection, argsString == null ? "" : argsString.strip()).withLineNumber(sourceScanner.getLineNumber()));
-                return true;
+                rtn =  true;
             } catch (IllegalArgumentException exception) {
                 if (parser.currentSection.onlyDirectivesAllowed()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
             }
         }
 
-        return false;
+        return rtn;
     }
 
 }

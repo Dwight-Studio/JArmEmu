@@ -28,7 +28,6 @@ import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.directive.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.*;
-import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
@@ -39,8 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LegacySourceParserTest extends JArmEmuTest {
 
@@ -130,7 +127,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         ins[14] = new LDRInstruction(Condition.AL, false, null, null, "R1", "=b", null, null);
         ins[15] = new ParsedSection(Section.END);
 
-        test("/directiveMultipleLines.s");
+        test("/directiveMultipleLinesLegacy.s");
     }
 
 }
