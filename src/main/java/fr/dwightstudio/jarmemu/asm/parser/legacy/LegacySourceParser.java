@@ -184,7 +184,7 @@ public class LegacySourceParser implements SourceParser {
             if (section != null) this.section = section;
 
             boolean hasDirectives = false;
-            if (section == null) {
+            if (section == null && currentSection != Section.COMMENT) {
                 hasDirectives = this.legacyDirectiveParser.parseOneLine(sourceScanner, currentLine, this, file);
             }
 
