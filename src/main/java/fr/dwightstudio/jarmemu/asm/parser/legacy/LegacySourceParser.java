@@ -24,12 +24,11 @@
 package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
 import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedLabel;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -40,7 +39,7 @@ import java.util.logging.Logger;
 public class LegacySourceParser implements SourceParser {
 
     private final Logger logger = Logger.getLogger(getClass().getName());
-    protected OInstruction instruction;
+    protected Instruction instruction;
     protected boolean updateFlags;
     protected SourceScanner sourceScanner;
     protected LegacySectionParser legacySectionParser;
@@ -85,23 +84,6 @@ public class LegacySourceParser implements SourceParser {
         this();
 
         this.sourceScanner = sourceScanner;
-    }
-
-    /**
-     * Définie la liste des fichiers
-     *
-     * @param source le SourceScanner utilisé
-     */
-    @Override
-    public void setSource(SourceScanner source) {
-        this.sourceScanner = source;
-    }
-
-    /**
-     * @return la ligne actuellement interprétée
-     */
-    public int getCurrentLine() {
-        return sourceScanner.getCurrentInstructionValue();
     }
 
     /**
@@ -169,19 +151,19 @@ public class LegacySourceParser implements SourceParser {
     }
 
     /**
-     * Méthode principale
-     * Lecture du fichier et renvoie des instructions parsées à verifier
+     * Méthode principale, lecture du fichier et renvoie des instructions parsées à verifier
      */
-    public ParsedFile parse(){
-        TreeMap<Integer, ParsedObject> rtn = new TreeMap<>();
-
+    @Override
+    public ParsedFile parse(SourceScanner scanner) throws ASMException {
+        ParsedFile file = new ParsedFile(sourceScanner);
+        sourceScanner = scanner;
         sourceScanner.goTo(-1);
-        while (this.sourceScanner.hasNextLine()){
-            ParsedObject inst = parseOneLine();
-            if (inst != null) rtn.put(sourceScanner.getCurrentInstructionValue(), inst);
+
+        while (this.sourceScanner.hasNextLine()) {
+            parseOneLine(file);
         }
 
-        return new ParsedFile(sourceScanner, rtn);
+        return file;
     }
 
     /**
@@ -317,16 +299,18 @@ public class LegacySourceParser implements SourceParser {
      *
      * @return un ParsedObject non vérifié
      */
-    public ParsedObject parseOneLine() {
+    public void parseOneLine(ParsedFile file) {
         readOneLineASM();
 
 
         if (this.section != null) {
             this.currentSection = this.section;
-            return null;
+            return;
         }
 
-        if (this.directive != null) return this.directive;
+        if (this.directive != null) {
+            file.add(this.directive);
+        }
 
         String arg1 = null;
         String arg2 = null;
@@ -341,7 +325,7 @@ public class LegacySourceParser implements SourceParser {
                 arg4 = arguments.get(3);
             } catch (IndexOutOfBoundsException ignored) {}
             if (instruction == null) {
-                return new ParsedLabel(this.label);
+                return new ParsedLabel(currentSection, this.label);
             } else {
                 return new ParsedLabel(this.label).withInstruction(new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex()));
             }

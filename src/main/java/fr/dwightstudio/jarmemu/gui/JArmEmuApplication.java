@@ -98,7 +98,6 @@ public class JArmEmuApplication extends Application {
     private String argSave;
 
     // TODO: Finir l'I18N (Directives et erreurs)
-    // TODO: Refaire les tests (Directives)
     // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
