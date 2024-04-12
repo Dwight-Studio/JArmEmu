@@ -26,11 +26,11 @@ package fr.dwightstudio.jarmemu.gui;
 import atlantafx.base.theme.*;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
-import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -49,7 +49,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Comparator;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicReference;
@@ -349,7 +348,7 @@ public class JArmEmuApplication extends Application {
 
     public void newSourceParser() {
         if (getSettingsController().getSourceParserSetting() == 1) {
-            //sourceParser = new LegacySourceParser(new SourceScanner("", null, 0));
+            sourceParser = new LegacySourceParser();
         } else {
             sourceParser = new RegexSourceParser();
         }

@@ -2,11 +2,11 @@ package fr.dwightstudio.jarmemu.asm.argument;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ImmediateOrRegisterArgumentTest extends ArgumentTest<Integer> {
 

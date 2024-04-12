@@ -26,7 +26,10 @@ package fr.dwightstudio.jarmemu.asm;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
 

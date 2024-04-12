@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import static fr.dwightstudio.jarmemu.asm.DataMode.BYTE;
 import static fr.dwightstudio.jarmemu.asm.DataMode.HALF_WORD;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LDRInstructionTest extends InstructionTest<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
     LDRInstructionTest() {

@@ -30,8 +30,6 @@ import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-
 public class WordDirective extends ParsedDirective {
 
     private final String[] arg;

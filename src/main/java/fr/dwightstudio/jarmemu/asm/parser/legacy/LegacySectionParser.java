@@ -31,7 +31,7 @@ import java.util.Arrays;
 
 public class LegacySectionParser {
 
-    public Section parseOneLine(String line) {
+    public Section parseOneLine(String line) throws SyntaxASMException {
         Section section;
 
         if (!line.startsWith(".")) {

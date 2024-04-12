@@ -29,8 +29,7 @@ import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
 import static fr.dwightstudio.jarmemu.asm.UpdateMode.*;
-import static fr.dwightstudio.jarmemu.asm.UpdateMode.IA;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.UpdatableRegister, Register[], Object, Object> {
     LDMInstructionTest() {

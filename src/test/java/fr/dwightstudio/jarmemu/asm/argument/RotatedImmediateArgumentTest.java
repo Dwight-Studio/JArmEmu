@@ -4,7 +4,8 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RotatedImmediateArgumentTest extends ArgumentTest<Integer> {
     public RotatedImmediateArgumentTest() {

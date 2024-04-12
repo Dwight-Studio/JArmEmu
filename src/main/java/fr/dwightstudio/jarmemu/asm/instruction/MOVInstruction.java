@@ -28,8 +28,8 @@ import fr.dwightstudio.jarmemu.asm.DataMode;
 import fr.dwightstudio.jarmemu.asm.Instruction;
 import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.*;
-import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 

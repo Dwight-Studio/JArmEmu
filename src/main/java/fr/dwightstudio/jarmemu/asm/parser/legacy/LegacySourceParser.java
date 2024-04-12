@@ -28,12 +28,10 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
 public class LegacySourceParser implements SourceParser {
@@ -53,7 +51,6 @@ public class LegacySourceParser implements SourceParser {
     protected ArrayList<String> arguments;
     protected Section section;
     protected Section currentSection;
-    protected ParsedObject directive;
     protected String label;
 
     /**
@@ -72,7 +69,6 @@ public class LegacySourceParser implements SourceParser {
         this.arguments = new ArrayList<>();
         this.section = null;
         this.currentSection = Section.NONE;
-        this.directive = null;
         this.label = "";
     }
 
@@ -155,7 +151,7 @@ public class LegacySourceParser implements SourceParser {
      */
     @Override
     public ParsedFile parse(SourceScanner scanner) throws ASMException {
-        ParsedFile file = new ParsedFile(sourceScanner);
+        ParsedFile file = new ParsedFile(scanner);
         sourceScanner = scanner;
         sourceScanner.goTo(-1);
 
@@ -169,13 +165,12 @@ public class LegacySourceParser implements SourceParser {
     /**
      * Lecture d'une ligne
      */
-    public void readOneLineASM() {
+    public void readOneLineASM(ParsedFile file) throws ASMException {
         this.instruction = null;
         this.updateFlags = false;
         this.updateMode = null;
         this.dataMode = null;
         this.section = null;
-        this.directive = null;
         this.label = "";
         this.conditionExec = Condition.AL;
         this.arguments.clear();
@@ -188,13 +183,13 @@ public class LegacySourceParser implements SourceParser {
             Section section = this.legacySectionParser.parseOneLine(currentLine);
             if (section != null) this.section = section;
 
+            boolean hasDirectives = false;
             if (section == null) {
-                ParsedObject directives = this.legacyDirectiveParser.parseOneLine(sourceScanner, currentLine, currentSection);
-                if (directives != null) this.directive = directives;
+                hasDirectives = this.legacyDirectiveParser.parseOneLine(sourceScanner, currentLine, this, file);
             }
 
 
-            if (currentSection == Section.TEXT && this.section == null && this.directive == null){
+            if (currentSection == Section.TEXT && this.section == null && !hasDirectives){
                 if (currentLine.contains(":")){
                     this.label = currentLine.substring(0, currentLine.indexOf(":")).strip().toUpperCase();
                     currentLine = currentLine.substring(currentLine.indexOf(":")+1).strip();
@@ -206,12 +201,12 @@ public class LegacySourceParser implements SourceParser {
                     instructionString = this.removeFlags(instructionString);
                     instructionString = this.removeCondition(instructionString);
 
-                    OInstruction[] instructions = OInstruction.values();
-                    for (OInstruction instruction:instructions) {
+                    Instruction[] instructions = Instruction.values();
+                    for (Instruction instruction:instructions) {
                         if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
                     }
 
-                    if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + oldInstructionString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
+                    if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + oldInstructionString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
 
                     if (currentLine.contains("{")) {
                         StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
@@ -299,17 +294,12 @@ public class LegacySourceParser implements SourceParser {
      *
      * @return un ParsedObject non vérifié
      */
-    public void parseOneLine(ParsedFile file) {
-        readOneLineASM();
-
+    public void parseOneLine(ParsedFile file) throws ASMException {
+        readOneLineASM(file);
 
         if (this.section != null) {
             this.currentSection = this.section;
             return;
-        }
-
-        if (this.directive != null) {
-            file.add(this.directive);
         }
 
         String arg1 = null;
@@ -317,19 +307,7 @@ public class LegacySourceParser implements SourceParser {
         String arg3 = null;
         String arg4 = null;
 
-        if (!this.label.isEmpty()) {
-            try {
-                arg1 = arguments.get(0);
-                arg2 = arguments.get(1);
-                arg3 = arguments.get(2);
-                arg4 = arguments.get(3);
-            } catch (IndexOutOfBoundsException ignored) {}
-            if (instruction == null) {
-                return new ParsedLabel(currentSection, this.label);
-            } else {
-                return new ParsedLabel(this.label).withInstruction(new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex()));
-            }
-        }
+        if (!this.label.isEmpty()) file.add(new ParsedLabel(currentSection, this.label).withLineNumber(sourceScanner.getLineNumber()));
 
         try {
             arg1 = arguments.get(0);
@@ -338,7 +316,6 @@ public class LegacySourceParser implements SourceParser {
             arg4 = arguments.get(3);
         } catch (IndexOutOfBoundsException ignored) {}
 
-        if (instruction == null) return null;
-        return new ParsedInstruction(instruction, conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4, sourceScanner.getFileIndex());
+        if (instruction != null) file.add(instruction.create(conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
     }
 }

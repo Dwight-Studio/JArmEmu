@@ -24,7 +24,6 @@
 package fr.dwightstudio.jarmemu.asm.argument;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;

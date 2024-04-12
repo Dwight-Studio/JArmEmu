@@ -5,7 +5,8 @@ import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RegisterArgumentTest extends ArgumentTest<Register> {
     public RegisterArgumentTest() {

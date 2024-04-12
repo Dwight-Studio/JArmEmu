@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 

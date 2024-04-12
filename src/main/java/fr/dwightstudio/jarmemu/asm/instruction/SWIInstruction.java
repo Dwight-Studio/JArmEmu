@@ -29,8 +29,8 @@ import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.CodeArgument;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SoftwareInterruptionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 

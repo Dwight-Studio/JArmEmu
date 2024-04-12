@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.asm.parser.regex;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 

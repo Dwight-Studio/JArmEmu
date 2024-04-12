@@ -28,8 +28,6 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class BKPTInstructionTest extends InstructionTest<Integer, Object, Object, Object> {
 
     protected BKPTInstructionTest() {

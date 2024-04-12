@@ -28,7 +28,8 @@ import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BLInstructionTest extends InstructionTest<Integer, Object, Object, Object> {
     BLInstructionTest() {

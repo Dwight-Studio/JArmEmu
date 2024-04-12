@@ -30,7 +30,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BFCInstructionTest extends InstructionTest<Register, Integer, Integer, Object> {
     protected BFCInstructionTest() {

@@ -26,7 +26,7 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 import fr.dwightstudio.jarmemu.asm.exception.SoftwareInterruptionASMException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SWIInstructionTest extends InstructionTest<Integer, Object, Object, Object> {
     SWIInstructionTest() {

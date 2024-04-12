@@ -29,7 +29,6 @@ import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ADDInstructionTest extends InstructionTest<Register, Register, Integer, ShiftArgument.ShiftFunction> {
     protected ADDInstructionTest() {

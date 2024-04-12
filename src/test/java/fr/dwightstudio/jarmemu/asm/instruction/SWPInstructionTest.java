@@ -27,7 +27,7 @@ import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SWPInstructionTest extends InstructionTest<Register, Register, Integer, Object> {
     SWPInstructionTest() {

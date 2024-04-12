@@ -27,14 +27,11 @@ import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject implements Contextualized {
 

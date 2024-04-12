@@ -25,8 +25,6 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public interface PseudoInstruction {

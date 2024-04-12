@@ -28,7 +28,8 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CMNInstructionTest extends InstructionTest<Register, Integer, ShiftArgument.ShiftFunction, Object> {
     CMNInstructionTest() {

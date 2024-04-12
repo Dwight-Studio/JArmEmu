@@ -39,8 +39,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-
 public class RegexSourceParserTest extends JArmEmuTest {
 
     RegexSourceParser parser;

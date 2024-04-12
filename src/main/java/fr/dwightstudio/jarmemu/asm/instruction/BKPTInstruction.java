@@ -29,9 +29,9 @@ import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.ImmediateOrRegisterArgument;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.BreakpointASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, Object> {

@@ -25,9 +25,13 @@ package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.*;
-import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
+import fr.dwightstudio.jarmemu.asm.directive.*;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.instruction.*;
+import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,246 +44,93 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class LegacySourceParserTest extends JArmEmuTest {
 
+    LegacySourceParser parser;
     StateContainer container;
+    Object[] ins;
+
+    private void test(String s) throws URISyntaxException, IOException, ASMException {
+        File file = new File(Objects.requireNonNull(getClass().getResource(s)).toURI());
+        Assertions.assertArrayEquals(ins, parser.parse(new SourceScanner(file, 0)).toArray());
+    }
 
     @BeforeEach
     public void setup() {
         container = new StateContainer();
+        parser = new LegacySourceParser();
+        parser.currentSection = Section.TEXT;
     }
 
     @Test
-    public void TestFormatLine() throws URISyntaxException, IOException {
-        File file = new File(Objects.requireNonNull(getClass().getResource("/singleLine.s")).toURI());
+    public void TestFormatLine() throws URISyntaxException, IOException, ASMException {
+        ins = new Object[3];
+        ins[0] = new ParsedSection(Section.TEXT);
+        ins[1] = new ADDInstruction(Condition.AL, false, null, null, "R1", "R0", null, null);
+        ins[2] = new ADCInstruction(Condition.CC, true, null, null, "R2", "R1", "R3", null);
 
-        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
-        parser.currentSection = Section.TEXT;
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.ADD, Condition.AL, false, null, null, "R1", "R0", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.ADC, Condition.CC, true, null, null, "R2", "R1", "R3", null, 0),
-                parser.parseOneLine()
-        );
-
+        test("/formatLines.s");
     }
 
     @Test
-    public void TestReadInstruction() throws URISyntaxException, IOException {
-        File file = new File(Objects.requireNonNull(getClass().getResource("/normalLine.s")).toURI());
+    public void TestReadInstruction() throws URISyntaxException, IOException, ASMException {
+        ins = new Object[4];
+        ins[0] = new ParsedSection(Section.TEXT);
+        ins[1] = new LDRInstruction(Condition.AL, false, null, null, "R1", "[R2]", null, null);
+        ins[2] = new LDRInstruction(Condition.CC, false, null, null, "R1", "[R2]", null, null);
+        ins[3] = new LDRInstruction(Condition.EQ, false, DataMode.BYTE, null, "R1", "[R2]", null, null);
 
-        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
-        parser.currentSection = Section.TEXT;
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R2]", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.ADD, Condition.CC, false, null, null, "R1", "[R2]", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.ADD, Condition.EQ, false, DataMode.BYTE, null, "R1", "[R2]", null, null, 0),
-                parser.parseOneLine()
-        );
-
+        test("/normalLines.s");
     }
 
     @Test
-    public void TestReadInstructionSub() throws URISyntaxException, IOException {
-        File file = new File(Objects.requireNonNull(getClass().getResource("/subLine.s")).toURI());
+    public void TestReadInstructionSub() throws URISyntaxException, IOException, ASMException {
+        ins = new Object[3];
+        ins[0] = new ParsedSection(Section.TEXT);
+        ins[1] = new SUBInstruction(Condition.AL, false, null, null, "r2", "r0", "r1", null);
+        ins[2] = new SUBInstruction(Condition.AL, false, null, null, "r0", "r1", null, null);
 
-        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
-        parser.currentSection = Section.TEXT;
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.SUB, Condition.AL, false, null, null, "r2", "r0", "r1", null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.SUB, Condition.AL, false, null, null, "r0", "r1", null, null, 0),
-                parser.parseOneLine()
-        );
+        test("/subLine.s");
     }
 
     @Test
-    public void TestReadInstructionComplexer() throws URISyntaxException, IOException {
-        File file = new File(Objects.requireNonNull(getClass().getResource("/multipleLines.s")).toURI());
+    public void TestReadInstructionComplexer() throws URISyntaxException, IOException, ASMException {
+        ins = new Object[12];
+        ins[0] = new ParsedSection(Section.TEXT);
+        ins[1] = new ADDInstruction(Condition.CC, true, null, null, "r0", "r9", "#2", null);
+        ins[2] = new MLAInstruction(Condition.EQ, false, null, null, "r0", "r0", "r1", "r2");
+        ins[3] = new SMLALInstruction(Condition.AL, true, null, null, "r4", "r5", "r6", "r7");
+        ins[4] = new BICInstruction(Condition.LO, false, null, null, "r5", "r6", "#5", null);
+        ins[5] = new LDRInstruction(Condition.AL, false, DataMode.BYTE, null, "r0", "=x", null, null);
+        ins[6] = new STMInstruction(Condition.AL, false, null, UpdateMode.FD, "sp!", "{r0,r1,r2}", null, null);
+        ins[7] = new BInstruction(Condition.AL, false, null, null, "etiquette", null, null, null);
+        ins[8] = new ParsedLabel(Section.TEXT, "CECIESTUNEETIQUETTE");
+        ins[9] = new LDRInstruction(Condition.AL, false, null, null, "R1", "[R0,R1,LSL#2]", null, null);
+        ins[10] = new LDRInstruction(Condition.AL, false, null, null, "R1", "[R0]", "R1" , "LSL#2");
+        ins[11] = new STRInstruction(Condition.AL, false, null, null, "fp", "[sp,#-4]!", null , null);
 
-        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
-        parser.currentSection = Section.TEXT;
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.ADD, Condition.CC, true, null, null, "r0", "r9", "#2", null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.MLA, Condition.EQ, false, null, null, "r0", "r0", "r1", "r2", 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.SMLAL, Condition.AL, true, null, null, "r4", "r5", "r6", "r7", 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.BIC, Condition.LO, false, null, null, "r5", "r6", "#5", null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, DataMode.BYTE, null, "r0", "=x", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.STM, Condition.AL, false, null, UpdateMode.FD, "sp!", "{r0,r1,r2}", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.B, Condition.AL, false, null, null, "etiquette", null, null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedLabel("CECIESTUNEETIQUETTE"),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R0,R1,LSL#2]", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "[R0]", "R1" , "LSL#2", 0),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.STR, Condition.AL, false, null, null, "fp", "[sp,#-4]!", null , null, 0),
-                parser.parseOneLine()
-        );
+        test("/multipleLines.s");
     }
 
     @Test
-    public void TestReadDirectives() throws URISyntaxException, IOException {
-        File file = new File(Objects.requireNonNull(getClass().getResource("/directiveMultipleLinesLegacy.s")).toURI());
+    public void TestReadDirectives() throws URISyntaxException, IOException, ASMException {
+        ins = new Object[16];
+        ins[0] = new ParsedSection(Section.BSS);
+        ins[1] = new ParsedSection(Section.DATA);
+        ins[2] = new GlobalDirective(Section.DATA, "ExEC");
+        ins[3] = new ParsedLabel(Section.DATA, "A");
+        ins[4] = new ParsedLabel(Section.DATA, "b");
+        ins[5] = new WordDirective(Section.DATA, "3");
+        ins[6] = new ByteDirective(Section.DATA, "'x'");
+        ins[7] = new GlobalDirective(Section.DATA, "Test");
+        ins[8] = new ASCIIDirective(Section.DATA, "");
+        ins[9] = new ASCIZDirective(Section.DATA, "\"\"");
+        ins[10] = new EquivalentDirective(Section.DATA, "laBEL, 'c'");
+        ins[11] = new ParsedSection(Section.DATA);
+        ins[12] = new ParsedSection(Section.COMMENT);
+        ins[13] = new ParsedSection(Section.TEXT);
+        ins[14] = new LDRInstruction(Condition.AL, false, null, null, "R1", "=b", null, null);
+        ins[15] = new ParsedSection(Section.END);
 
-        LegacySourceParser parser = new LegacySourceParser(new SourceScanner(file, 0));
-
-        ParsedDirectivePack parsedDirectivePack;
-        parser.parseOneLine();
-        assertEquals(
-                Section.BSS,
-                parser.currentSection
-        );
-
-        parser.parseOneLine();
-        assertEquals(
-                Section.DATA,
-                parser.currentSection
-        );
-
-        assertEquals(
-                new ParsedDirective(Directive.GLOBAL, "ExEC", Section.DATA),
-                parser.parseOneLine()
-        );
-
-        parser.currentSection = Section.TEXT;
-        assertEquals(
-                new ParsedLabel("A"),
-                parser.parseOneLine()
-        );
-
-        parser.currentSection = Section.DATA;
-        parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirectiveLabel("b", Section.DATA));
-        parsedDirectivePack.add(new ParsedDirective(Directive.WORD, "3", Section.DATA));
-        assertEquals(
-                parsedDirectivePack.close(),
-                parser.parseOneLine()
-        );
-
-        parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirective(Directive.BYTE, "'x'", Section.DATA));
-        assertEquals(
-                parsedDirectivePack.close(),
-                parser.parseOneLine()
-        );
-
-        parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirective(Directive.GLOBAL, "Test", Section.DATA));
-        assertEquals(
-                parsedDirectivePack.close(),
-                parser.parseOneLine()
-        );
-
-        parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirective(Directive.ASCII, "", Section.DATA));
-        assertEquals(
-                parsedDirectivePack.close(),
-                parser.parseOneLine()
-        );
-
-        parsedDirectivePack = new ParsedDirectivePack();
-        parsedDirectivePack.add(new ParsedDirective(Directive.ASCIZ, "\"\"", Section.DATA));
-        assertEquals(
-                parsedDirectivePack.close(),
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedDirective(Directive.EQU, "laBEL, 'c'", Section.DATA),
-                parser.parseOneLine()
-        );
-
-        parser.parseOneLine();
-        assertEquals(
-                Section.DATA,
-                parser.currentSection
-        );
-
-        parser.parseOneLine();
-        assertEquals(
-                Section.COMMENT,
-                parser.currentSection
-        );
-
-        assertNull(
-                parser.parseOneLine()
-        );
-
-        assertEquals(
-                new ParsedDirective(Directive.ASCII, "\"Hey\"", Section.COMMENT),
-                parser.parseOneLine()
-        );
-
-        parser.parseOneLine();
-        assertEquals(
-                Section.TEXT,
-                parser.currentSection
-        );
-
-        assertEquals(
-                new ParsedInstruction(OInstruction.LDR, Condition.AL, false, null, null, "R1", "=b", null, null, 0),
-                parser.parseOneLine()
-        );
-
-        parser.parseOneLine();
-        assertEquals(
-                Section.END,
-                parser.currentSection
-        );
+        test("/directiveMultipleLines.s");
     }
 
 }

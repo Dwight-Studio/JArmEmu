@@ -25,20 +25,16 @@ package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
-import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.ParsedLabel;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirective;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectiveLabel;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedDirectivePack;
 
 public class LegacyDirectiveParser {
 
-    public ParsedObject parseOneLine(SourceScanner sourceScanner, String line, Section section) {
+    public boolean parseOneLine(SourceScanner sourceScanner, String line, LegacySourceParser parser, ParsedFile parsedFile) throws ASMException {
 
-        ParsedDirectivePack directives = new ParsedDirectivePack();
-
-        if (line.endsWith(":")) return directives.close();
+        if (line.endsWith(":")) return false;
 
         String labelString = null;
         String directiveString;
@@ -65,18 +61,20 @@ public class LegacyDirectiveParser {
             }
         }
 
-        if (labelString != null && !labelString.isEmpty() && section.shouldParseDirective()) directives.add(new ParsedDirectiveLabel(labelString.strip().toUpperCase(), section));
-        if (!directiveString.isEmpty()) {
+        if (labelString != null && !labelString.isEmpty() && parser.currentSection.onlyDirectivesAllowed())  {
+            parsedFile.add(new ParsedLabel(parser.currentSection, labelString.strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
+            return true;
+        } else if (!directiveString.isEmpty()) {
             try {
                 Directive directive = Directive.valueOf(directiveString.toUpperCase());
-                ParsedDirective parsedDirective = new ParsedDirective(directive, argsString == null ? "" : argsString.strip(), section);
-                directives.add(parsedDirective);
+                parsedFile.add(directive.create(parser.currentSection, argsString == null ? "" : argsString.strip()).withLineNumber(sourceScanner.getLineNumber()));
+                return true;
             } catch (IllegalArgumentException exception) {
-                if (section.shouldParseDirective()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getCurrentInstructionValue()).with(new ParsedFile(sourceScanner));
+                if (parser.currentSection.onlyDirectivesAllowed()) throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
             }
         }
 
-        return directives.close();
+        return false;
     }
 
 }

@@ -23,9 +23,7 @@
 
 package fr.dwightstudio.jarmemu.sim.prepare;
 
-import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.function.Consumer;

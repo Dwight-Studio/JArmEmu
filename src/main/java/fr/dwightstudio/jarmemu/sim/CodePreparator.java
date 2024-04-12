@@ -23,7 +23,10 @@
 
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.asm.ParsedLabel;
+import fr.dwightstudio.jarmemu.asm.ParsedObject;
+import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.MOVInstruction;
 import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
@@ -33,7 +36,9 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.sim.prepare.PreparationStream;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class CodePreparator {

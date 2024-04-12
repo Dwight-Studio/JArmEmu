@@ -30,8 +30,8 @@ import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.asm.argument.RotatedImmediateOrRegisterArgument;
-import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
