@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.MemoryAccessMisalignedASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,22 +50,22 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
         return AddressArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
         return ShiftArgument.class;
     }
 

@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
@@ -105,13 +106,13 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
     }
 
-    protected abstract Class<? extends ParsedArgument<A>> getParsedArg1Class();
+    protected abstract @NotNull Class<? extends ParsedArgument<A>> getParsedArg1Class();
 
-    protected abstract Class<? extends ParsedArgument<B>> getParsedArg2Class();
+    protected abstract @NotNull Class<? extends ParsedArgument<B>> getParsedArg2Class();
 
-    protected abstract Class<? extends ParsedArgument<C>> getParsedArg3Class();
+    protected abstract @NotNull Class<? extends ParsedArgument<C>> getParsedArg3Class();
 
-    protected abstract Class<? extends ParsedArgument<D>> getParsedArg4Class();
+    protected abstract @NotNull Class<? extends ParsedArgument<D>> getParsedArg4Class();
 
     /**
      * Exécute l'instruction sur le conteneur d'état

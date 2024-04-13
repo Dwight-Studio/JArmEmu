@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 
 public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftArgument.ShiftFunction, Object> {
@@ -44,22 +45,22 @@ public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
         return ShiftArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
         return NullArgument.class;
     }
 

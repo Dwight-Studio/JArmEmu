@@ -52,6 +52,7 @@ public enum Instruction {
     BIC(BICInstruction.class),
     BFC(BFCInstruction.class),
     BFI(BFIInstruction.class),
+    CLZ(CLZInstruction.class),
 
     // Shifting
     LSL(LSLInstruction.class),
@@ -65,10 +66,14 @@ public enum Instruction {
     CMN(CMPInstruction.class),
     TST(TSTInstruction.class),
     TEQ(TEQInstruction.class),
+    CBZ(CBZInstruction.class),
+    CBNZ(CBNZInstruction.class),
 
     // Data movement
     MOV(MOVInstruction.class),
     MVN(MVNInstruction.class),
+    SWI(SWIInstruction.class),
+    BXJ(BXJInstruction.class),
 
     // Memory access
     ADR(ADRInstruction.class),
@@ -84,9 +89,9 @@ public enum Instruction {
     BLX(BLInstruction.class),
     BX(BXInstruction.class),
 
-
     // Others
-    BKPT(BKPTInstruction.class);
+    BKPT(BKPTInstruction.class),
+    CLREX(CLREXInstruction.class);
 
     private final Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass;
 

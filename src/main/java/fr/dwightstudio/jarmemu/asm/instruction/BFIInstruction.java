@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class BFIInstruction extends ParsedInstruction<Register, Register, Integer, Integer> {
     public BFIInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -46,22 +47,22 @@ public class BFIInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg2Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return ImmediateArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg4Class() {
         return ImmediateArgument.class;
     }
 

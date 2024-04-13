@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class UMULLInstruction extends ParsedInstruction<Register, Register, Register, Register> {
 
@@ -44,22 +45,22 @@ public class UMULLInstruction extends ParsedInstruction<Register, Register, Regi
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg2Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg3Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg4Class() {
         return RegisterArgument.class;
     }
 

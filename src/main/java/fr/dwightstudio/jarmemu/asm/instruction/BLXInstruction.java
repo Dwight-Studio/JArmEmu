@@ -34,6 +34,7 @@ import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class BLXInstruction extends ParsedInstruction<Register, Object, Object, Object> {
     public BLXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -45,22 +46,22 @@ public class BLXInstruction extends ParsedInstruction<Register, Object, Object, 
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
         return NullArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
         return NullArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
         return NullArgument.class;
     }
 

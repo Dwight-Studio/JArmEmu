@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.MathUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class CMPInstruction extends ParsedInstruction<Register, Integer, ShiftArgument.ShiftFunction, Object> {
     public CMPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -43,22 +44,22 @@ public class CMPInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
         return ShiftArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
         return NullArgument.class;
     }
 

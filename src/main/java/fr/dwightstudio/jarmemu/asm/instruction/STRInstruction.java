@@ -33,6 +33,7 @@ import fr.dwightstudio.jarmemu.asm.exception.IllegalDataWritingASMException;
 import fr.dwightstudio.jarmemu.asm.exception.MemoryAccessMisalignedASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
+import org.jetbrains.annotations.NotNull;
 
 public class STRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
     public STRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -44,22 +45,22 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
+    protected @NotNull Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
         return AddressArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
+    protected @NotNull Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
         return ShiftArgument.class;
     }
 
