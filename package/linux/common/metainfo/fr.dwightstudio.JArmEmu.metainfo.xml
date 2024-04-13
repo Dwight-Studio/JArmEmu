@@ -11,10 +11,12 @@
     <url type="homepage">https://dwightstudio.fr/jarmemu</url>
     <url type="bugtracker">https://github.com/Dwight-Studio/JArmEmu/issues</url>
     <url type="vcs-browser">https://github.com/Dwight-Studio/JArmEmu</url>
-    <url type="help">https://discord.dwightstudio.fr</url>
-    <requires>
+    <url type="help">http://discord.dwightstudio.fr</url>
+    <recommends>
         <control>keyboard</control>
         <control>pointing</control>
+    </recommends>
+    <requires>
         <display_length compare="ge">medium</display_length>
     </requires>
     <description>
@@ -48,9 +50,9 @@
     <kudos>
         <kudo>HiDpiIcon</kudo>
     </kudos>
-    <mimetypes>
-        <mimetype>text/x-jarmemu-source</mimetype>
-    </mimetypes>
+    <provides>
+        <mediatype>text/x-jarmemu-source</mediatype>
+    </provides>
     <screenshots>
         <screenshot type="default">
             <caption>Editor: Primer Dark theme</caption>
