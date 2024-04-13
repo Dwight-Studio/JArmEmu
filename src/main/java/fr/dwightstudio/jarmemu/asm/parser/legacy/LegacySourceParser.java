@@ -189,7 +189,6 @@ public class LegacySourceParser implements SourceParser {
             }
 
             if (currentLine.contains(":")){
-                //this.label = currentLine.substring(0, currentLine.indexOf(":")).strip().toUpperCase();
                 currentLine = currentLine.substring(currentLine.indexOf(":")+1).strip();
             }
 
@@ -301,8 +300,6 @@ public class LegacySourceParser implements SourceParser {
         String arg2 = null;
         String arg3 = null;
         String arg4 = null;
-
-        //if (!this.label.isEmpty()) file.add(new ParsedLabel(currentSection, this.label).withLineNumber(sourceScanner.getLineNumber()));
 
         if (this.section != null) {
             this.currentSection = this.section;

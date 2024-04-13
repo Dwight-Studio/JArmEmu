@@ -36,18 +36,25 @@ public class LegacyDirectiveParser {
 
         boolean rtn = false;
 
-        if (line.endsWith(":")) {
-            parsedFile.add(new ParsedLabel(parser.currentSection, line.strip().toUpperCase().substring(0, line.strip().length()-1)).withLineNumber(sourceScanner.getLineNumber()));
+        String[] labelMaybe = line.split(":");
+        String[] lineParts;
+
+        if (labelMaybe.length > 1) {
+            parsedFile.add(new ParsedLabel(parser.currentSection, labelMaybe[0].strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
+            rtn = true;
+            lineParts = labelMaybe[1].split("\\.");
+        } else if (line.contains(":")){
+            parsedFile.add(new ParsedLabel(parser.currentSection, labelMaybe[0].strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
             return true;
+        } else {
+            lineParts = labelMaybe[0].split("\\.");
         }
 
-        String labelString = null;
         String directiveString;
         String argsString = null;
 
-        String[] lineParts = line.split("\\.");
-
         if (lineParts.length == 1){
+            System.out.println(lineParts[0]);
             directiveString = lineParts[0].split(" ")[0].strip();
             argsString = lineParts[0].split(" ")[1].strip();
         } else {
@@ -58,18 +65,12 @@ public class LegacyDirectiveParser {
                     directiveString = lineParts[1].strip().split(" ")[0].strip();
                     argsString = lineParts[1].substring(lineParts[1].split(" ")[0].length());
                 }
-
             } else {
-                labelString = lineParts[0].strip().substring(0, lineParts[0].strip().length()-1);
                 directiveString = lineParts[1].split(" ")[0].strip();
                 argsString = lineParts[1].substring(lineParts[1].split(" ")[0].length());
             }
         }
 
-        if (labelString != null && !labelString.isEmpty())  {
-            parsedFile.add(new ParsedLabel(parser.currentSection, labelString.strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
-            rtn = true;
-        }
         if (!directiveString.isEmpty()) {
             try {
                 Directive directive = Directive.valueOf(directiveString.toUpperCase());
