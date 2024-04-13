@@ -29,8 +29,8 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.SymbolView;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.converters.FileNameStringConverter;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 
 public class LabelsController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<SymbolView, Number> col0;
     private TableColumn<SymbolView, String> col1;
     private TableColumn<SymbolView, Number> col2;

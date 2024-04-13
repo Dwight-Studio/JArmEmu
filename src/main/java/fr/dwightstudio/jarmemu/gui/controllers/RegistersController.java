@@ -30,8 +30,8 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.FlagTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.RegisterView;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 
 public class RegistersController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<RegisterView, String> col0;
     private TableColumn<RegisterView, Number> col1;
     private TableColumn<RegisterView, Register> col2;

@@ -25,8 +25,8 @@ package fr.dwightstudio.jarmemu.gui.factory;
 
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.view.RegisterView;
-import fr.dwightstudio.jarmemu.sim.obj.PSR;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
+import fr.dwightstudio.jarmemu.sim.entity.ProgramStatusRegister;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -89,7 +89,7 @@ public class FlagTableCell extends TableCell<RegisterView, Register> {
     protected void updateItem(Register register, boolean empty) {
         super.updateItem(register, empty);
         
-        if (register instanceof PSR psr) {
+        if (register instanceof ProgramStatusRegister programStatusRegister) {
             n.getStyleClass().clear();
             z.getStyleClass().clear();
             c.getStyleClass().clear();
@@ -98,43 +98,43 @@ public class FlagTableCell extends TableCell<RegisterView, Register> {
             f.getStyleClass().clear();
             t.getStyleClass().clear();
 
-            if (psr.getN()) {
+            if (programStatusRegister.getN()) {
                 n.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 n.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
-            if (psr.getZ()) {
+            if (programStatusRegister.getZ()) {
                 z.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 z.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
-            if (psr.getC()) {
+            if (programStatusRegister.getC()) {
                 c.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 c.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
-            if (psr.getV()) {
+            if (programStatusRegister.getV()) {
                 v.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 v.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
-            if (psr.getI()) {
+            if (programStatusRegister.getI()) {
                 i.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 i.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
-            if (psr.getF()) {
+            if (programStatusRegister.getF()) {
                 f.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 f.getStyleClass().add(Styles.TEXT_SUBTLE);
             }
 
-            if (psr.getT()) {
+            if (programStatusRegister.getT()) {
                 t.getStyleClass().addAll(Styles.TEXT, Styles.ACCENT, Styles.TEXT_BOLD);
             } else {
                 t.getStyleClass().add(Styles.TEXT_SUBTLE);

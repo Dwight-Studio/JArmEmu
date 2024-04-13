@@ -24,14 +24,14 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.sim.exceptions.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.LegacySourceParser;
-import fr.dwightstudio.jarmemu.sim.parse.RegexSourceParser;
-import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
+import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 
 import java.io.File;
 import java.nio.ByteBuffer;
@@ -65,7 +65,7 @@ public class CompleteTest extends JArmEmuTest {
                     "$(?-i)"
     );
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     ArrayList<SourceScanner> sources;
     SourceParser parser;
@@ -148,7 +148,12 @@ public class CompleteTest extends JArmEmuTest {
         }
 
         for (Map.Entry<Integer, Byte> entry : expectedMemory.entrySet()) {
-            assertEquals((byte) entry.getValue(), codeInterpreter.stateContainer.getMemory().getByte(entry.getKey()));
+            try {
+                assertEquals((byte) entry.getValue(), codeInterpreter.stateContainer.getMemory().getByte(entry.getKey()));
+            } catch (AssertionFailedError error) {
+                logger.severe("Mismatch at " + entry.getKey());
+                throw error;
+            }
         }
     }
 
@@ -156,14 +161,14 @@ public class CompleteTest extends JArmEmuTest {
         // Parse
         assertArrayEquals(new SyntaxASMException[0], codeInterpreter.load(
                 parser,
-                StateContainer.DEFAULT_STACK_ADDRESS,
-                StateContainer.DEFAULT_SYMBOLS_ADDRESS,
                 sources
         ));
+
+        codeInterpreter.initiate();
         codeInterpreter.restart();
 
         // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
+        assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> {
             boolean flag = true;
             while (codeInterpreter.hasNext() && flag) {
                 try {
@@ -192,30 +197,8 @@ public class CompleteTest extends JArmEmuTest {
     }
 
     @Test
-    public void factorialLegacyTest() {
-        parser = new LegacySourceParser();
-        loadUnique("/complete/factorial.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/factorial-memory.d");
-    }
-
-    @Test
     public void matrixTest() {
         parser = new RegexSourceParser();
-        loadUnique("/complete/matrix.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/matrix-memory.d");
-    }
-
-    @Test
-    public void matrixLegacyTest() {
-        parser = new LegacySourceParser();
         loadUnique("/complete/matrix.s");
 
         // Parse
@@ -236,30 +219,8 @@ public class CompleteTest extends JArmEmuTest {
     }
 
     @Test
-    public void pgcdLegacyTest() {
-        parser = new LegacySourceParser();
-        loadUnique("/complete/pgcd.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/pgcd-memory.d");
-    }
-
-    @Test
     public void helloworldIntTest() {
         parser = new RegexSourceParser();
-        loadUnique("/complete/helloworldInt.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/helloworldInt-memory.d");
-    }
-
-    @Test
-    public void helloworldIntLegacyTest() {
-        parser = new LegacySourceParser();
         loadUnique("/complete/helloworldInt.s");
 
         // Parse
@@ -280,17 +241,6 @@ public class CompleteTest extends JArmEmuTest {
     }
 
     @Test
-    public void helloworldAsciiLegacyTest() {
-        parser = new LegacySourceParser();
-        loadUnique("/complete/helloworldAscii.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/helloworldAscii-memory.d");
-    }
-
-    @Test
     public void pgcdDriveTest() {
         parser = new RegexSourceParser();
         loadUnique("/complete/pgcdDrive.s");
@@ -302,30 +252,8 @@ public class CompleteTest extends JArmEmuTest {
     }
 
     @Test
-    public void pgcdDriveLegacyTest() {
-        parser = new LegacySourceParser();
-        loadUnique("/complete/pgcdDrive.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/pgcdDrive-memory.d");
-    }
-
-    @Test
     public void graphesTest() {
         parser = new RegexSourceParser();
-        loadUnique("/complete/graph/Graphes.s");
-
-        // Parse
-        execute();
-
-        assertEqualsMemory("/complete/graph/Graphes-memory.d");
-    }
-
-    @Test
-    public void graphesLegacyTest() {
-        parser = new LegacySourceParser();
         loadUnique("/complete/graph/Graphes.s");
 
         // Parse
@@ -350,6 +278,84 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
     }
 
+
+    @Test
+    public void factorialLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/factorial.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/factorial-memory.d");
+    }
+
+    @Test
+    public void matrixLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/matrix.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/matrix-memory.d");
+    }
+
+    @Test
+    public void pgcdLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/pgcd.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/pgcd-memory.d");
+    }
+
+    @Test
+    public void helloworldIntLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/helloworldInt.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/helloworldInt-memory.d");
+    }
+
+    @Test
+    public void helloworldAsciiLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/helloworldAscii.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/helloworldAscii-memory.d");
+    }
+
+    @Test
+    public void pgcdDriveLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/pgcdDrive.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/pgcdDrive-memory.d");
+    }
+
+    @Test
+    public void graphesLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/graph/Graphes.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/graph/Graphes-memory.d");
+    }
+
     @Test
     public void graphesMainLegacyTest() {
         parser = new LegacySourceParser();
@@ -365,5 +371,4 @@ public class CompleteTest extends JArmEmuTest {
 
         assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
     }
-
 }

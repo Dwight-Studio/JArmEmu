@@ -59,7 +59,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     public static final String MEMORY_DETAILS_KEY = "memoryDetails";
     public static final String MEMORY_OVERVIEW_KEY = "memoryOverview";
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private final Timeline LAYOUT_INIT_TIMELINE = new Timeline(
             new KeyFrame(Duration.ZERO, event -> applyLayout(getSettingsController().getLayout())),
@@ -79,13 +79,21 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML protected TabPane filesTabPane;
     @FXML protected VBox notifications;
-    @FXML protected Button simulate;
-    @FXML protected Button stepInto;
-    @FXML protected Button stepOver;
-    @FXML protected Button conti;
-    @FXML protected Button pause;
-    @FXML protected Button stop;
-    @FXML protected Button restart;
+    @FXML protected Button toolSimulate;
+    @FXML protected Button toolStepInto;
+    @FXML protected Button toolStepOver;
+    @FXML protected Button toolContinue;
+    @FXML protected Button toolPause;
+    @FXML protected Button toolStop;
+    @FXML protected Button toolRestart;
+
+    @FXML protected MenuItem menuSimulate;
+    @FXML protected MenuItem menuStepInto;
+    @FXML protected MenuItem menuStepOver;
+    @FXML protected MenuItem menuContinue;
+    @FXML protected MenuItem menuPause;
+    @FXML protected MenuItem menuStop;
+    @FXML protected MenuItem menuRestart;
 
     @FXML protected AnchorPane registersPane;
 

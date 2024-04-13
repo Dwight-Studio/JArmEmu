@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.view;
 
-import fr.dwightstudio.jarmemu.sim.obj.Register;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;

@@ -1,27 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~            ____           _       __    __     _____ __            ___
-  ~           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
-  ~          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
-  ~         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
-  ~        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
-  ~                         /____/
-  ~     Copyright (C) 2024 Dwight Studio
-  ~
-  ~     This program is free software: you can redistribute it and/or modify
-  ~     it under the terms of the GNU General Public License as published by
-  ~     the Free Software Foundation, either version 3 of the License, or
-  ~     (at your option) any later version.
-  ~
-  ~     This program is distributed in the hope that it will be useful,
-  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~     GNU General Public License for more details.
-  ~
-  ~     You should have received a copy of the GNU General Public License
-  ~     along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  -->
-
 <component type="desktop-application">
     <id>fr.dwightstudio.JArmEmu</id>
     <name>JArmEmu</name>
@@ -32,6 +9,14 @@
     <metadata_license>CC0-1.0</metadata_license>
     <content_rating type="oars-1.1"/>
     <url type="homepage">https://dwightstudio.fr/jarmemu</url>
+    <url type="bugtracker">https://github.com/Dwight-Studio/JArmEmu/issues</url>
+    <url type="vcs-browser">https://github.com/Dwight-Studio/JArmEmu</url>
+    <url type="help">https://discord.dwightstudio.fr</url>
+    <requires>
+        <control>keyboard</control>
+        <control>pointing</control>
+        <display_length compare="ge">medium</display_length>
+    </requires>
     <description>
         <p>JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a
             simulated ARMv7 architecture.

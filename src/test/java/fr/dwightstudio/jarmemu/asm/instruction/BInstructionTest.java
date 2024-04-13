@@ -1,0 +1,57 @@
+/*
+ *            ____           _       __    __     _____ __            ___
+ *           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
+ *          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
+ *         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
+ *        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
+ *                         /____/
+ *     Copyright (C) 2024 Dwight Studio
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package fr.dwightstudio.jarmemu.asm.instruction;
+
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+public class BInstructionTest extends InstructionTest<Integer, Object, Object, Object> {
+    protected BInstructionTest() {
+        super(BInstruction.class);
+    }
+
+    @Test
+    public void simpleBTest() throws ASMException {
+        Register pc = stateContainer.getPC();
+        pc.setData(24);
+        stateContainer.getAccessibleLabels().put("COUCOU", 20);
+        Integer value =  label(stateContainer, "COUCOU");
+        execute(stateContainer, false, false, null, null, value, null, null, null);
+        assertEquals(20, pc.getData());
+    }
+
+    @Test
+    public void BExceptionTest() {
+        Register pc = stateContainer.getPC();
+        pc.setData(24);
+        stateContainer.getAccessibleLabels().put("COUCOU", 24);
+        Integer value =  label(stateContainer, "COUCOU");
+        assertThrows(StuckExecutionASMException.class, () -> execute(stateContainer, false, false, null, null, value, null, null, null));
+    }
+}

@@ -31,8 +31,8 @@ import fr.dwightstudio.jarmemu.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.CursorTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.MemoryWordView;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -53,7 +53,7 @@ public class StackController extends AbstractJArmEmuModule {
 
     private static final int MAX_NUMBER = 500;
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<MemoryWordView, Boolean> col0;
     private TableColumn<MemoryWordView, Number> col1;
     private TableColumn<MemoryWordView, Number> col2;
@@ -72,7 +72,9 @@ public class StackController extends AbstractJArmEmuModule {
         col0.setSortable(false);
         col0.setEditable(false);
         col0.setReorderable(false);
+        col0.setMinWidth(35);
         col0.setMaxWidth(35);
+        col0.setPrefWidth(35);
         col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col0.setCellValueFactory(c -> c.getValue().getCursorProperty());
         col0.setCellFactory(CursorTableCell.factory());

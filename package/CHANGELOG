@@ -1,8 +1,12 @@
-0.1.10 -> 0.1.11
+0.1.10 -> 0.2.0
 
+- Added Rating and Hardware requirements (AppStream)
+- Improved instructions system (complete overhaul)
 - Improved icons and showcase medias
 - Improved i18n (French)
+- Improved logging formatting
 - Fixed layout on desktop
+- Fixed Regex Parser invalid statement detection
 
 
 0.1.9 -> 0.1.10

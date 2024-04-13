@@ -23,11 +23,11 @@
 
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerAddressConverter;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerStringConverter;
 import javafx.beans.value.ChangeListener;
@@ -102,7 +102,7 @@ public class SettingsController extends AbstractJArmEmuModule {
     };
     private static final String[] THEME_FAMILY_LABEL_DICT = new String[]{"Primer", "Nord", "Cupertino"};
     public static final String[] DATA_FORMAT_DICT = new String[]{"%08x", "%d", "%d"};
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private boolean initiated;
 
     private Preferences preferences;

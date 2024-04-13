@@ -25,16 +25,15 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.Status;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import javafx.application.Platform;
 
 import java.util.logging.Logger;
 
 public class SimulationMenuController extends AbstractJArmEmuModule {
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public SimulationMenuController(JArmEmuApplication application) {
         super(application);
@@ -44,7 +43,10 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSimulate() {
-        getController().simulate.setDisable(true);
+        if (getController().menuSimulate.isDisable()) return;
+
+        getController().toolSimulate.setDisable(true);
+        getController().menuSimulate.setDisable(true);
         getEditorController().clearNotifs();
 
         getEditorController().addNotification(
@@ -61,12 +63,13 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode de rappel si la préparation de la simulation s'est effectué avec succès
      * @param errors les erreurs rencontrées lors de l'analyse du code
      */
-    public void launchSimulation(SyntaxASMException[] errors) {
+    public void launchSimulation(ASMException[] errors) {
         getEditorController().clearNotifs();
 
-        if (errors.length == 0) {
+        if (errors == null || errors.length == 0) {
             if (getCodeInterpreter().getInstructionCount() == 0) {
-                getController().simulate.setDisable(false);
+                getController().toolSimulate.setDisable(false);
+                getController().menuSimulate.setDisable(false);
                 getEditorController().addNotification(
                         JArmEmuApplication.formatMessage("%notification.noInstruction.title"),
                         JArmEmuApplication.formatMessage("%notification.noInstruction.message"),
@@ -76,13 +79,20 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getEditorController().clearAllLineMarkings();
                 getEditorController().markForward(getCodeInterpreter().getCurrentLine());
                 getController().memoryDetailsAddressField.setDisable(false);
+                getController().memoryOverviewAddressField.setDisable(false);
                 getEditorController().onLaunch();
-                getController().stepInto.setDisable(false);
-                getController().stepOver.setDisable(false);
-                getController().conti.setDisable(false);
-                getController().pause.setDisable(true);
-                getController().stop.setDisable(false);
-                getController().restart.setDisable(false);
+                getController().toolStepInto.setDisable(false);
+                getController().menuStepInto.setDisable(false);
+                getController().toolStepOver.setDisable(false);
+                getController().menuStepOver.setDisable(false);
+                getController().toolContinue.setDisable(false);
+                getController().menuContinue.setDisable(false);
+                getController().toolPause.setDisable(true);
+                getController().menuPause.setDisable(true);
+                getController().toolStop.setDisable(false);
+                getController().menuStop.setDisable(false);
+                getController().toolRestart.setDisable(false);
+                getController().menuRestart.setDisable(false);
                 getController().settingsRegex.setDisable(true);
                 getController().settingsLegacy.setDisable(true);
                 getController().settingsStackAddress.setDisable(true);
@@ -96,11 +106,14 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().labelsPane.setDisable(false);
                 getController().symbolsPane.setDisable(false);
 
+                getExecutionWorker().restart();
+
                 application.status.set(Status.SIMULATING);
             }
         } else {
-            getController().simulate.setDisable(false);
-            for (SyntaxASMException error : errors) {
+            getController().toolSimulate.setDisable(false);
+            getController().menuSimulate.setDisable(false);
+            for (ASMException error : errors) {
                 getEditorController().addError(error);
             }
         }
@@ -116,13 +129,15 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 JArmEmuApplication.formatMessage("%notification.parsingError.message"),
                 Styles.DANGER
         );
-        getController().simulate.setDisable(false);
+        getController().toolSimulate.setDisable(false);
+        getController().menuSimulate.setDisable(false);
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onStepInto() {
+        if (getController().menuStepInto.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().stepInto();
     }
@@ -131,28 +146,42 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onStepOver() {
+        if (getController().menuStepOver.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().stepOver();
-        getController().stepInto.setDisable(true);
-        getController().stepOver.setDisable(true);
-        getController().conti.setDisable(true);
-        getController().pause.setDisable(false);
-        getController().restart.setDisable(true);
+        getController().toolStepInto.setDisable(true);
+        getController().menuStepInto.setDisable(true);
+        getController().toolStepOver.setDisable(true);
+        getController().menuStepOver.setDisable(true);
+        getController().toolContinue.setDisable(true);
+        getController().menuContinue.setDisable(true);
+        getController().toolPause.setDisable(false);
+        getController().menuPause.setDisable(false);
+        getController().toolRestart.setDisable(true);
+        getController().menuRestart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
+        getController().memoryOverviewAddressField.setDisable(true);
         getEditorController().onContinueOrStepOver();}
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onContinue() {
+        if (getController().menuContinue.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().conti();
-        getController().stepInto.setDisable(true);
-        getController().stepOver.setDisable(true);
-        getController().conti.setDisable(true);
-        getController().pause.setDisable(false);
-        getController().restart.setDisable(true);
+        getController().toolStepInto.setDisable(true);
+        getController().menuStepInto.setDisable(true);
+        getController().toolStepOver.setDisable(true);
+        getController().menuStepOver.setDisable(true);
+        getController().toolContinue.setDisable(true);
+        getController().menuContinue.setDisable(true);
+        getController().toolPause.setDisable(false);
+        getController().menuPause.setDisable(false);
+        getController().toolRestart.setDisable(true);
+        getController().menuRestart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
+        getController().memoryOverviewAddressField.setDisable(true);
         getEditorController().onContinueOrStepOver();
     }
 
@@ -160,13 +189,20 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onPause() {
+        if (getController().menuPause.isDisable()) return;
         getExecutionWorker().pause();
-        getController().stepInto.setDisable(false);
-        getController().stepOver.setDisable(false);
-        getController().conti.setDisable(false);
-        getController().pause.setDisable(true);
-        getController().restart.setDisable(false);
+        getController().toolStepInto.setDisable(false);
+        getController().menuStepInto.setDisable(false);
+        getController().toolStepOver.setDisable(false);
+        getController().menuStepOver.setDisable(false);
+        getController().toolContinue.setDisable(false);
+        getController().menuContinue.setDisable(false);
+        getController().toolPause.setDisable(true);
+        getController().menuPause.setDisable(true);
+        getController().toolRestart.setDisable(false);
+        getController().menuRestart.setDisable(false);
         getController().memoryDetailsAddressField.setDisable(false);
+        getController().memoryOverviewAddressField.setDisable(false);
         getEditorController().onPause();
     }
 
@@ -174,17 +210,26 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onStop() {
+        if (getController().menuStop.isDisable()) return;
         getEditorController().clearNotifs();
         getExecutionWorker().pause();
         getEditorController().onStop();
-        getController().simulate.setDisable(false);
-        getController().stepInto.setDisable(true);
-        getController().stepOver.setDisable(true);
-        getController().conti.setDisable(true);
-        getController().pause.setDisable(true);
-        getController().stop.setDisable(true);
-        getController().restart.setDisable(true);
+        getController().toolSimulate.setDisable(false);
+        getController().menuSimulate.setDisable(false);
+        getController().toolStepInto.setDisable(true);
+        getController().menuStepInto.setDisable(true);
+        getController().toolStepOver.setDisable(true);
+        getController().menuStepOver.setDisable(true);
+        getController().toolContinue.setDisable(true);
+        getController().menuContinue.setDisable(true);
+        getController().toolPause.setDisable(true);
+        getController().menuPause.setDisable(true);
+        getController().toolStop.setDisable(true);
+        getController().menuStop.setDisable(true);
+        getController().toolRestart.setDisable(true);
+        getController().menuRestart.setDisable(true);
         getController().memoryDetailsAddressField.setDisable(true);
+        getController().memoryOverviewAddressField.setDisable(true);
         getController().settingsRegex.setDisable(false);
         getController().settingsLegacy.setDisable(false);
         getController().settingsStackAddress.setDisable(false);
@@ -206,10 +251,10 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onRestart() {
+        if (getController().menuRestart.isDisable()) return;
         getEditorController().clearNotifs();
         getEditorController().clearAllLineMarkings();
 
-        getCodeInterpreter().resetState();
         getCodeInterpreter().restart();
 
         getEditorController().markForward(getCodeInterpreter().getCurrentLine());

@@ -27,7 +27,7 @@ import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.gui.enums.LineStatus;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;

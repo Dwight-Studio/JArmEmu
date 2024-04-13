@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.view;
 
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;
 import javafx.beans.property.ReadOnlyStringProperty;

@@ -28,7 +28,7 @@ cd $(git rev-parse --show-toplevel) || exit 1
 CWD=$(pwd)
 
 # Constantes
-VER=0.1.11
+VER=0.2.0
 RELEASE=1
 
 rpmdev-setuptree

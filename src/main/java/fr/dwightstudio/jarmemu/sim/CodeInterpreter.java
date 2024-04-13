@@ -23,26 +23,26 @@
 
 package fr.dwightstudio.jarmemu.sim;
 
-import fr.dwightstudio.jarmemu.sim.exceptions.ExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.ParsedInstruction;
-import fr.dwightstudio.jarmemu.sim.parse.SourceParser;
-import fr.dwightstudio.jarmemu.sim.parse.args.AddressParser;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;
+import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.Register;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CodeInterpreter {
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     // ParsedObjects
     protected CodePreparator codePreparator;
 
     // Simulation
+    protected StateContainer initialState;
     protected StateContainer stateContainer;
 
     public CodeInterpreter() {
@@ -54,8 +54,8 @@ public class CodeInterpreter {
      *
      * @param sourceParser le parseur de source utilisé
      */
-    public SyntaxASMException[] load(SourceParser sourceParser, int stackAddress, int symbolsAddress, List<SourceScanner> fileSources) {
-        this.codePreparator = new CodePreparator(stackAddress, symbolsAddress);
+    public ASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
+        this.codePreparator = new CodePreparator();
         return this.codePreparator.load(sourceParser, fileSources);
     }
 
@@ -67,14 +67,16 @@ public class CodeInterpreter {
     public synchronized void executeCurrentLine(boolean forceExecution) throws ExecutionASMException {
 
         // Remise à zéro des drapeaux de ligne des parseurs
-        AddressParser.reset(this.stateContainer);
-
+        stateContainer.resetAddressRegisterUpdateValue();
 
         ExecutionASMException executionException = null;
-        List<ParsedInstruction> instructions = codePreparator.getInstructionMemory();
+        List<ParsedInstruction<?, ?, ?, ?>> instructions = codePreparator.getInstructionMemory();
 
         if (getPC().getData() % 4 == 0 && getPC().getData() >= 0 && (getPC().getData() / 4) < instructions.size()) {
-            ParsedInstruction instruction = instructions.get(getPC().getData() / 4);
+            ParsedInstruction<?, ?, ?, ?> instruction = instructions.get(getPC().getData() / 4);
+
+            // Mise à jour de l'indice du fichier
+            stateContainer.getCurrentFilePos().setFileIndex(instruction.getFile().getIndex());
 
             try {
                 instruction.execute(stateContainer, forceExecution);
@@ -83,7 +85,7 @@ public class CodeInterpreter {
             }
 
             if (forceExecution || executionException == null) {
-                if (!instruction.getInstruction().doModifyPC()) {
+                if (!instruction.doModifyPC()) {
                     getPC().add(4);
                 }
             }
@@ -98,25 +100,17 @@ public class CodeInterpreter {
      * Revient à la première ligne
      */
     public void restart() {
-        resetState();
+        stateContainer = new StateContainer(initialState);
 
         try {
             int fileIndex = stateContainer.getGlobal("_START");
-            stateContainer.setFileIndex(fileIndex);
+            stateContainer.getCurrentFilePos().setFileIndex(fileIndex);
             stateContainer.getPC().setData(stateContainer.getLabelsInFiles().get(fileIndex).get("_START"));
             logger.warning("Setting PC to address of label '_START' positioned at " + stateContainer.getPC().getData());
         } catch (Exception e) {
             logger.warning("Can't find position of label '_START'");
             stateContainer.getPC().setData(0);
         }
-    }
-
-    /**
-     * Reinitialise l'état courant
-     */
-    public void resetState() {
-        logger.info("Resetting program state");
-        stateContainer = codePreparator.processState();
     }
 
     /**
@@ -138,6 +132,31 @@ public class CodeInterpreter {
     public StateContainer getStateContainer() {
         return stateContainer;
     }
+
+    /**
+     * Initialise le conteneur d'état à l'aide du préparateur de code
+     *
+     * @param stackAddress l'adresse de la pile
+     * @param symbolsAddress l'adresse des symboles
+     * @return les erreurs
+     */
+    public ASMException[] initiate(int stackAddress, int symbolsAddress) {
+        logger.info("Initiating state container");
+        initialState = new StateContainer(stackAddress, symbolsAddress);
+        return codePreparator.initiate(initialState);
+    }
+
+    /**
+     * Initialise le conteneur d'état à l'aide du préparateur de code
+     *
+     * @return les erreurs
+     */
+    public ASMException[] initiate() {
+        logger.info("Initiating state container");
+        initialState = new StateContainer();
+        return codePreparator.initiate(initialState);
+    }
+
     private Register getPC() {
         if (stateContainer == null) {
             throw new IllegalStateException("Can't get PC from null state");

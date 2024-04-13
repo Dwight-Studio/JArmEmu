@@ -33,16 +33,16 @@ public enum Section {
     NOTE(false, false), // Special information from vendors or system builders.
     END(false, false); // End of source file.
 
-    private final boolean parseDirective;
+    private final boolean onlyDirective;
     private final boolean dataInitialisation;
 
-    Section(boolean parseDirective, boolean dataInitialisation) {
-        this.parseDirective = parseDirective;
+    Section(boolean onlyDirective, boolean dataInitialisation) {
+        this.onlyDirective = onlyDirective;
         this.dataInitialisation = dataInitialisation;
     }
 
-    public boolean shouldParseDirective() {
-        return parseDirective;
+    public boolean onlyDirectivesAllowed() {
+        return onlyDirective;
     }
 
     public boolean allowDataInitialisation() {

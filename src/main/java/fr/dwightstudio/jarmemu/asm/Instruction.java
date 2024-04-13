@@ -23,155 +23,88 @@
 
 package fr.dwightstudio.jarmemu.asm;
 
-import fr.dwightstudio.jarmemu.asm.inst.BKPTExecutor;
-import fr.dwightstudio.jarmemu.asm.inst.InstructionExecutor;
-import fr.dwightstudio.jarmemu.sim.obj.Register;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
-import fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParser;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.asm.instruction.*;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static fr.dwightstudio.jarmemu.asm.inst.InstructionExecutors.*;
-import static fr.dwightstudio.jarmemu.sim.parse.args.ArgumentParsers.*;
+import java.lang.reflect.InvocationTargetException;
 
 public enum Instruction {
 
     // Arithmetic
-    ADD(ADD_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    SUB(SUB_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    RSB(RSB_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    ADC(ADC_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    SBC(SBC_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    RSC(RSC_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    MUL(MUL_EXECUTOR, false, true, REGISTER, REGISTER, REGISTER, NULL),
-    MLA(MLA_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER, REGISTER),
-    MLS(MLS_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER, REGISTER),
-    UMULL(UMULL_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER, REGISTER),
-    UMLAL(UMLAL_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER, REGISTER),
-    SMULL(SMULL_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER, REGISTER),
-    SMLAL(SMLAL_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER, REGISTER),
+    ADD(ADDInstruction.class),
+    SUB(SUBInstruction.class),
+    RSB(RSBInstruction.class),
+    ADC(ADCInstruction.class),
+    SBC(SBCInstruction.class),
+    RSC(RSCInstruction.class),
+    MUL(MULInstruction.class),
+    MLA(MLAInstruction.class),
+    MLS(MLSInstruction.class),
+    UMULL(UMULLInstruction.class),
+    UMLAL(UMLALInstruction.class),
+    SMULL(SMULLInstruction.class),
+    SMLAL(SMLALInstruction.class),
 
     // Bitwise logic
-    AND(AND_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    ORR(ORR_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    EOR(EOR_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    BIC(BIC_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT),
-    BFC(BFC_EXECUTOR, false, false, REGISTER, IMM, IMM, NULL),
-    BFI(BFI_EXECUTOR, false, false, REGISTER, REGISTER, IMM, IMM),
-    CLZ(CLZ_EXECUTOR, false, false, REGISTER, REGISTER, NULL, NULL),
+    AND(ANDInstruction.class),
+    ORR(ORRInstruction.class),
+    EOR(EORInstruction.class),
+    BIC(BICInstruction.class),
+    BFC(BFCInstruction.class),
+    BFI(BFIInstruction.class),
+    CLZ(CLZInstruction.class),
 
-    //Shifter
-    LSL(LSL_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, NULL),
-    LSR(LSR_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, NULL),
-    ASR(ASR_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, NULL),
-    ROR(ROR_EXECUTOR, false, true, REGISTER, REGISTER, ROTATED_IMM_OR_REGISTER, NULL),
-    RRX(RRX_EXECUTOR, false, false, REGISTER, REGISTER, NULL, NULL),
+    // Shifting
+    LSL(LSLInstruction.class),
+    LSR(LSRInstruction.class),
+    ASR(ASRInstruction.class),
+    ROR(RORInstruction.class),
+    RRX(RRXInstruction.class),
 
     // Comparison
-    CMP(CMP_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
-    CMN(CMN_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
-    TST(TST_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
-    TEQ(TEQ_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
-    CBZ(CBZ_EXECUTOR, true, false, REGISTER, LABEL, NULL, NULL),
-    CBNZ(CBNZ_EXECUTOR, true, false, REGISTER, LABEL, NULL, NULL),
+    CMP(CMPInstruction.class),
+    CMN(CMPInstruction.class),
+    TST(TSTInstruction.class),
+    TEQ(TEQInstruction.class),
+    CBZ(CBZInstruction.class),
+    CBNZ(CBNZInstruction.class),
 
     // Data movement
-    MOV(MOV_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
-    MVN(MVN_EXECUTOR, false, false, REGISTER, ROTATED_IMM_OR_REGISTER, SHIFT, NULL),
+    MOV(MOVInstruction.class),
+    MVN(MVNInstruction.class),
+    SWI(SWIInstruction.class),
+    BXJ(BXJInstruction.class),
 
     // Memory access
-    ADR(ADR_EXECUTOR, false, false, REGISTER, LABEL, NULL, NULL),
-    LDR(LDR_EXECUTOR, false, false, REGISTER, ADDRESS, IMM_OR_REGISTER, SHIFT),
-    STR(STR_EXECUTOR, false, false, REGISTER, ADDRESS, IMM_OR_REGISTER, SHIFT),
-    LDM(LDM_EXECUTOR, false, false, REGISTER_WITH_UPDATE, REGISTER_ARRAY, NULL, NULL),
-    STM(STM_EXECUTOR, false, false, REGISTER_WITH_UPDATE, REGISTER_ARRAY, NULL, NULL),
-    SWP(SWP_EXECUTOR, false, false, REGISTER, REGISTER, REGISTER_ADDRESS, NULL),
+    ADR(ADRInstruction.class),
+    LDR(LDRInstruction.class),
+    STR(STRInstruction.class),
+    STM(STMInstruction.class),
+    LDM(LDMInstruction.class),
+    SWP(SWPInstruction.class),
 
     // Branching
-    B(B_EXECUTOR, true, false, LABEL, NULL, NULL, NULL),
-    BL(BL_EXECUTOR, true, false, LABEL, NULL, NULL, NULL),
-    BLX(BLX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
-    BX(BX_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
-    SWI(SWI_EXECUTOR, false, false, CODE, NULL, NULL, NULL),
-    BXJ(BXJ_EXECUTOR, true, false, REGISTER, NULL, NULL, NULL),
+    B(BInstruction.class),
+    BL(BLInstruction.class),
+    BLX(BLInstruction.class),
+    BX(BXInstruction.class),
 
     // Others
-    BKPT(BKPT_EXECUTOR, false, false, IMM_OR_REGISTER, NULL, NULL, NULL),
-    CLREX(CLREX_EXECUTOR, false, false, NULL, NULL, NULL, NULL);
+    BKPT(BKPTInstruction.class),
+    CLREX(CLREXInstruction.class);
 
-    private final ArgumentParser[] args;
-    private final InstructionExecutor executor;
-    private final boolean domReg;
-    private final boolean modifyPC;
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass;
 
-    /**
-     * Crée d'une entrée d'instruction
-     *
-     * @param executor L'exécuteur de l'instruction
-     * @param modifyPC Drapeau qui indique si une modification du PC va être effectuée
-     * @param domReg   Drapeau qui indique si le premier argument peut-être omis
-     * @param arg1     L'analyseur pour le premier argument
-     * @param arg2     L'analyseur pour le deuxième argument
-     * @param arg3     L'analyseur pour le troisième argument
-     * @param arg4     L'analyseur pour le quatrième argument
-     */
-    <A,B,C,D> Instruction(InstructionExecutor<A,B,C,D> executor,
-                          boolean modifyPC,
-                          boolean domReg,
-                          ArgumentParser<A> arg1,
-                          ArgumentParser<B> arg2,
-                          ArgumentParser<C> arg3,
-                          ArgumentParser<D> arg4) {
-        this.args = new ArgumentParser<?>[] {arg1, arg2, arg3, arg4};
-        this.executor = executor;
-        this.domReg = domReg;
-        this.modifyPC = modifyPC;
-        logger.log(Level.FINE, "Registering instruction " + this.name()
-                + " with " + arg1.getClass().getName()
-                + ", " + arg2.getClass().getName()
-                + ", " + arg3.getClass().getName()
-                + ", " + arg4.getClass().getName());
+    Instruction(Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass) {
+        this.instructionClass = instructionClass;
     }
 
-    public ArgumentParser[] getArgParsers() {
-        return args;
-    }
-
-    /**
-     * Execution de l'instruction sous condition
-     * @param stateContainer Le conteneur d'état sur lequel effectuer l'exécution
-     * @param forceExecution ignore les erreurs d'exécution non bloquantes
-     * @param condition La condition à verifier
-     * @param updateFlags Doit-on mettre à jour les flags
-     * @param dataMode Type de donnée (Byte, HalfWord, Word) si applicable
-     * @param updateMode Mode de mise à jour
-     * @param arg1 Le premier argument
-     * @param arg2 Le deuxième argument
-     * @param arg3 Le troisième argument
-     * @param arg4 Le quatrième argument
-     */
-    public <A,B,C,D> void execute(StateContainer stateContainer,
-                                    boolean forceExecution,
-                                    Condition condition,
-                                    boolean updateFlags,
-                                    DataMode dataMode,
-                                    UpdateMode updateMode,
-                                    A arg1, B arg2, C arg3, D arg4) {
-
-        if (condition.eval(stateContainer)) {
-            executor.execute(stateContainer, forceExecution, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-        } else if (this.doModifyPC()) {
-            stateContainer.getPC().add(4);
+    public ParsedInstruction<?, ?, ?, ?> create(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        try {
+            return this.instructionClass.getDeclaredConstructor(Condition.class, boolean.class, DataMode.class, UpdateMode.class, String.class, String.class, String.class, String.class).newInstance(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            if (e.getCause() instanceof ASMException ex) throw ex;
+            else throw new RuntimeException(e);
         }
-    }
-
-    public boolean hasDomReg() {
-        return domReg;
-    }
-
-    public boolean doModifyPC() {
-        return modifyPC;
     }
 }

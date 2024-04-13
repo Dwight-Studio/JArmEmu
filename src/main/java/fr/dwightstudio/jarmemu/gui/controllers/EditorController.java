@@ -25,11 +25,11 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
+import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
-import fr.dwightstudio.jarmemu.sim.exceptions.SyntaxASMException;
-import fr.dwightstudio.jarmemu.sim.obj.FilePos;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 public class EditorController extends AbstractJArmEmuModule {
     public static final String SAMPLE_CODE = String.join("\n", new String[]{".global _start", ".text", "_start:", "\t@ Beginning of the program"});
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final ArrayList<FileEditor> fileEditors;
     private FileEditor lastScheduledEditor;
     private FileEditor lastExecutedEditor;
@@ -96,7 +96,7 @@ public class EditorController extends AbstractJArmEmuModule {
      *
      * @param exception l'erreur en question
      */
-    protected void addError(SyntaxASMException exception) {
+    protected void addError(ASMException exception) {
         if (exception.getObject() != null) {
             logger.info("Error parsing " + exception.getObject().toString() + " at line " + exception.getLine());
         } else {

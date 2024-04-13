@@ -47,7 +47,7 @@ import static fr.dwightstudio.jarmemu.gui.JArmEmuApplication.getResourceAsStream
 
 public class JArmEmuDialogs extends AbstractJArmEmuModule {
 
-    public Logger logger = Logger.getLogger(getClass().getName());
+    public Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public JArmEmuDialogs(JArmEmuApplication application) {
         super(application);

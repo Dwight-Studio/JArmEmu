@@ -31,7 +31,7 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.gui.view.MemoryChunkView;
-import fr.dwightstudio.jarmemu.sim.obj.StateContainer;
+import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
@@ -61,7 +61,7 @@ public class MemoryOverviewController extends AbstractJArmEmuModule {
     protected static final int PAGE_NUMBER = (int) (((long) Math.pow(2L, 32L)) / ADDRESS_PER_PAGE);
     protected static final int PAGE_OFFSET = PAGE_NUMBER/2;
 
-    private final Logger logger = Logger.getLogger(getClass().getName());
+    private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private Popover hintPop;
     private TableColumn<MemoryChunkView, Number> col0;
     private TableColumn<MemoryChunkView, String> col1;
