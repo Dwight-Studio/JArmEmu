@@ -78,6 +78,25 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-04-13" version="0.2.0">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.2.0</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Added Rating and Hardware requirements (AppStream)</li>
+                    <li>Added CBZ instruction</li>
+                    <li>Added CBNZ instruction</li>
+                    <li>Added CLZ instruction</li>
+                    <li>Improved instructions system (complete overhaul)</li>
+                    <li>Improved icons and showcase medias</li>
+                    <li>Improved i18n (French)</li>
+                    <li>Improved logging formatting</li>
+                    <li>Fixed layout on desktop</li>
+                    <li>Fixed Regex Parser invalid statement detection</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-01-23" version="0.1.10">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.1.10</url>
             <description>

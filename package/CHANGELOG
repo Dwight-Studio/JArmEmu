@@ -1,6 +1,9 @@
 0.1.10 -> 0.2.0
 
 - Added Rating and Hardware requirements (AppStream)
+- Added CBZ instruction
+- Added CBNZ instruction
+- Added CLZ instruction
 - Improved instructions system (complete overhaul)
 - Improved icons and showcase medias
 - Improved i18n (French)
