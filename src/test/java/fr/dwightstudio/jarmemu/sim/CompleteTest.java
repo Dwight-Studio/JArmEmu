@@ -27,6 +27,7 @@ import fr.dwightstudio.jarmemu.JArmEmuTest;
 import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -277,7 +278,7 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
     }
 
-    /*
+
     @Test
     public void factorialLegacyTest() {
         parser = new LegacySourceParser();
@@ -370,5 +371,4 @@ public class CompleteTest extends JArmEmuTest {
 
         assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
     }
-    */
 }
