@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,12 +44,12 @@ public class EquivalentDirective extends ParsedDirective {
             symbol = arg[0].toUpperCase();
 
             if (!symbol.matches("[A-Za-z_0-9]+")) {
-                throw new SyntaxASMException("Invalid symbol name '" + symbol + "'");
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidSymbolName", symbol));
             } else {
                 argument = arg[1];
             }
         } else {
-            throw new SyntaxASMException("Invalid arguments '" + args + "' for Equivalent directive");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Equivalent"));
         }
     }
 

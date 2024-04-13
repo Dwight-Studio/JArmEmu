@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.parser.regex;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
@@ -94,6 +95,9 @@ public class ASMParser {
             String instructionString = matcherInst.group("INSTRUCTION");
             String labelString = matcherInst.group("LABEL");
 
+            if ((labelString == null || labelString.isEmpty()) && (instructionString == null || instructionString.isEmpty()))
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", line)).with(sourceScanner.getLineNumber()).with(parsedFile);
+
             if (labelString != null && !labelString.isEmpty()) {
                 parsedFile.add(new ParsedLabel(parser.currentSection, labelString).withLineNumber(sourceScanner.getLineNumber()));
             }
@@ -112,14 +116,14 @@ public class ASMParser {
                 try {
                     instruction = Instruction.valueOf(instructionString.toUpperCase());
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown instruction '" + instructionString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownInstruction", instructionString)).with(sourceScanner.getLineNumber()).with(parsedFile);
                 }
 
                 try {
                     if (Objects.equals(conditionString, "")) conditionString = null;
                     if (conditionString != null) condition = Condition.valueOf(conditionString.toUpperCase());
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown condition '" + conditionString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownCondition", conditionString)).with(sourceScanner.getLineNumber()).with(parsedFile);
                 }
 
                 if (flagString != null) updateFlags = flagString.equalsIgnoreCase("S");
@@ -128,14 +132,14 @@ public class ASMParser {
                     if (Objects.equals(dataString, "")) dataString = null;
                     if (dataString != null) dataMode = DataMode.customValueOf(dataString.toUpperCase());
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown data mode '" + dataString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownDataMode", dataString)).with(sourceScanner.getLineNumber()).with(parsedFile);
                 }
 
                 try {
                     if (Objects.equals(updateString, "")) updateString = null;
                     if (updateString != null) updateMode = UpdateMode.valueOf(updateString.toUpperCase());
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown update mode '" + updateString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownUpdateMode", updateString)).with(sourceScanner.getLineNumber()).with(parsedFile);
                 }
 
                 if (arg1 != null) {
@@ -165,7 +169,7 @@ public class ASMParser {
                 parsedFile.add(instruction.create(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
             }
         } else {
-            throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", line)).with(sourceScanner.getLineNumber()).with(parsedFile);
         }
     }
 }

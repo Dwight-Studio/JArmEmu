@@ -33,18 +33,19 @@ import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
 public class SWPInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
     public SWPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-        throw new SyntaxASMException("SWP instruction is deprecated");
+        throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
     public SWPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
         super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-        throw new SyntaxASMException("SWP instruction is deprecated");
+        throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
     @Override

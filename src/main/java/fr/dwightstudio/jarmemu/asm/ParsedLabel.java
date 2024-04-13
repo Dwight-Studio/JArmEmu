@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm;
 
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 
@@ -56,7 +57,7 @@ public class ParsedLabel extends ParsedObject {
         } else {
             this.memoryPos = pos.freeze();
             if (stateContainer.getAccessibleLabels().put(name, this.memoryPos.toByteValue()) != null)
-                throw new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.labelAlreadyDefined", this.name)).with(this);
         }
     }
 
@@ -67,7 +68,7 @@ public class ParsedLabel extends ParsedObject {
         if (container.getRestrainedLabels().get(this.name) == null) {
             throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
         } else if (container.getRestrainedLabels().get(this.name) != this.memoryPos.toByteValue()) {
-            throw new SyntaxASMException("Label '" + this.name + "' is already defined").with(this);
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.labelAlreadyDefined", this.name)).with(this);
         }
     }
 

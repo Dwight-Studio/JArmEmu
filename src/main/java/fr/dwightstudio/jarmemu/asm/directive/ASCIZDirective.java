@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,14 +38,14 @@ public class ASCIZDirective extends ParsedDirective {
         super(section, args);
 
         if (!section.allowDataInitialisation()) {
-            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.illegalDataInitialization", "ASCIZ", section.name()));
         }
 
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
             String sep = String.valueOf(args.charAt(0));
             asciiDirective = new ASCIIDirective(section, sep + args.substring(1,args.length()-1) + "\0" + sep);
         } else if (!args.isBlank()) {
-            throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "ASCIZ"));
         } else {
             asciiDirective = new ASCIIDirective(section, args);
         }

@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.parser.legacy;
 import fr.dwightstudio.jarmemu.asm.Directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
 import java.util.Arrays;
 
@@ -45,7 +46,7 @@ public class LegacySectionParser {
                 try {
                     section = Section.valueOf(sectionString.toUpperCase());
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown section '" + sectionString + "'");
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownSection", sectionString));
                 }
             }
             return section;

@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,18 +40,18 @@ public class ASCIIDirective extends ParsedDirective {
         super(section, args);
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
-            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.illegalDataInitialization", "ASCII", section.name()));
         }
 
         if ((args.startsWith("\"") && args.endsWith("\"")) || (args.startsWith("'") && args.endsWith("'"))) {
             String del = String.valueOf(args.charAt(0));
             String writingString = args.substring(1, args.length()-1);
-            if (writingString.contains(del)) throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+            if (writingString.contains(del)) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "ASCII"));
 
             byteDirective = new ByteDirective(section, writingString.chars().mapToObj(String::valueOf).collect(Collectors.joining(", ")));
 
         } else if (!args.isBlank()) {
-            throw new SyntaxASMException("Invalid argument '" + args + "' for ASCII directive");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "ASCII"));
         } else {
             byteDirective = new ByteDirective(section, args);
         }

@@ -55,7 +55,7 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
             for (String regString : arrayString.split(",")) {
                 if(regString.contains("-")){
                     String[] stringArray = regString.split("-");
-                    if (stringArray.length != 2) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpectedRegisterArray", originalString));
+                    if (stringArray.length != 2) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpectedArgumentRegisterArray", originalString));
                     int registerFirst = Integer.parseInt(stringArray[0].strip().substring(1));
                     int registerSecond = Integer.parseInt(stringArray[1].strip().substring(1));
                     for (int i = registerFirst; i <= registerSecond; i++) {
@@ -66,7 +66,7 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
                 }
             }
         } else {
-            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpectedRegisterArray", originalString));
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpectedArgumentRegisterArray", originalString));
         }
     }
 

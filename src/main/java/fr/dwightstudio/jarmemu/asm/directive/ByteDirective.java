@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class ByteDirective extends ParsedDirective {
         super(section, args);
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
-            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.illegalDataInitialization", "Byte", section.name()));
         }
 
         if (args.isBlank()) {
@@ -59,11 +60,11 @@ public class ByteDirective extends ParsedDirective {
                 if (Integer.numberOfLeadingZeros(data) >= 24) {
                     byteArray[i] = (byte) data;
                 } else {
-                    throw new SyntaxASMException("Overflowing Byte value '" + args + "'");
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.overflowingByteValue", args));
                 }
             }
         } catch (NumberFormatException exception) {
-            throw new SyntaxASMException("Invalid Byte value '" + args + "'");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Byte"));
         }
     }
 

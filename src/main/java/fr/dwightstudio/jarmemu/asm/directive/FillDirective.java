@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,14 +66,14 @@ public class FillDirective extends ParsedDirective {
                 valueSize = stateContainer.evalWithAccessibleConsts(arg[2]);
             }
 
-            default -> throw new SyntaxASMException("Invalid arguments '" + args + "' for Fill directive");
+            default -> throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Fill"));
         }
 
         if (!section.allowDataInitialisation() && value != 0) {
-            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.illegalDataInitialization", "Fill", section.name()));
         }
 
-        if (valueSize <= 0) throw new SyntaxASMException("Invalid value size '" + valueSize + "' (must be positive)");
+        if (valueSize <= 0) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidValueSize", valueSize));
 
         bytes = new byte[valueSize];
 

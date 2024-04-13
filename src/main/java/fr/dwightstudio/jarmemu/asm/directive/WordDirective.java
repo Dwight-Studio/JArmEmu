@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +42,7 @@ public class WordDirective extends ParsedDirective {
         super(section, args);
 
         if (!args.isBlank() && !section.allowDataInitialisation()) {
-            throw new SyntaxASMException("Illegal data initialization (in " + section.name() + ")");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.illegalDataInitialization", "Word", section.name()));
         }
 
         if (args.isBlank()) {
@@ -60,7 +61,7 @@ public class WordDirective extends ParsedDirective {
                 intArray[i] = stateContainer.evalWithAccessible(arg[i].strip());
             }
         } catch (NumberFormatException exception) {
-            throw new SyntaxASMException("Invalid Word value '" + args + "'");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Word"));
         }
     }
 

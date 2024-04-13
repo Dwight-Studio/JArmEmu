@@ -23,7 +23,7 @@
   -->
 
 <assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
-    <assemblyIdentity version="0.1.11.0"
+    <assemblyIdentity version="0.2.0.0"
                       processorArchitecture="*"
                       name="launcher.exe"
                       type="win32"/>

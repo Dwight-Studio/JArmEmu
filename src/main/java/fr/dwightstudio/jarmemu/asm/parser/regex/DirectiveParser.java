@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.parser.regex;
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.EnumUtils;
 
@@ -83,7 +84,7 @@ public class DirectiveParser {
                     parser.currentSection = section;
                     parsedFile.add(new ParsedSection(section).withLineNumber(sourceScanner.getLineNumber()));
                 } catch (IllegalArgumentException exception) {
-                    throw new SyntaxASMException("Unknown section '" + sectionString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownSection", sectionString)).with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
                 }
             } else if (parser.currentSection != Section.COMMENT) {
                 if (labelString != null && !labelString.isEmpty()) {
@@ -98,7 +99,7 @@ public class DirectiveParser {
                         parsedFile.add(directive.create(parser.currentSection, argsString == null ? "" : argsString.strip()).withLineNumber(sourceScanner.getLineNumber()));
                     } catch (IllegalArgumentException exception) {
                         if (parser.currentSection.onlyDirectivesAllowed())
-                            throw new SyntaxASMException("Unknown directive '" + directiveString + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+                            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownDirective", directiveString)).with(sourceScanner.getLineNumber()).with(parsedFile);
                     }
                 }
             } else {
@@ -107,7 +108,7 @@ public class DirectiveParser {
         }
 
         if (!flag) {
-            if (parser.currentSection.onlyDirectivesAllowed()) throw new SyntaxASMException("Unexpected statement '" + line + "'").with(sourceScanner.getLineNumber()).with(parsedFile);
+            if (parser.currentSection.onlyDirectivesAllowed()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", line)).with(sourceScanner.getLineNumber()).with(parsedFile);
         }
 
         return rtn;

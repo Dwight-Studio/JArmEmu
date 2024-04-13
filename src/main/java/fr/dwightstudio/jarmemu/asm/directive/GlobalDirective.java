@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.asm.directive;
 import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,7 +41,7 @@ public class GlobalDirective extends ParsedDirective {
         if (stateContainer.getRestrainedData().containsKey(name) || stateContainer.getRestrainedLabels().containsKey(name)) {
             stateContainer.addGlobal(name, stateContainer.getCurrentFilePos().getFileIndex());
         } else {
-            throw new SyntaxASMException("Invalid argument '" + args + "'");
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Global"));
         }
     }
 

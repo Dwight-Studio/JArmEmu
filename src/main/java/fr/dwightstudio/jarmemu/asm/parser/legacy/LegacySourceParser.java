@@ -27,6 +27,7 @@ import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import org.jetbrains.annotations.NotNull;
 
@@ -205,7 +206,7 @@ public class LegacySourceParser implements SourceParser {
                         if(instruction.toString().toUpperCase().equals(instructionString)) this.instruction = instruction;
                     }
 
-                    if (this.instruction == null) throw new SyntaxASMException("Unknown instruction '" + oldInstructionString + "'").with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
+                    if (this.instruction == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownInstruction", oldInstructionString)).with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
 
                     if (currentLine.contains("{")) {
                         StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
@@ -250,7 +251,7 @@ public class LegacySourceParser implements SourceParser {
                         this.arguments.replaceAll(String::strip);
                     }
 
-                    if (arguments.size() > 4) throw new SyntaxASMException("Invalid instruction '" + currentLine + "' (too many arguments");
+                    if (arguments.size() > 4) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", currentLine));
                 }
             }
         }
