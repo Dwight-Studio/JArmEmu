@@ -4,7 +4,9 @@
 - Improved instructions system (complete overhaul)
 - Improved icons and showcase medias
 - Improved i18n (French)
+- Improved logging formatting
 - Fixed layout on desktop
+- Fixed Regex Parser invalid statement detection
 
 
 0.1.9 -> 0.1.10
