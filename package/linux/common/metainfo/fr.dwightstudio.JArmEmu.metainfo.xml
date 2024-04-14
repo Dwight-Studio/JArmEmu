@@ -15,9 +15,10 @@
     <recommends>
         <control>keyboard</control>
         <control>pointing</control>
+        <display_length compare="ge">600</display_length>
     </recommends>
     <requires>
-        <display_length compare="ge">medium</display_length>
+        <display_length compare="gt">360</display_length>
     </requires>
     <description>
         <p>JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a
