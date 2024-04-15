@@ -43,9 +43,9 @@ public class JArmEmuLauncher {
         setUpLogger();
 
         if (splashScreen != null) {
-            int dpi = Toolkit.getDefaultToolkit().getScreenResolution();
-            int scale = (dpi * 100) / BASE_DPI;
-            logger.info("Screen resolution of " + dpi + " DPI");
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            double scale = gd.getDisplayMode().getWidth() / (double) gd.getDefaultConfiguration().getBounds().width;
+
             logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
 
             URL url;
