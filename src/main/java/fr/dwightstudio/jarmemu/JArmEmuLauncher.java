@@ -43,22 +43,26 @@ public class JArmEmuLauncher {
         setUpLogger();
 
         if (splashScreen != null) {
-            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            double scale = (gd.getDisplayMode().getWidth() / (double) gd.getDefaultConfiguration().getBounds().width) * 100;
+            double scale = GraphicsEnvironment
+                    .getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice()
+                    .getDefaultConfiguration()
+                    .getDefaultTransform()
+                    .getScaleY();
 
             logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
 
             URL url;
 
-            if (scale >= 125 && scale < 150) {
+            if (scale >= 1.25 && scale < 1.5) {
                 url = JArmEmuApplication.getResource("medias/splash@125pct.png");
-            } else if (scale >= 150 && scale < 200) {
+            } else if (scale >= 1.5 && scale < 2.0) {
                 url = JArmEmuApplication.getResource("medias/splash@150pct.png");
-            } else if (scale >= 200 && scale < 250) {
+            } else if (scale >= 2.0 && scale < 2.5) {
                 url = JArmEmuApplication.getResource("medias/splash@200pct.png");
-            } else if (scale >= 250 && scale < 300) {
+            } else if (scale >= 2.5 && scale < 3.0) {
                 url = JArmEmuApplication.getResource("medias/splash@250pct.png");
-            } else if (scale >= 300) {
+            } else if (scale >= 3.0) {
                 url = JArmEmuApplication.getResource("jarmemu/medias/splash@300pct.png");
             } else {
                 url = JArmEmuApplication.getResource("medias/splash.png");
