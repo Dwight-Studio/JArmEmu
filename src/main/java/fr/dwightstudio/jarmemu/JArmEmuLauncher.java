@@ -25,7 +25,10 @@ package fr.dwightstudio.jarmemu;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.LogManager;
@@ -33,46 +36,55 @@ import java.util.logging.Logger;
 
 public class JArmEmuLauncher {
 
-    private static final int BASE_DPI = 96;
-    public static final SplashScreen splashScreen = SplashScreen.getSplashScreen();
-
     private static Logger logger = Logger.getLogger(JArmEmuLauncher.class.getSimpleName());
 
     public static void main(String[] args) throws IOException {
         System.setProperty("prism.dirtyopts", "false");
         setUpLogger();
 
-        if (splashScreen != null) {
-            double scale = GraphicsEnvironment
-                    .getLocalGraphicsEnvironment()
-                    .getDefaultScreenDevice()
-                    .getDefaultConfiguration()
-                    .getDefaultTransform()
-                    .getScaleY();
+        if (SplashScreen.getSplashScreen() != null) SplashScreen.getSplashScreen().close();
 
-            logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-            URL url;
+        JFrame splashScreen = new JFrame("JArmEmu SplashScreen");
 
-            if (scale >= 1.25 && scale < 1.5) {
-                url = JArmEmuApplication.getResource("medias/splash@125pct.png");
-            } else if (scale >= 1.5 && scale < 2.0) {
-                url = JArmEmuApplication.getResource("medias/splash@150pct.png");
-            } else if (scale >= 2.0 && scale < 2.5) {
-                url = JArmEmuApplication.getResource("medias/splash@200pct.png");
-            } else if (scale >= 2.5 && scale < 3.0) {
-                url = JArmEmuApplication.getResource("medias/splash@250pct.png");
-            } else if (scale >= 3.0) {
-                url = JArmEmuApplication.getResource("jarmemu/medias/splash@300pct.png");
-            } else {
-                url = JArmEmuApplication.getResource("medias/splash.png");
-            }
+        double scale = splashScreen.getGraphicsConfiguration().getDefaultTransform().getScaleY();
 
-            logger.info("Loading SplashScreen: " + url);
-            splashScreen.setImageURL(url);
+        splashScreen.setBounds((screenSize.width - 100) / 2, (screenSize.height - 200) / 2, 100, 200);
+
+        splashScreen.setSize(100,200);
+        splashScreen.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        splashScreen.setAlwaysOnTop(true);
+        splashScreen.setUndecorated(true);
+        splashScreen.setAutoRequestFocus(true);
+        splashScreen.setVisible(true);
+
+        Graphics g = splashScreen.getContentPane().getGraphics();
+        g.drawImage(ImageIO.read(JArmEmuApplication.getResource("medias/splash@300pct.png")), 0, 0, null);
+
+        logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
+
+        /*
+        logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
+
+        URL url;
+
+        if (scale >= 1.25 && scale < 1.5) {
+            url = JArmEmuApplication.getResource("medias/splash@125pct.png");
+        } else if (scale >= 1.5 && scale < 2.0) {
+            url = JArmEmuApplication.getResource("medias/splash@150pct.png");
+        } else if (scale >= 2.0 && scale < 2.5) {
+            url = JArmEmuApplication.getResource("medias/splash@200pct.png");
+        } else if (scale >= 2.5 && scale < 3.0) {
+            url = JArmEmuApplication.getResource("medias/splash@250pct.png");
+        } else if (scale >= 3.0) {
+            url = JArmEmuApplication.getResource("medias/splash@300pct.png");
         } else {
-            logger.info("No SplashScreen detected");
+            url = JArmEmuApplication.getResource("medias/splash.png");
         }
+
+        logger.info("Loading SplashScreen: " + url);
+         */
 
         JArmEmuApplication.main(args);
     }
