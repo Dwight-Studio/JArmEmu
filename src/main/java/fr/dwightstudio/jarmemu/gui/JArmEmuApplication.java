@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.*;
+import fr.dwightstudio.jarmemu.JArmEmuLauncher;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
@@ -96,7 +97,10 @@ public class JArmEmuApplication extends Application {
     public Scene scene;
     private String argSave;
 
-    // TODO: Finir l'I18N (Directives et erreurs)
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
@@ -170,14 +174,8 @@ public class JArmEmuApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        SplashScreen splashScreen = SplashScreen.getSplashScreen();
-
-        int scale = (int) (stage.getOutputScaleY() * 100);
-        Preferences.userRoot().node(getClass().getPackage().getName().replaceAll("\\.", "/")).putInt("scale", scale);
-        logger.info("Computing scale: " + scale + "%");
-
-        if (splashScreen != null) {
-            splashScreen.close();
+        if (JArmEmuLauncher.splashScreen != null) {
+            JArmEmuLauncher.splashScreen.close();
         }
 
         status.set(Status.EDITING);
@@ -227,54 +225,9 @@ public class JArmEmuApplication extends Application {
         return stage.maximizedProperty();
     }
 
-    /**
-     * Adapte le splashscreen à la dimension de l'écran.
-     *
-     * @param splashScreen l'instance du splashscreen
-     */
-    private static void adaptSplashScreen(SplashScreen splashScreen) {
-        try {
-            int scale = Preferences.userRoot().node(JArmEmuApplication.class.getPackage().getName().replaceAll("\\.", "/")).getInt("scale", 100);
-
-            logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
-
-            URL url;
-            
-            if (scale >= 125 && scale < 150) {
-                url = getResource("medias/splash@125pct.png");
-            } else if (scale >= 150 && scale < 200) {
-                url = getResource("medias/splash@150pct.png");
-            } else if (scale >= 200 && scale < 250) {
-                url = getResource("medias/splash@200pct.png");
-            } else if (scale >= 250 && scale < 300) {
-                url = getResource("medias/splash@250pct.png");
-            } else if (scale >= 300) {
-                url = getResource("jarmemu/medias/splash@300pct.png");
-            } else {
-                url = getResource("medias/splash.png");
-            }
-
-            logger.info("Loading SplashScreen: " + url);
-            splashScreen.setImageURL(url);
-        } catch (Exception e) {
-            logger.severe(ExceptionUtils.getStackTrace(e));
-        }
-    }
-
     @Override
     public void stop() {
 
-    }
-
-    public static void main(String[] args) {
-        System.setProperty("prism.dirtyopts", "false");
-        SplashScreen splashScreen = SplashScreen.getSplashScreen();
-
-        if (splashScreen != null) {
-            adaptSplashScreen(splashScreen);
-        }
-
-        JArmEmuApplication.launch(args);
     }
 
     public void openURL(String url) {
