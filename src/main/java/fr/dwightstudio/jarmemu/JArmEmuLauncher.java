@@ -44,7 +44,7 @@ public class JArmEmuLauncher {
 
         if (splashScreen != null) {
             GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            double scale = gd.getDisplayMode().getWidth() / (double) gd.getDefaultConfiguration().getBounds().width;
+            double scale = (gd.getDisplayMode().getWidth() / (double) gd.getDefaultConfiguration().getBounds().width) * 100;
 
             logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
 
