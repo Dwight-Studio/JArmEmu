@@ -174,6 +174,10 @@ public class JArmEmuApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+        if (JArmEmuLauncher.splashScreen != null) {
+            JArmEmuLauncher.splashScreen.close();
+        }
+
         status.set(Status.EDITING);
         getController().initLayout();
         logger.info("Startup finished");
