@@ -23,6 +23,8 @@
 
 package fr.dwightstudio.jarmemu.gui.controllers;
 
+import atlantafx.base.controls.CustomTextField;
+import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.ComputeHightlightsTask;
@@ -33,11 +35,11 @@ import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.geometry.Insets;
-import javafx.scene.control.Separator;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
@@ -45,6 +47,9 @@ import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
 import org.reactfx.Subscription;
 
 import java.awt.*;
@@ -71,6 +76,17 @@ public class FileEditor extends AbstractJArmEmuModule {
     private final JArmEmuLineFactory lineFactory;
     private final ExecutorService executor;
     private final Subscription hightlightUpdateSubscription;
+    private final AnchorPane findPane;
+    private final CustomTextField findTextField;
+    private final CustomTextField replaceTextField;
+    private final Button previousButton;
+    private final Button nextButton;
+    private final Button replace;
+    private final Button replaceAll;
+    private final ToggleButton caseSensitivity;
+    private final ToggleButton word;
+    private final ToggleButton regex;
+    private final Button closeFind;
 
     // Propriétés du fichier
     private File path;
@@ -187,6 +203,106 @@ public class FileEditor extends AbstractJArmEmuModule {
             } );
         });
 
+        // Find & Replace
+        findPane = new AnchorPane();
+        findPane.setVisible(false);
+        GridPane findContainer = new GridPane();
+        findContainer.setHgap(10);
+        findContainer.setVgap(10);
+        findContainer.setPadding(new Insets(10, 10, 10, 10));
+        findContainer.prefWidth(Double.MAX_VALUE);
+        findContainer.getStyleClass().add("findAndReplace");
+
+        ColumnConstraints constraints = new ColumnConstraints();
+        constraints.setHalignment(HPos.CENTER);
+        constraints.setFillWidth(true);
+        constraints.setHgrow(Priority.ALWAYS);
+        findContainer.getColumnConstraints().add(constraints);
+
+        constraints = new ColumnConstraints();
+        constraints.setHalignment(HPos.CENTER);
+        constraints.setFillWidth(true);
+        findContainer.getColumnConstraints().add(constraints);
+
+        constraints = new ColumnConstraints();
+        constraints.setHalignment(HPos.CENTER);
+        constraints.setFillWidth(true);
+        findContainer.getColumnConstraints().add(constraints);
+
+        findTextField = new CustomTextField();
+        findTextField.setPromptText(JArmEmuApplication.formatMessage("%pop.find.find"));
+        findTextField.setLeft(new FontIcon(Material2OutlinedMZ.SEARCH));
+        findContainer.add(findTextField, 0, 0);
+
+        previousButton = new Button(null, new FontIcon(Material2RoundAL.KEYBOARD_ARROW_UP));
+        HBox.setHgrow(previousButton, Priority.ALWAYS);
+        previousButton.setMaxWidth(Double.MAX_VALUE);
+        previousButton.getStyleClass().add(Styles.LEFT_PILL);
+
+        nextButton = new Button(null, new FontIcon(Material2RoundAL.KEYBOARD_ARROW_DOWN));
+        HBox.setHgrow(nextButton, Priority.ALWAYS);
+        nextButton.setMaxWidth(Double.MAX_VALUE);
+        nextButton.getStyleClass().add(Styles.RIGHT_PILL);
+
+        HBox navBox = new HBox(previousButton, nextButton);
+        navBox.setAlignment(Pos.CENTER);
+        findContainer.add(navBox, 1, 0);
+
+        replaceTextField = new CustomTextField();
+        replaceTextField.setPromptText(JArmEmuApplication.formatMessage("%pop.find.replace"));
+        replaceTextField.setLeft(new FontIcon(Material2RoundAL.FIND_REPLACE));
+        findContainer.add(replaceTextField, 0, 1);
+
+        replace = new Button(JArmEmuApplication.formatMessage("%pop.find.replace"));
+        replace.setMaxWidth(Double.MAX_VALUE);
+        replace.getStyleClass().addAll(Styles.ACCENT, Styles.BUTTON_OUTLINED);
+
+        findContainer.add(replace, 1, 1);
+
+        replaceAll = new Button(JArmEmuApplication.formatMessage("%pop.find.replaceAll"));
+        replaceAll.getStyleClass().addAll(Styles.ACCENT, Styles.BUTTON_OUTLINED);
+
+        findContainer.add(replaceAll, 2, 1);
+
+        caseSensitivity = new ToggleButton("Cc");
+        HBox.setHgrow(caseSensitivity, Priority.ALWAYS);
+        caseSensitivity.setMaxWidth(Double.MAX_VALUE);
+        caseSensitivity.getStyleClass().addAll(Styles.LEFT_PILL);
+        caseSensitivity.setTooltip(new Tooltip(JArmEmuApplication.formatMessage("%pop.find.caseSensitivity")));
+
+        word = new ToggleButton("W");
+        HBox.setHgrow(word, Priority.ALWAYS);
+        word.setMaxWidth(Double.MAX_VALUE);
+        word.getStyleClass().addAll(Styles.CENTER_PILL);
+        word.setTooltip(new Tooltip(JArmEmuApplication.formatMessage("%pop.find.word")));
+
+        regex = new ToggleButton(".*");
+        HBox.setHgrow(regex, Priority.ALWAYS);
+        regex.setMaxWidth(Double.MAX_VALUE);
+        regex.getStyleClass().addAll(Styles.RIGHT_PILL);
+        regex.setTooltip(new Tooltip(JArmEmuApplication.formatMessage("%pop.find.regex")));
+
+        HBox optionBox = new HBox(caseSensitivity, word, regex);
+        optionBox.setAlignment(Pos.CENTER);
+        findContainer.add(optionBox, 2, 0);
+
+        closeFind = new Button(null, new FontIcon(Material2RoundAL.CLEAR));
+        closeFind.getStyleClass().addAll(Styles.FLAT, Styles.BUTTON_ICON, Styles.ROUNDED);
+        closeFind.setOnAction(actionEvent -> findPane.setVisible(false));
+        findContainer.add(closeFind, 3, 0);
+
+        HBox back = new HBox(findContainer);
+        HBox.setHgrow(findContainer, Priority.ALWAYS);
+        back.setMaxWidth(Double.MAX_VALUE);
+        back.getStyleClass().addAll("findAndReplace-back");
+
+        AnchorPane.setBottomAnchor(back, 20d);
+        AnchorPane.setLeftAnchor(back, 20d);
+        AnchorPane.setRightAnchor(back, 20d);
+        findPane.getChildren().add(back);
+        findPane.setPickOnBounds(false);
+        stackPane.getChildren().add(findPane);
+
         setSaved();
         closed = false;
     }
@@ -262,6 +378,23 @@ public class FileEditor extends AbstractJArmEmuModule {
     }
 
     /**
+     * @return le numéro de la ligne au-dessus de laquelle se trouve la souris
+     */
+    public int getMouseLine() {
+        int lineNum = codeArea.getParagraphs().size();
+        for (int i = 0; i < lineNum; i ++) {
+            Optional<Bounds> optionalBounds = codeArea.getParagraphBoundsOnScreen(i);
+            if (optionalBounds.isPresent()) {
+                Bounds bounds = optionalBounds.get();
+                Point mousePos = MouseInfo.getPointerInfo().getLocation();
+                if (bounds.contains(new Point2D(mousePos.x, mousePos.y))) return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
      * @return le numéro du caractère au-dessus duquel se trouve la souris
      */
     public int getMousePosition() {
@@ -276,6 +409,38 @@ public class FileEditor extends AbstractJArmEmuModule {
         }
 
         return -1;
+    }
+
+    public boolean isMouseOverSelection() {
+        Optional<Bounds> optionalBounds = codeArea.getSelectionBounds();
+        if (optionalBounds.isPresent()) {
+            Bounds bounds = optionalBounds.get();
+            Point mousePos = MouseInfo.getPointerInfo().getLocation();
+            return bounds.contains(new Point2D(mousePos.x, mousePos.y));
+        }
+
+        return false;
+    }
+
+    /**
+     * Ouvre le menu rechercher/remplacer
+     */
+    public void openFindAndReplace() {
+        findPane.setVisible(true);
+    }
+
+    /**
+     * Ferme le menu rechercher/remplacer
+     */
+    public void closeFindAndReplace() {
+        findPane.setVisible(false);
+    }
+
+    /**
+     * Alterne l'ouverture du menu rechercher/remplacer
+     */
+    public void toggleFindAndReplace() {
+        findPane.setVisible(!findPane.isVisible());
     }
 
     /**

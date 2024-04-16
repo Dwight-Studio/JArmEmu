@@ -73,8 +73,21 @@ public class EditorContextMenu extends ContextMenu {
     protected void show() {
         super.show();
 
-        int pos = fileEditor.getMousePosition();
-        if (pos >= 0) fileEditor.getCodeArea().moveTo(pos);
+
+        if (!fileEditor.isMouseOverSelection()) {
+            int pos = fileEditor.getMousePosition();
+            if (pos < 0) {
+                int line = fileEditor.getMouseLine();
+                if (line >= 0) {
+                    int column = fileEditor.getCodeArea().getParagraphLength(line);
+                    if (column >= 0) {
+                        fileEditor.getCodeArea().moveTo(line, column);
+                    }
+                }
+            } else {
+                fileEditor.getCodeArea().moveTo(pos);
+            }
+        }
     }
 
     public void onCut(ActionEvent event) {

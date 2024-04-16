@@ -45,6 +45,7 @@ public class ShortcutHandler extends AbstractJArmEmuModule {
                     case R -> getMainMenuController().onReload();
                     case N -> getMainMenuController().onNewFile();
                     case B -> getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
+                    case F -> getEditorController().currentFileEditor().toggleFindAndReplace();
                 }
             }
         } else {

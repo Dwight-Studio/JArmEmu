@@ -37,6 +37,10 @@
     -fx-fill: -color-fg-default;
 }
 
+.code-area .main-selection {
+    -fx-fill: -color-accent-emphasis;
+}
+
 .code-area .lineno {
     -fx-font-family: Monospaced;
     -fx-fill: -color-fg-muted;

@@ -51,3 +51,13 @@
     -fx-icon-size: 32;
 }
 
+.findAndReplace {
+    -fx-opacity: 100;
+    -fx-background-color: -color-neutral-subtle;
+    -fx-background-radius: 10;
+}
+
+.findAndReplace-back {
+    -fx-background-color: -color-bg-default;
+    -fx-background-radius: 10;
+}
