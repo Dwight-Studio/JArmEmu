@@ -122,6 +122,11 @@
                                         <FontIcon iconLiteral="mdsal-delete"/>
                                     </graphic>
                                 </MenuItem>
+                                <MenuItem mnemonicParsing="false" onAction="#onToggleBreakpoint" text="%menu.edit.breakpoint">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdsmz-stop_circle"/>
+                                    </graphic>
+                                </MenuItem>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.simulation.title">

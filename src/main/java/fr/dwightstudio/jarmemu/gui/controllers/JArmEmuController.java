@@ -449,4 +449,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML void onDelete() {
         getEditorController().currentFileEditor().getContextMenu().onDelete(new ActionEvent());
     }
+
+    @FXML void onToggleBreakpoint() {
+        getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
+    }
 }

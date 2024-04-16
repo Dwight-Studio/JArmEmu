@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui;
 
+import javafx.event.ActionEvent;
 import javafx.scene.input.KeyEvent;
 
 public class ShortcutHandler extends AbstractJArmEmuModule {
@@ -43,6 +44,7 @@ public class ShortcutHandler extends AbstractJArmEmuModule {
                     case O -> getMainMenuController().onOpen();
                     case R -> getMainMenuController().onReload();
                     case N -> getMainMenuController().onNewFile();
+                    case B -> getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
                 }
             }
         } else {

@@ -31,9 +31,8 @@ import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
+import javafx.geometry.*;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.input.KeyCode;
@@ -48,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.reactfx.Subscription;
 
+import java.awt.*;
 import java.io.File;
 import java.time.Duration;
 import java.util.Optional;
@@ -143,7 +143,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         codeArea.replaceText(content);
         codeArea.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
-        contextMenu = new EditorContextMenu(codeArea);
+        contextMenu = new EditorContextMenu(this);
         codeArea.setContextMenu(contextMenu);
 
         lineFactory = new JArmEmuLineFactory(getApplication(), this);
@@ -217,6 +217,10 @@ public class FileEditor extends AbstractJArmEmuModule {
         return lineFactory.hasBreakpoint(line);
     }
 
+    public void toggleBreakpoint(int line) {
+        lineFactory.onToggleBreakpoint(line);
+    }
+
     /**
      * Nettoie le marquage des lignes.
      */
@@ -255,6 +259,23 @@ public class FileEditor extends AbstractJArmEmuModule {
         codeArea.requestFollowCaret();
 
         lineFactory.goTo(line);
+    }
+
+    /**
+     * @return le numéro du caractère au-dessus duquel se trouve la souris
+     */
+    public int getMousePosition() {
+        int lineNum = codeArea.getLength();
+        for (int i = 0; i < lineNum; i ++) {
+            Optional<Bounds> optionalBounds = codeArea.getCharacterBoundsOnScreen(i, i+1);
+            if (optionalBounds.isPresent()) {
+                Bounds bounds = optionalBounds.get();
+                Point mousePos = MouseInfo.getPointerInfo().getLocation();
+                if (bounds.contains(new Point2D(mousePos.x, mousePos.y))) return i;
+            }
+        }
+
+        return -1;
     }
 
     /**

@@ -140,6 +140,17 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
+     * Ajoute un breakpoint
+     *
+     * @param line le numéro de la ligne
+     */
+    public void onToggleBreakpoint(int line) {
+        if (!managers.containsKey(line)) return;
+
+        managers.get(line).toggle();
+    }
+
+    /**
      * Pré-génère des lignes pour améliorer les performances.
      * @param lineNum le numéro de la dernière ligne (exclusif)
      */
@@ -196,7 +207,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
             linePos = new Text();
 
             lineNo.getStyleClass().add("lineno");
-            lineNo.setText(String.format("%4d", line));
+            lineNo.setText(String.format("%4d", line + 1));
             lineNo.setTextAlignment(TextAlignment.RIGHT);
 
 
@@ -268,6 +279,10 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
         public boolean hasBreakpoint() {
             return breakpoint;
+        }
+
+        public void addBreakpoint() {
+            breakpoint = true;
         }
 
         private void update() {
