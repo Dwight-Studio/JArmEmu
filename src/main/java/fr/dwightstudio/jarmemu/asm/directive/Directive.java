@@ -21,9 +21,8 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.asm.directive;
 
-import fr.dwightstudio.jarmemu.asm.directive.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import org.jetbrains.annotations.NotNull;
 

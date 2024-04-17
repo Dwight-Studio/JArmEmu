@@ -21,10 +21,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.asm.instruction;
 
+import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.asm.instruction.*;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -94,17 +94,69 @@ public enum Instruction {
     CLREX(CLREXInstruction.class);
 
     private final Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass;
+    private final String arg1Type;
+    private final String arg2Type;
+    private final String arg3Type;
+    private final String arg4Type;
+    private final boolean workingRegister;
 
     Instruction(Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass) {
         this.instructionClass = instructionClass;
+
+        ParsedInstruction<?, ?, ?, ?> instruction = this.create();
+        if (instruction != null) {
+            arg1Type = instruction.getParsedArg1Class().getSimpleName();
+            arg2Type = instruction.getParsedArg2Class().getSimpleName();
+            arg3Type = instruction.getParsedArg3Class().getSimpleName();
+            arg4Type = instruction.getParsedArg4Class().getSimpleName();
+            workingRegister = instruction.hasWorkingRegister();
+        } else {
+            arg1Type = null;
+            arg2Type = null;
+            arg3Type = null;
+            arg4Type = null;
+            workingRegister = false;
+        }
     }
 
     public ParsedInstruction<?, ?, ?, ?> create(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
             return this.instructionClass.getDeclaredConstructor(Condition.class, boolean.class, DataMode.class, UpdateMode.class, String.class, String.class, String.class, String.class).newInstance(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
             if (e.getCause() instanceof ASMException ex) throw ex;
             else throw new RuntimeException(e);
         }
+    }
+
+    private ParsedInstruction<?, ?, ?, ?> create() {
+        try {
+            return instructionClass.getDeclaredConstructor(Condition.class,
+                            boolean.class,
+                            DataMode.class,
+                            UpdateMode.class,
+                            ParsedArgument.class,
+                            ParsedArgument.class,
+                            ParsedArgument.class,
+                            ParsedArgument.class)
+                    .newInstance(Condition.AL, false, null, null, null, null, null, null);
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException ignored) {}
+
+        return null;
+    }
+
+    public String getArgumentType(int i) {
+        return switch (i) {
+            case 0 -> arg1Type;
+            case 1 -> arg2Type;
+            case 2 -> arg3Type;
+            case 3 -> arg4Type;
+            default -> throw new IndexOutOfBoundsException();
+        };
+    }
+
+    public boolean hasWorkingRegister() {
+        return workingRegister;
     }
 }

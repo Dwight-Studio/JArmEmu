@@ -21,13 +21,26 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.asm;
+package fr.dwightstudio.jarmemu.asm.instruction;
 
-public enum UpdateMode {
+public enum DataMode {
+    HALF_WORD,
+    BYTE;
 
-    FA, IB,
-    EA, IA,
-    FD, DB,
-    ED, DA
+    @Override
+    public String toString() {
+        return name().substring(0,1);
+    }
 
+    public static DataMode customValueOf(String name) {
+        if (name == null) {
+            throw new IllegalArgumentException();
+        } else if (name.equalsIgnoreCase("H")) {
+            return HALF_WORD;
+        } else if (name.equalsIgnoreCase("B")) {
+            return BYTE;
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 }

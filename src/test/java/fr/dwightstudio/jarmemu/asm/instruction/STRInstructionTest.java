@@ -29,8 +29,8 @@ import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static fr.dwightstudio.jarmemu.asm.DataMode.BYTE;
-import static fr.dwightstudio.jarmemu.asm.DataMode.HALF_WORD;
+import static fr.dwightstudio.jarmemu.asm.instruction.DataMode.BYTE;
+import static fr.dwightstudio.jarmemu.asm.instruction.DataMode.HALF_WORD;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class STRInstructionTest extends InstructionTest<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {

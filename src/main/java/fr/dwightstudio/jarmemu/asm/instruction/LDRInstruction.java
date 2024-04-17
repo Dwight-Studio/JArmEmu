@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 
 import fr.dwightstudio.jarmemu.asm.*;
 import fr.dwightstudio.jarmemu.asm.argument.*;
+import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.directive.WordDirective;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;

@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
-import fr.dwightstudio.jarmemu.asm.Directive;
+import fr.dwightstudio.jarmemu.asm.directive.Directive;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;

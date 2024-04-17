@@ -23,9 +23,6 @@
 
 package fr.dwightstudio.jarmemu.asm.instruction;
 
-import fr.dwightstudio.jarmemu.asm.Condition;
-import fr.dwightstudio.jarmemu.asm.DataMode;
-import fr.dwightstudio.jarmemu.asm.UpdateMode;
 import fr.dwightstudio.jarmemu.asm.argument.CodeArgument;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;

@@ -7,12 +7,13 @@ public enum Context {
     INSTRUCTION,
     CONDITION,
     FLAGS,
-    INSTRUCTION_ARGUMENT_0(0),
-    INSTRUCTION_ARGUMENT_1(1),
-    INSTRUCTION_ARGUMENT_2(2),
-    INSTRUCTION_ARGUMENT_3(3),
+    INSTRUCTION_ARGUMENT_1(0),
+    INSTRUCTION_ARGUMENT_2(1),
+    INSTRUCTION_ARGUMENT_3(2),
+    INSTRUCTION_ARGUMENT_4(3),
 
     LABEL,
+
     DIRECTIVE,
     DIRECTIVE_ARGUMENTS;
 
@@ -28,7 +29,7 @@ public enum Context {
 
     public Context getNext() {
         if (index == -1) {
-            return null;
+            return NONE;
         } else {
             for (Context context : Context.values()) {
                 if (context.index == index + 1) {
@@ -36,6 +37,10 @@ public enum Context {
                 }
             }
         }
-        return null;
+        return NONE;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

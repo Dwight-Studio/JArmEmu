@@ -24,17 +24,26 @@
 package fr.dwightstudio.jarmemu.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class EnumUtils {
     public static <T extends Enum<T>> String[] getFromEnum(T[] list, boolean addEmpty) {
-        ArrayList<String> rtn = new ArrayList<>();
+        List<String> rtn = new ArrayList<>();
 
         for (T elmt : list) {
             rtn.add(elmt.toString().toUpperCase());
         }
 
+        rtn.sort(Comparator.comparing(String::length));
+        rtn = rtn.reversed();
+
         if (addEmpty) rtn.add("");
 
         return rtn.toArray(new String[0]);
+    }
+
+    public static <T extends Enum<T>> String[] getFromEnum(T[] list) {
+        return getFromEnum(list, false);
     }
 }

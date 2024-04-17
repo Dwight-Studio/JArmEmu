@@ -63,7 +63,14 @@
     -fx-fill: #ab44d9;
     -fx-font-weight: bold;
 }
-.code-area .text.keyword {
+.code-area .text.condition {
+    -fx-fill: #7e329f;
+}
+.code-area .text.flags {
+    -fx-fill: #4e2063;
+    -fx-underline: true;
+}
+.code-area .text.directive {
     -fx-fill: #44b6d9;
     -fx-font-weight: bold;
 }
@@ -88,7 +95,7 @@
 .code-area .text.register {
     -fx-fill: #6444d9;
 }
-.code-area .text.imm {
+.code-area .text.immediate {
     -fx-fill: #329d61;
 }
 .code-area .text.shift {

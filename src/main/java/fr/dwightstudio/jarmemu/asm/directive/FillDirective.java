@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.asm.directive;
 
-import fr.dwightstudio.jarmemu.asm.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;

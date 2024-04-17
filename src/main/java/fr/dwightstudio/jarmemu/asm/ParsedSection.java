@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm;
 
+import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 

@@ -26,7 +26,7 @@ package fr.dwightstudio.jarmemu.sim;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.asm.ParsedObject;
-import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.MOVInstruction;
 import fr.dwightstudio.jarmemu.asm.instruction.ParsedInstruction;

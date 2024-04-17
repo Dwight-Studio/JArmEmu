@@ -23,10 +23,17 @@
 
 package fr.dwightstudio.jarmemu.gui.editor;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.directive.Directive;
+import fr.dwightstudio.jarmemu.asm.directive.Section;
+import fr.dwightstudio.jarmemu.asm.instruction.Condition;
+import fr.dwightstudio.jarmemu.asm.instruction.DataMode;
+import fr.dwightstudio.jarmemu.asm.instruction.Instruction;
+import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
+import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
+import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
@@ -42,42 +49,44 @@ import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
 public class RealTimeParser extends Thread {
 
-    private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
-    private static final String[] KEYWORDS = ArrayUtils.addAll(getFromEnum(Directive.values(), false), getFromEnum(Section.values(), false));
-    private static final String[] REGISTERS = getFromEnum(RegisterUtils.values(), false);
-    private static final String[] CONDITIONS = getFromEnum(Condition.values(), true);
-    private static final String[] DATA_MODES = getFromEnum(DataMode.values(), true);
-    private static final String[] UPDATE_MODES = getFromEnum(UpdateMode.values(), true);
+    private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values());
+    private static final String[] DIRECTIVES = ArrayUtils.addAll(getFromEnum(Directive.values()), getFromEnum(Section.values()));
+    private static final String[] REGISTERS = getFromEnum(RegisterUtils.values());
+    private static final String[] CONDITIONS = getFromEnum(Condition.values());
+    private static final String[] DATA_MODES = getFromEnum(DataMode.values());
+    private static final String[] UPDATE_MODES = getFromEnum(UpdateMode.values());
     private static final String[] SHIFTS = new String[]{"LSL", "LSR", "ASR", "ROR", "RRX"};
-    private static final String[] UPDATE_FLAG = new String[]{"S", ""};
+    private static final String[] UPDATE_FLAG = new String[]{"S"};
 
-    private static final String INSTRUCTION_PATTERN = "\\b(?i)(" + String.join("|", INSTRUCTIONS) + ")(" + String.join("|", CONDITIONS) + ")((" + String.join("|", DATA_MODES) + ")|(" + String.join("|", UPDATE_FLAG) + ")|(" + String.join("|", UPDATE_MODES) + "))\\b";
-    private static final String KEYWORD_PATTERN = "\\.\\b(?i)(" + String.join("|", KEYWORDS) + ")(?-i)\\b";
-    private static final String REGISTER_PATTERN = "\\b(?i)(" + String.join("|", REGISTERS) + ")(?-i)\\b(!|)";
-    private static final String SHIFT_PATTERN = "\\b(?i)(" + String.join("|", SHIFTS) + ")(?-i)\\b";
-    private static final String BRACE_PATTERN = "\\{|\\}";
-    private static final String BRACKET_PATTERN = "\\[|\\]";
-    private static final String LABEL_PATTERN = "[A-Za-z_0-9]+[ \t]*:";
-    private static final String STRING_PATTERN = "\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'";
-    private static final String COMMENT_PATTERN = "@[^\n]*";
-    private static final String IMM_PATTERN = "=[^\n@]*|#[^\n\\]@]*";
-    private static final Pattern PATTERN = Pattern.compile(
-            "(?<NEWLINE>\n)"
-                    + "|(?<COMMENT>" + COMMENT_PATTERN + ")"
-                    + "|(?<STRING>" + STRING_PATTERN + ")"
-                    + "|(?<SHIFT>" + SHIFT_PATTERN + ")"
-                    + "|(?<LABEL>" + LABEL_PATTERN + ")"
-                    + "|(?<KEYWORD>" + KEYWORD_PATTERN + ")"
-                    + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")"
-                    + "|(?<REGISTER>" + REGISTER_PATTERN + ")"
-                    + "|(?<IMM>" + IMM_PATTERN + ")"
-                    + "|(?<BRACE>" + BRACE_PATTERN + ")"
-                    + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
-    );
+    private static final Pattern BLANK_PATTERN = Pattern.compile("^[\t ]+");
+    private static final Pattern COMMENT_PATTERN = Pattern.compile("^@[^\n]*");
+    private static final Pattern ERROR_PATTERN = Pattern.compile("^[^ \t,.@\\[\\]{}]+");
+    private static final Pattern GENERAL_SEPARATOR_PATTERN = Pattern.compile("^[ \t,.@\\[\\]{}]");
+
+    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", INSTRUCTIONS) + ")(?-i)");
+    private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
+    private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + "|" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
+    private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
+    private static final Pattern LABEL_PATTERN = Pattern.compile("^[A-Za-z_0-9]+[ \t]*:");
+
+    private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
+    private static final Pattern BRACE_PATTERN = Pattern.compile("^\\{|\\}");
+    private static final Pattern BRACKET_PATTERN = Pattern.compile("^\\[|\\]");
+    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^=[^\n@]*|#[^\n\\]@]*");
+    private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
+    private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
 
     private final FileEditor editor;
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
+
+    private int line;
+    private Context context;
+    private String text;
+    private StyleSpansBuilder<Collection<String>> spansBuilder;
+    private String command;
+    private String argType;
+    private boolean offsetArgument;
 
     public RealTimeParser(FileEditor editor) {
         super("RealTimeParser" + editor.getVisualIndex());
@@ -96,39 +105,272 @@ public class RealTimeParser extends Thread {
         this.start();
     }
 
+    private void setup() {
+        text = editor.getCodeArea().getParagraph(line).getText();
+        context = Context.NONE;
+        spansBuilder = new StyleSpansBuilder<>();
+        command = "";
+        argType = "";
+        offsetArgument = false;
+    }
+
     @Override
     public void run() {
         while (!this.isInterrupted()) {
             try {
-                int line = queue.take();
+                line = queue.take();
 
-                int lastKwEnd = 0;
-                StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+                setup();
 
-                String text = editor.getCodeArea().getParagraph(line).getText();
-                Matcher matcher = PATTERN.matcher(text);
+                while (!text.isEmpty()) {
+                    System.out.println(context.name() + ":" + argType + "{" + text);
+                    if (matchComment()) continue;
 
-                while (matcher.find()) {
+                    switch (context) {
+                        case NONE -> {
+                            if (matchBlank()) continue;
+                            if (matchLabel()) continue;
+                            if (matchInstruction()) continue;
+                            if (matchDirective()) continue;
+                        }
 
-                    String styleClass = matcher.group("COMMENT") != null ? "comment"
-                            : matcher.group("STRING") != null ? "string"
-                            : matcher.group("SHIFT") != null ? "shift"
-                            : matcher.group("LABEL") != null ? "label"
-                            : matcher.group("KEYWORD") != null ? "keyword"
-                            : matcher.group("INSTRUCTION") != null ? "instruction"
-                            : matcher.group("REGISTER") != null ? "register"
-                            : matcher.group("BRACE") != null ? "brace"
-                            : matcher.group("BRACKET") != null ? "bracket"
-                            : matcher.group("IMM") != null ? "imm" : null;
+                        case LABEL -> {
+                            if (matchBlank()) continue;
+                            if (matchInstruction()) continue;
+                            if (matchDirective()) continue;
+                        }
 
-                    spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
-                    spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
-                    lastKwEnd = matcher.end();
+                        case COMMENT -> {
+                        }
+                        case INSTRUCTION -> {
+                            if (matchBlank()) {
+                                context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                continue;
+                            }
+
+                            if (matchCondition()) continue;
+                            if (matchFlags()) continue;
+                        }
+
+                        case CONDITION -> {
+                            if (matchBlank()) {
+                                context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                continue;
+                            }
+
+                            if (matchFlags()) continue;
+                        }
+
+                        case FLAGS -> {
+                            if (matchBlank()) {
+                                context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                continue;
+                            }
+                        }
+
+                        case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
+                             INSTRUCTION_ARGUMENT_4 -> {
+                            if (matchBlank()) continue;
+                            if (matchInstructionArgumentSeparator()) continue;
+
+                            if (matchInstructionArgument()) continue;
+                        }
+
+                        case DIRECTIVE -> {
+
+                        }
+
+                        case DIRECTIVE_ARGUMENTS -> {
+
+                        }
+                    }
+
+                    tagError();
                 }
 
-                if (lastKwEnd != 0) editor.getCodeArea().setStyleSpans(line, 0, spansBuilder.create());
+                try {
+                    final int finalLine = line;
+                    StyleSpans<Collection<String>> spans = spansBuilder.create();
+                    Platform.runLater(() -> editor.getCodeArea().setStyleSpans(finalLine, 0, spans));
+                } catch (IllegalStateException ignored) {}
             } catch (InterruptedException e) {
                 this.interrupt();
+            }
+        }
+    }
+
+    private boolean matchComment() {
+        Matcher matcher = COMMENT_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            context = Context.COMMENT;
+            tag("comment", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchBlank() {
+        Matcher matcher = BLANK_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tagBlank(matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchLabel() {
+        Matcher matcher = LABEL_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            context = Context.LABEL;
+            tag("label", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchInstruction() {
+        Matcher matcher = INSTRUCTION_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            command = matcher.group();
+            context = Context.INSTRUCTION;
+            tag("instruction", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchCondition() {
+        Matcher matcher = CONDITION_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            context = Context.CONDITION;
+            tag("condition", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchFlags() {
+        Matcher matcher = FLAGS_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            context = Context.FLAGS;
+            System.out.println(matcher.end());
+            tag("flags", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchInstructionArgument() {
+        Instruction instruction = Instruction.valueOf(command.toUpperCase());
+        argType = instruction.getArgumentType(context.getIndex());
+
+        boolean rtn = switch (argType) {
+            case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
+            case "ShiftArgument" -> matchShift();
+            case "ImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
+            default -> false;
+        };
+
+        if (!rtn && !offsetArgument && instruction.hasWorkingRegister()) {
+            setup();
+            offsetArgument = true;
+            return true;
+        }
+
+        return rtn;
+    }
+
+    private boolean matchRegister() {
+        Matcher matcher = REGISTER_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tag("register", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchShift() {
+        Matcher matcher = SHIFT_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tag("shift", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchImmediate() {
+        Matcher matcher = IMMEDIATE_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tag("immediate", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchInstructionArgumentSeparator() {
+        Matcher matcher = ARGUMENT_SEPARATOR.matcher(text);
+
+        if (matcher.find()) {
+            context = context.getNext();
+            tagBlank(matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchDirective() {
+        Matcher matcher = DIRECTIVE_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            command = matcher.group();
+            context = Context.DIRECTIVE;
+            tag("directive", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private void tag(String highlight, Matcher matcher) {
+        spansBuilder.add(Collections.singleton(highlight), matcher.end());
+        text = text.substring(matcher.end());
+    }
+
+    private void tagBlank(Matcher matcher) {
+        spansBuilder.add(Collections.emptyList(), matcher.end());
+        text = text.substring(matcher.end());
+    }
+
+    private void tagError() {
+        Matcher matcher = ERROR_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            spansBuilder.add(Collections.singleton("error"), matcher.end());
+            text = text.substring(matcher.end());
+        } else {
+            matcher = GENERAL_SEPARATOR_PATTERN.matcher(text);
+
+            if (matcher.find()) {
+                tagBlank(matcher);
             }
         }
     }

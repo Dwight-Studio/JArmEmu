@@ -23,8 +23,8 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
-import fr.dwightstudio.jarmemu.asm.Directive;
-import fr.dwightstudio.jarmemu.asm.Section;
+import fr.dwightstudio.jarmemu.asm.directive.Directive;
+import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
