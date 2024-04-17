@@ -66,6 +66,11 @@ public class JArmEmuApplication extends Application {
     public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound" ;
     public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("fr.dwightstudio.jarmemu.bundles.Locale");
     public static String LICENCE;
+    public static final String[] FONTS_URL = new String[]{
+            "Cantarell/Cantarell-Regular.ttf",
+            "SourceCodePro/SourceCodePro-Regular.ttf",
+            "SourceCodePro/SourceCodePro-Italic.ttf"
+    };
 
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getSimpleName());
 
@@ -149,8 +154,10 @@ public class JArmEmuApplication extends Application {
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker(this);
 
-        logger.info("Font " + Font.loadFont(getResourceAsStream("fonts/Cantarell/Cantarell-Regular.ttf"), 14).getFamily() + " loaded");
-        logger.info("Font " + Font.loadFont(getResourceAsStream("fonts/SourceCodePro/SourceCodePro-Regular.ttf"), 14).getFamily() + " loaded");
+        for (String fontURL : FONTS_URL) {
+            Font font = Font.loadFont(getResourceAsStream("fonts/" + fontURL), 14);
+            logger.info("Font " + font.getFamily() + " " + font.getStyle() + " loaded");
+        }
 
         scene = new Scene(fxmlLoader.load(), 1280, 720);
         updateUserAgentStyle(getSettingsController().getThemeVariation(), getSettingsController().getThemeFamily());

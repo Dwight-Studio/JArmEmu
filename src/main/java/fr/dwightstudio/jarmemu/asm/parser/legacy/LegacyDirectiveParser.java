@@ -55,7 +55,6 @@ public class LegacyDirectiveParser {
         String argsString = null;
 
         if (lineParts.length == 1){
-            System.out.println(lineParts[0]);
             directiveString = lineParts[0].split(" ")[0].strip();
             argsString = lineParts[0].split(" ")[1].strip();
         } else {

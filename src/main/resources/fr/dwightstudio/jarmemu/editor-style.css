@@ -94,6 +94,13 @@
 .code-area .text.shift {
     -fx-fill: #9d3257;
 }
+.code-area .text.label-ref {
+    -fx-fill: #80a36e;
+    -fx-font-style: italic
+}
+.code-area .text.error {
+    -fx-fill: #d9534f;
+}
 
 .executed {
     -fx-background-color: -color-success-muted;

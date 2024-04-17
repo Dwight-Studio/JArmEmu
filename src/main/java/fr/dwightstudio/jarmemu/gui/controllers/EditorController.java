@@ -98,9 +98,9 @@ public class EditorController extends AbstractJArmEmuModule {
      */
     protected void addError(ASMException exception) {
         if (exception.getObject() != null) {
-            logger.info("Error parsing " + exception.getObject().toString() + " at line " + exception.getLine());
+            logger.info("Error parsing " + exception.getObject().toString() + " at line " + exception.getLine() + 1);
         } else {
-            logger.info("Error parsing code at line " + exception.getLine());
+            logger.info("Error parsing code at line " + exception.getLine() + 1);
         }
         logger.log(Level.INFO, ExceptionUtils.getStackTrace(exception));
 
@@ -108,13 +108,13 @@ public class EditorController extends AbstractJArmEmuModule {
             if (exception.isFileSpecified()) {
                 addNotification(
                         exception.getTitle(),
-                        JArmEmuApplication.formatMessage("%notification.exception.fileAndLine", exception.getMessage(), exception.getLine(), exception.getFile().getName()),
+                        JArmEmuApplication.formatMessage("%notification.exception.fileAndLine", exception.getMessage(), exception.getLine() + 1, exception.getFile().getName()),
                         Styles.DANGER
                 );
             } else {
                 addNotification(
                         exception.getTitle(),
-                        JArmEmuApplication.formatMessage("%notification.exception.fileAndLine", exception.getMessage(), exception.getLine()),
+                        JArmEmuApplication.formatMessage("%notification.exception.fileAndLine", exception.getMessage(), exception.getLine() + 1),
                         Styles.DANGER
                 );
             }

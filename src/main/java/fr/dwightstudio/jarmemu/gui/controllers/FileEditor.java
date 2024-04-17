@@ -27,8 +27,8 @@ import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.gui.editor.ComputeHightlightsTask;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
+import fr.dwightstudio.jarmemu.gui.editor.RealTimeParser;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
@@ -45,20 +45,18 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.model.Paragraph;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 import org.kordamp.ikonli.material2.Material2RoundAL;
-import org.reactfx.Subscription;
 
 import java.awt.*;
 import java.io.File;
-import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -69,6 +67,7 @@ public class FileEditor extends AbstractJArmEmuModule {
 
     // GUI
     private final CodeArea codeArea;
+    private final RealTimeParser realTimeParser;
     private final VirtualizedScrollPane<CodeArea> editorScroll;
     private final StackPane stackPane;
     private final Tab fileTab;
@@ -98,6 +97,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         super(application);
         this.executor = Executors.newSingleThreadExecutor();
         codeArea = new CodeArea();
+        this.realTimeParser = new RealTimeParser(this);
         editorScroll = new VirtualizedScrollPane<>(codeArea);
         stackPane = new StackPane(editorScroll);
         fileTab = new Tab(fileName, stackPane);
@@ -108,7 +108,6 @@ public class FileEditor extends AbstractJArmEmuModule {
 
         stackPane.setAlignment(Pos.CENTER_LEFT);
         stackPane.getChildren().add(separator);
-
 
         fileTab.setOnCloseRequest(event -> {
             getController().filesTabPane.getSelectionModel().select(fileTab);
@@ -152,18 +151,24 @@ public class FileEditor extends AbstractJArmEmuModule {
 
         // Indentation automatique
         final Pattern whiteSpace = Pattern.compile( "^\\s+" );
-        codeArea.addEventHandler( KeyEvent.KEY_PRESSED, KE ->
+        codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE ->
         {
-            if ( KE.getCode() == KeyCode.ENTER ) {
+            if (KE.getCode() == KeyCode.ENTER) {
                 int caretPosition = codeArea.getCaretPosition();
                 int currentParagraph = codeArea.getCurrentParagraph();
                 Matcher m0 = whiteSpace.matcher( codeArea.getParagraph( currentParagraph-1 ).getSegments().get( 0 ) );
                 if ( m0.find() ) Platform.runLater( () -> codeArea.insertText( caretPosition, m0.group() ) );
+            } else if (KE.getCode() == KeyCode.TAB && KE.isShiftDown()) {
+                int parN = codeArea.getCurrentParagraph();
+                Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
+                if (par.getText().startsWith("\t") || par.getText().startsWith(" ")) {
+                    codeArea.deleteText(parN, 0, parN, 1);
+                }
             }
         });
 
         // Ajout automatique du caractère fermant
-        codeArea.addEventHandler( KeyEvent.KEY_TYPED, KE ->
+        codeArea.addEventHandler(KeyEvent.KEY_TYPED, KE ->
         {
             int caretPosition = codeArea.getCaretPosition();
             Platform.runLater( () -> {
@@ -440,6 +445,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public void close() {
         logger.info("Closing " + getFileName());
+        realTimeParser.interrupt();
         getController().filesTabPane.getTabs().remove(fileTab);
         executor.close();
         this.closed = true;
@@ -567,18 +573,6 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public SourceScanner getSourceScanner() {
         return new SourceScanner(codeArea.getText(), path == null ? "New File" : path.getName(), getEditorController().getFileIndex(this));
-    }
-
-    /**
-     * Méthode utilisée pour automatiquement mettre à jour la colorimétrie
-     *
-     * @return la tache associée
-     */
-    private ComputeHightlightsTask autoComputeHighlightingAsync() {
-        ComputeHightlightsTask task = new ComputeHightlightsTask(this);
-
-        executor.execute(task);
-        return task;
     }
 
     /**

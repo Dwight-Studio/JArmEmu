@@ -1,6 +1,10 @@
 0.2.0 -> 0.2.1
 
 - Added "Add breakpoint" context option
+- Added Find & Replace menu in code editor
+- Added autocompletion system
+- Added unintentation (Shift+Tab)
+- Improved code highlighting (real time parsing)
 
 
 0.1.10 -> 0.2.0
