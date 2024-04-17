@@ -35,15 +35,15 @@ import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 public class EditorContextMenu extends ContextMenu {
 
-    FileEditor fileEditor;
+    FileEditor editor;
     MenuItem cut;
     MenuItem copy;
     MenuItem paste;
     MenuItem delete;
     MenuItem breakpoint;
 
-    public EditorContextMenu(FileEditor fileEditor) {
-        this.fileEditor = fileEditor;
+    public EditorContextMenu(FileEditor editor) {
+        this.editor = editor;
 
         copy = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.copy"), new FontIcon(Material2OutlinedAL.CONTENT_COPY));
         cut = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.cut"), new FontIcon(Material2OutlinedAL.CONTENT_CUT));
@@ -74,44 +74,44 @@ public class EditorContextMenu extends ContextMenu {
         super.show();
 
 
-        if (!fileEditor.isMouseOverSelection()) {
-            int pos = fileEditor.getMousePosition();
+        if (!editor.isMouseOverSelection()) {
+            int pos = editor.getMousePosition();
             if (pos < 0) {
-                int line = fileEditor.getMouseLine();
+                int line = editor.getMouseLine();
                 if (line >= 0) {
-                    int column = fileEditor.getCodeArea().getParagraphLength(line);
+                    int column = editor.getCodeArea().getParagraphLength(line);
                     if (column >= 0) {
-                        fileEditor.getCodeArea().moveTo(line, column);
+                        editor.getCodeArea().moveTo(line, column);
                     }
                 }
             } else {
-                fileEditor.getCodeArea().moveTo(pos);
+                editor.getCodeArea().moveTo(pos);
             }
         }
     }
 
     public void onCut(ActionEvent event) {
         ClipboardContent content = new ClipboardContent();
-        content.putString(fileEditor.getCodeArea().getSelectedText());
+        content.putString(editor.getCodeArea().getSelectedText());
         Clipboard.getSystemClipboard().setContent(content);
-        fileEditor.getCodeArea().replaceSelection("");
+        editor.getCodeArea().replaceSelection("");
     }
 
     public void onCopy(ActionEvent event) {
         ClipboardContent content = new ClipboardContent();
-        content.putString(fileEditor.getCodeArea().getSelectedText());
+        content.putString(editor.getCodeArea().getSelectedText());
         Clipboard.getSystemClipboard().setContent(content);
     }
 
     public void onPaste(ActionEvent event) {
-        fileEditor.getCodeArea().replaceSelection(Clipboard.getSystemClipboard().getString());
+        editor.getCodeArea().replaceSelection(Clipboard.getSystemClipboard().getString());
     }
 
     public void onDelete(ActionEvent event) {
-        fileEditor.getCodeArea().replaceSelection("");
+        editor.getCodeArea().replaceSelection("");
     }
 
     public void onToggleBreakpoint(ActionEvent actionEvent) {
-        fileEditor.toggleBreakpoint(fileEditor.getCodeArea().getCurrentParagraph());
+        editor.toggleBreakpoint(editor.getCodeArea().getCurrentParagraph());
     }
 }

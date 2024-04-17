@@ -75,7 +75,6 @@ public class FileEditor extends AbstractJArmEmuModule {
     private final EditorContextMenu contextMenu;
     private final JArmEmuLineFactory lineFactory;
     private final ExecutorService executor;
-    private final Subscription hightlightUpdateSubscription;
     private final AnchorPane findPane;
     private final CustomTextField findTextField;
     private final CustomTextField replaceTextField;
@@ -110,22 +109,6 @@ public class FileEditor extends AbstractJArmEmuModule {
         stackPane.setAlignment(Pos.CENTER_LEFT);
         stackPane.getChildren().add(separator);
 
-        hightlightUpdateSubscription = codeArea.plainTextChanges().successionEnds(Duration.ofMillis(50))
-                .retainLatestUntilLater(executor)
-                .supplyTask(this::autoComputeHighlightingAsync)
-                .awaitLatest(codeArea.plainTextChanges())
-                .filterMap(t -> {
-                    if (t.isSuccess()) {
-                        return Optional.of(t.get());
-                    } else {
-                        logger.log(Level.WARNING, ExceptionUtils.getStackTrace(t.getFailure()));
-                        return Optional.empty();
-                    }
-                }).subscribe((highlighting) -> {
-                    codeArea.setStyleSpans(0, highlighting);
-                    // TODO: Ajouter l'autocompletion avec analyse dans les parsers
-                    //logger.info(codeArea.getText(codeArea.getCurrentParagraph()));
-                });
 
         fileTab.setOnCloseRequest(event -> {
             getController().filesTabPane.getSelectionModel().select(fileTab);
@@ -458,7 +441,6 @@ public class FileEditor extends AbstractJArmEmuModule {
     public void close() {
         logger.info("Closing " + getFileName());
         getController().filesTabPane.getTabs().remove(fileTab);
-        hightlightUpdateSubscription.unsubscribe();
         executor.close();
         this.closed = true;
     }
