@@ -70,9 +70,11 @@ public class RealTimeParser extends Thread {
     private static final Pattern LABEL_PATTERN = Pattern.compile("^[A-Za-z_0-9]+[ \t]*:");
 
     private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
-    private static final Pattern BRACE_PATTERN = Pattern.compile("^\\{|\\}");
-    private static final Pattern BRACKET_PATTERN = Pattern.compile("^\\[|\\]");
-    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^=[^\n@]*|#[^\n\\]@]*");
+    private static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
+    private static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
+    private static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
+    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@]*");
+    private static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
     private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
 
@@ -82,11 +84,16 @@ public class RealTimeParser extends Thread {
 
     private int line;
     private Context context;
+    private SubContext subContext;
     private String text;
     private StyleSpansBuilder<Collection<String>> spansBuilder;
     private String command;
     private String argType;
     private boolean offsetArgument;
+    private boolean brace;
+    private boolean bracket;
+    private boolean singleQuote;
+    private boolean doubleQuote;
 
     public RealTimeParser(FileEditor editor) {
         super("RealTimeParser" + editor.getVisualIndex());
@@ -108,10 +115,15 @@ public class RealTimeParser extends Thread {
     private void setup() {
         text = editor.getCodeArea().getParagraph(line).getText();
         context = Context.NONE;
+        subContext = SubContext.NONE;
         spansBuilder = new StyleSpansBuilder<>();
         command = "";
         argType = "";
         offsetArgument = false;
+        brace = false;
+        bracket = false;
+        singleQuote = false;
+        doubleQuote = false;
     }
 
     @Override
@@ -123,7 +135,7 @@ public class RealTimeParser extends Thread {
                 setup();
 
                 while (!text.isEmpty()) {
-                    System.out.println(context.name() + ":" + argType + "{" + text);
+                    System.out.println(context + ":" + subContext + ";" + argType + "{" + text);
                     if (matchComment()) continue;
 
                     switch (context) {
@@ -171,7 +183,7 @@ public class RealTimeParser extends Thread {
                         case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
                              INSTRUCTION_ARGUMENT_4 -> {
                             if (matchBlank()) continue;
-                            if (matchInstructionArgumentSeparator()) continue;
+                            if (!bracket && !brace && matchInstructionArgumentSeparator()) continue;
 
                             if (matchInstructionArgument()) continue;
                         }
@@ -278,8 +290,10 @@ public class RealTimeParser extends Thread {
 
         boolean rtn = switch (argType) {
             case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
-            case "ShiftArgument" -> matchShift();
             case "ImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
+            case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> matchImmediateOrRegister();
+            case "ShiftArgument" -> matchShift();
+            case "AddressArgument" -> matchAddress();
             default -> false;
         };
 
@@ -296,6 +310,7 @@ public class RealTimeParser extends Thread {
         Matcher matcher = REGISTER_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            subContext = SubContext.REGISTER;
             tag("register", matcher);
             return true;
         }
@@ -307,6 +322,7 @@ public class RealTimeParser extends Thread {
         Matcher matcher = SHIFT_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            subContext = SubContext.SHIFT;
             tag("shift", matcher);
             return true;
         }
@@ -318,6 +334,7 @@ public class RealTimeParser extends Thread {
         Matcher matcher = IMMEDIATE_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            subContext = SubContext.IMMEDIATE;
             tag("immediate", matcher);
             return true;
         }
@@ -325,11 +342,169 @@ public class RealTimeParser extends Thread {
         return false;
     }
 
+    private boolean matchImmediateOrRegister() {
+        if (matchImmediate()) return true;
+        else return matchRegister();
+    }
+
+    private boolean matchPseudoInstruction() {
+        Matcher matcher = PSEUDO_INSTRUCTION_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tag("pseudo-instruction", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchBrace() {
+        Matcher matcher = BRACE_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            return switch (matcher.group()) {
+                case "{" -> {
+                    if (brace) tagError();
+                    else {
+                        tag("brace", matcher);
+                        brace = true;
+                        yield true;
+                    }
+
+                    yield false;
+                }
+
+                case "}" -> {
+                    if (!brace) tagError();
+                    else {
+                        tag("brace", matcher);
+                        brace = false;
+                        yield true;
+                    }
+
+                    yield false;
+                }
+
+                default -> false;
+            };
+        }
+
+        return false;
+    }
+
+    private boolean matchBracket() {
+        Matcher matcher = BRACKET_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            return switch (matcher.group()) {
+                case "[" -> {
+                    if (bracket) tagError();
+                    else {
+                        tag("bracket", matcher);
+                        bracket = true;
+                        subContext = SubContext.NONE;
+                        yield true;
+                    }
+
+                    yield false;
+                }
+
+                case "]" -> {
+                    if (!bracket) tagError();
+                    else {
+                        tag("bracket", matcher);
+                        bracket = false;
+                        subContext = SubContext.NONE;
+                        yield true;
+                    }
+
+                    yield false;
+                }
+
+                default -> false;
+            };
+        }
+
+        return false;
+    }
+
+    private boolean matchString() {
+        Matcher matcher = STRING_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tag("string", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchAddress() {
+        if (bracket || matchBracket()) {
+            switch (subContext) {
+                case NONE -> {
+                    if (!matchRegister() && !matchBracket()) tagError();
+                }
+
+                case REGISTER -> {
+                    if (matchBracket()) {
+                        return true;
+                    } else if (matchSubSeparator()) {
+                        subContext = SubContext.PRIMARY;
+                    } else tagError();
+                }
+
+                case PRIMARY -> {
+                    if (matchImmediateOrRegister()) {
+                        subContext = SubContext.SECONDARY;
+                    } else tagError();
+                }
+
+                case SECONDARY -> {
+                    if (matchBracket()) {
+                        return true;
+                    } else if (matchSubSeparator()) {
+                        subContext = SubContext.TERTIARY;
+                    } else tagError();
+                }
+
+                case TERTIARY -> {
+                    if (!matchShift()) tagError();
+                }
+
+                case SHIFT -> {
+                    if (!matchBracket() && !matchImmediate()) tagError();
+                }
+
+                case IMMEDIATE -> {
+                    if (!matchBracket()) tagError();
+                }
+            }
+
+            return true;
+        } else if (matchPseudoInstruction()) {
+
+            return true;
+        } else return false;
+    }
+
     private boolean matchInstructionArgumentSeparator() {
         Matcher matcher = ARGUMENT_SEPARATOR.matcher(text);
 
         if (matcher.find()) {
+            subContext = SubContext.NONE;
             context = context.getNext();
+            tagBlank(matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchSubSeparator() {
+        Matcher matcher = ARGUMENT_SEPARATOR.matcher(text);
+
+        if (matcher.find()) {
             tagBlank(matcher);
             return true;
         }
@@ -370,7 +545,7 @@ public class RealTimeParser extends Thread {
             matcher = GENERAL_SEPARATOR_PATTERN.matcher(text);
 
             if (matcher.find()) {
-                tagBlank(matcher);
+                tag("error", matcher);
             }
         }
     }

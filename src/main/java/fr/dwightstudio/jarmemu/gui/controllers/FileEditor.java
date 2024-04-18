@@ -174,17 +174,17 @@ public class FileEditor extends AbstractJArmEmuModule {
             Platform.runLater( () -> {
                 switch (KE.getCharacter()) {
                     case "[" -> {
-                        codeArea.insertText( caretPosition,"]" );
+                        codeArea.insertText(caretPosition,"]" );
                         codeArea.moveTo(caretPosition);
                     }
 
                     case "{" -> {
-                        codeArea.insertText( caretPosition,"}" );
+                        codeArea.insertText(caretPosition,"}");
                         codeArea.moveTo(caretPosition);
                     }
 
                     case "\"" -> {
-                        codeArea.insertText( caretPosition,"\"" );
+                        codeArea.insertText(caretPosition,"\"");
                         codeArea.moveTo(caretPosition);
                     }
                 }

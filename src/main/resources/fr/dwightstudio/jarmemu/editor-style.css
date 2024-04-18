@@ -59,6 +59,14 @@
     -fx-background-color: -color-bg-overlay;
 }
 
+.code-area .text.bracket {
+    -fx-fill: #611811;
+    -fx-font-weight: bold;
+}
+.code-area .text.brace {
+    -fx-fill: #d9a544;
+    -fx-font-weight: bold;
+}
 .code-area .text.instruction {
     -fx-fill: #ab44d9;
     -fx-font-weight: bold;
@@ -72,14 +80,6 @@
 }
 .code-area .text.directive {
     -fx-fill: #44b6d9;
-    -fx-font-weight: bold;
-}
-.code-area .text.bracket {
-    -fx-fill: #d95044;
-    -fx-font-weight: bold;
-}
-.code-area .text.brace {
-    -fx-fill: #d9a544;
     -fx-font-weight: bold;
 }
 .code-area .text.string {
@@ -98,6 +98,10 @@
 .code-area .text.immediate {
     -fx-fill: #329d61;
 }
+.code-area .text.pseudo-instruction {
+    -fx-fill: #329d61;
+    -fx-font-style: italic
+}
 .code-area .text.shift {
     -fx-fill: #9d3257;
 }
@@ -107,6 +111,10 @@
 }
 .code-area .text.error {
     -fx-fill: #d9534f;
+    -rtfx-underline-color: red;
+    -rtfx-underline-dash-array: 2 2;
+    -rtfx-underline-width: 1;
+    -rtfx-underline-cap: butt;
 }
 
 .executed {
