@@ -1,0 +1,5 @@
+package fr.dwightstudio.jarmemu.asm.instruction;
+
+public class QADD8Instruction {
+    //TODO: Faire l'instruction
+}
