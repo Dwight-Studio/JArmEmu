@@ -365,21 +365,24 @@ public class FileEditor extends AbstractJArmEmuModule {
             codeArea.requestFollowCaret();
             codeArea.selectRange(f.start(), f.end());
             codeArea.replaceSelection(replaceTextField.getText());
-            previousFind.remove(f);
+
+            updateAllSearches();
         });
 
         replaceAll.setOnAction(actionEvent -> {
             if (previousFind == null || previousFind.isEmpty()) return;
             if (replaceTextField.getText() == null) return;
 
+            int offset = 0;
             for (Find f : previousFind) {
-                codeArea.moveTo(f.start());
+                codeArea.moveTo(offset + f.start());
                 codeArea.requestFollowCaret();
-                codeArea.selectRange(f.start(), f.end());
+                codeArea.selectRange(offset + f.start(), offset + f.end());
+                offset += replaceTextField.getText().length() - codeArea.getSelection().getLength();
                 codeArea.replaceSelection(replaceTextField.getText());
             }
 
-            previousFind.clear();
+            updateAllSearches();
         });
 
         regex.setOnAction(actionEvent -> updateAllSearches());
