@@ -107,7 +107,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints)
-    // TODO: Ajouter find & replace (WIP)
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -210,6 +209,7 @@ public class JArmEmuApplication extends Application {
 
         Application.setUserAgentStylesheet(theme.getUserAgentStylesheet());
     }
+
 
     /**
      * Définie l'état de maximisation.

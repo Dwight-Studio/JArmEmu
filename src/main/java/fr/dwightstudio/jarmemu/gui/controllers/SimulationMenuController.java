@@ -105,6 +105,8 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
                 getController().memoryOverviewPane.setDisable(false);
                 getController().labelsPane.setDisable(false);
                 getController().symbolsPane.setDisable(false);
+                getEditorController().getFileEditors().forEach(FileEditor::closeFindAndReplace);
+                getController().findAndReplace.setDisable(true);
 
                 getExecutionWorker().restart();
 
@@ -242,6 +244,7 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
         getController().labelsPane.setDisable(true);
         getController().symbolsPane.setDisable(true);
         getController().stackPane.setDisable(true);
+        getController().findAndReplace.setDisable(true);
 
         application.status.set(Status.EDITING);
         getExecutionWorker().updateGUI();

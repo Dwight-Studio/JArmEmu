@@ -126,6 +126,9 @@
     -rtfx-underline-width: 1;
     -rtfx-underline-cap: butt;
 }
+.code-area .text.find {
+    -rtfx-background-color: -color-accent-muted;
+}
 
 .executed {
     -fx-background-color: -color-success-muted;

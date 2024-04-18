@@ -25,9 +25,11 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
+import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
+import fr.dwightstudio.jarmemu.gui.editor.Find;
 import fr.dwightstudio.jarmemu.gui.editor.RealTimeAnalyzer;
 import fr.dwightstudio.jarmemu.gui.editor.RealTimeParser;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
@@ -47,6 +49,8 @@ import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.Paragraph;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.fxmisc.richtext.model.TwoDimensional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -55,7 +59,8 @@ import org.kordamp.ikonli.material2.Material2RoundAL;
 
 import java.awt.*;
 import java.io.File;
-import java.util.Optional;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -92,6 +97,8 @@ public class FileEditor extends AbstractJArmEmuModule {
     private String lastSaveContent;
     private boolean saved;
     private boolean closed;
+    private List<Find> previousFind;
+    private int selectedFind;
 
     public FileEditor(JArmEmuApplication application, String fileName, String content) {
         super(application);
@@ -291,6 +298,94 @@ public class FileEditor extends AbstractJArmEmuModule {
         findPane.setPickOnBounds(false);
         stackPane.getChildren().add(findPane);
 
+        // Mark search results' lines dirty
+        findTextField.textProperty().addListener((obs, oldValue, newValue) -> {
+            List<Find> newFinds = getSearch(codeArea.getText());
+            Set<Find> finds = new HashSet<>(newFinds);
+            if (previousFind != null) finds.addAll(previousFind);
+
+            for (Find find : finds) {
+                this.realTimeAnalyzer.markDirty(
+                    codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
+                    codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
+                );
+            }
+
+            previousFind = newFinds;
+        });
+
+        findPane.visibleProperty().addListener(obs -> updateAllSearches());
+
+        previousButton.setOnAction(actionEvent -> {
+            if (previousFind == null || previousFind.isEmpty()) return;
+
+            if (previousFind.size() - 1 < selectedFind - 1) {
+                selectedFind = previousFind.size() - 1;
+            } else if (selectedFind - 1 > 0) {
+                selectedFind--;
+            } else {
+                selectedFind = 0;
+            }
+
+            Find f = previousFind.get(selectedFind);
+            codeArea.moveTo(f.start());
+            codeArea.requestFollowCaret();
+            codeArea.selectRange(f.start(), f.end());
+        });
+
+        nextButton.setOnAction(actionEvent -> {
+            if (previousFind == null || previousFind.isEmpty()) return;
+
+            if (previousFind.size() - 1 < selectedFind + 1) {
+                selectedFind = previousFind.size() - 1;
+            } else if (selectedFind + 1 < previousFind.size() - 1) {
+                selectedFind++;
+            } else {
+                selectedFind = previousFind.size() - 1;
+            }
+
+            Find f = previousFind.get(selectedFind);
+            codeArea.moveTo(f.start());
+            codeArea.requestFollowCaret();
+            codeArea.selectRange(f.start(), f.end());
+        });
+
+        replace.setOnAction(actionEvent -> {
+            if (previousFind == null || previousFind.isEmpty()) return;
+            if (replaceTextField.getText() == null) return;
+
+            if (previousFind.size() - 1 < selectedFind) {
+                selectedFind = previousFind.size() - 1;
+            } else if (selectedFind >= previousFind.size() - 1) {
+                selectedFind = previousFind.size() - 1;
+            }
+
+            Find f = previousFind.get(selectedFind);
+            codeArea.moveTo(f.start());
+            codeArea.requestFollowCaret();
+            codeArea.selectRange(f.start(), f.end());
+            codeArea.replaceSelection(replaceTextField.getText());
+            previousFind.remove(f);
+        });
+
+        replaceAll.setOnAction(actionEvent -> {
+            if (previousFind == null || previousFind.isEmpty()) return;
+            if (replaceTextField.getText() == null) return;
+
+            for (Find f : previousFind) {
+                codeArea.moveTo(f.start());
+                codeArea.requestFollowCaret();
+                codeArea.selectRange(f.start(), f.end());
+                codeArea.replaceSelection(replaceTextField.getText());
+            }
+
+            previousFind.clear();
+        });
+
+        regex.setOnAction(actionEvent -> updateAllSearches());
+        word.setOnAction(actionEvent -> updateAllSearches());
+        caseSensitivity.setOnAction(actionEvent -> updateAllSearches());
+
         setSaved();
         this.realTimeAnalyzer.start();
         closed = false;
@@ -416,6 +511,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public void openFindAndReplace() {
         findPane.setVisible(true);
+        findTextField.requestFocus();
     }
 
     /**
@@ -429,7 +525,8 @@ public class FileEditor extends AbstractJArmEmuModule {
      * Alterne l'ouverture du menu rechercher/remplacer
      */
     public void toggleFindAndReplace() {
-        findPane.setVisible(!findPane.isVisible());
+        if (findPane.isVisible() || getApplication().status.get() == Status.SIMULATING) closeFindAndReplace();
+        else openFindAndReplace();
     }
 
     /**
@@ -599,5 +696,54 @@ public class FileEditor extends AbstractJArmEmuModule {
 
     public RealTimeAnalyzer getRealTimeAnalyzer() {
         return realTimeAnalyzer;
+    }
+
+    /**
+     * Indique les coordonnées des recherches dans le texte
+     *
+     * @param text le texte à scanner
+     * @return une liste de Find qui décrit le début et la fin de chaque résultat
+     */
+    public List<Find> getSearch(String text) {
+        if (!findPane.isVisible()) return Collections.emptyList();
+        ArrayList<Find> rtn = new ArrayList<>();
+
+        String find = findTextField.getText();
+        if (find != null && !find.isEmpty()) {
+            if (!regex.isSelected()) {
+                find = Pattern.quote(find);
+            }
+
+            if (!caseSensitivity.isSelected()) {
+                find = "(?i)" + find + "(?-i)";
+            }
+
+            if (word.isSelected()) {
+                find = "\\b" + find + "\\b";
+            }
+
+            Matcher matcher = Pattern.compile(find).matcher(text);
+
+            while (matcher.find()) {
+                rtn.add(new Find(matcher.start(), matcher.end()));
+            }
+        }
+
+        return rtn;
+    }
+
+    public void updateAllSearches() {
+        List<Find> newFinds = getSearch(codeArea.getText());
+        Set<Find> finds = new HashSet<>(newFinds);
+        if (previousFind != null) finds.addAll(previousFind);
+
+        for (Find find : finds) {
+            this.realTimeAnalyzer.markDirty(
+                    codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
+                    codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
+            );
+        }
+
+        previousFind = newFinds;
     }
 }

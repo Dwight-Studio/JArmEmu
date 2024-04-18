@@ -87,6 +87,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected Button toolStop;
     @FXML protected Button toolRestart;
 
+    @FXML protected MenuItem findAndReplace;
+
     @FXML protected MenuItem menuSimulate;
     @FXML protected MenuItem menuStepInto;
     @FXML protected MenuItem menuStepOver;
@@ -452,5 +454,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML void onToggleBreakpoint() {
         getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
+    }
+
+    @FXML void onFindAndReplace() {
+        getEditorController().currentFileEditor().openFindAndReplace();
     }
 }

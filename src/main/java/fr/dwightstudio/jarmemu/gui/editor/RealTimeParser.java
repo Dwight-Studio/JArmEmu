@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.gui.controllers.EditorController;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.util.EnumUtils;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
@@ -112,6 +113,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
     private boolean offsetArgument;
     private boolean brace;
     private boolean bracket;
+    private List<Find> find;
 
     public RealTimeParser(FileEditor editor, EditorController controller) {
         super("RealTimeParser" + editor.getRealIndex());
@@ -155,6 +157,8 @@ public class RealTimeParser extends RealTimeAnalyzer {
         offsetArgument = false;
         brace = false;
         bracket = false;
+
+        find = editor.getSearch(text);
     }
 
     @Override
@@ -173,7 +177,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
 
                     int iter;
                     for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        //System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
                         if (matchComment()) continue;
 
                         switch (context) {
@@ -773,27 +777,74 @@ public class RealTimeParser extends RealTimeAnalyzer {
         }
     }
 
+    private void addSpan(Collection<String> highlights, int end) {
+        if (!find.isEmpty()) {
+            ArrayList<String> highlightsWithFind = new ArrayList<>(highlights);
+            highlightsWithFind.add("find");
+
+            int done = 0;
+            for (Find f : find) {
+                if (done >= end) return;
+                if (f.start() == 0) {
+                    if (f.end() < end) {
+                        spansBuilder.add(highlightsWithFind, f.end() - done);
+                        done = f.end();
+                    } else {
+                        spansBuilder.add(highlightsWithFind, end - done);
+                        done = end;
+                    }
+                } else if (f.start() < end) {
+                    if (f.end() < end) {
+                        spansBuilder.add(highlights, f.start() - done);
+                        spansBuilder.add(highlightsWithFind, f.end() - f.start());
+                        done = f.end();
+                    } else {
+                        spansBuilder.add(highlights, f.start() - done);
+                        spansBuilder.add(highlightsWithFind, end - f.start());
+                        done = end;
+                    }
+                }
+            }
+
+            if (done < end) spansBuilder.add(highlights, end - done);
+        } else {
+            spansBuilder.add(highlights, end);
+        }
+    }
+
     private void tag(String highlight, Matcher matcher) {
-        spansBuilder.add(Collections.singleton(highlight), matcher.end());
-        text = text.substring(matcher.end());
+        int end = matcher.end();
+        addSpan(Collections.singleton(highlight), end);
+        find.replaceAll(f -> f.offset(end));
+        find.removeIf(Objects::isNull);
+        text = text.substring(end);
     }
 
     private void tagBlank(Matcher matcher) {
-        spansBuilder.add(Collections.emptyList(), matcher.end());
-        text = text.substring(matcher.end());
+        int end = matcher.end();
+        addSpan(Collections.emptyList(), end);
+        find.replaceAll(f -> f.offset(end));
+        find.removeIf(Objects::isNull);
+        text = text.substring(end);
     }
 
     private void tagError(String highlight, Matcher matcher) {
-        spansBuilder.add(List.of(highlight, "error-secondary"), matcher.end());
-        text = text.substring(matcher.end());
+        int end = matcher.end();
+        addSpan(List.of(highlight, "error-secondary"), end);
+        find.replaceAll(f -> f.offset(end));
+        find.removeIf(Objects::isNull);
+        text = text.substring(end);
     }
 
     private void tagError() {
         Matcher matcher = ERROR_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            spansBuilder.add(Collections.singleton("error"), matcher.end());
-            text = text.substring(matcher.end());
+            int end = matcher.end();
+            addSpan(Collections.singleton("error"), end);
+            find.replaceAll(f -> f.offset(end));
+            find.removeIf(Objects::isNull);
+            text = text.substring(end);
         } else {
             matcher = GENERAL_SEPARATOR_PATTERN.matcher(text);
 
