@@ -91,6 +91,11 @@ public class FilePos implements Comparable<FilePos> {
     }
 
     @Override
+    public int hashCode() {
+        return (4096 * file) + pos;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof FilePos position) {
             return position.getPos() == pos && position.getFileIndex() == file;

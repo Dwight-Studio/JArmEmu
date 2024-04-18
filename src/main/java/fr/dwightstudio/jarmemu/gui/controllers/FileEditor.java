@@ -28,6 +28,7 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
+import fr.dwightstudio.jarmemu.gui.editor.RealTimeAnalyzer;
 import fr.dwightstudio.jarmemu.gui.editor.RealTimeParser;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
@@ -46,7 +47,6 @@ import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.Paragraph;
-import org.fxmisc.richtext.model.TwoDimensional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -68,7 +68,7 @@ public class FileEditor extends AbstractJArmEmuModule {
 
     // GUI
     private final CodeArea codeArea;
-    private final RealTimeParser realTimeParser;
+    private final RealTimeParser realTimeAnalyzer;
     private final VirtualizedScrollPane<CodeArea> editorScroll;
     private final StackPane stackPane;
     private final Tab fileTab;
@@ -88,7 +88,6 @@ public class FileEditor extends AbstractJArmEmuModule {
     private final Button closeFind;
 
     // Propriétés du fichier
-    private int index = -1;
     private File path;
     private String lastSaveContent;
     private boolean saved;
@@ -98,7 +97,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         super(application);
         this.executor = Executors.newSingleThreadExecutor();
         codeArea = new CodeArea();
-        this.realTimeParser = new RealTimeParser(this);
+        this.realTimeAnalyzer = new RealTimeParser(this, getEditorController());
         editorScroll = new VirtualizedScrollPane<>(codeArea);
         stackPane = new StackPane(editorScroll);
         fileTab = new Tab(fileName, stackPane);
@@ -293,6 +292,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         stackPane.getChildren().add(findPane);
 
         setSaved();
+        this.realTimeAnalyzer.start();
         closed = false;
     }
 
@@ -446,7 +446,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public void close() {
         logger.info("Closing " + getFileName());
-        realTimeParser.interrupt();
+        realTimeAnalyzer.interrupt();
         getController().filesTabPane.getTabs().remove(fileTab);
         executor.close();
         this.closed = true;
@@ -594,7 +594,10 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return l'indice réel du fichier lié à l'éditeur
      */
     public int getRealIndex() {
-        if (index == -1) index = getEditorController().getFileIndex(this);
-        return index;
+        return getEditorController().getFileIndex(this);
+    }
+
+    public RealTimeAnalyzer getRealTimeAnalyzer() {
+        return realTimeAnalyzer;
     }
 }

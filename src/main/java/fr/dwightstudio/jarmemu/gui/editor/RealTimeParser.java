@@ -23,19 +23,19 @@
 
 package fr.dwightstudio.jarmemu.gui.editor;
 
-import fr.dwightstudio.jarmemu.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.asm.directive.Directive;
 import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.instruction.Condition;
 import fr.dwightstudio.jarmemu.asm.instruction.DataMode;
 import fr.dwightstudio.jarmemu.asm.instruction.Instruction;
 import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.gui.controllers.EditorController;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
-import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.richtext.model.TwoDimensional;
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
-public class RealTimeParser extends Thread {
+public class RealTimeParser extends RealTimeAnalyzer {
 
     public static final int MAXIMUM_ITER_NUM = 1000;
 
@@ -88,14 +88,20 @@ public class RealTimeParser extends Thread {
     private static final Logger logger = Logger.getLogger(RealTimeParser.class.getSimpleName());
 
     private final FileEditor editor;
+    private final EditorController controller;
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
 
     private int line;
+
     private static HashMap<FilePos, String> globals;
     private HashMap<Integer, String> labels;
     private HashMap<Integer, String> symbols;
-    private MultiValueMap references;
+    private HashMap<Integer, Set<String>> references;
+    private String addGlobals;
+    private String addLabels;
+    private String addSymbols;
+    private HashSet<String> addReferences;
 
     private Context context;
     private SubContext subContext;
@@ -106,46 +112,41 @@ public class RealTimeParser extends Thread {
     private boolean offsetArgument;
     private boolean brace;
     private boolean bracket;
-    private boolean singleQuote;
-    private boolean doubleQuote;
 
-    public RealTimeParser(FileEditor editor) {
+    @SuppressWarnings("rawtypes")
+    public RealTimeParser(FileEditor editor, EditorController controller) {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
+        this.controller = controller;
         this.queue = new LinkedBlockingQueue<>();
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
-            int stop = editor.getCodeArea().offsetToPosition(change.getInsertionEnd(), TwoDimensional.Bias.Forward).getMajor();
 
-            for (int i = start; i <= stop; i++) {
-                queue.add(i);
+            if (change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
+                markDirty(start, editor.getCodeArea().getParagraphs().size());
+            } else {
+                int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
+                int stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+
+                markDirty(start, stop);
             }
         });
 
         globals = new HashMap<>();
         labels = new HashMap<>();
         symbols = new HashMap<>();
-        references = new MultiValueMap();
-
-        this.start();
+        references = new HashMap<>();
+        addReferences = new HashSet<>();
     }
 
-    // TODO: Corriger la perte de sync lorsque on ajoute ou supprime une ligne
     private void setup() {
-        System.out.println(line + ": " + labels);
         text = editor.getCodeArea().getParagraph(line).getText();
 
-        String[] rem = new String[3];
-        rem[0] = globals.remove(new FilePos(line, editor.getRealIndex()));
-        rem[1] = labels.remove(line);
-        rem[2] = symbols.remove(line);
-
-        references.remove(line);
-
-        for (String name : rem) {
-            if (name != null) updateReferences(name);
-        }
+        addGlobals = "";
+        addLabels = "";
+        addSymbols = "";
+        addReferences.clear();
 
         context = Context.NONE;
         subContext = SubContext.NONE;
@@ -155,106 +156,158 @@ public class RealTimeParser extends Thread {
         offsetArgument = false;
         brace = false;
         bracket = false;
-        singleQuote = false;
-        doubleQuote = false;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void run() {
-        while (!this.isInterrupted()) {
-            try {
-                line = queue.take();
+        try {
+            while (editor.getRealIndex() == -1) {
+                Thread.sleep(50);
+            }
+            while (!this.isInterrupted()) {
+                try {
+                    line = queue.take();
 
-                setup();
-                int iter;
-                for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                    //System.out.println(context + ":" + subContext + ";" + argType + "{" + text);
-                    if (matchComment()) continue;
+                    if (line < 0 || line >= editor.getCodeArea().getParagraphs().size()) continue;
 
-                    switch (context) {
-                        case ERROR -> {
-                            if (matchBlank()) continue;
-                        }
+                    setup();
 
-                        case NONE -> {
-                            if (matchBlank()) continue;
-                            if (matchLabel()) continue;
-                            if (matchInstruction()) continue;
-                            if (matchDirective()) continue;
-                        }
+                    int iter;
+                    for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
+                        //System.out.println(context + ":" + subContext + ";" + argType + "{" + text);
+                        if (matchComment()) continue;
 
-                        case LABEL -> {
-                            if (matchBlank()) continue;
-                            if (matchInstruction()) continue;
-                            if (matchDirective()) continue;
-                        }
-
-                        case COMMENT -> {
-                        }
-
-                        case INSTRUCTION -> {
-                            if (matchBlank()) {
-                                context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                continue;
+                        switch (context) {
+                            case ERROR -> {
+                                if (matchBlank()) continue;
                             }
 
-                            if (matchCondition()) continue;
-                            if (matchFlags()) continue;
-                        }
-
-                        case CONDITION -> {
-                            if (matchBlank()) {
-                                context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                continue;
+                            case NONE -> {
+                                if (matchBlank()) continue;
+                                if (matchLabel()) continue;
+                                if (matchInstruction()) continue;
+                                if (matchDirective()) continue;
                             }
 
-                            if (matchFlags()) continue;
-                        }
+                            case LABEL -> {
+                                if (matchBlank()) continue;
+                                if (matchInstruction()) continue;
+                                if (matchDirective()) continue;
+                            }
 
-                        case FLAGS -> {
-                            if (matchBlank()) {
-                                context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                continue;
+                            case COMMENT -> {
+                            }
+
+                            case INSTRUCTION -> {
+                                if (matchBlank()) {
+                                    context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                    continue;
+                                }
+
+                                if (matchCondition()) continue;
+                                if (matchFlags()) continue;
+                            }
+
+                            case CONDITION -> {
+                                if (matchBlank()) {
+                                    context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                    continue;
+                                }
+
+                                if (matchFlags()) continue;
+                            }
+
+                            case FLAGS -> {
+                                if (matchBlank()) {
+                                    context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                    continue;
+                                }
+                            }
+
+                            case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
+                                 INSTRUCTION_ARGUMENT_4 -> {
+                                if (matchBlank()) continue;
+                                if (!bracket && !brace && matchInstructionArgumentSeparator()) continue;
+
+                                if (matchInstructionArgument()) continue;
+                            }
+
+                            case DIRECTIVE -> {
+                                if (matchBlank()) {
+                                    context = Context.DIRECTIVE_ARGUMENTS;
+                                    continue;
+                                }
+                            }
+
+                            case DIRECTIVE_ARGUMENTS -> {
+                                if (matchBlank()) continue;
+                                if (matchDirectiveArguments()) continue;
                             }
                         }
 
-                        case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
-                             INSTRUCTION_ARGUMENT_4 -> {
-                            if (matchBlank()) continue;
-                            if (!bracket && !brace && matchInstructionArgumentSeparator()) continue;
+                        tagError();
+                    }
 
-                            if (matchInstructionArgument()) continue;
-                        }
+                    if (iter >= MAXIMUM_ITER_NUM - 1) {
+                        logger.severe("Hanging line " + line + " parsing after " + MAXIMUM_ITER_NUM + " iterations");
+                    }
 
-                        case DIRECTIVE -> {
-                            if (matchBlank()) {
-                                context = Context.DIRECTIVE_ARGUMENTS;
-                                continue;
-                            }
-                        }
+                    String remGlobal = globals.getOrDefault(new FilePos(editor.getRealIndex(), line), "");
+                    String remLabel = labels.getOrDefault(line, "");
+                    String remSymbol = symbols.getOrDefault(line, "");
 
-                        case DIRECTIVE_ARGUMENTS -> {
-                            if (matchBlank()) continue;
-                            if (matchDirectiveArguments()) continue;
+                    if (!remGlobal.equals(addGlobals)) {
+                        if (remGlobal.isEmpty()) {
+                            globals.put(new FilePos(editor.getRealIndex(), line), addGlobals);
+                            updateGlobals(addGlobals);
+                        } else {
+                            globals.remove(new FilePos(editor.getRealIndex(), line));
+                            updateGlobals(remGlobal);
                         }
                     }
 
-                    tagError();
-                }
+                    if (!remLabel.equals(addLabels)) {
+                        if (remLabel.isEmpty()) {
+                            labels.put(line, addLabels);
+                            updateReferences(addLabels);
+                        } else {
+                            labels.remove(line);
+                            updateReferences(remLabel);
+                        }
+                        updateReferences(remLabel.toUpperCase());
+                    }
 
-                if (iter >= MAXIMUM_ITER_NUM - 1) {
-                    logger.severe("Hanging line " + line + " parsing after " + MAXIMUM_ITER_NUM + " iterations");
-                }
+                    if (!remSymbol.equals(addSymbols)) {
+                        if (remLabel.isEmpty()) {
+                            symbols.put(line, addSymbols);
+                            updateReferences(addSymbols);
+                        } else {
+                            symbols.remove(line);
+                            updateReferences(remSymbol);
+                        }
+                    }
 
-                try {
-                    final int finalLine = line;
-                    StyleSpans<Collection<String>> spans = spansBuilder.create();
-                    Platform.runLater(() -> editor.getCodeArea().setStyleSpans(finalLine, 0, spans));
-                } catch (IllegalStateException ignored) {}
-            } catch (InterruptedException e) {
-                this.interrupt();
-            } catch (Exception ignored) {}
-        }
+                    Set<String> ref = references.get(line);
+                    if (ref != null) {
+                        ref.clear();
+                        ref.addAll(addReferences);
+                    } else if (!addReferences.isEmpty()) {
+                        references.put(line, new HashSet<>(addReferences));
+                    }
+
+                    try {
+                        final int finalLine = line;
+                        StyleSpans<Collection<String>> spans = spansBuilder.create();
+                        Platform.runLater(() -> editor.getCodeArea().setStyleSpans(finalLine, 0, spans));
+                    } catch (IllegalStateException ignored) {
+                    }
+                } catch (Exception e) {
+                    if (e instanceof InterruptedException ex) throw ex;
+                    logger.severe(ExceptionUtils.getStackTrace(e));
+                }
+            }
+        } catch (InterruptedException ignored) {}
     }
 
     private boolean matchComment() {
@@ -285,12 +338,11 @@ public class RealTimeParser extends Thread {
         Matcher matcher = LABEL_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            String label = matcher.group("LABEL").toUpperCase();
+            addLabels = matcher.group("LABEL").toUpperCase();
             context = Context.LABEL;
+            addReferences.add(addLabels);
             tag("label", matcher);
-            labels.put(line, label);
 
-            updateReferences(label);
             return true;
         }
 
@@ -537,10 +589,7 @@ public class RealTimeParser extends Thread {
             }
 
             return true;
-        } else if (matchPseudoInstruction()) {
-
-            return true;
-        } else return false;
+        } else return matchPseudoInstruction();
     }
 
     private boolean matchRegisterArray() {
@@ -568,9 +617,10 @@ public class RealTimeParser extends Thread {
 
         if (matcher.find()) {
             String label = matcher.group().toUpperCase();
-            references.put(line, label);
 
-            if (labels.containsValue(label) || globals.containsValue(label)) {
+            addReferences.add(label);
+
+            if (labels.containsValue(label) || globals.containsValue(label) || addLabels.equals(label)) {
                 tag("label-ref", matcher);
             } else {
                 tagError("label-ref", matcher);
@@ -665,12 +715,11 @@ public class RealTimeParser extends Thread {
                 Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
 
                 if (matcher.find()) {
-                    String label = matcher.group().toUpperCase();
-                    references.put(line, label);
-                    globals.put(new FilePos(editor.getRealIndex(), line), label);
+                    addGlobals = matcher.group().toUpperCase();
+                    addReferences.add(addGlobals);
                     context = Context.ERROR;
 
-                    if (labels.containsValue(label) || symbols.containsValue(label)) {
+                    if (labels.containsValue(addGlobals) || addLabels.equals(addGlobals)) {
                         tag("label-ref", matcher);
                     } else {
                         tagError("label-ref", matcher);
@@ -732,9 +781,7 @@ public class RealTimeParser extends Thread {
      * @param name le nom du global/label/symbol à mettre à jour
      */
     private void updateReferences(String name) {
-        for (Object obj : references.entrySet()) {
-            Map.Entry<Integer, Collection<String>> entry = (Map.Entry<Integer, Collection<String>>) obj;
-
+        for (Map.Entry<Integer, Set<String>> entry : references.entrySet()) {
             if (entry.getValue().contains(name)) {
                 queue.add(entry.getKey());
             }
@@ -747,7 +794,9 @@ public class RealTimeParser extends Thread {
      * @param name le nom du global à mettre à jour
      */
     private void updateGlobals(String name) {
-        //TODO: Mise à jour des globals
+        controller.getFileEditors().forEach(editor -> {
+            if (editor != this.editor) ((RealTimeParser) editor.getRealTimeAnalyzer()).updateReferences(name);
+        });
     }
 
     @Override
@@ -757,21 +806,12 @@ public class RealTimeParser extends Thread {
         subscription.unsubscribe();
     }
 
-    /**
-     * Marque la ligne comme nécessitant une actualisation
-     *
-     * @param line la ligne à actualiser
-     */
+    @Override
     public void markDirty(int line) {
         this.queue.add(line);
     }
 
-    /**
-     * Marque les lignes comme nécessitant une actualisation
-     *
-     * @param startLine la ligne de début
-     * @param stopLine la ligne de fin (exclue)
-     */
+    @Override
     public void markDirty(int startLine, int stopLine) {
         for (int i = startLine; i <= stopLine; i++) {
             queue.add(i);
