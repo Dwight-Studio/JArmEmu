@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class BLXInstructionTest extends InstructionTest<Register, Object, Object, Object> {
+class BLXInstructionTest extends InstructionTest<Integer, Object, Object, Object> {
     BLXInstructionTest() {
         super(BLXInstruction.class);
     }
@@ -41,7 +41,7 @@ class BLXInstructionTest extends InstructionTest<Register, Object, Object, Objec
         Register pc = stateContainer.getPC();
         pc.setData(8);
         r0.setData(45);
-        execute(stateContainer, false, false, null, null, r0, null, null, null);
+        execute(stateContainer, false, false, null, null, r0.getData(), null, null, null);
         assertEquals(12, stateContainer.getLR().getData());
         assertEquals(45, pc.getData());
         assertTrue(stateContainer.getCPSR().getT());

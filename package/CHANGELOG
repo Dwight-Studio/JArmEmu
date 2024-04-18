@@ -5,6 +5,8 @@
 - Added autocompletion system
 - Added unintentation (Shift+Tab)
 - Improved code highlighting (real time parsing)
+- Added BLXNS instruction
+- Fixed BLX instruction not being able to use labels
 
 
 0.1.10 -> 0.2.0
