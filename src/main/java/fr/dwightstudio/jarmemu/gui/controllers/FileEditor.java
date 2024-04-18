@@ -46,6 +46,7 @@ import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.Paragraph;
+import org.fxmisc.richtext.model.TwoDimensional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -87,11 +88,11 @@ public class FileEditor extends AbstractJArmEmuModule {
     private final Button closeFind;
 
     // Propriétés du fichier
+    private int index = -1;
     private File path;
     private String lastSaveContent;
     private boolean saved;
     private boolean closed;
-
 
     public FileEditor(JArmEmuApplication application, String fileName, String content) {
         super(application);
@@ -587,5 +588,13 @@ public class FileEditor extends AbstractJArmEmuModule {
      */
     public int getVisualIndex() {
         return getController().filesTabPane.getTabs().indexOf(fileTab);
+    }
+
+    /**
+     * @return l'indice réel du fichier lié à l'éditeur
+     */
+    public int getRealIndex() {
+        if (index == -1) index = getEditorController().getFileIndex(this);
+        return index;
     }
 }

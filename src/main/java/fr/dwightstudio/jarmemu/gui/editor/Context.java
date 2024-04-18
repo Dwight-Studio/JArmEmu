@@ -2,6 +2,7 @@ package fr.dwightstudio.jarmemu.gui.editor;
 
 public enum Context {
     NONE,
+    ERROR,
     COMMENT,
 
     INSTRUCTION,

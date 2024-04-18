@@ -44,12 +44,15 @@ import org.reactfx.Subscription;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
 public class RealTimeParser extends Thread {
+
+    public static final int MAXIMUM_ITER_NUM = 1000;
 
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values());
     private static final String[] DIRECTIVES = ArrayUtils.addAll(getFromEnum(Directive.values()), getFromEnum(Section.values()));
@@ -68,7 +71,7 @@ public class RealTimeParser extends Thread {
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", INSTRUCTIONS) + ")(?-i)");
     private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
     private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + "|" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
-    private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
+    private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
     private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_0-9]+)[ \t]*:");
 
     private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
@@ -81,6 +84,8 @@ public class RealTimeParser extends Thread {
     private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
     private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
     private static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_0-9]+");
+
+    private static final Logger logger = Logger.getLogger(RealTimeParser.class.getSimpleName());
 
     private final FileEditor editor;
     private final BlockingQueue<Integer> queue;
@@ -105,7 +110,7 @@ public class RealTimeParser extends Thread {
     private boolean doubleQuote;
 
     public RealTimeParser(FileEditor editor) {
-        super("RealTimeParser" + editor.getVisualIndex());
+        super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
         this.queue = new LinkedBlockingQueue<>();
 
@@ -126,11 +131,13 @@ public class RealTimeParser extends Thread {
         this.start();
     }
 
+    // TODO: Corriger la perte de sync lorsque on ajoute ou supprime une ligne
     private void setup() {
+        System.out.println(line + ": " + labels);
         text = editor.getCodeArea().getParagraph(line).getText();
 
         String[] rem = new String[3];
-        rem[0] = globals.remove(line);
+        rem[0] = globals.remove(new FilePos(line, editor.getRealIndex()));
         rem[1] = labels.remove(line);
         rem[2] = symbols.remove(line);
 
@@ -159,12 +166,16 @@ public class RealTimeParser extends Thread {
                 line = queue.take();
 
                 setup();
-
-                while (!text.isEmpty()) {
-                    System.out.println(context + ":" + subContext + ";" + argType + "{" + text);
+                int iter;
+                for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
+                    //System.out.println(context + ":" + subContext + ";" + argType + "{" + text);
                     if (matchComment()) continue;
 
                     switch (context) {
+                        case ERROR -> {
+                            if (matchBlank()) continue;
+                        }
+
                         case NONE -> {
                             if (matchBlank()) continue;
                             if (matchLabel()) continue;
@@ -180,6 +191,7 @@ public class RealTimeParser extends Thread {
 
                         case COMMENT -> {
                         }
+
                         case INSTRUCTION -> {
                             if (matchBlank()) {
                                 context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
@@ -229,6 +241,11 @@ public class RealTimeParser extends Thread {
 
                     tagError();
                 }
+
+                if (iter >= MAXIMUM_ITER_NUM - 1) {
+                    logger.severe("Hanging line " + line + " parsing after " + MAXIMUM_ITER_NUM + " iterations");
+                }
+
                 try {
                     final int finalLine = line;
                     StyleSpans<Collection<String>> spans = spansBuilder.create();
@@ -268,7 +285,6 @@ public class RealTimeParser extends Thread {
         Matcher matcher = LABEL_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            System.out.println(references);
             String label = matcher.group("LABEL").toUpperCase();
             context = Context.LABEL;
             tag("label", matcher);
@@ -322,6 +338,7 @@ public class RealTimeParser extends Thread {
         Instruction instruction = Instruction.valueOf(command.toUpperCase());
         argType = instruction.getArgumentType(context.getIndex());
 
+        // TODO: Ajouter tous les arguments
         boolean rtn = switch (argType) {
             case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
             case "ImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
@@ -550,11 +567,10 @@ public class RealTimeParser extends Thread {
         Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            System.out.println(labels);
             String label = matcher.group().toUpperCase();
             references.put(line, label);
 
-            if (labels.containsValue(label)) {
+            if (labels.containsValue(label) || globals.containsValue(label)) {
                 tag("label-ref", matcher);
             } else {
                 tagError("label-ref", matcher);
@@ -594,7 +610,7 @@ public class RealTimeParser extends Thread {
         Matcher matcher = DIRECTIVE_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            command = matcher.group();
+            command = matcher.group("DIRECTIVE");
             context = Context.DIRECTIVE;
             tag("directive", matcher);
             return true;
@@ -645,7 +661,30 @@ public class RealTimeParser extends Thread {
                 }
             }
 
+            case "GLOBAL", "GLOBL", "EXPORT" -> {
+                Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
+
+                if (matcher.find()) {
+                    String label = matcher.group().toUpperCase();
+                    references.put(line, label);
+                    globals.put(new FilePos(editor.getRealIndex(), line), label);
+                    context = Context.ERROR;
+
+                    if (labels.containsValue(label) || symbols.containsValue(label)) {
+                        tag("label-ref", matcher);
+                    } else {
+                        tagError("label-ref", matcher);
+                    }
+
+                    return true;
+                }
+
+                return false;
+            }
+
             default -> {
+                if (matchSubSeparator()) return true;
+
                 Matcher matcher = ERROR_PATTERN.matcher(text);
 
                 if (matcher.find()) {
@@ -700,6 +739,15 @@ public class RealTimeParser extends Thread {
                 queue.add(entry.getKey());
             }
         }
+    }
+
+    /**
+     * Met à jour les globals
+     *
+     * @param name le nom du global à mettre à jour
+     */
+    private void updateGlobals(String name) {
+        //TODO: Mise à jour des globals
     }
 
     @Override

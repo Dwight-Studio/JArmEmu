@@ -85,7 +85,7 @@ public class RealTimeHighlighter extends Thread {
     private final Subscription subscription;
 
     public RealTimeHighlighter(FileEditor editor) {
-        super("RealTimeParser" + editor.getVisualIndex());
+        super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
         this.queue = new LinkedBlockingQueue<>();
 
