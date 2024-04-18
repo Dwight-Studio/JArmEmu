@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.asm.instruction;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.argument.*;
 import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.directive.WordDirective;

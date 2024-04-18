@@ -26,11 +26,9 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 import fr.dwightstudio.jarmemu.asm.argument.LabelOrRegisterArgument;
 import fr.dwightstudio.jarmemu.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.asm.exception.StuckExecutionASMException;
-import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 

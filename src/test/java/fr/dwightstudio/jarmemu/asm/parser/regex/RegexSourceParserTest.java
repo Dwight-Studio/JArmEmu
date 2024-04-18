@@ -24,7 +24,8 @@
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.ParsedLabel;
+import fr.dwightstudio.jarmemu.asm.ParsedSection;
 import fr.dwightstudio.jarmemu.asm.directive.*;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.*;

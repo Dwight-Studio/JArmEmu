@@ -23,9 +23,9 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.legacy;
 
-import fr.dwightstudio.jarmemu.asm.directive.Directive;
 import fr.dwightstudio.jarmemu.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.asm.ParsedLabel;
+import fr.dwightstudio.jarmemu.asm.directive.Directive;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;

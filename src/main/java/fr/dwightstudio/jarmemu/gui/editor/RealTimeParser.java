@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.gui.editor;
 
-import fr.dwightstudio.jarmemu.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.asm.directive.Directive;
 import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.instruction.Condition;

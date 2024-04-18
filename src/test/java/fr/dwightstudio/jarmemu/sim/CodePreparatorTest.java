@@ -24,9 +24,9 @@
 package fr.dwightstudio.jarmemu.sim;
 
 import fr.dwightstudio.jarmemu.JArmEmuTest;
-import fr.dwightstudio.jarmemu.asm.instruction.Condition;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.ADDInstruction;
+import fr.dwightstudio.jarmemu.asm.instruction.Condition;
 import fr.dwightstudio.jarmemu.asm.instruction.LSLInstruction;
 import fr.dwightstudio.jarmemu.asm.instruction.MOVInstruction;
 import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
