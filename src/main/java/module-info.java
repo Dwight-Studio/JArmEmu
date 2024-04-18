@@ -18,6 +18,7 @@ module fr.dwightstudio.jarmemu {
     requires atlantafx.base;
     requires org.apache.commons.collections4;
     requires org.json;
+    requires commons.collections;
 
     exports fr.dwightstudio.jarmemu;
     exports fr.dwightstudio.jarmemu.gui;

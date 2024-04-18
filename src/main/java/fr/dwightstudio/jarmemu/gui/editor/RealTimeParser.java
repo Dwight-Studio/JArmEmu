@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.gui.editor;
 
+import fr.dwightstudio.jarmemu.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.asm.directive.Directive;
 import fr.dwightstudio.jarmemu.asm.directive.Section;
 import fr.dwightstudio.jarmemu.asm.instruction.Condition;
@@ -30,16 +31,17 @@ import fr.dwightstudio.jarmemu.asm.instruction.DataMode;
 import fr.dwightstudio.jarmemu.asm.instruction.Instruction;
 import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
+import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
+import org.apache.commons.collections.map.MultiValueMap;
 import org.apache.commons.lang3.ArrayUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
 
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
@@ -67,22 +69,29 @@ public class RealTimeParser extends Thread {
     private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
     private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + "|" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
-    private static final Pattern LABEL_PATTERN = Pattern.compile("^[A-Za-z_0-9]+[ \t]*:");
+    private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_0-9]+)[ \t]*:");
 
     private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
     private static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
     private static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
     private static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
     private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@]*");
+    private static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n\\]@]*");
     private static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
     private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
+    private static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_0-9]+");
 
     private final FileEditor editor;
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
 
     private int line;
+    private static HashMap<FilePos, String> globals;
+    private HashMap<Integer, String> labels;
+    private HashMap<Integer, String> symbols;
+    private MultiValueMap references;
+
     private Context context;
     private SubContext subContext;
     private String text;
@@ -109,11 +118,28 @@ public class RealTimeParser extends Thread {
             }
         });
 
+        globals = new HashMap<>();
+        labels = new HashMap<>();
+        symbols = new HashMap<>();
+        references = new MultiValueMap();
+
         this.start();
     }
 
     private void setup() {
         text = editor.getCodeArea().getParagraph(line).getText();
+
+        String[] rem = new String[3];
+        rem[0] = globals.remove(line);
+        rem[1] = labels.remove(line);
+        rem[2] = symbols.remove(line);
+
+        references.remove(line);
+
+        for (String name : rem) {
+            if (name != null) updateReferences(name);
+        }
+
         context = Context.NONE;
         subContext = SubContext.NONE;
         spansBuilder = new StyleSpansBuilder<>();
@@ -189,17 +215,20 @@ public class RealTimeParser extends Thread {
                         }
 
                         case DIRECTIVE -> {
-
+                            if (matchBlank()) {
+                                context = Context.DIRECTIVE_ARGUMENTS;
+                                continue;
+                            }
                         }
 
                         case DIRECTIVE_ARGUMENTS -> {
-
+                            if (matchBlank()) continue;
+                            if (matchDirectiveArguments()) continue;
                         }
                     }
 
                     tagError();
                 }
-
                 try {
                     final int finalLine = line;
                     StyleSpans<Collection<String>> spans = spansBuilder.create();
@@ -207,7 +236,7 @@ public class RealTimeParser extends Thread {
                 } catch (IllegalStateException ignored) {}
             } catch (InterruptedException e) {
                 this.interrupt();
-            }
+            } catch (Exception ignored) {}
         }
     }
 
@@ -234,12 +263,18 @@ public class RealTimeParser extends Thread {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     private boolean matchLabel() {
         Matcher matcher = LABEL_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            System.out.println(references);
+            String label = matcher.group("LABEL").toUpperCase();
             context = Context.LABEL;
             tag("label", matcher);
+            labels.put(line, label);
+
+            updateReferences(label);
             return true;
         }
 
@@ -276,7 +311,6 @@ public class RealTimeParser extends Thread {
 
         if (matcher.find()) {
             context = Context.FLAGS;
-            System.out.println(matcher.end());
             tag("flags", matcher);
             return true;
         }
@@ -294,6 +328,8 @@ public class RealTimeParser extends Thread {
             case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> matchImmediateOrRegister();
             case "ShiftArgument" -> matchShift();
             case "AddressArgument" -> matchAddress();
+            case "RegisterArrayArgument" -> matchRegisterArray();
+            case "LabelArgument" -> matchLabelArgument();
             default -> false;
         };
 
@@ -368,6 +404,7 @@ public class RealTimeParser extends Thread {
                     else {
                         tag("brace", matcher);
                         brace = true;
+                        subContext = SubContext.NONE;
                         yield true;
                     }
 
@@ -379,6 +416,7 @@ public class RealTimeParser extends Thread {
                     else {
                         tag("brace", matcher);
                         brace = false;
+                        subContext = SubContext.NONE;
                         yield true;
                     }
 
@@ -443,7 +481,7 @@ public class RealTimeParser extends Thread {
         if (bracket || matchBracket()) {
             switch (subContext) {
                 case NONE -> {
-                    if (!matchRegister() && !matchBracket()) tagError();
+                    if (!matchRegister()) tagError();
                 }
 
                 case REGISTER -> {
@@ -488,6 +526,46 @@ public class RealTimeParser extends Thread {
         } else return false;
     }
 
+    private boolean matchRegisterArray() {
+        if (brace || matchBrace()) {
+            switch (subContext) {
+                case NONE -> {
+                    if (!matchRegister()) tagError();
+                }
+
+                case REGISTER -> {
+                    if (matchBrace()) {
+                        return true;
+                    } else if (matchSubSeparator()) {
+                        subContext = SubContext.NONE;
+                    } else tagError();
+                }
+            }
+
+            return true;
+        } else return false;
+    }
+
+    private boolean matchLabelArgument() {
+        Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            System.out.println(labels);
+            String label = matcher.group().toUpperCase();
+            references.put(line, label);
+
+            if (labels.containsValue(label)) {
+                tag("label-ref", matcher);
+            } else {
+                tagError("label-ref", matcher);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean matchInstructionArgumentSeparator() {
         Matcher matcher = ARGUMENT_SEPARATOR.matcher(text);
 
@@ -525,6 +603,60 @@ public class RealTimeParser extends Thread {
         return false;
     }
 
+    private boolean matchDirectiveArguments() {
+        switch (command.toUpperCase()) {
+            case "SET", "EQU", "EQUIV", "EQV" -> {
+                switch (subContext) {
+                    case NONE -> {
+                        Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
+
+                        if (matcher.find()) {
+                            tag("label", matcher);
+                            subContext = SubContext.PRIMARY;
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    case PRIMARY -> {
+                        if (matchSubSeparator()) {
+                            subContext = SubContext.SECONDARY;
+                            return true;
+                        } else {
+                            return false;
+                        }
+                    }
+
+                    case SECONDARY -> {
+                        Matcher matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
+
+                        if (matcher.find()) {
+                            tag("immediate", matcher);
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    default -> {
+                        return false;
+                    }
+                }
+            }
+
+            default -> {
+                Matcher matcher = ERROR_PATTERN.matcher(text);
+
+                if (matcher.find()) {
+                    tag("directive-argument", matcher);
+                }
+
+                return true;
+            }
+        }
+    }
+
     private void tag(String highlight, Matcher matcher) {
         spansBuilder.add(Collections.singleton(highlight), matcher.end());
         text = text.substring(matcher.end());
@@ -532,6 +664,11 @@ public class RealTimeParser extends Thread {
 
     private void tagBlank(Matcher matcher) {
         spansBuilder.add(Collections.emptyList(), matcher.end());
+        text = text.substring(matcher.end());
+    }
+
+    private void tagError(String highlight, Matcher matcher) {
+        spansBuilder.add(List.of(highlight, "error-secondary"), matcher.end());
         text = text.substring(matcher.end());
     }
 
@@ -546,6 +683,21 @@ public class RealTimeParser extends Thread {
 
             if (matcher.find()) {
                 tag("error", matcher);
+            }
+        }
+    }
+
+    /**
+     * Met à jour les références
+     *
+     * @param name le nom du global/label/symbol à mettre à jour
+     */
+    private void updateReferences(String name) {
+        for (Object obj : references.entrySet()) {
+            Map.Entry<Integer, Collection<String>> entry = (Map.Entry<Integer, Collection<String>>) obj;
+
+            if (entry.getValue().contains(name)) {
+                queue.add(entry.getKey());
             }
         }
     }

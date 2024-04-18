@@ -82,6 +82,10 @@
     -fx-fill: #44b6d9;
     -fx-font-weight: bold;
 }
+.code-area .text.directive-argument {
+    -fx-fill: #1b4d5c;
+    -fx-font-weight: bold;
+}
 .code-area .text.string {
     -fx-fill: #32409d;
 }
@@ -111,6 +115,12 @@
 }
 .code-area .text.error {
     -fx-fill: #d9534f;
+    -rtfx-underline-color: red;
+    -rtfx-underline-dash-array: 2 2;
+    -rtfx-underline-width: 1;
+    -rtfx-underline-cap: butt;
+}
+.code-area .text.error-secondary {
     -rtfx-underline-color: red;
     -rtfx-underline-dash-array: 2 2;
     -rtfx-underline-width: 1;
