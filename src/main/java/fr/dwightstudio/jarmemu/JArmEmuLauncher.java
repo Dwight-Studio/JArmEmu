@@ -50,7 +50,7 @@ public class JArmEmuLauncher {
                     .getDefaultTransform()
                     .getScaleY();
 
-            logger.info("Adapting SplashScreen to current screen scale (" + scale + "%)");
+            logger.info("Adapting SplashScreen to current screen scale (" + scale + ")");
 
             URL url;
 
