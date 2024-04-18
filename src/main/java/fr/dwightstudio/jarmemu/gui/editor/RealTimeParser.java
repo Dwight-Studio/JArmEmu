@@ -113,7 +113,6 @@ public class RealTimeParser extends RealTimeAnalyzer {
     private boolean brace;
     private boolean bracket;
 
-    @SuppressWarnings("rawtypes")
     public RealTimeParser(FileEditor editor, EditorController controller) {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
@@ -158,7 +157,6 @@ public class RealTimeParser extends RealTimeAnalyzer {
         bracket = false;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void run() {
         try {
@@ -175,7 +173,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
 
                     int iter;
                     for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        //System.out.println(context + ":" + subContext + ";" + argType + "{" + text);
+                        System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
                         if (matchComment()) continue;
 
                         switch (context) {
@@ -333,7 +331,6 @@ public class RealTimeParser extends RealTimeAnalyzer {
         return false;
     }
 
-    @SuppressWarnings("unchecked")
     private boolean matchLabel() {
         Matcher matcher = LABEL_PATTERN.matcher(text);
 
@@ -390,15 +387,21 @@ public class RealTimeParser extends RealTimeAnalyzer {
         Instruction instruction = Instruction.valueOf(command.toUpperCase());
         argType = instruction.getArgumentType(context.getIndex());
 
-        // TODO: Ajouter tous les arguments
+        if (argType == null) {
+            return false;
+        }
+
         boolean rtn = switch (argType) {
             case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
             case "ImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
+            case "CodeArgument" -> matchCodeArgument();
             case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> matchImmediateOrRegister();
             case "ShiftArgument" -> matchShift();
             case "AddressArgument" -> matchAddress();
+            case "RegisterAddressArgument" -> matchRegisterAddress();
             case "RegisterArrayArgument" -> matchRegisterArray();
             case "LabelArgument" -> matchLabelArgument();
+            case "LabelOrRegisterArgument" -> matchLabelOrRegister();
             default -> false;
         };
 
@@ -463,33 +466,41 @@ public class RealTimeParser extends RealTimeAnalyzer {
         return false;
     }
 
+    private boolean matchCodeArgument() {
+        Matcher matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            subContext = SubContext.IMMEDIATE;
+            tag("immediate", matcher);
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean matchBrace() {
         Matcher matcher = BRACE_PATTERN.matcher(text);
 
         if (matcher.find()) {
             return switch (matcher.group()) {
                 case "{" -> {
-                    if (brace) tagError();
+                    if (brace) yield false;
                     else {
                         tag("brace", matcher);
                         brace = true;
                         subContext = SubContext.NONE;
                         yield true;
                     }
-
-                    yield false;
                 }
 
                 case "}" -> {
-                    if (!brace) tagError();
+                    if (!brace) yield false;
                     else {
                         tag("brace", matcher);
                         brace = false;
                         subContext = SubContext.NONE;
                         yield true;
                     }
-
-                    yield false;
                 }
 
                 default -> false;
@@ -550,7 +561,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
         if (bracket || matchBracket()) {
             switch (subContext) {
                 case NONE -> {
-                    if (!matchRegister()) tagError();
+                    if (!matchRegister()) return false;
                 }
 
                 case REGISTER -> {
@@ -558,13 +569,13 @@ public class RealTimeParser extends RealTimeAnalyzer {
                         return true;
                     } else if (matchSubSeparator()) {
                         subContext = SubContext.PRIMARY;
-                    } else tagError();
+                    } else return false;
                 }
 
                 case PRIMARY -> {
                     if (matchImmediateOrRegister()) {
                         subContext = SubContext.SECONDARY;
-                    } else tagError();
+                    } else return false;
                 }
 
                 case SECONDARY -> {
@@ -572,19 +583,19 @@ public class RealTimeParser extends RealTimeAnalyzer {
                         return true;
                     } else if (matchSubSeparator()) {
                         subContext = SubContext.TERTIARY;
-                    } else tagError();
+                    } else return false;
                 }
 
                 case TERTIARY -> {
-                    if (!matchShift()) tagError();
+                    if (!matchShift()) return false;
                 }
 
                 case SHIFT -> {
-                    if (!matchBracket() && !matchImmediate()) tagError();
+                    if (!matchBracket() && !matchImmediate()) return false;
                 }
 
                 case IMMEDIATE -> {
-                    if (!matchBracket()) tagError();
+                    if (!matchBracket()) return false;
                 }
             }
 
@@ -592,11 +603,23 @@ public class RealTimeParser extends RealTimeAnalyzer {
         } else return matchPseudoInstruction();
     }
 
+    private boolean matchRegisterAddress() {
+        if (bracket || matchBracket()) {
+            if (subContext == SubContext.NONE) {
+                if (!matchRegister()) return false;
+            } else if (subContext == SubContext.REGISTER) {
+                return matchBracket();
+            }
+        }
+
+        return false;
+    }
+
     private boolean matchRegisterArray() {
         if (brace || matchBrace()) {
             switch (subContext) {
                 case NONE -> {
-                    if (!matchRegister()) tagError();
+                    if (!matchRegister()) return false;
                 }
 
                 case REGISTER -> {
@@ -630,6 +653,11 @@ public class RealTimeParser extends RealTimeAnalyzer {
         }
 
         return false;
+    }
+
+    private boolean matchLabelOrRegister() {
+        if (matchRegister()) return true;
+        return matchLabelArgument();
     }
 
     private boolean matchInstructionArgumentSeparator() {

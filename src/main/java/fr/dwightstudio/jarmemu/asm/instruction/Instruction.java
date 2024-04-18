@@ -86,7 +86,7 @@ public enum Instruction {
     // Branching
     B(BInstruction.class),
     BL(BLInstruction.class),
-    BLX(BLInstruction.class),
+    BLX(BLXInstruction.class),
     BX(BXInstruction.class),
 
     // Others
