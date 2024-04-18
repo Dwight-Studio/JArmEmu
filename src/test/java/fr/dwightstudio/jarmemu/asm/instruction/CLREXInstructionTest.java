@@ -3,7 +3,7 @@ package fr.dwightstudio.jarmemu.asm.instruction;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class CLREXInstructionTest extends InstructionTest<Object, Object, Object, Object> {
 

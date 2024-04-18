@@ -23,7 +23,8 @@
 
 package fr.dwightstudio.jarmemu.asm.parser.regex;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.asm.instruction.Condition;

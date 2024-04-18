@@ -23,7 +23,9 @@
 
 package fr.dwightstudio.jarmemu.asm.instruction;
 
-import fr.dwightstudio.jarmemu.asm.*;
+import fr.dwightstudio.jarmemu.asm.Contextualized;
+import fr.dwightstudio.jarmemu.asm.ParsedFile;
+import fr.dwightstudio.jarmemu.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.asm.exception.ExecutionASMException;
