@@ -29,16 +29,14 @@ public enum Context {
     }
 
     public Context getNext() {
-        if (index == -1) {
-            return NONE;
-        } else {
+        if (index != -1) {
             for (Context context : Context.values()) {
                 if (context.index == index + 1) {
                     return context;
                 }
             }
         }
-        return NONE;
+        return ERROR;
     }
 
     public int getIndex() {

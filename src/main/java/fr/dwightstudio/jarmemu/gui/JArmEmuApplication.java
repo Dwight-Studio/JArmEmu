@@ -106,6 +106,7 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
+    // TODO: Ajouter le support des directives pour l'autocomplétion
     // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
@@ -336,7 +337,6 @@ public class JArmEmuApplication extends Application {
             return String.format(SettingsController.DATA_FORMAT_DICT[format], (long) data & 0xFFFFFFFFL).toUpperCase();
         } else {
             return String.format(SettingsController.DATA_FORMAT_DICT[format], data).toUpperCase();
-
         }
     }
 

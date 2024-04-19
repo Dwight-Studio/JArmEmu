@@ -68,6 +68,8 @@ public class AutocompletionController implements Initializable {
                         editor.getCodeArea().replaceSelection(selected);
                     }
                 }
+
+                case ESCAPE -> close();
             }
         });
 
@@ -199,8 +201,10 @@ public class AutocompletionController implements Initializable {
         list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
         list.removeIf(s -> s.equalsIgnoreCase(currentWord));
 
-        System.out.println(context + ":" + subContext + "[" + command + ":" + argType + "]");
+        show();
+    }
 
+    private void show() {
         if (!list.isEmpty()) {
             editor.getCodeArea().getCaretBounds().ifPresent(bounds -> {
                 double height = list.size() * listView.getFixedCellSize();
@@ -219,6 +223,11 @@ public class AutocompletionController implements Initializable {
                 listView.scrollTo(0);
             });
         }
+    }
+
+    public void scroll() {
+        System.out.println("d");
+        Platform.runLater(this::show);
     }
 
     public void close() {

@@ -385,6 +385,8 @@ public class FileEditor {
             JArmEmuApplication.getAutocompletionController().close();
         });
 
+        editorScroll.estimatedScrollYProperty().addListener((obs, oldValue, newValue) -> JArmEmuApplication.getAutocompletionController().scroll());
+
         regex.setOnAction(actionEvent -> updateAllSearches());
         word.setOnAction(actionEvent -> updateAllSearches());
         caseSensitivity.setOnAction(actionEvent -> updateAllSearches());
