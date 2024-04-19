@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
-public class RealTimeParser extends RealTimeAnalyzer {
+public class RealTimeParser extends SmartHighlighter {
 
     public static final int MAXIMUM_ITER_NUM = 1000;
 
@@ -107,6 +107,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
     private Context context;
     private SubContext subContext;
     private String text;
+    private int cursorPos;
     private StyleSpansBuilder<Collection<String>> spansBuilder;
     private String command;
     private String argType;
@@ -143,6 +144,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
 
     private void setup() {
         text = editor.getCodeArea().getParagraph(line).getText();
+        cursorPos = editor.getMouseLine() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
 
         addGlobals = "";
         addLabels = "";
@@ -178,6 +180,9 @@ public class RealTimeParser extends RealTimeAnalyzer {
                     int iter;
                     for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
                         //System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+
+                        AutocompletionController
+
                         if (matchComment()) continue;
 
                         switch (context) {
@@ -827,6 +832,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
         find.replaceAll(f -> f.offset(end));
         find.removeIf(Objects::isNull);
         text = text.substring(end);
+        cursorPos -= end;
     }
 
     private void tagBlank(Matcher matcher) {
@@ -835,6 +841,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
         find.replaceAll(f -> f.offset(end));
         find.removeIf(Objects::isNull);
         text = text.substring(end);
+        cursorPos -= end;
     }
 
     private void tagError(String highlight, Matcher matcher) {
@@ -843,6 +850,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
         find.replaceAll(f -> f.offset(end));
         find.removeIf(Objects::isNull);
         text = text.substring(end);
+        cursorPos -= end;
     }
 
     private void tagError() {
@@ -854,6 +862,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
             find.replaceAll(f -> f.offset(end));
             find.removeIf(Objects::isNull);
             text = text.substring(end);
+            cursorPos -= end;
         } else {
             matcher = GENERAL_SEPARATOR_PATTERN.matcher(text);
 

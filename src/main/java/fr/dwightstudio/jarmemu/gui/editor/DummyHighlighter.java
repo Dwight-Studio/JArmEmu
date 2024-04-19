@@ -45,7 +45,7 @@ import java.util.regex.Pattern;
 
 import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
-public class RealTimeHighlighter extends Thread {
+public class DummyHighlighter extends Thread {
 
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
     private static final String[] DIRECTIVES = ArrayUtils.addAll(getFromEnum(Directive.values(), false), getFromEnum(Section.values(), false));
@@ -84,7 +84,7 @@ public class RealTimeHighlighter extends Thread {
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
 
-    public RealTimeHighlighter(FileEditor editor) {
+    public DummyHighlighter(FileEditor editor) {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
         this.queue = new LinkedBlockingQueue<>();

@@ -27,6 +27,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.util.FileUtils;
 import javafx.application.Platform;
+import javafx.fxml.Initializable;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -37,32 +38,28 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class MainMenuController extends AbstractJArmEmuModule {
+public class MainMenuController {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private File lastFile;
 
-    public MainMenuController(JArmEmuApplication application) {
-        super(application);
-    }
-
     /**
      * Initie un nouveau fichier
      */
     public void onNewFile() {
-        getSimulationMenuController().onStop();
+        JArmEmuApplication.getSimulationMenuController().onStop();
         logger.info("Opening a new file");
-        getSimulationMenuController().onStop();
-        getEditorController().newFile();
-        getSettingsController().setLastSavePath("");
+        JArmEmuApplication.getSimulationMenuController().onStop();
+        JArmEmuApplication.getEditorController().newFile();
+        JArmEmuApplication.getSettingsController().setLastSavePath("");
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onOpen() {
-        getSimulationMenuController().onStop();
+        JArmEmuApplication.getSimulationMenuController().onStop();
         logger.info("Locating new file to open...");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(JArmEmuApplication.formatMessage("%menu.file.openSourceFile"));
@@ -70,12 +67,12 @@ public class MainMenuController extends AbstractJArmEmuModule {
         if (FileUtils.exists(lastFile)) {
             fileChooser.setInitialDirectory(lastFile.isDirectory() ? lastFile : lastFile.getParentFile());
         }
-        List<File> files = fileChooser.showOpenMultipleDialog(application.stage);
+        List<File> files = fileChooser.showOpenMultipleDialog(JArmEmuApplication.getInstance().stage);
         if (files != null && !files.isEmpty()){
             for (File file:files) {
                 if (FileUtils.isValidFile(file)) {
                     logger.info("File located: " + file.getAbsolutePath());
-                    getEditorController().open(file);
+                    JArmEmuApplication.getEditorController().open(file);
                     lastFile = file;
                 }
             }
@@ -87,7 +84,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSaveAll() {
-        getEditorController().saveAll();
+        JArmEmuApplication.getEditorController().saveAll();
         setLastSave();
     }
 
@@ -95,7 +92,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSave() {
-        getEditorController().currentFileEditor().save();
+        JArmEmuApplication.getEditorController().currentFileEditor().save();
         setLastSave();
     }
 
@@ -103,7 +100,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onSaveAs() {
-        getEditorController().currentFileEditor().saveAs();
+        JArmEmuApplication.getEditorController().currentFileEditor().saveAs();
         setLastSave();
     }
 
@@ -111,20 +108,20 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReloadAll() {
-        getSimulationMenuController().onStop();
-        if (getEditorController().getSaveState()) {
-            if (getEditorController().getSaveState()) {
-                getEditorController().reloadAll();
+        JArmEmuApplication.getSimulationMenuController().onStop();
+        if (JArmEmuApplication.getEditorController().getSaveState()) {
+            if (JArmEmuApplication.getEditorController().getSaveState()) {
+                JArmEmuApplication.getEditorController().reloadAll();
             } else {
-                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
                     switch (rtn) {
                         case SAVE_AND_CONTINUE -> {
                             onSaveAll();
-                            getEditorController().reloadAll();
+                            JArmEmuApplication.getEditorController().reloadAll();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
-                            getEditorController().reloadAll();
+                            JArmEmuApplication.getEditorController().reloadAll();
                         }
 
                         default -> {
@@ -139,28 +136,28 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onReload() {
-        getSimulationMenuController().onStop();
-        getEditorController().currentFileEditor().reload();
+        JArmEmuApplication.getSimulationMenuController().onStop();
+        JArmEmuApplication.getEditorController().currentFileEditor().reload();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onCloseAll() {
-        getSimulationMenuController().onStop();
-        if (getEditorController().getSaveState()) {
-            if (getEditorController().getSaveState()) {
-                getEditorController().closeAll();
+        JArmEmuApplication.getSimulationMenuController().onStop();
+        if (JArmEmuApplication.getEditorController().getSaveState()) {
+            if (JArmEmuApplication.getEditorController().getSaveState()) {
+                JArmEmuApplication.getEditorController().closeAll();
             } else {
-                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
                     switch (rtn) {
                         case SAVE_AND_CONTINUE -> {
                             onSaveAll();
-                            getEditorController().closeAll();
+                            JArmEmuApplication.getEditorController().closeAll();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
-                            getEditorController().closeAll();
+                            JArmEmuApplication.getEditorController().closeAll();
                         }
 
                         default -> {}
@@ -174,22 +171,22 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onClose() {
-        getSimulationMenuController().onStop();
-        if (getEditorController().currentFileEditor().getSaveState()) {
-            if (getEditorController().getSaveState()) {
-                getEditorController().currentFileEditor().close();
+        JArmEmuApplication.getSimulationMenuController().onStop();
+        if (JArmEmuApplication.getEditorController().currentFileEditor().getSaveState()) {
+            if (JArmEmuApplication.getEditorController().getSaveState()) {
+                JArmEmuApplication.getEditorController().currentFileEditor().close();
             } else {
-                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
                     switch (rtn) {
                         case SAVE_AND_CONTINUE -> {
                             onSaveAll();
-                            getEditorController().currentFileEditor().close();
-                            getEditorController().cleanClosedEditors();
+                            JArmEmuApplication.getEditorController().currentFileEditor().close();
+                            JArmEmuApplication.getEditorController().cleanClosedEditors();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
-                            getEditorController().currentFileEditor().close();
-                            getEditorController().cleanClosedEditors();
+                            JArmEmuApplication.getEditorController().currentFileEditor().close();
+                            JArmEmuApplication.getEditorController().cleanClosedEditors();
                         }
 
                         default -> {}
@@ -203,10 +200,10 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onExit() {
-        if (getEditorController().getSaveState()) {
+        if (JArmEmuApplication.getEditorController().getSaveState()) {
             exit();
         } else {
-            getDialogs().unsavedAlert().thenAccept(rtn -> {
+            JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
                 switch (rtn) {
                     case SAVE_AND_CONTINUE -> {
                         onSaveAll();
@@ -229,8 +226,8 @@ public class MainMenuController extends AbstractJArmEmuModule {
     public void exit() {
         logger.info("Exiting JArmEmu...");
 
-        getExecutionWorker().stop();
-        getEditorController().closeAll();
+        JArmEmuApplication.getExecutionWorker().stop();
+        JArmEmuApplication.getEditorController().closeAll();
 
         Platform.exit();
     }
@@ -239,18 +236,18 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onResetSettings() {
-        getSettingsController().setToDefaults();
-        getSettingsController().updateGUI();
+        JArmEmuApplication.getSettingsController().setToDefaults();
+        JArmEmuApplication.getSettingsController().updateGUI();
     }
 
     /**
      * Ecrit la préférence de la dernière sauvegarde.
      */
     public void setLastSave() {
-        getEditorController().cleanClosedEditors();
-        List<File> files = getEditorController().getSavePaths();
+        JArmEmuApplication.getEditorController().cleanClosedEditors();
+        List<File> files = JArmEmuApplication.getEditorController().getSavePaths();
         String paths = String.join(";", files.stream().map(File::getAbsolutePath).toList());
-        getSettingsController().setLastSavePath(paths);
+        JArmEmuApplication.getSettingsController().setLastSavePath(paths);
     }
 
     /**
@@ -259,10 +256,10 @@ public class MainMenuController extends AbstractJArmEmuModule {
     public void openLastSave() {
         String[] paths;
 
-        if (application.getArgSave() == null) {
-            paths = getSettingsController().getLastSavePath().split(";");
+        if (JArmEmuApplication.getInstance().getArgSave() == null) {
+            paths = JArmEmuApplication.getSettingsController().getLastSavePath().split(";");
         } else {
-            paths = application.getArgSave().split(";");
+            paths = JArmEmuApplication.getInstance().getArgSave().split(";");
         }
 
         logger.info("Trying to open last saves...");
@@ -276,7 +273,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
 
                     if (file.exists()) {
                         if (file.isFile()) {
-                            getEditorController().open(file);
+                            JArmEmuApplication.getEditorController().open(file);
                             flag = true;
                         } else {
                             logger.info("Wrong last-save file (not a file), aborting.");
@@ -301,16 +298,16 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Méthode invoquée par JavaFX
      */
     public void onAbout() {
-        getDialogs().about();
+        JArmEmuApplication.getDialogs().about();
     }
 
     /**
      * Crée les boutons pour les colonnes du tableau de détails de la mémoire.
      */
     public void registerMemoryDetailsColumns() {
-        getController().memoryDetailsMenu.getItems().clear();
+        JArmEmuApplication.getController().memoryDetailsMenu.getItems().clear();
 
-        getMemoryDetailsController().memoryTable.getColumns().forEach(column -> {
+        JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
@@ -330,7 +327,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
             item.setOnAction(event -> {
                 column.setVisible(!column.isVisible());
             });
-            getController().memoryDetailsMenu.getItems().add(item);
+            JArmEmuApplication.getController().memoryDetailsMenu.getItems().add(item);
         });
     }
 
@@ -338,9 +335,9 @@ public class MainMenuController extends AbstractJArmEmuModule {
      * Crée les boutons pour les colonnes du tableau de résumé de la mémoire.
      */
     public void registerMemoryOverviewColumns() {
-        getController().memoryOverviewMenu.getItems().clear();
+        JArmEmuApplication.getController().memoryOverviewMenu.getItems().clear();
 
-        getMemoryOverviewController().memoryTable.getColumns().forEach(column -> {
+        JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
@@ -360,7 +357,7 @@ public class MainMenuController extends AbstractJArmEmuModule {
             item.setOnAction(event -> {
                 column.setVisible(!column.isVisible());
             });
-            getController().memoryOverviewMenu.getItems().add(item);
+            JArmEmuApplication.getController().memoryOverviewMenu.getItems().add(item);
         });
     }
 }

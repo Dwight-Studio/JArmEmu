@@ -26,27 +26,24 @@ package fr.dwightstudio.jarmemu.gui;
 import javafx.event.ActionEvent;
 import javafx.scene.input.KeyEvent;
 
-public class ShortcutHandler extends AbstractJArmEmuModule {
-    public ShortcutHandler(JArmEmuApplication application) {
-        super(application);
-    }
+public class ShortcutHandler {
 
     public void handle(KeyEvent event) {
         try {
             if (event.isShortcutDown()) {
                 if (event.isShiftDown()) {
                     switch (event.getCode()) {
-                        case S -> getMainMenuController().onSaveAll();
-                        case R -> getMainMenuController().onReloadAll();
+                        case S -> JArmEmuApplication.getMainMenuController().onSaveAll();
+                        case R -> JArmEmuApplication.getMainMenuController().onReloadAll();
                     }
                 } else {
                     switch (event.getCode()) {
-                        case S -> getMainMenuController().onSave();
-                        case O -> getMainMenuController().onOpen();
-                        case R -> getMainMenuController().onReload();
-                        case N -> getMainMenuController().onNewFile();
-                        case B -> getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
-                        case F -> getEditorController().currentFileEditor().toggleFindAndReplace();
+                        case S -> JArmEmuApplication.getMainMenuController().onSave();
+                        case O -> JArmEmuApplication.getMainMenuController().onOpen();
+                        case R -> JArmEmuApplication.getMainMenuController().onReload();
+                        case N -> JArmEmuApplication.getMainMenuController().onNewFile();
+                        case B -> JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
+                        case F -> JArmEmuApplication.getEditorController().currentFileEditor().toggleFindAndReplace();
                     }
                 }
             } else {

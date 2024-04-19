@@ -72,25 +72,26 @@ public class JArmEmuApplication extends Application {
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getSimpleName());
 
     // Controllers
-    private JArmEmuController controller;
+    private static JArmEmuApplication instance;
+    private static JArmEmuController controller;
 
-    private EditorController editorController;
-    private MainMenuController mainMenuController;
-    private MemoryDetailsController memoryDetailsController;
-    private MemoryOverviewController memoryOverviewController;
-    private RegistersController registersController;
-    private SettingsController settingsController;
-    private SimulationMenuController simulationMenuController;
-    private StackController stackController;
-    private SymbolsController symbolsController;
-    private LabelsController labelsController;
+    private static EditorController editorController;
+    private static MainMenuController mainMenuController;
+    private static MemoryDetailsController memoryDetailsController;
+    private static MemoryOverviewController memoryOverviewController;
+    private static RegistersController registersController;
+    private static SettingsController settingsController;
+    private static SimulationMenuController simulationMenuController;
+    private static StackController stackController;
+    private static SymbolsController symbolsController;
+    private static LabelsController labelsController;
 
     // Others
-    private ShortcutHandler shortcutHandler;
-    private SourceParser sourceParser;
-    private CodeInterpreter codeInterpreter;
-    private ExecutionWorker executionWorker;
-    private JArmEmuDialogs dialogs;
+    private static ShortcutHandler shortcutHandler;
+    private static SourceParser sourceParser;
+    private static CodeInterpreter codeInterpreter;
+    private static ExecutionWorker executionWorker;
+    private static JArmEmuDialogs dialogs;
 
 
     public Theme theme;
@@ -118,17 +119,18 @@ public class JArmEmuApplication extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
 
-        editorController = new EditorController(this);
-        mainMenuController = new MainMenuController(this);
-        memoryDetailsController = new MemoryDetailsController(this);
-        memoryOverviewController = new MemoryOverviewController(this);
-        registersController = new RegistersController(this);
-        settingsController = new SettingsController(this);
-        simulationMenuController = new SimulationMenuController(this);
-        stackController = new StackController(this);
-        symbolsController = new SymbolsController(this);
-        labelsController = new LabelsController(this);
-        dialogs = new JArmEmuDialogs(this);
+        instance = this;
+        editorController = new EditorController();
+        mainMenuController = new MainMenuController();
+        memoryDetailsController = new MemoryDetailsController();
+        memoryOverviewController = new MemoryOverviewController();
+        registersController = new RegistersController();
+        settingsController = new SettingsController();
+        simulationMenuController = new SimulationMenuController();
+        stackController = new StackController();
+        symbolsController = new SymbolsController();
+        labelsController = new LabelsController();
+        dialogs = new JArmEmuDialogs();
 
         fxmlLoader.setController(new JArmEmuController(this));
         controller = fxmlLoader.getController();
@@ -241,63 +243,67 @@ public class JArmEmuApplication extends Application {
         getHostServices().showDocument(url);
     }
 
-    public JArmEmuController getController() {
+    public static JArmEmuApplication getInstance() {
+        return instance;
+    }
+
+    public static JArmEmuController getController() {
         return controller;
     }
 
-    public MainMenuController getMainMenuController() {
+    public static MainMenuController getMainMenuController() {
         return mainMenuController;
     }
 
-    public MemoryDetailsController getMemoryDetailsController() {
+    public static MemoryDetailsController getMemoryDetailsController() {
         return memoryDetailsController;
     }
 
-    public MemoryOverviewController getMemoryOverviewController() {
+    public static MemoryOverviewController getMemoryOverviewController() {
         return memoryOverviewController;
     }
 
-    public RegistersController getRegistersController() {
+    public static RegistersController getRegistersController() {
         return registersController;
     }
 
-    public SettingsController getSettingsController() {
+    public static SettingsController getSettingsController() {
         return settingsController;
     }
 
-    public StackController getStackController() {
+    public static StackController getStackController() {
         return stackController;
     }
 
-    public SymbolsController getSymbolsController() {
+    public static SymbolsController getSymbolsController() {
         return symbolsController;
     }
 
-    public LabelsController getLabelsController() {
+    public static LabelsController getLabelsController() {
         return labelsController;
     }
 
-    public SourceParser getSourceParser() {
+    public static SourceParser getSourceParser() {
         return sourceParser;
     }
 
-    public CodeInterpreter getCodeInterpreter() {
+    public static CodeInterpreter getCodeInterpreter() {
         return codeInterpreter;
     }
 
-    public ExecutionWorker getExecutionWorker() {
+    public static ExecutionWorker getExecutionWorker() {
         return executionWorker;
     }
 
-    public EditorController getEditorController() {
+    public static EditorController getEditorController() {
         return editorController;
     }
 
-    public SimulationMenuController getSimulationMenuController() {
+    public static SimulationMenuController getSimulationMenuController() {
         return simulationMenuController;
     }
 
-    public JArmEmuDialogs getDialogs() {
+    public static JArmEmuDialogs getDialogs() {
         return dialogs;
     }
 

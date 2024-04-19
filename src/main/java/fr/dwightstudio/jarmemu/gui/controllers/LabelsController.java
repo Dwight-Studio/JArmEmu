@@ -34,6 +34,7 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.converters.FileNameStringConverter;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -49,7 +50,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class LabelsController extends AbstractJArmEmuModule {
+public class LabelsController implements Initializable {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<SymbolView, Number> col0;
@@ -58,10 +59,6 @@ public class LabelsController extends AbstractJArmEmuModule {
     private ObservableList<SymbolView> views;
     private TableView<SymbolView> labelTable;
 
-
-    public LabelsController(JArmEmuApplication application) {
-        super(application);
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -75,7 +72,7 @@ public class LabelsController extends AbstractJArmEmuModule {
         col0.setPrefWidth(80);
         col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col0.setCellValueFactory(c -> c.getValue().getFileIndexProperty());
-        col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter(getApplication())));
+        col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter()));
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.name"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
@@ -98,7 +95,7 @@ public class LabelsController extends AbstractJArmEmuModule {
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col2.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
+        col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         labelTable = new TableView<>();
         views = labelTable.getItems();
@@ -124,8 +121,8 @@ public class LabelsController extends AbstractJArmEmuModule {
             row.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
                     int address = row.getItem().getValueProperty().get();
-                    FilePos pos = getCodeInterpreter().getLineNumber(address);
-                    getEditorController().goTo(pos);
+                    FilePos pos = JArmEmuApplication.getCodeInterpreter().getLineNumber(address);
+                    JArmEmuApplication.getEditorController().goTo(pos);
                 }
             });
 
@@ -137,7 +134,7 @@ public class LabelsController extends AbstractJArmEmuModule {
         AnchorPane.setBottomAnchor(labelTable, 0d);
         AnchorPane.setLeftAnchor(labelTable, 0d);
 
-        getController().labelsPane.getChildren().add(labelTable);
+        JArmEmuApplication.getController().labelsPane.getChildren().add(labelTable);
     }
 
     /**

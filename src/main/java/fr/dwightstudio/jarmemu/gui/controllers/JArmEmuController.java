@@ -34,6 +34,7 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -49,7 +50,7 @@ import java.util.HashMap;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class JArmEmuController extends AbstractJArmEmuModule {
+public class JArmEmuController implements Initializable {
 
     public static final String MAXIMIZED_KEY = "maximized";
     public static final String SPLIT_PANES_KEY = "splitPanes";
@@ -62,7 +63,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private final Timeline LAYOUT_INIT_TIMELINE = new Timeline(
-            new KeyFrame(Duration.ZERO, event -> applyLayout(getSettingsController().getLayout())),
+            new KeyFrame(Duration.ZERO, event -> applyLayout(JArmEmuApplication.getSettingsController().getLayout())),
             new KeyFrame(Duration.millis(500), event -> registerLayoutChangeListener())
     );
     private final Timeline LAYOUT_SAVING_TIMELINE = new Timeline(
@@ -140,10 +141,6 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     @FXML protected AnchorPane labelsPane;
 
 
-    public JArmEmuController(JArmEmuApplication application) {
-        super(application);
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -152,42 +149,42 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         modalPaneFront = new ModalPane();
         mainPane.getChildren().addAll(modalPaneBack, modalPaneMiddle, modalPaneFront);
 
-        getEditorController().initialize(url, resourceBundle);
-        getMainMenuController().initialize(url, resourceBundle);
-        getMemoryDetailsController().initialize(url, resourceBundle);
-        getMemoryOverviewController().initialize(url, resourceBundle);
-        getRegistersController().initialize(url, resourceBundle);
-        getSettingsController().initialize(url, resourceBundle);
-        getSimulationMenuController().initialize(url, resourceBundle);
-        getStackController().initialize(url, resourceBundle);
-        getSymbolsController().initialize(url, resourceBundle);
-        getLabelsController().initialize(url, resourceBundle);
+        JArmEmuApplication.getEditorController().initialize(url, resourceBundle);
+        JArmEmuApplication.getMainMenuController().initialize(url, resourceBundle);
+        JArmEmuApplication.getMemoryDetailsController().initialize(url, resourceBundle);
+        JArmEmuApplication.getMemoryOverviewController().initialize(url, resourceBundle);
+        JArmEmuApplication.getRegistersController().initialize(url, resourceBundle);
+        JArmEmuApplication.getSettingsController().initialize(url, resourceBundle);
+        JArmEmuApplication.getSimulationMenuController().initialize(url, resourceBundle);
+        JArmEmuApplication.getStackController().initialize(url, resourceBundle);
+        JArmEmuApplication.getSymbolsController().initialize(url, resourceBundle);
+        JArmEmuApplication.getLabelsController().initialize(url, resourceBundle);
 
-        application.newSourceParser();
+        JArmEmuApplication.getInstance().newSourceParser();
 
-        getMainMenuController().openLastSave();
+        JArmEmuApplication.getMainMenuController().openLastSave();
 
-        getMemoryDetailsController().attach(getCodeInterpreter().getStateContainer());
-        getMemoryOverviewController().attach(getCodeInterpreter().getStateContainer());
-        getRegistersController().attach(getCodeInterpreter().getStateContainer());
-        getLabelsController().attach(getCodeInterpreter().getStateContainer());
-        getSymbolsController().attach(getCodeInterpreter().getStateContainer());
+        JArmEmuApplication.getMemoryDetailsController().attach(JArmEmuApplication.getCodeInterpreter().getStateContainer());
+        JArmEmuApplication.getMemoryOverviewController().attach(JArmEmuApplication.getCodeInterpreter().getStateContainer());
+        JArmEmuApplication.getRegistersController().attach(JArmEmuApplication.getCodeInterpreter().getStateContainer());
+        JArmEmuApplication.getLabelsController().attach(JArmEmuApplication.getCodeInterpreter().getStateContainer());
+        JArmEmuApplication.getSymbolsController().attach(JArmEmuApplication.getCodeInterpreter().getStateContainer());
 
-        getExecutionWorker().revive();
+        JArmEmuApplication.getExecutionWorker().revive();
     }
 
     public void registerLayoutChangeListener() {
         logger.info("Initializing layout listeners");
-        applyLayout(getSettingsController().getLayout());
+        applyLayout(JArmEmuApplication.getSettingsController().getLayout());
 
         Platform.runLater(() -> {
-            getApplication().maximizedProperty().addListener(obs -> notifyLayoutChange());
+            JArmEmuApplication.getInstance().maximizedProperty().addListener(obs -> notifyLayoutChange());
 
             mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
             leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
 
-            getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
-            getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
 
             Platform.runLater(LAYOUT_SAVING_TIMELINE::stop);
         });
@@ -197,7 +194,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
      * Indique un changement de layout et enclenche une timeline de sauvegarde.
      */
     public void notifyLayoutChange() {
-        if (!getLayoutJSON().equals(getSettingsController().getLayout())) {
+        if (!getLayoutJSON().equals(JArmEmuApplication.getSettingsController().getLayout())) {
             LAYOUT_SAVING_TIMELINE.stop();
             LAYOUT_SAVING_TIMELINE.play();
         }
@@ -209,7 +206,7 @@ public class JArmEmuController extends AbstractJArmEmuModule {
     public String getLayoutJSON() {
         HashMap<String, Object> layout = new HashMap<>();
 
-        layout.put(MAXIMIZED_KEY, getApplication().isMaximized());
+        layout.put(MAXIMIZED_KEY, JArmEmuApplication.getInstance().isMaximized());
 
         HashMap<String, JSONArray> splitPanes = new HashMap<>();
         splitPanes.put(MAIN_SPLIT_PANE_KEY, new JSONArray(mainSplitPane.getDividerPositions()));
@@ -219,11 +216,11 @@ public class JArmEmuController extends AbstractJArmEmuModule {
         HashMap<String, JSONArray> memoryColumns = new HashMap<>();
         memoryColumns.put(
                 MEMORY_DETAILS_KEY,
-                new JSONArray(getMemoryDetailsController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+                new JSONArray(JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
         memoryColumns.put(
                 MEMORY_OVERVIEW_KEY,
-                new JSONArray(getMemoryOverviewController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+                new JSONArray(JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
         layout.put(MEMORY_COLUMNS_KEY, memoryColumns);;
 
@@ -242,8 +239,8 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
             boolean maximized = layout.getBoolean(MAXIMIZED_KEY);
 
-            if (maximized != getApplication().isMaximized()) {
-                getApplication().setMaximized(maximized);
+            if (maximized != JArmEmuApplication.getInstance().isMaximized()) {
+                JArmEmuApplication.getInstance().setMaximized(maximized);
             }
 
             JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
@@ -262,12 +259,12 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
             JSONArray memoryDetailsData = memoryColumns.getJSONArray(MEMORY_DETAILS_KEY);
             for (int i = 0; i < memoryDetailsData.length(); i++) {
-                getMemoryDetailsController().memoryTable.getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
+                JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
             }
 
             JSONArray memoryOverviewData = memoryColumns.getJSONArray(MEMORY_OVERVIEW_KEY);
             for (int i = 0; i < memoryOverviewData.length(); i++) {
-                getMemoryOverviewController().memoryTable.getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
+                JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
             }
         } catch (JSONException exception) {
             logger.severe("Error while parsing layout");
@@ -281,9 +278,9 @@ public class JArmEmuController extends AbstractJArmEmuModule {
      * Sauvegarde le layout actuel.
      */
     public void saveLayout() {
-        if (!getLayoutJSON().equals(getSettingsController().getLayout())) {
+        if (!getLayoutJSON().equals(JArmEmuApplication.getSettingsController().getLayout())) {
             logger.info("Saving layout");
-            getSettingsController().setLayout(getLayoutJSON());
+            JArmEmuApplication.getSettingsController().setLayout(getLayoutJSON());
         }
     }
 
@@ -321,142 +318,142 @@ public class JArmEmuController extends AbstractJArmEmuModule {
 
     @FXML
     protected void onNewFile() {
-        getMainMenuController().onNewFile();
+        JArmEmuApplication.getMainMenuController().onNewFile();
     }
 
     @FXML
     protected void onOpen() {
-        getMainMenuController().onOpen();
+        JArmEmuApplication.getMainMenuController().onOpen();
     }
     @FXML
     protected void onSaveAll() {
-        getMainMenuController().onSaveAll();
+        JArmEmuApplication.getMainMenuController().onSaveAll();
     }
 
     @FXML
     protected void onSave() {
-        getMainMenuController().onSave();
+        JArmEmuApplication.getMainMenuController().onSave();
     }
 
     @FXML
     protected void onSaveAs() {
-        getMainMenuController().onSaveAs();
+        JArmEmuApplication.getMainMenuController().onSaveAs();
     }
 
     @FXML
     protected void onReloadAll() {
-        getMainMenuController().onReloadAll();
+        JArmEmuApplication.getMainMenuController().onReloadAll();
     }
 
     @FXML
     protected void onReload() {
-        getMainMenuController().onReload();
+        JArmEmuApplication.getMainMenuController().onReload();
     }
 
     @FXML
     protected void onCloseAll() {
-        getMainMenuController().onCloseAll();
+        JArmEmuApplication.getMainMenuController().onCloseAll();
     }
 
     @FXML
     protected void onClose() {
-        getMainMenuController().onClose();
+        JArmEmuApplication.getMainMenuController().onClose();
     }
 
     @FXML
     protected void onExit() {
-        getMainMenuController().onExit();
+        JArmEmuApplication.getMainMenuController().onExit();
     }
 
     @FXML
     protected void onSimulate() {
-        getSimulationMenuController().onSimulate();
+        JArmEmuApplication.getSimulationMenuController().onSimulate();
     }
 
     @FXML
     protected void onStepInto() {
-        getSimulationMenuController().onStepInto();
+        JArmEmuApplication.getSimulationMenuController().onStepInto();
     }
 
     @FXML
     protected void onStepOver() {
-        getSimulationMenuController().onStepOver();
+        JArmEmuApplication.getSimulationMenuController().onStepOver();
     }
 
     @FXML
     protected void onContinue() {
-        getSimulationMenuController().onContinue();
+        JArmEmuApplication.getSimulationMenuController().onContinue();
     }
 
     @FXML
     protected void onPause() {
-        getSimulationMenuController().onPause();
+        JArmEmuApplication.getSimulationMenuController().onPause();
     }
 
     @FXML
     protected void onStop() {
-        getSimulationMenuController().onStop();
+        JArmEmuApplication.getSimulationMenuController().onStop();
     }
 
     @FXML
     protected void onRestart() {
-        getSimulationMenuController().onRestart();
+        JArmEmuApplication.getSimulationMenuController().onRestart();
     }
 
     @FXML
     protected void onClearNotifs() {
-        getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifs();
     }
 
     @FXML
-    protected void onAbout() {getMainMenuController().onAbout();}
+    protected void onAbout() {JArmEmuApplication.getMainMenuController().onAbout();}
 
     @FXML
     public void onSettingsRegex() {
-        getSettingsController().onSettingsRegex();
+        JArmEmuApplication.getSettingsController().onSettingsRegex();
     }
 
     @FXML
     public void onSettingsLegacy() {
-        getSettingsController().onSettingsLegacy();
+        JArmEmuApplication.getSettingsController().onSettingsLegacy();
     }
 
     @FXML
     public void onResetSettings() {
-        getMainMenuController().onResetSettings();
+        JArmEmuApplication.getMainMenuController().onResetSettings();
     }
 
     @FXML
     public void onSettingsDark() {
-        getSettingsController().onSettingsDark();
+        JArmEmuApplication.getSettingsController().onSettingsDark();
     }
 
     @FXML
     public void onSettingsLight() {
-        getSettingsController().onSettingsLight();
+        JArmEmuApplication.getSettingsController().onSettingsLight();
     }
 
     @FXML void onCopy() {
-        getEditorController().currentFileEditor().getContextMenu().onCopy(new ActionEvent());
+        JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onCopy(new ActionEvent());
     }
 
     @FXML void onCut() {
-        getEditorController().currentFileEditor().getContextMenu().onCut(new ActionEvent());
+        JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onCut(new ActionEvent());
     }
 
     @FXML void onPaste() {
-        getEditorController().currentFileEditor().getContextMenu().onPaste(new ActionEvent());
+        JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onPaste(new ActionEvent());
     }
 
     @FXML void onDelete() {
-        getEditorController().currentFileEditor().getContextMenu().onDelete(new ActionEvent());
+        JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onDelete(new ActionEvent());
     }
 
     @FXML void onToggleBreakpoint() {
-        getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
+        JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
     }
 
     @FXML void onFindAndReplace() {
-        getEditorController().currentFileEditor().openFindAndReplace();
+        JArmEmuApplication.getEditorController().currentFileEditor().openFindAndReplace();
     }
 }

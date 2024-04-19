@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.util.FileUtils;
+import javafx.fxml.Initializable;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -44,7 +45,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EditorController extends AbstractJArmEmuModule {
+public class EditorController implements Initializable {
     public static final String SAMPLE_CODE = String.join("\n", new String[]{".global _start", ".text", "_start:", "\t@ Beginning of the program"});
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -52,8 +53,7 @@ public class EditorController extends AbstractJArmEmuModule {
     private FileEditor lastScheduledEditor;
     private FileEditor lastExecutedEditor;
 
-    public EditorController(JArmEmuApplication application) {
-        super(application);
+    public EditorController() {
         fileEditors = new ArrayList<>();
     }
 
@@ -71,7 +71,7 @@ public class EditorController extends AbstractJArmEmuModule {
      */
     public void addNotification(String titleString, String contentString, String classString) {
 
-        if (getController().notifications.getChildren().size() >= getSettingsController().getMaxNotification()) return;
+        if (JArmEmuApplication.getController().notifications.getChildren().size() >= JArmEmuApplication.getSettingsController().getMaxNotification()) return;
 
         Notification notification;
 
@@ -85,10 +85,10 @@ public class EditorController extends AbstractJArmEmuModule {
         }
 
         notification.getStyleClass().add(classString);
-        notification.setOnClose((event) -> getController().notifications.getChildren().remove(notification));
+        notification.setOnClose((event) -> JArmEmuApplication.getController().notifications.getChildren().remove(notification));
         notification.setMouseTransparent(false);
 
-        getController().notifications.getChildren().add(notification);
+        JArmEmuApplication.getController().notifications.getChildren().add(notification);
     }
 
     /**
@@ -131,14 +131,14 @@ public class EditorController extends AbstractJArmEmuModule {
      * Supprime les notifications.
      */
     protected void clearNotifs() {
-        getController().notifications.getChildren().clear();
+        JArmEmuApplication.getController().notifications.getChildren().clear();
     }
 
     /**
      * @return l'éditeur actuellement ouvert.
      */
     public FileEditor currentFileEditor() {
-        return fileEditors.get(getController().filesTabPane.getSelectionModel().getSelectedIndex());
+        return fileEditors.get(JArmEmuApplication.getController().filesTabPane.getSelectionModel().getSelectedIndex());
     }
 
     public List<SourceScanner> getSources() {
@@ -169,7 +169,7 @@ public class EditorController extends AbstractJArmEmuModule {
      * @param content  le contenu du fichier
      */
     public void open(String fileName, String content) {
-        fileEditors.add(new FileEditor(application, fileName, content));
+        fileEditors.add(new FileEditor(fileName, content));
     }
 
     /**
@@ -178,7 +178,7 @@ public class EditorController extends AbstractJArmEmuModule {
      * @param path le chemin du fichier
      */
     public void open(File path) {
-        FileEditor editor = new FileEditor(application, path);
+        FileEditor editor = new FileEditor(path);
         fileEditors.add(editor);
     }
 
@@ -211,7 +211,7 @@ public class EditorController extends AbstractJArmEmuModule {
             }
             lastScheduledEditor = fileEditor;
 
-            getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
+            JArmEmuApplication.getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
         } catch (NullPointerException e) {
             logger.warning("Trying to mark non-existent line " + pos);
         }
@@ -227,7 +227,7 @@ public class EditorController extends AbstractJArmEmuModule {
             FileEditor fileEditor = fileEditors.get(pos.getFileIndex());
             fileEditor.goTo(pos.getPos());
 
-            getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
+            JArmEmuApplication.getController().filesTabPane.getSelectionModel().select(fileEditor.getVisualIndex());
         } catch (NullPointerException e) {
             logger.warning("Trying to go to non-existent line " + pos);
         }

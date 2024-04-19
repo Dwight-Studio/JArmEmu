@@ -30,7 +30,7 @@ import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.editor.Find;
-import fr.dwightstudio.jarmemu.gui.editor.RealTimeAnalyzer;
+import fr.dwightstudio.jarmemu.gui.editor.SmartHighlighter;
 import fr.dwightstudio.jarmemu.gui.editor.RealTimeParser;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
@@ -49,7 +49,6 @@ import org.controlsfx.dialog.ExceptionDialog;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.Paragraph;
-import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.richtext.model.TwoDimensional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -67,7 +66,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class FileEditor extends AbstractJArmEmuModule {
+public class FileEditor {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
@@ -101,10 +100,9 @@ public class FileEditor extends AbstractJArmEmuModule {
     private int selectedFind;
 
     public FileEditor(JArmEmuApplication application, String fileName, String content) {
-        super(application);
         this.executor = Executors.newSingleThreadExecutor();
         codeArea = new CodeArea();
-        this.realTimeAnalyzer = new RealTimeParser(this, getEditorController());
+        this.realTimeAnalyzer = new RealTimeParser(this);
         editorScroll = new VirtualizedScrollPane<>(codeArea);
         stackPane = new StackPane(editorScroll);
         fileTab = new Tab(fileName, stackPane);
@@ -117,31 +115,31 @@ public class FileEditor extends AbstractJArmEmuModule {
         stackPane.getChildren().add(separator);
 
         fileTab.setOnCloseRequest(event -> {
-            getController().filesTabPane.getSelectionModel().select(fileTab);
+            JArmEmuApplication.getController().filesTabPane.getSelectionModel().select(fileTab);
             if (!getSaveState()) {
                 event.consume();
-                getDialogs().unsavedAlert().thenAccept(rtn -> {
+                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
                     switch (rtn) {
                         case SAVE_AND_CONTINUE -> {
-                            getSimulationMenuController().onStop();
+                            JArmEmuApplication.getSimulationMenuController().onStop();
                             save();
                             close();
-                            getEditorController().cleanClosedEditors();
+                            JArmEmuApplication.getEditorController().cleanClosedEditors();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
-                            getSimulationMenuController().onStop();
+                            JArmEmuApplication.getSimulationMenuController().onStop();
                             close();
-                            getEditorController().cleanClosedEditors();
+                            JArmEmuApplication.getEditorController().cleanClosedEditors();
                         }
 
                         default -> {}
                     }
                 });
             } else {
-                getSimulationMenuController().onStop();
+                JArmEmuApplication.getSimulationMenuController().onStop();
                 close();
-                getEditorController().cleanClosedEditors();
+                JArmEmuApplication.getEditorController().cleanClosedEditors();
             }
         });
 
@@ -151,10 +149,10 @@ public class FileEditor extends AbstractJArmEmuModule {
         contextMenu = new EditorContextMenu(this);
         codeArea.setContextMenu(contextMenu);
 
-        lineFactory = new JArmEmuLineFactory(getApplication(), this);
+        lineFactory = new JArmEmuLineFactory(this);
         codeArea.setParagraphGraphicFactory(lineFactory);
 
-        getController().filesTabPane.getTabs().add(fileTab);
+        JArmEmuApplication.getController().filesTabPane.getTabs().add(fileTab);
 
         // Indentation automatique
         final Pattern whiteSpace = Pattern.compile( "^\\s+" );
@@ -528,7 +526,7 @@ public class FileEditor extends AbstractJArmEmuModule {
      * Alterne l'ouverture du menu rechercher/remplacer
      */
     public void toggleFindAndReplace() {
-        if (findPane.isVisible() || getApplication().status.get() == Status.SIMULATING) closeFindAndReplace();
+        if (findPane.isVisible() || JArmEmuApplication.getInstance().status.get() == Status.SIMULATING) closeFindAndReplace();
         else openFindAndReplace();
     }
 
@@ -547,7 +545,7 @@ public class FileEditor extends AbstractJArmEmuModule {
     public void close() {
         logger.info("Closing " + getFileName());
         realTimeAnalyzer.interrupt();
-        getController().filesTabPane.getTabs().remove(fileTab);
+        JArmEmuApplication.getController().filesTabPane.getTabs().remove(fileTab);
         executor.close();
         this.closed = true;
     }
@@ -596,7 +594,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         if (FileUtils.exists(path)) {
             fileChooser.setInitialDirectory(path.isDirectory() ? path : path.getParentFile());
         }
-        File file = fileChooser.showSaveDialog(application.stage);
+        File file = fileChooser.showSaveDialog(JArmEmuApplication.getInstance().stage);
         if (file != null && !file.isDirectory()) {
             try {
                 if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");
@@ -620,7 +618,7 @@ public class FileEditor extends AbstractJArmEmuModule {
         logger.info("Reloading file from disk");
         if (FileUtils.isValidFile(path)) {
             try {
-                SourceScanner scanner = new SourceScanner(path, getEditorController().getFileIndex(this));
+                SourceScanner scanner = new SourceScanner(path, JArmEmuApplication.getEditorController().getFileIndex(this));
                 this.codeArea.replaceText("");
                 this.codeArea.replaceText(scanner.exportCode());
                 setSaved();
@@ -687,17 +685,17 @@ public class FileEditor extends AbstractJArmEmuModule {
      * @return l'indice visuel de l'éditeur
      */
     public int getVisualIndex() {
-        return getController().filesTabPane.getTabs().indexOf(fileTab);
+        return JArmEmuApplication.getController().filesTabPane.getTabs().indexOf(fileTab);
     }
 
     /**
      * @return l'indice réel du fichier lié à l'éditeur
      */
     public int getRealIndex() {
-        return getEditorController().getFileIndex(this);
+        return JArmEmuApplication.getEditorController().getFileIndex(this);
     }
 
-    public RealTimeAnalyzer getRealTimeAnalyzer() {
+    public SmartHighlighter getRealTimeAnalyzer() {
         return realTimeAnalyzer;
     }
 

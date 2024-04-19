@@ -2,9 +2,9 @@ package fr.dwightstudio.jarmemu.gui.editor;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class RealTimeAnalyzer extends Thread {
+public abstract class SmartHighlighter extends Thread {
 
-    public RealTimeAnalyzer(@NotNull String name) {
+    public SmartHighlighter(@NotNull String name) {
         super(name);
     }
 

@@ -45,13 +45,9 @@ import java.util.logging.Logger;
 
 import static fr.dwightstudio.jarmemu.gui.JArmEmuApplication.getResourceAsStream;
 
-public class JArmEmuDialogs extends AbstractJArmEmuModule {
+public class JArmEmuDialogs {
 
     public Logger logger = Logger.getLogger(getClass().getSimpleName());
-
-    public JArmEmuDialogs(JArmEmuApplication application) {
-        super(application);
-    }
 
     public void warningAlert(String message) {
         FontIcon icon = new FontIcon(Material2OutlinedMZ.WARNING);
@@ -65,9 +61,9 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         confirm.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED);
         confirm.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
         confirm.setContentDisplay(ContentDisplay.RIGHT);
-        confirm.setOnAction(event -> getController().closeDialogFront());
+        confirm.setOnAction(event -> JArmEmuApplication.getController().closeDialogFront());
 
-        getController().openDialogFront(new ModalDialog(
+        JArmEmuApplication.getController().openDialogFront(new ModalDialog(
                 icon,
                 JArmEmuApplication.formatMessage("%dialog.warning.title"),
                 contentText,
@@ -91,7 +87,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         save.setContentDisplay(ContentDisplay.RIGHT);
         save.setOnAction(event -> {
             rtn.complete(UnsavedDialogChoice.SAVE_AND_CONTINUE);
-            getController().closeDialogFront();
+            JArmEmuApplication.getController().closeDialogFront();
         });
 
         Button conti = new Button(JArmEmuApplication.formatMessage("%dialog.unsaved.discard"));
@@ -100,14 +96,14 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         conti.setContentDisplay(ContentDisplay.RIGHT);
         conti.setOnAction(event -> {
             rtn.complete(UnsavedDialogChoice.DISCARD_AND_CONTINUE);
-            getController().closeDialogFront();
+            JArmEmuApplication.getController().closeDialogFront();
         });
 
         Button cancel = new Button(JArmEmuApplication.formatMessage("%dialog.unsaved.cancel"));
         cancel.getStyleClass().add(Styles.ROUNDED);
         cancel.setOnAction(event -> {
             rtn.complete(UnsavedDialogChoice.CANCEL);
-            getController().closeDialogFront();
+            JArmEmuApplication.getController().closeDialogFront();
         });
 
         ModalDialog dialog = new ModalDialog(
@@ -121,11 +117,11 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
 
         dialog.getModalBox().setOnClose(event -> {
             rtn.complete(UnsavedDialogChoice.CANCEL);
-            getController().closeDialogFront();
+            JArmEmuApplication.getController().closeDialogFront();
         });
 
-        getController().openDialogFront(dialog);
-        getApplication().stage.requestFocus();
+        JArmEmuApplication.getController().openDialogFront(dialog);
+        JArmEmuApplication.getInstance().stage.requestFocus();
 
         return rtn;
     }
