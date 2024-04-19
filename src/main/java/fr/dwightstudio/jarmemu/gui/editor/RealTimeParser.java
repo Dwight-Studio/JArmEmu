@@ -32,7 +32,6 @@ import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.gui.controllers.EditorController;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
-import fr.dwightstudio.jarmemu.util.EnumUtils;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
@@ -95,6 +94,7 @@ public class RealTimeParser extends RealTimeAnalyzer {
 
     private int line;
 
+    private static final Object lock = new Object();
     private static HashMap<FilePos, String> globals;
     private HashMap<Integer, String> labels;
     private HashMap<Integer, String> symbols;
@@ -255,47 +255,49 @@ public class RealTimeParser extends RealTimeAnalyzer {
                         logger.severe("Hanging line " + line + " parsing after " + MAXIMUM_ITER_NUM + " iterations");
                     }
 
-                    String remGlobal = globals.getOrDefault(new FilePos(editor.getRealIndex(), line), "");
-                    String remLabel = labels.getOrDefault(line, "");
-                    String remSymbol = symbols.getOrDefault(line, "");
+                    synchronized (lock) {
+                        String remGlobal = globals.getOrDefault(new FilePos(editor.getRealIndex(), line), "");
+                        String remLabel = labels.getOrDefault(line, "");
+                        String remSymbol = symbols.getOrDefault(line, "");
 
-                    if (!remGlobal.equals(addGlobals)) {
-                        if (remGlobal.isEmpty()) {
-                            globals.put(new FilePos(editor.getRealIndex(), line), addGlobals);
-                            updateGlobals(addGlobals);
-                        } else {
-                            globals.remove(new FilePos(editor.getRealIndex(), line));
-                            updateGlobals(remGlobal);
+                        if (!remGlobal.equals(addGlobals)) {
+                            if (remGlobal.isEmpty()) {
+                                globals.put(new FilePos(editor.getRealIndex(), line), addGlobals);
+                                updateGlobals(addGlobals);
+                            } else {
+                                globals.remove(new FilePos(editor.getRealIndex(), line));
+                                updateGlobals(remGlobal);
+                            }
                         }
-                    }
 
-                    if (!remLabel.equals(addLabels)) {
-                        if (remLabel.isEmpty()) {
-                            labels.put(line, addLabels);
-                            updateReferences(addLabels);
-                        } else {
-                            labels.remove(line);
-                            updateReferences(remLabel);
+                        if (!remLabel.equals(addLabels)) {
+                            if (remLabel.isEmpty()) {
+                                labels.put(line, addLabels);
+                                updateReferences(addLabels);
+                            } else {
+                                labels.remove(line);
+                                updateReferences(remLabel);
+                            }
+                            updateReferences(remLabel.toUpperCase());
                         }
-                        updateReferences(remLabel.toUpperCase());
-                    }
 
-                    if (!remSymbol.equals(addSymbols)) {
-                        if (remLabel.isEmpty()) {
-                            symbols.put(line, addSymbols);
-                            updateReferences(addSymbols);
-                        } else {
-                            symbols.remove(line);
-                            updateReferences(remSymbol);
+                        if (!remSymbol.equals(addSymbols)) {
+                            if (remLabel.isEmpty()) {
+                                symbols.put(line, addSymbols);
+                                updateReferences(addSymbols);
+                            } else {
+                                symbols.remove(line);
+                                updateReferences(remSymbol);
+                            }
                         }
-                    }
 
-                    Set<String> ref = references.get(line);
-                    if (ref != null) {
-                        ref.clear();
-                        ref.addAll(addReferences);
-                    } else if (!addReferences.isEmpty()) {
-                        references.put(line, new HashSet<>(addReferences));
+                        Set<String> ref = references.get(line);
+                        if (ref != null) {
+                            ref.clear();
+                            ref.addAll(addReferences);
+                        } else if (!addReferences.isEmpty()) {
+                            references.put(line, new HashSet<>(addReferences));
+                        }
                     }
 
                     try {
@@ -315,7 +317,8 @@ public class RealTimeParser extends RealTimeAnalyzer {
                     logger.severe(ExceptionUtils.getStackTrace(e));
                 }
             }
-        } catch (InterruptedException ignored) {}
+        } catch (InterruptedException ignored) {
+        }
     }
 
     private boolean matchComment() {

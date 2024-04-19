@@ -104,6 +104,7 @@ public class JArmEmuApplication extends Application {
     }
 
     // TODO: Ajouter l'Autocompletion (style intelliJ)
+    // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints)

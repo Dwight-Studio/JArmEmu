@@ -101,6 +101,8 @@ public class RealTimeHighlighter extends Thread {
         this.start();
     }
 
+    // TODO: Ajouter le support des du Find&Replace
+
     @Override
     public void run() {
         while (!this.isInterrupted()) {
