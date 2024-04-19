@@ -2,15 +2,15 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-        width="1920"
-        height="1200"
-        viewBox="0 0 1920 1200"
-        version="1.1"
-        id="svg1"
-        xml:space="preserve"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        xmlns="http://www.w3.org/2000/svg"
-><defs
+   width="1920"
+   height="1200"
+   viewBox="0 0 1920 1200"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
      id="defs1"><linearGradient
        id="linearGradient68"><stop
          style="stop-color:#04f96e;stop-opacity:0.80000001;"
@@ -357,7 +357,7 @@
          in2="comp1"
          id="feComposite73" /></filter></defs><g
      id="layer1"><rect
-       style="fill:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1"
+       style="fill:#1a1a1a;stroke-width:3.77953;stroke-linecap:round;stroke-linejoin:round;fill-opacity:1"
        id="rect1"
        width="1920"
        height="1200"
