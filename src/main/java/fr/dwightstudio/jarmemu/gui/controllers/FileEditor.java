@@ -26,12 +26,11 @@ package fr.dwightstudio.jarmemu.gui.controllers;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.Status;
-import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.EditorContextMenu;
 import fr.dwightstudio.jarmemu.gui.editor.Find;
-import fr.dwightstudio.jarmemu.gui.editor.SmartHighlighter;
 import fr.dwightstudio.jarmemu.gui.editor.RealTimeParser;
+import fr.dwightstudio.jarmemu.gui.editor.SmartHighlighter;
 import fr.dwightstudio.jarmemu.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.util.FileUtils;
@@ -60,8 +59,6 @@ import java.awt.*;
 import java.io.File;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,13 +69,9 @@ public class FileEditor {
 
     // GUI
     private final CodeArea codeArea;
-    private final RealTimeParser realTimeAnalyzer;
     private final VirtualizedScrollPane<CodeArea> editorScroll;
     private final StackPane stackPane;
     private final Tab fileTab;
-    private final EditorContextMenu contextMenu;
-    private final JArmEmuLineFactory lineFactory;
-    private final ExecutorService executor;
     private final AnchorPane findPane;
     private final CustomTextField findTextField;
     private final CustomTextField replaceTextField;
@@ -91,6 +84,10 @@ public class FileEditor {
     private final ToggleButton regex;
     private final Button closeFind;
 
+    private final SmartHighlighter realTimeParser;
+    private final EditorContextMenu contextMenu;
+    private final JArmEmuLineFactory lineFactory;
+
     // Propriétés du fichier
     private File path;
     private String lastSaveContent;
@@ -100,9 +97,8 @@ public class FileEditor {
     private int selectedFind;
 
     public FileEditor(String fileName, String content) {
-        this.executor = Executors.newSingleThreadExecutor();
         codeArea = new CodeArea();
-        this.realTimeAnalyzer = new RealTimeParser(this);
+        this.realTimeParser = new SmartHighlighter(this);
         editorScroll = new VirtualizedScrollPane<>(codeArea);
         stackPane = new StackPane(editorScroll);
         fileTab = new Tab(fileName, stackPane);
@@ -303,7 +299,7 @@ public class FileEditor {
             if (previousFind != null) finds.addAll(previousFind);
 
             for (Find find : finds) {
-                this.realTimeAnalyzer.markDirty(
+                this.realTimeParser.markDirty(
                     codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
                     codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
                 );
@@ -383,12 +379,18 @@ public class FileEditor {
             updateAllSearches();
         });
 
+        codeArea.caretPositionProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue == null) return;
+
+            JArmEmuApplication.getAutocompletionController().close();
+        });
+
         regex.setOnAction(actionEvent -> updateAllSearches());
         word.setOnAction(actionEvent -> updateAllSearches());
         caseSensitivity.setOnAction(actionEvent -> updateAllSearches());
 
         setSaved();
-        this.realTimeAnalyzer.start();
+        this.realTimeParser.start();
         closed = false;
     }
 
@@ -404,6 +406,10 @@ public class FileEditor {
 
     public VirtualizedScrollPane<CodeArea> getScrollPane() {
         return editorScroll;
+    }
+
+    public StackPane getStackPane() {
+        return stackPane;
     }
 
     public EditorContextMenu getContextMenu() {
@@ -548,9 +554,8 @@ public class FileEditor {
      */
     public void close() {
         logger.info("Closing " + getFileName());
-        realTimeAnalyzer.interrupt();
+        realTimeParser.interrupt();
         JArmEmuApplication.getController().filesTabPane.getTabs().remove(fileTab);
-        executor.close();
         this.closed = true;
     }
 
@@ -699,8 +704,8 @@ public class FileEditor {
         return JArmEmuApplication.getEditorController().getFileIndex(this);
     }
 
-    public SmartHighlighter getRealTimeAnalyzer() {
-        return realTimeAnalyzer;
+    public RealTimeParser getRealTimeParser() {
+        return realTimeParser;
     }
 
     /**
@@ -719,12 +724,12 @@ public class FileEditor {
                 find = Pattern.quote(find);
             }
 
-            if (!caseSensitivity.isSelected()) {
-                find = "(?i)" + find + "(?-i)";
-            }
-
             if (word.isSelected()) {
                 find = "\\b" + find + "\\b";
+            }
+
+            if (!caseSensitivity.isSelected()) {
+                find = "(?i)" + find + "(?-i)";
             }
 
             Matcher matcher = Pattern.compile(find).matcher(text);
@@ -743,12 +748,34 @@ public class FileEditor {
         if (previousFind != null) finds.addAll(previousFind);
 
         for (Find find : finds) {
-            this.realTimeAnalyzer.markDirty(
+            this.realTimeParser.markDirty(
                     codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
                     codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
             );
         }
 
         previousFind = newFinds;
+    }
+
+    /**
+     * @return renvoie le mot en cours d'écriture
+     */
+    public String getCurrentWord() {
+        String text = codeArea.getParagraph(codeArea.getCurrentParagraph()).getText();
+        int pos = codeArea.getCaretColumn();
+
+        Matcher matcher = Pattern.compile("\\w+").matcher(text);
+
+        while (matcher.find()) {
+            if (matcher.end() >= pos) {
+                if (matcher.start() <= pos) {
+                    return text.substring(matcher.start(), matcher.end());
+                }
+
+                break;
+            }
+        }
+
+        return "";
     }
 }

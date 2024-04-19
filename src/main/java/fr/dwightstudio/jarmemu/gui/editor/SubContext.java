@@ -9,5 +9,6 @@ public enum SubContext {
 
     REGISTER,
     IMMEDIATE,
-    SHIFT;
+    SHIFT,
+    ADDRESS;
 }

@@ -152,7 +152,7 @@ public enum Instruction {
             case 1 -> arg2Type;
             case 2 -> arg3Type;
             case 3 -> arg4Type;
-            default -> throw new IndexOutOfBoundsException();
+            default -> "";
         };
     }
 

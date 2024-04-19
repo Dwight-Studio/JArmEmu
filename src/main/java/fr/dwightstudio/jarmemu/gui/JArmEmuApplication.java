@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.gui.controllers.*;
+import fr.dwightstudio.jarmemu.gui.controllers.AutocompletionController;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
 import javafx.application.Application;
@@ -85,6 +86,7 @@ public class JArmEmuApplication extends Application {
     private static StackController stackController;
     private static SymbolsController symbolsController;
     private static LabelsController labelsController;
+    private static AutocompletionController autocompletionController;
 
     // Others
     private static ShortcutHandler shortcutHandler;
@@ -104,7 +106,6 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
-    // TODO: Ajouter l'Autocompletion (style intelliJ)
     // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
     // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
@@ -130,6 +131,7 @@ public class JArmEmuApplication extends Application {
         stackController = new StackController();
         symbolsController = new SymbolsController();
         labelsController = new LabelsController();
+        autocompletionController = new AutocompletionController();
         dialogs = new JArmEmuDialogs();
 
         fxmlLoader.setController(new JArmEmuController());
@@ -301,6 +303,10 @@ public class JArmEmuApplication extends Application {
 
     public static SimulationMenuController getSimulationMenuController() {
         return simulationMenuController;
+    }
+
+    public static AutocompletionController getAutocompletionController() {
+        return autocompletionController;
     }
 
     public static JArmEmuDialogs getDialogs() {

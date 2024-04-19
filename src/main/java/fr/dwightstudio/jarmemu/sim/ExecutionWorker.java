@@ -67,7 +67,7 @@ public class ExecutionWorker {
         checkTask(STEP_INTO);
         this.daemon.nextTask.set(STEP_INTO);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
@@ -78,7 +78,7 @@ public class ExecutionWorker {
         checkTask(STEP_OVER);
         this.daemon.nextTask.set(STEP_OVER);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
@@ -89,7 +89,7 @@ public class ExecutionWorker {
         checkTask(CONTINUE);
         this.daemon.nextTask.set(CONTINUE);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
@@ -100,7 +100,7 @@ public class ExecutionWorker {
         checkTask(UPDATE_GUI);
         this.daemon.nextTask.set(UPDATE_GUI);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
@@ -111,7 +111,7 @@ public class ExecutionWorker {
         checkTask(PREPARE);
         this.daemon.nextTask.set(PREPARE);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
@@ -122,7 +122,7 @@ public class ExecutionWorker {
         checkTask(RESTART);
         this.daemon.nextTask.set(RESTART);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
@@ -133,7 +133,7 @@ public class ExecutionWorker {
         checkTask(UPDATE_FORMAT);
         this.daemon.nextTask.set(UPDATE_FORMAT);
         synchronized (LOCK) {
-            this.daemon.notifyAll();
+            LOCK.notifyAll();
         }
     }
 
