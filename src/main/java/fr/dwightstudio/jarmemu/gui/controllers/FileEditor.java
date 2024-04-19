@@ -99,7 +99,7 @@ public class FileEditor {
     private List<Find> previousFind;
     private int selectedFind;
 
-    public FileEditor(JArmEmuApplication application, String fileName, String content) {
+    public FileEditor(String fileName, String content) {
         this.executor = Executors.newSingleThreadExecutor();
         codeArea = new CodeArea();
         this.realTimeAnalyzer = new RealTimeParser(this);
@@ -392,8 +392,8 @@ public class FileEditor {
         closed = false;
     }
 
-    public FileEditor(JArmEmuApplication application, @NotNull File path) {
-        this(application, path.getName(), "");
+    public FileEditor(@NotNull File path) {
+        this(path.getName(), "");
         this.path = path;
         reload();
     }
@@ -467,13 +467,17 @@ public class FileEditor {
      */
     public int getMouseLine() {
         int lineNum = codeArea.getParagraphs().size();
-        for (int i = 0; i < lineNum; i ++) {
-            Optional<Bounds> optionalBounds = codeArea.getParagraphBoundsOnScreen(i);
-            if (optionalBounds.isPresent()) {
-                Bounds bounds = optionalBounds.get();
-                Point mousePos = MouseInfo.getPointerInfo().getLocation();
-                if (bounds.contains(new Point2D(mousePos.x, mousePos.y))) return i;
+        try {
+            for (int i = 0; i < lineNum; i++) {
+                Optional<Bounds> optionalBounds = codeArea.getParagraphBoundsOnScreen(i);
+                if (optionalBounds.isPresent()) {
+                    Bounds bounds = optionalBounds.get();
+                    Point mousePos = MouseInfo.getPointerInfo().getLocation();
+                    if (bounds.contains(new Point2D(mousePos.x, mousePos.y))) return i;
+                }
             }
+        } catch (NullPointerException e) {
+            return -1;
         }
 
         return -1;
@@ -671,7 +675,7 @@ public class FileEditor {
      * @return un nouveau SourceScanner du fichier modifié
      */
     public SourceScanner getSourceScanner() {
-        return new SourceScanner(codeArea.getText(), path == null ? "New File" : path.getName(), getEditorController().getFileIndex(this));
+        return new SourceScanner(codeArea.getText(), path == null ? "New File" : path.getName(), JArmEmuApplication.getEditorController().getFileIndex(this));
     }
 
     /**

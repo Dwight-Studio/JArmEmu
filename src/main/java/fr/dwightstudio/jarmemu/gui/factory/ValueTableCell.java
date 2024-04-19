@@ -60,12 +60,10 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
     private final ChangeListener<Number> CHANGE_LISTENER;
 
-    private final JArmEmuApplication application;
     private ObservableValue<Number> obs;
 
-    private ValueTableCell(JArmEmuApplication application, StringConverter<Number> converter) {
+    private ValueTableCell(StringConverter<Number> converter) {
         super(converter);
-        this.application = application;
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
 
@@ -74,15 +72,15 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         Platform.runLater(UPDATE_ANIMATION::stop);
         Platform.runLater(UPDATE_ANIMATION::play);
          */
-            if (application.getSettingsController().getHighlightUpdates())
+            if (JArmEmuApplication.getSettingsController().getHighlightUpdates())
                 Platform.runLater(() -> setStyle("-fx-background-color: -color-warning-muted"));
         };
 
-        application.getExecutionWorker().addStepListener((pos) -> setStyle("-fx-background-color: transparent"));
+        JArmEmuApplication.getExecutionWorker().addStepListener((pos) -> setStyle("-fx-background-color: transparent"));
     }
 
-    private ValueTableCell(JArmEmuApplication application) {
-        this(application, new ValueStringConverter(application));
+    private ValueTableCell() {
+        this(new ValueStringConverter());
     }
 
     @Override
@@ -100,23 +98,23 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
 
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryDynamicFormat(JArmEmuApplication application) {
-        return (val) -> new ValueTableCell<>(application);
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryDynamicFormat() {
+        return (val) -> new ValueTableCell<>();
     }
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticHex(JArmEmuApplication application) {
-        return (val) -> new ValueTableCell<>(application, new HexStringConverter());
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticHex() {
+        return (val) -> new ValueTableCell<>(new HexStringConverter());
     }
 
-    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticBin(JArmEmuApplication application) {
-        return (val) -> new ValueTableCell<>(application, new BinStringConverter());
+    public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticBin() {
+        return (val) -> new ValueTableCell<>(new BinStringConverter());
     }
 
     public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryStaticWordASCII(JArmEmuApplication application) {
-        return (val) -> new ValueTableCell<>(application, new WordASCIIStringConverter());
+        return (val) -> new ValueTableCell<>(new WordASCIIStringConverter());
     }
 
-    public static Callback<TableColumn<MemoryChunkView, String>, TableCell<MemoryChunkView, String>> factoryStaticString(JArmEmuApplication application) {
+    public static Callback<TableColumn<MemoryChunkView, String>, TableCell<MemoryChunkView, String>> factoryStaticString() {
         return (val) -> {
             TextFieldTableCell<MemoryChunkView, String> rtn = new TextFieldTableCell<>();
             rtn.getStyleClass().add("data-value");

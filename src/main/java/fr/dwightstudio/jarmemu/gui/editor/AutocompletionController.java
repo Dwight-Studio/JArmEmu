@@ -2,7 +2,7 @@ package fr.dwightstudio.jarmemu.gui.editor;
 
 public class AutocompletionController {
 
-    public static update() {
+    public static void update() {
 
     }
 

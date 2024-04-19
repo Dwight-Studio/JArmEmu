@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.asm.instruction.Condition;
 import fr.dwightstudio.jarmemu.asm.instruction.DataMode;
 import fr.dwightstudio.jarmemu.asm.instruction.Instruction;
 import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.EditorController;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
@@ -88,13 +89,12 @@ public class RealTimeParser extends SmartHighlighter {
     private static final Logger logger = Logger.getLogger(RealTimeParser.class.getSimpleName());
 
     private final FileEditor editor;
-    private final EditorController controller;
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
 
     private int line;
 
-    private static final Object lock = new Object();
+    private static final Object LOCK = new Object();
     private static HashMap<FilePos, String> globals;
     private HashMap<Integer, String> labels;
     private HashMap<Integer, String> symbols;
@@ -116,10 +116,9 @@ public class RealTimeParser extends SmartHighlighter {
     private boolean bracket;
     private List<Find> find;
 
-    public RealTimeParser(FileEditor editor, EditorController controller) {
+    public RealTimeParser(FileEditor editor) {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
-        this.controller = controller;
         this.queue = new LinkedBlockingQueue<>();
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
@@ -181,7 +180,7 @@ public class RealTimeParser extends SmartHighlighter {
                     for (iter = 0; !text.isEmpty() && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
                         //System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
-                        AutocompletionController
+                        //AutocompletionController
 
                         if (matchComment()) continue;
 
@@ -260,7 +259,7 @@ public class RealTimeParser extends SmartHighlighter {
                         logger.severe("Hanging line " + line + " parsing after " + MAXIMUM_ITER_NUM + " iterations");
                     }
 
-                    synchronized (lock) {
+                    synchronized (LOCK) {
                         String remGlobal = globals.getOrDefault(new FilePos(editor.getRealIndex(), line), "");
                         String remLabel = labels.getOrDefault(line, "");
                         String remSymbol = symbols.getOrDefault(line, "");
@@ -891,7 +890,7 @@ public class RealTimeParser extends SmartHighlighter {
      * @param name le nom du global à mettre à jour
      */
     private void updateGlobals(String name) {
-        controller.getFileEditors().forEach(editor -> {
+        JArmEmuApplication.getEditorController().getFileEditors().forEach(editor -> {
             if (editor != this.editor) ((RealTimeParser) editor.getRealTimeAnalyzer()).updateReferences(name);
         });
     }

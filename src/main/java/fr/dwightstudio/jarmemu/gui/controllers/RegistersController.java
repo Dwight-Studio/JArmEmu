@@ -33,6 +33,7 @@ import fr.dwightstudio.jarmemu.gui.view.RegisterView;
 import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -47,7 +48,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class RegistersController extends AbstractJArmEmuModule {
+public class RegistersController implements Initializable {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private TableColumn<RegisterView, String> col0;
@@ -55,10 +56,6 @@ public class RegistersController extends AbstractJArmEmuModule {
     private TableColumn<RegisterView, Register> col2;
     private ObservableList<RegisterView> views;
     private TableView<RegisterView> registersTable;
-
-    public RegistersController(JArmEmuApplication application) {
-        super(application);
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -82,7 +79,7 @@ public class RegistersController extends AbstractJArmEmuModule {
         col1.setPrefWidth(80);
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col1.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
+        col1.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.flags"));
         col2.setGraphic(new FontIcon(Material2OutlinedAL.FLAG));
@@ -113,7 +110,7 @@ public class RegistersController extends AbstractJArmEmuModule {
         AnchorPane.setRightAnchor(registersTable, 0d);
         AnchorPane.setBottomAnchor(registersTable, 0d);
         AnchorPane.setLeftAnchor(registersTable, 0d);
-        getController().registersPane.getChildren().add(registersTable);
+        JArmEmuApplication.getController().registersPane.getChildren().add(registersTable);
     }
 
     /**

@@ -150,8 +150,8 @@ public class JArmEmuDialogs {
         website.setContentDisplay(ContentDisplay.RIGHT);
         website.setAlignment(Pos.CENTER);
         website.setOnAction(event -> {
-            application.openURL("https://dwightstudio.fr/jarmemu");
-            getController().closeDialogBack();
+            JArmEmuApplication.getInstance().openURL("https://dwightstudio.fr/jarmemu");
+            JArmEmuApplication.getController().closeDialogBack();
         });
 
         Button credits = new Button(JArmEmuApplication.formatMessage("%about.credits.title"));
@@ -182,9 +182,9 @@ public class JArmEmuDialogs {
                 vBox.getPrefHeight()
         );
 
-        dialog.getModalBox().setOnClose(event -> getController().closeDialogBack());
+        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
 
-        getController().openDialogBack(dialog);
+        JArmEmuApplication.getController().openDialogBack(dialog);
     }
 
     private void license() {
@@ -203,9 +203,9 @@ public class JArmEmuDialogs {
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
 
-        dialog.getModalBox().setOnClose(event -> getController().closeDialogMiddle());
+        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
 
-        getController().openDialogMiddle(dialog);
+        JArmEmuApplication.getController().openDialogMiddle(dialog);
     }
 
     private void credits() {
@@ -233,8 +233,8 @@ public class JArmEmuDialogs {
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
 
-        dialog.getModalBox().setOnClose(event -> getController().closeDialogMiddle());
+        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
 
-        getController().openDialogMiddle(dialog);
+        JArmEmuApplication.getController().openDialogMiddle(dialog);
     }
 }

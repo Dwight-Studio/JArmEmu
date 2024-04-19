@@ -31,32 +31,28 @@ import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
 import java.util.logging.Logger;
 
-public class SimulationMenuController extends AbstractJArmEmuModule {
+public class SimulationMenuController {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
-
-    public SimulationMenuController(JArmEmuApplication application) {
-        super(application);
-    }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onSimulate() {
-        if (getController().menuSimulate.isDisable()) return;
+        if (JArmEmuApplication.getController().menuSimulate.isDisable()) return;
 
-        getController().toolSimulate.setDisable(true);
-        getController().menuSimulate.setDisable(true);
-        getEditorController().clearNotifs();
+        JArmEmuApplication.getController().toolSimulate.setDisable(true);
+        JArmEmuApplication.getController().menuSimulate.setDisable(true);
+        JArmEmuApplication.getEditorController().clearNotifs();
 
-        getEditorController().addNotification(
+        JArmEmuApplication.getEditorController().addNotification(
                 JArmEmuApplication.formatMessage("%notification.parsing.title"),
                 JArmEmuApplication.formatMessage("%notification.parsing.message"),
                 Styles.ACCENT
         );
 
-        getExecutionWorker().revive();
-        getExecutionWorker().prepare();
+        JArmEmuApplication.getExecutionWorker().revive();
+        JArmEmuApplication.getExecutionWorker().prepare();
     }
 
     /**
@@ -64,59 +60,59 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * @param errors les erreurs rencontrées lors de l'analyse du code
      */
     public void launchSimulation(ASMException[] errors) {
-        getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifs();
 
         if (errors == null || errors.length == 0) {
-            if (getCodeInterpreter().getInstructionCount() == 0) {
-                getController().toolSimulate.setDisable(false);
-                getController().menuSimulate.setDisable(false);
-                getEditorController().addNotification(
+            if (JArmEmuApplication.getCodeInterpreter().getInstructionCount() == 0) {
+                JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                JArmEmuApplication.getEditorController().addNotification(
                         JArmEmuApplication.formatMessage("%notification.noInstruction.title"),
                         JArmEmuApplication.formatMessage("%notification.noInstruction.message"),
                         Styles.DANGER
                 );
             } else {
-                getEditorController().clearAllLineMarkings();
-                getEditorController().markForward(getCodeInterpreter().getCurrentLine());
-                getController().memoryDetailsAddressField.setDisable(false);
-                getController().memoryOverviewAddressField.setDisable(false);
-                getEditorController().onLaunch();
-                getController().toolStepInto.setDisable(false);
-                getController().menuStepInto.setDisable(false);
-                getController().toolStepOver.setDisable(false);
-                getController().menuStepOver.setDisable(false);
-                getController().toolContinue.setDisable(false);
-                getController().menuContinue.setDisable(false);
-                getController().toolPause.setDisable(true);
-                getController().menuPause.setDisable(true);
-                getController().toolStop.setDisable(false);
-                getController().menuStop.setDisable(false);
-                getController().toolRestart.setDisable(false);
-                getController().menuRestart.setDisable(false);
-                getController().settingsRegex.setDisable(true);
-                getController().settingsLegacy.setDisable(true);
-                getController().settingsStackAddress.setDisable(true);
-                getController().settingsSymbolsAddress.setDisable(true);
-                getController().settingsSimInterval.setDisable(true);
+                JArmEmuApplication.getEditorController().clearAllLineMarkings();
+                JArmEmuApplication.getEditorController().markForward(JArmEmuApplication.getCodeInterpreter().getCurrentLine());
+                JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(false);
+                JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(false);
+                JArmEmuApplication.getEditorController().onLaunch();
+                JArmEmuApplication.getController().toolStepInto.setDisable(false);
+                JArmEmuApplication.getController().menuStepInto.setDisable(false);
+                JArmEmuApplication.getController().toolStepOver.setDisable(false);
+                JArmEmuApplication.getController().menuStepOver.setDisable(false);
+                JArmEmuApplication.getController().toolContinue.setDisable(false);
+                JArmEmuApplication.getController().menuContinue.setDisable(false);
+                JArmEmuApplication.getController().toolPause.setDisable(true);
+                JArmEmuApplication.getController().menuPause.setDisable(true);
+                JArmEmuApplication.getController().toolStop.setDisable(false);
+                JArmEmuApplication.getController().menuStop.setDisable(false);
+                JArmEmuApplication.getController().toolRestart.setDisable(false);
+                JArmEmuApplication.getController().menuRestart.setDisable(false);
+                JArmEmuApplication.getController().settingsRegex.setDisable(true);
+                JArmEmuApplication.getController().settingsLegacy.setDisable(true);
+                JArmEmuApplication.getController().settingsStackAddress.setDisable(true);
+                JArmEmuApplication.getController().settingsSymbolsAddress.setDisable(true);
+                JArmEmuApplication.getController().settingsSimInterval.setDisable(true);
 
-                getController().stackPane.setDisable(false);
-                getController().registersPane.setDisable(false);
-                getController().memoryDetailsPane.setDisable(false);
-                getController().memoryOverviewPane.setDisable(false);
-                getController().labelsPane.setDisable(false);
-                getController().symbolsPane.setDisable(false);
-                getEditorController().getFileEditors().forEach(FileEditor::closeFindAndReplace);
-                getController().findAndReplace.setDisable(true);
+                JArmEmuApplication.getController().stackPane.setDisable(false);
+                JArmEmuApplication.getController().registersPane.setDisable(false);
+                JArmEmuApplication.getController().memoryDetailsPane.setDisable(false);
+                JArmEmuApplication.getController().memoryOverviewPane.setDisable(false);
+                JArmEmuApplication.getController().labelsPane.setDisable(false);
+                JArmEmuApplication.getController().symbolsPane.setDisable(false);
+                JArmEmuApplication.getEditorController().getFileEditors().forEach(FileEditor::closeFindAndReplace);
+                JArmEmuApplication.getController().findAndReplace.setDisable(true);
 
-                getExecutionWorker().restart();
+                JArmEmuApplication.getExecutionWorker().restart();
 
-                application.status.set(Status.SIMULATING);
+                JArmEmuApplication.getInstance().status.set(Status.SIMULATING);
             }
         } else {
-            getController().toolSimulate.setDisable(false);
-            getController().menuSimulate.setDisable(false);
+            JArmEmuApplication.getController().toolSimulate.setDisable(false);
+            JArmEmuApplication.getController().menuSimulate.setDisable(false);
             for (ASMException error : errors) {
-                getEditorController().addError(error);
+                JArmEmuApplication.getEditorController().addError(error);
             }
         }
     }
@@ -125,142 +121,142 @@ public class SimulationMenuController extends AbstractJArmEmuModule {
      * Méthode de rappel si la préparation de la simulation a échoué
      */
     public void abortSimulation() {
-        getEditorController().clearNotifs();
-        getEditorController().addNotification(
+        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().addNotification(
                 JArmEmuApplication.formatMessage("%notification.parsingError.title"),
                 JArmEmuApplication.formatMessage("%notification.parsingError.message"),
                 Styles.DANGER
         );
-        getController().toolSimulate.setDisable(false);
-        getController().menuSimulate.setDisable(false);
+        JArmEmuApplication.getController().toolSimulate.setDisable(false);
+        JArmEmuApplication.getController().menuSimulate.setDisable(false);
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onStepInto() {
-        if (getController().menuStepInto.isDisable()) return;
-        getEditorController().clearNotifs();
-        getExecutionWorker().stepInto();
+        if (JArmEmuApplication.getController().menuStepInto.isDisable()) return;
+        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getExecutionWorker().stepInto();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onStepOver() {
-        if (getController().menuStepOver.isDisable()) return;
-        getEditorController().clearNotifs();
-        getExecutionWorker().stepOver();
-        getController().toolStepInto.setDisable(true);
-        getController().menuStepInto.setDisable(true);
-        getController().toolStepOver.setDisable(true);
-        getController().menuStepOver.setDisable(true);
-        getController().toolContinue.setDisable(true);
-        getController().menuContinue.setDisable(true);
-        getController().toolPause.setDisable(false);
-        getController().menuPause.setDisable(false);
-        getController().toolRestart.setDisable(true);
-        getController().menuRestart.setDisable(true);
-        getController().memoryDetailsAddressField.setDisable(true);
-        getController().memoryOverviewAddressField.setDisable(true);
-        getEditorController().onContinueOrStepOver();}
+        if (JArmEmuApplication.getController().menuStepOver.isDisable()) return;
+        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getExecutionWorker().stepOver();
+        JArmEmuApplication.getController().toolStepInto.setDisable(true);
+        JArmEmuApplication.getController().menuStepInto.setDisable(true);
+        JArmEmuApplication.getController().toolStepOver.setDisable(true);
+        JArmEmuApplication.getController().menuStepOver.setDisable(true);
+        JArmEmuApplication.getController().toolContinue.setDisable(true);
+        JArmEmuApplication.getController().menuContinue.setDisable(true);
+        JArmEmuApplication.getController().toolPause.setDisable(false);
+        JArmEmuApplication.getController().menuPause.setDisable(false);
+        JArmEmuApplication.getController().toolRestart.setDisable(true);
+        JArmEmuApplication.getController().menuRestart.setDisable(true);
+        JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(true);
+        JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(true);
+        JArmEmuApplication.getEditorController().onContinueOrStepOver();}
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onContinue() {
-        if (getController().menuContinue.isDisable()) return;
-        getEditorController().clearNotifs();
-        getExecutionWorker().conti();
-        getController().toolStepInto.setDisable(true);
-        getController().menuStepInto.setDisable(true);
-        getController().toolStepOver.setDisable(true);
-        getController().menuStepOver.setDisable(true);
-        getController().toolContinue.setDisable(true);
-        getController().menuContinue.setDisable(true);
-        getController().toolPause.setDisable(false);
-        getController().menuPause.setDisable(false);
-        getController().toolRestart.setDisable(true);
-        getController().menuRestart.setDisable(true);
-        getController().memoryDetailsAddressField.setDisable(true);
-        getController().memoryOverviewAddressField.setDisable(true);
-        getEditorController().onContinueOrStepOver();
+        if (JArmEmuApplication.getController().menuContinue.isDisable()) return;
+        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getExecutionWorker().conti();
+        JArmEmuApplication.getController().toolStepInto.setDisable(true);
+        JArmEmuApplication.getController().menuStepInto.setDisable(true);
+        JArmEmuApplication.getController().toolStepOver.setDisable(true);
+        JArmEmuApplication.getController().menuStepOver.setDisable(true);
+        JArmEmuApplication.getController().toolContinue.setDisable(true);
+        JArmEmuApplication.getController().menuContinue.setDisable(true);
+        JArmEmuApplication.getController().toolPause.setDisable(false);
+        JArmEmuApplication.getController().menuPause.setDisable(false);
+        JArmEmuApplication.getController().toolRestart.setDisable(true);
+        JArmEmuApplication.getController().menuRestart.setDisable(true);
+        JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(true);
+        JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(true);
+        JArmEmuApplication.getEditorController().onContinueOrStepOver();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onPause() {
-        if (getController().menuPause.isDisable()) return;
-        getExecutionWorker().pause();
-        getController().toolStepInto.setDisable(false);
-        getController().menuStepInto.setDisable(false);
-        getController().toolStepOver.setDisable(false);
-        getController().menuStepOver.setDisable(false);
-        getController().toolContinue.setDisable(false);
-        getController().menuContinue.setDisable(false);
-        getController().toolPause.setDisable(true);
-        getController().menuPause.setDisable(true);
-        getController().toolRestart.setDisable(false);
-        getController().menuRestart.setDisable(false);
-        getController().memoryDetailsAddressField.setDisable(false);
-        getController().memoryOverviewAddressField.setDisable(false);
-        getEditorController().onPause();
+        if (JArmEmuApplication.getController().menuPause.isDisable()) return;
+        JArmEmuApplication.getExecutionWorker().pause();
+        JArmEmuApplication.getController().toolStepInto.setDisable(false);
+        JArmEmuApplication.getController().menuStepInto.setDisable(false);
+        JArmEmuApplication.getController().toolStepOver.setDisable(false);
+        JArmEmuApplication.getController().menuStepOver.setDisable(false);
+        JArmEmuApplication.getController().toolContinue.setDisable(false);
+        JArmEmuApplication.getController().menuContinue.setDisable(false);
+        JArmEmuApplication.getController().toolPause.setDisable(true);
+        JArmEmuApplication.getController().menuPause.setDisable(true);
+        JArmEmuApplication.getController().toolRestart.setDisable(false);
+        JArmEmuApplication.getController().menuRestart.setDisable(false);
+        JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(false);
+        JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(false);
+        JArmEmuApplication.getEditorController().onPause();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onStop() {
-        if (getController().menuStop.isDisable()) return;
-        getEditorController().clearNotifs();
-        getExecutionWorker().pause();
-        getEditorController().onStop();
-        getController().toolSimulate.setDisable(false);
-        getController().menuSimulate.setDisable(false);
-        getController().toolStepInto.setDisable(true);
-        getController().menuStepInto.setDisable(true);
-        getController().toolStepOver.setDisable(true);
-        getController().menuStepOver.setDisable(true);
-        getController().toolContinue.setDisable(true);
-        getController().menuContinue.setDisable(true);
-        getController().toolPause.setDisable(true);
-        getController().menuPause.setDisable(true);
-        getController().toolStop.setDisable(true);
-        getController().menuStop.setDisable(true);
-        getController().toolRestart.setDisable(true);
-        getController().menuRestart.setDisable(true);
-        getController().memoryDetailsAddressField.setDisable(true);
-        getController().memoryOverviewAddressField.setDisable(true);
-        getController().settingsRegex.setDisable(false);
-        getController().settingsLegacy.setDisable(false);
-        getController().settingsStackAddress.setDisable(false);
-        getController().settingsSymbolsAddress.setDisable(false);
-        getController().settingsSimInterval.setDisable(false);
+        if (JArmEmuApplication.getController().menuStop.isDisable()) return;
+        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getExecutionWorker().pause();
+        JArmEmuApplication.getEditorController().onStop();
+        JArmEmuApplication.getController().toolSimulate.setDisable(false);
+        JArmEmuApplication.getController().menuSimulate.setDisable(false);
+        JArmEmuApplication.getController().toolStepInto.setDisable(true);
+        JArmEmuApplication.getController().menuStepInto.setDisable(true);
+        JArmEmuApplication.getController().toolStepOver.setDisable(true);
+        JArmEmuApplication.getController().menuStepOver.setDisable(true);
+        JArmEmuApplication.getController().toolContinue.setDisable(true);
+        JArmEmuApplication.getController().menuContinue.setDisable(true);
+        JArmEmuApplication.getController().toolPause.setDisable(true);
+        JArmEmuApplication.getController().menuPause.setDisable(true);
+        JArmEmuApplication.getController().toolStop.setDisable(true);
+        JArmEmuApplication.getController().menuStop.setDisable(true);
+        JArmEmuApplication.getController().toolRestart.setDisable(true);
+        JArmEmuApplication.getController().menuRestart.setDisable(true);
+        JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(true);
+        JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(true);
+        JArmEmuApplication.getController().settingsRegex.setDisable(false);
+        JArmEmuApplication.getController().settingsLegacy.setDisable(false);
+        JArmEmuApplication.getController().settingsStackAddress.setDisable(false);
+        JArmEmuApplication.getController().settingsSymbolsAddress.setDisable(false);
+        JArmEmuApplication.getController().settingsSimInterval.setDisable(false);
 
-        getController().registersPane.setDisable(true);
-        getController().memoryDetailsPane.setDisable(true);
-        getController().memoryOverviewPane.setDisable(true);
-        getController().labelsPane.setDisable(true);
-        getController().symbolsPane.setDisable(true);
-        getController().stackPane.setDisable(true);
-        getController().findAndReplace.setDisable(true);
+        JArmEmuApplication.getController().registersPane.setDisable(true);
+        JArmEmuApplication.getController().memoryDetailsPane.setDisable(true);
+        JArmEmuApplication.getController().memoryOverviewPane.setDisable(true);
+        JArmEmuApplication.getController().labelsPane.setDisable(true);
+        JArmEmuApplication.getController().symbolsPane.setDisable(true);
+        JArmEmuApplication.getController().stackPane.setDisable(true);
+        JArmEmuApplication.getController().findAndReplace.setDisable(true);
 
-        application.status.set(Status.EDITING);
-        getExecutionWorker().updateGUI();
+        JArmEmuApplication.getInstance().status.set(Status.EDITING);
+        JArmEmuApplication.getExecutionWorker().updateGUI();
     }
 
     /**
      * Méthode invoquée par JavaFX
      */
     public void onRestart() {
-        if (getController().menuRestart.isDisable()) return;
-        getEditorController().clearNotifs();
-        getEditorController().clearAllLineMarkings();
+        if (JArmEmuApplication.getController().menuRestart.isDisable()) return;
+        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearAllLineMarkings();
 
-        getCodeInterpreter().restart();
+        JArmEmuApplication.getCodeInterpreter().restart();
 
-        getEditorController().markForward(getCodeInterpreter().getCurrentLine());
-        getExecutionWorker().restart();
+        JArmEmuApplication.getEditorController().markForward(JArmEmuApplication.getCodeInterpreter().getCurrentLine());
+        JArmEmuApplication.getExecutionWorker().restart();
     }
 }

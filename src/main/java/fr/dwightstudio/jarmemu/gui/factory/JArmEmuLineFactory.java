@@ -46,14 +46,12 @@ import java.util.function.IntFunction;
 
 public class JArmEmuLineFactory implements IntFunction<Node> {
 
-    private final JArmEmuApplication application;
     private final HashMap<Integer, LineManager> managers;
     private LineManager lastScheduled;
     private LineManager lastExecuted;
     private final FileEditor fileEditor;
 
-    public JArmEmuLineFactory(JArmEmuApplication application, FileEditor fileEditor) {
-        this.application = application;
+    public JArmEmuLineFactory(FileEditor fileEditor) {
         this.managers = new HashMap<>();
         this.fileEditor = fileEditor;
     }
@@ -220,7 +218,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
             hBox = new HBox(grid);
             HBox.setMargin(grid, new Insets(0, 5, 0, 0));
 
-            application.status.addListener((obs, oldVal, newVal) -> {
+            JArmEmuApplication.getInstance().status.addListener((obs, oldVal, newVal) -> {
                 show = (newVal == Status.SIMULATING);
                 update();
             });
@@ -287,9 +285,9 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
         private void update() {
             if (show) {
-                int pos = application.getCodeInterpreter().getPosition(
+                int pos = JArmEmuApplication.getCodeInterpreter().getPosition(
                         new FilePos(
-                                application.getEditorController().getFileIndex(fileEditor),
+                                JArmEmuApplication.getEditorController().getFileIndex(fileEditor),
                                 line
                         )
                 );

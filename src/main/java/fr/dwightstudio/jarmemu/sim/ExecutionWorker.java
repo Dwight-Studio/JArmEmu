@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.sim;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.asm.exception.*;
-import fr.dwightstudio.jarmemu.gui.AbstractJArmEmuModule;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
@@ -38,7 +37,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
-public class ExecutionWorker extends AbstractJArmEmuModule {
+public class ExecutionWorker {
     public static final int UPDATE_THRESHOLD = 10;
     public static final int FALLBACK_UPDATE_INTERVAL = 30;
 
@@ -54,11 +53,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
+    private static final Object LOCK = new Object();
     private ExecutionThead daemon;
 
-    public ExecutionWorker(JArmEmuApplication application) {
-        super(application);
-        this.daemon = new ExecutionThead(application);
+    public ExecutionWorker() {
+        this.daemon = new ExecutionThead();
     }
 
     /**
@@ -67,7 +66,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void stepInto() {
         checkTask(STEP_INTO);
         this.daemon.nextTask.set(STEP_INTO);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -78,7 +77,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void stepOver() {
         checkTask(STEP_OVER);
         this.daemon.nextTask.set(STEP_OVER);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -89,7 +88,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void conti() {
         checkTask(CONTINUE);
         this.daemon.nextTask.set(CONTINUE);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -100,7 +99,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void updateGUI() {
         checkTask(UPDATE_GUI);
         this.daemon.nextTask.set(UPDATE_GUI);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -111,7 +110,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void prepare() {
         checkTask(PREPARE);
         this.daemon.nextTask.set(PREPARE);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -122,7 +121,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void restart() {
         checkTask(RESTART);
         this.daemon.nextTask.set(RESTART);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -133,7 +132,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void updateFormat() {
         checkTask(UPDATE_FORMAT);
         this.daemon.nextTask.set(UPDATE_FORMAT);
-        synchronized (this.daemon) {
+        synchronized (LOCK) {
             this.daemon.notifyAll();
         }
     }
@@ -151,7 +150,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
     public void revive() {
         if (!this.daemon.isAlive()) {
             logger.info("Reviving Execution Thread");
-            this.daemon = new ExecutionThead(application);
+            this.daemon = new ExecutionThead();
         }
     }
 
@@ -194,8 +193,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
     private static class ExecutionThead extends Thread {
         private final Logger logger = Logger.getLogger(getClass().getSimpleName());
-
-        private final JArmEmuApplication application;
+        
         private final AtomicInteger nextTask = new AtomicInteger();
         private boolean doContinue = false;
         private boolean doRun = true;
@@ -205,11 +203,10 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private long updateGUITimestamp;
         private ArrayList<StepListener> stepListeners;
 
-        public ExecutionThead(JArmEmuApplication application) {
+        public ExecutionThead() {
             super("CodeExecutorDeamon");
 
             logger.info("Initiating Execution Thread");
-            this.application = application;
             updateGUITimestamp = System.currentTimeMillis();
 
             stepListeners = new ArrayList<>();
@@ -223,15 +220,15 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             try {
                 while (doRun) {
                     try {
-                        synchronized (this) {
-                            if (nextTask.get() == IDLE) this.wait();
+                        synchronized (ExecutionWorker.LOCK) {
+                            if (nextTask.get() == IDLE) ExecutionWorker.LOCK.wait();
                         }
                     } catch (InterruptedException exception) {
                         doRun = false;
                         break;
                     }
 
-                    waitingPeriod = application.getSettingsController().getSimulationInterval();
+                    waitingPeriod = JArmEmuApplication.getSettingsController().getSimulationInterval();
 
                     int task = nextTask.get();
                     logger.info("Executing task ID" + task + "...");
@@ -260,64 +257,64 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void step(boolean forceExecution) {
-            line = application.getCodeInterpreter().getCurrentLine();
+            line = JArmEmuApplication.getCodeInterpreter().getCurrentLine();
             Platform.runLater(() -> stepListeners.forEach(stepListener -> stepListener.step(line)));
 
             ExecutionASMException executionException = null;
 
             try {
-                application.getCodeInterpreter().executeCurrentLine(forceExecution);
+                JArmEmuApplication.getCodeInterpreter().executeCurrentLine(forceExecution);
             } catch (MemoryAccessMisalignedASMException exception) {
-                if (application.getSettingsController().getAutoBreak() && application.getSettingsController().getMemoryAlignBreak()) {
+                if (JArmEmuApplication.getSettingsController().getAutoBreak() && JArmEmuApplication.getSettingsController().getMemoryAlignBreak()) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotification(
+                        JArmEmuApplication.getEditorController().addNotification(
                                 JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
                                 JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.memoryAccessMessage"),
                                 Styles.DANGER
                         );
-                        application.getEditorController().addNotification(
+                        JArmEmuApplication.getEditorController().addNotification(
                                 JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
                                 JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
                                 Styles.ACCENT
                         );
-                        application.getSimulationMenuController().onPause();
+                        JArmEmuApplication.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
                 } else {
                     step(true);
                 }
             } catch (IllegalDataWritingASMException exception) {
-                if (application.getSettingsController().getAutoBreak() && application.getSettingsController().getReadOnlyWritingBreak()) {
+                if (JArmEmuApplication.getSettingsController().getAutoBreak() && JArmEmuApplication.getSettingsController().getReadOnlyWritingBreak()) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotification(
+                        JArmEmuApplication.getEditorController().addNotification(
                                 JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
                                 JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.readOnlyMessage"),
                                 Styles.DANGER
                         );
-                        application.getEditorController().addNotification(
+                        JArmEmuApplication.getEditorController().addNotification(
                                 JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
                                 JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
                                 Styles.ACCENT
                         );
-                        application.getSimulationMenuController().onPause();
+                        JArmEmuApplication.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
                 } else {
                     step(true);
                 }
             } catch (BreakpointASMException exception) {
-                if (application.getSettingsController().getCodeBreak()) {
+                if (JArmEmuApplication.getSettingsController().getCodeBreak()) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotification(
+                        JArmEmuApplication.getEditorController().addNotification(
                                 JArmEmuApplication.formatMessage("%notification.codeBreakpoint.title"),
                                 JArmEmuApplication.formatMessage("%notification.codeBreakpoint.message", exception.getValue()),
                                 Styles.ACCENT
                         );
-                        application.getSimulationMenuController().onPause();
+                        JArmEmuApplication.getSimulationMenuController().onPause();
                     });
                     step(true);
                 } else {
-                    Platform.runLater(() -> application.getEditorController().addNotification(
+                    Platform.runLater(() -> JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.ignoredCodeBreakpoint.title"),
                             JArmEmuApplication.formatMessage("%notification.ignoredCodeBreakpoint.message", exception.getValue()),
                             Styles.WARNING
@@ -328,20 +325,20 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 executionException = exception;
             }
 
-            next = application.getCodeInterpreter().getCurrentLine();
-            if (doContinue && !forceExecution && application.getEditorController().hasBreakPoint(next)) {
-                if (application.getSettingsController().getManualBreak()) {
+            next = JArmEmuApplication.getCodeInterpreter().getCurrentLine();
+            if (doContinue && !forceExecution && JArmEmuApplication.getEditorController().hasBreakPoint(next)) {
+                if (JArmEmuApplication.getSettingsController().getManualBreak()) {
                     Platform.runLater(() -> {
-                        application.getEditorController().addNotification(
+                        JArmEmuApplication.getEditorController().addNotification(
                                 JArmEmuApplication.formatMessage("%notification.manualBreakpoint.title"),
                                 JArmEmuApplication.formatMessage("%notification.manualBreakpoint.message"),
                                 Styles.ACCENT
                         );
-                        application.getSimulationMenuController().onPause();
+                        JArmEmuApplication.getSimulationMenuController().onPause();
                     });
                     doContinue = false;
                 } else {
-                    Platform.runLater(() -> application.getEditorController().addNotification(
+                    Platform.runLater(() -> JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.ignoredManualBreakpoint.title"),
                             JArmEmuApplication.formatMessage("%notification.ignoredManualBreakpoint.message"),
                             Styles.WARNING
@@ -349,95 +346,95 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
                 }
             }
 
-            if (!application.getCodeInterpreter().hasNext()) {
+            if (!JArmEmuApplication.getCodeInterpreter().hasNext()) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotification(
+                    JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.eof.title"),
                             JArmEmuApplication.formatMessage("%notification.eof.message"),
                             Styles.SUCCESS
                     );
-                    application.getSimulationMenuController().onPause();
+                    JArmEmuApplication.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
             }
 
             if (executionException instanceof StuckExecutionASMException) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotification(
+                    JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.catchPoint.title"),
                             JArmEmuApplication.formatMessage("%notification.catchPoint.message"),
                             Styles.SUCCESS
                     );
-                    application.getSimulationMenuController().onPause();
+                    JArmEmuApplication.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
             }
 
             if (executionException instanceof SoftwareInterruptionASMException exception) {
                 Platform.runLater(() -> {
-                    application.getEditorController().addNotification(
+                    JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.softwareInterrupt.title"),
                             JArmEmuApplication.formatMessage("%notification.softwareInterrupt.message", + exception.getCode()),
                             Styles.ACCENT
                     );
-                    application.getSimulationMenuController().onPause();
+                    JArmEmuApplication.getSimulationMenuController().onPause();
                 });
                 doContinue = false;
             }
 
-            if (application.getSettingsController().getAutoBreak()) {
-                if (application.getSettingsController().getProgramAlignBreak()) {
-                    if (application.getCodeInterpreter().stateContainer.getPC().getData() % 4 != 0) {
+            if (JArmEmuApplication.getSettingsController().getAutoBreak()) {
+                if (JArmEmuApplication.getSettingsController().getProgramAlignBreak()) {
+                    if (JArmEmuApplication.getCodeInterpreter().stateContainer.getPC().getData() % 4 != 0) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotification(
+                            JArmEmuApplication.getEditorController().addNotification(
                                     JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
                                     JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.programCounterMessage"),
                                     Styles.DANGER
                             );
-                            application.getEditorController().addNotification(
+                            JArmEmuApplication.getEditorController().addNotification(
                                     JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
                                     JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
                                     Styles.ACCENT
                             );
-                            application.getSimulationMenuController().onPause();
+                            JArmEmuApplication.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
                     }
                 }
 
-                if (application.getSettingsController().getStackAlignBreak()) {
-                    if (application.getCodeInterpreter().stateContainer.getSP().getData() % 4 != 0) {
+                if (JArmEmuApplication.getSettingsController().getStackAlignBreak()) {
+                    if (JArmEmuApplication.getCodeInterpreter().stateContainer.getSP().getData() % 4 != 0) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotification(
+                            JArmEmuApplication.getEditorController().addNotification(
                                     JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
                                     JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.stackPointerMessage"),
                                     Styles.DANGER
                             );
-                            application.getEditorController().addNotification(
+                            JArmEmuApplication.getEditorController().addNotification(
                                     JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
                                     JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
                                     Styles.ACCENT
                             );
-                            application.getSimulationMenuController().onPause();
+                            JArmEmuApplication.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
                     }
                 }
 
-                if (application.getSettingsController().getFunctionNestingBreak()) {
-                    if (application.getCodeInterpreter().stateContainer.getNestingCount() > StateContainer.MAX_NESTING_COUNT) {
+                if (JArmEmuApplication.getSettingsController().getFunctionNestingBreak()) {
+                    if (JArmEmuApplication.getCodeInterpreter().stateContainer.getNestingCount() > StateContainer.MAX_NESTING_COUNT) {
                         Platform.runLater(() -> {
-                            application.getEditorController().addNotification(
+                            JArmEmuApplication.getEditorController().addNotification(
                                     JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.title"),
                                     JArmEmuApplication.formatMessage("%notification.simulatorBreakpoint.nestingMessage"),
                                     Styles.DANGER
                             );
-                            application.getEditorController().addNotification(
+                            JArmEmuApplication.getEditorController().addNotification(
                                     JArmEmuApplication.formatMessage("%notification.autoBreakpoint.title"),
                                     JArmEmuApplication.formatMessage("%notification.autoBreakpoint.message"),
                                     Styles.ACCENT
                             );
-                            application.getSimulationMenuController().onPause();
+                            JArmEmuApplication.getSimulationMenuController().onPause();
                         });
                         doContinue = false;
                     }
@@ -465,13 +462,13 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
             nextTask.set(IDLE);
             doContinue = true;
 
-            int nesting = application.getCodeInterpreter().getNestingCount();
+            int nesting = JArmEmuApplication.getCodeInterpreter().getNestingCount();
 
             while (doContinue) {
                 step(false);
                 if (shouldUpdateGUI()) updateGUI();
 
-                doContinue = doContinue && application.getCodeInterpreter().getNestingCount() > nesting;
+                doContinue = doContinue && JArmEmuApplication.getCodeInterpreter().getNestingCount() > nesting;
 
                 try {
                     synchronized (this) {
@@ -486,7 +483,7 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             if (isIntervalTooShort()) updateGUI();
 
-            Platform.runLater(() -> application.getSimulationMenuController().onPause());
+            Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().onPause());
             logger.info("Done!");
         }
 
@@ -516,25 +513,25 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
 
             updateGUI();
 
-            application.getMemoryDetailsController().updatePage(application.getCodeInterpreter().stateContainer);
-            application.getMemoryOverviewController().updatePage(application.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getMemoryDetailsController().updatePage(JArmEmuApplication.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getMemoryOverviewController().updatePage(JArmEmuApplication.getCodeInterpreter().stateContainer);
 
             logger.info("Done!");
         }
 
         private void updateGUI() {
-            if (application.getCodeInterpreter() != null) {
+            if (JArmEmuApplication.getCodeInterpreter() != null) {
 
-                application.getStackController().updateGUI(application.getCodeInterpreter().stateContainer);
+                JArmEmuApplication.getStackController().updateGUI(JArmEmuApplication.getCodeInterpreter().stateContainer);
 
-                if (application.status.get() != Status.SIMULATING) {
-                    application.getEditorController().clearAllLineMarkings();
+                if (JArmEmuApplication.getInstance().status.get() != Status.SIMULATING) {
+                    JArmEmuApplication.getEditorController().clearAllLineMarkings();
                 } else if (line != null) {
                     Platform.runLater(() -> {
                         if (isIntervalTooShort()) {
-                            application.getEditorController().clearAllLineMarkings();
+                            JArmEmuApplication.getEditorController().clearAllLineMarkings();
                         }
-                        application.getEditorController().markForward(next == null ? line : next);
+                        JArmEmuApplication.getEditorController().markForward(next == null ? line : next);
                     });
                 }
             }
@@ -545,43 +542,43 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void prepareTask() {
             nextTask.set(IDLE);
 
-            synchronized (this) {
+            synchronized (ExecutionWorker.LOCK) {
                 try {
-                    this.wait(50);
+                    ExecutionWorker.LOCK.wait(50);
                 } catch (InterruptedException ignored) {
                 }
             }
 
             try {
-                ASMException[] errors1 = application.getCodeInterpreter().load(
-                        application.getSourceParser(),
-                        application.getEditorController().getSources()
+                ASMException[] errors1 = JArmEmuApplication.getCodeInterpreter().load(
+                        JArmEmuApplication.getSourceParser(),
+                        JArmEmuApplication.getEditorController().getSources()
                 );
 
                 if (errors1.length == 0) {
-                    ASMException[] errors2 = application.getCodeInterpreter().initiate(
-                            application.getSettingsController().getStackAddress(),
-                            application.getSettingsController().getSymbolsAddress()
+                    ASMException[] errors2 = JArmEmuApplication.getCodeInterpreter().initiate(
+                            JArmEmuApplication.getSettingsController().getStackAddress(),
+                            JArmEmuApplication.getSettingsController().getSymbolsAddress()
                     );
 
                     if (errors2.length == 0) {
                         line = next = null;
-                        application.getCodeInterpreter().restart();
+                        JArmEmuApplication.getCodeInterpreter().restart();
                         attachControllers();
-                        application.getEditorController().prepareSimulation();
+                        JArmEmuApplication.getEditorController().prepareSimulation();
                         updateGUI();
-                        Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(null));
+                        Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().launchSimulation(null));
                     } else {
-                        Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors2));
+                        Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().launchSimulation(errors2));
                     }
                 } else {
-                    Platform.runLater(() -> application.getSimulationMenuController().launchSimulation(errors1));
+                    Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().launchSimulation(errors1));
                 }
             } catch (Exception e) {
                 Platform.runLater(() -> {
                     new ExceptionDialog(e).show();
                     logger.severe(ExceptionUtils.getStackTrace(e));
-                    application.getSimulationMenuController().abortSimulation();
+                    JArmEmuApplication.getSimulationMenuController().abortSimulation();
                 });
             }
 
@@ -602,12 +599,12 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         private void updateFormatTask() {
             nextTask.set(IDLE);
 
-            application.getRegistersController().refresh();
-            application.getStackController().refresh();
-            application.getMemoryDetailsController().refresh();
-            application.getMemoryOverviewController().refresh();
-            application.getSymbolsController().refresh();
-            application.getLabelsController().refresh();
+            JArmEmuApplication.getRegistersController().refresh();
+            JArmEmuApplication.getStackController().refresh();
+            JArmEmuApplication.getMemoryDetailsController().refresh();
+            JArmEmuApplication.getMemoryOverviewController().refresh();
+            JArmEmuApplication.getSymbolsController().refresh();
+            JArmEmuApplication.getLabelsController().refresh();
         }
 
         private boolean isIntervalTooShort() {
@@ -619,11 +616,11 @@ public class ExecutionWorker extends AbstractJArmEmuModule {
         }
 
         private void attachControllers() {
-            application.getRegistersController().attach(application.getCodeInterpreter().stateContainer);
-            application.getMemoryDetailsController().attach(application.getCodeInterpreter().stateContainer);
-            application.getMemoryOverviewController().attach(application.getCodeInterpreter().stateContainer);
-            application.getSymbolsController().attach(application.getCodeInterpreter().stateContainer);
-            application.getLabelsController().attach(application.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getRegistersController().attach(JArmEmuApplication.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getMemoryDetailsController().attach(JArmEmuApplication.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getMemoryOverviewController().attach(JArmEmuApplication.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getSymbolsController().attach(JArmEmuApplication.getCodeInterpreter().stateContainer);
+            JArmEmuApplication.getLabelsController().attach(JArmEmuApplication.getCodeInterpreter().stateContainer);
         }
     }
 }

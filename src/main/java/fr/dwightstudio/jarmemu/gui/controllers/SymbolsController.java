@@ -33,6 +33,7 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.converters.FileNameStringConverter;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -48,7 +49,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class SymbolsController extends AbstractJArmEmuModule {
+public class SymbolsController implements Initializable {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
@@ -57,11 +58,6 @@ public class SymbolsController extends AbstractJArmEmuModule {
     private TableColumn<SymbolView, Number> col2;
     private ObservableList<SymbolView> views;
     private TableView<SymbolView> symbolTable;
-
-
-    public SymbolsController(JArmEmuApplication application) {
-        super(application);
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -75,7 +71,7 @@ public class SymbolsController extends AbstractJArmEmuModule {
         col0.setPrefWidth(80);
         col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col0.setCellValueFactory(c -> c.getValue().getFileIndexProperty());
-        col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter(getApplication())));
+        col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter()));
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.name"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
@@ -98,7 +94,7 @@ public class SymbolsController extends AbstractJArmEmuModule {
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col2.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
+        col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         symbolTable = new TableView<>();
         views = symbolTable.getItems();
@@ -123,7 +119,7 @@ public class SymbolsController extends AbstractJArmEmuModule {
         AnchorPane.setBottomAnchor(symbolTable, 0d);
         AnchorPane.setLeftAnchor(symbolTable, 0d);
 
-        getController().symbolsPane.getChildren().add(symbolTable);
+        JArmEmuApplication.getController().symbolsPane.getChildren().add(symbolTable);
     }
 
     /**

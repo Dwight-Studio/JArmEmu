@@ -29,23 +29,18 @@ import javafx.util.StringConverter;
 
 public class FileNameStringConverter extends StringConverter<Number> {
 
-    private final EditorController controller;
-
-    public FileNameStringConverter(JArmEmuApplication application) {
-        this.controller = application.getEditorController();
-    }
 
     @Override
     public String toString(Number number) {
-        return controller.getFileEditors().get((Integer) number).getFileName();
+        return JArmEmuApplication.getEditorController().getFileEditors().get((Integer) number).getFileName();
     }
 
     @Override
     public Number fromString(String s) {
         int rtn = -1;
 
-        for (int i = 0 ; i < controller.getFileEditors().size() ; i++) {
-            if (controller.getFileEditors().get(i).getFileName().equals(s)) {
+        for (int i = 0 ; i < JArmEmuApplication.getEditorController().getFileEditors().size() ; i++) {
+            if (JArmEmuApplication.getEditorController().getFileEditors().get(i).getFileName().equals(s)) {
                 rtn = i;
                 break;
             }

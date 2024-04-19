@@ -112,7 +112,7 @@ public class MemoryDetailsController implements Initializable {
         col1.setPrefWidth(80);
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col1.setCellFactory(ValueTableCell.factoryDynamicFormat(JArmEmuApplication.getInstance()));
+        col1.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col2 = new TableColumn<>("ASCII");
         col2.setGraphic(new FontIcon(Material2OutlinedMZ.SHORT_TEXT));
@@ -134,7 +134,7 @@ public class MemoryDetailsController implements Initializable {
         col3.setPrefWidth(80);
         col3.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col3.setCellValueFactory(c -> c.getValue().getByte0Property());
-        col3.setCellFactory(ValueTableCell.factoryStaticBin(JArmEmuApplication.getInstance()));
+        col3.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col4 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 2));
         col4.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
@@ -145,7 +145,7 @@ public class MemoryDetailsController implements Initializable {
         col4.setPrefWidth(80);
         col4.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col4.setCellValueFactory(c -> c.getValue().getByte1Property());
-        col4.setCellFactory(ValueTableCell.factoryStaticBin(JArmEmuApplication.getInstance()));
+        col4.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col5 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 1));
         col5.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
@@ -156,7 +156,7 @@ public class MemoryDetailsController implements Initializable {
         col5.setPrefWidth(80);
         col5.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col5.setCellValueFactory(c -> c.getValue().getByte2Property());
-        col5.setCellFactory(ValueTableCell.factoryStaticBin(JArmEmuApplication.getInstance()));
+        col5.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col6 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 0));
         col6.setGraphic(new FontIcon(Material2OutlinedAL.LOOKS_ONE));
@@ -167,7 +167,7 @@ public class MemoryDetailsController implements Initializable {
         col6.setPrefWidth(80);
         col6.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col6.setCellValueFactory(c -> c.getValue().getByte3Property());
-        col6.setCellFactory(ValueTableCell.factoryStaticBin(JArmEmuApplication.getInstance()));
+        col6.setCellFactory(ValueTableCell.factoryStaticBin());
 
         memoryTable = new TableView<>();
         views = memoryTable.getItems();
@@ -232,7 +232,7 @@ public class MemoryDetailsController implements Initializable {
 
         JArmEmuApplication.getController().memoryDetailsAddressField.textProperty().addListener(((observableValue, oldVal, newVal) -> {
             if (JArmEmuApplication.getController().memoryDetailsAddressField.focusedProperty().get() && newVal.equalsIgnoreCase("")) {
-                Bounds bounds = JArmEmuApplication.getController().memoryDetailsAddressField.localToScreen(getController().memoryDetailsAddressField.getBoundsInLocal());
+                Bounds bounds = JArmEmuApplication.getController().memoryDetailsAddressField.localToScreen(JArmEmuApplication.getController().memoryDetailsAddressField.getBoundsInLocal());
                 hintPop.show(JArmEmuApplication.getController().memoryDetailsAddressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
             } else {
                 hintPop.hide();
@@ -241,7 +241,7 @@ public class MemoryDetailsController implements Initializable {
 
         JArmEmuApplication.getController().memoryDetailsAddressField.focusedProperty().addListener(((observableValue, oldVal, newVal) -> {
             if (newVal && JArmEmuApplication.getController().memoryDetailsAddressField.getText().equalsIgnoreCase("")) {
-                Bounds bounds = JArmEmuApplication.getController().memoryDetailsAddressField.localToScreen(getController().memoryDetailsAddressField.getBoundsInLocal());
+                Bounds bounds = JArmEmuApplication.getController().memoryDetailsAddressField.localToScreen(JArmEmuApplication.getController().memoryDetailsAddressField.getBoundsInLocal());
                 hintPop.show(JArmEmuApplication.getController().memoryDetailsAddressField, bounds.getMinX() - 10, bounds.getCenterY() - 30);
             }
         }));

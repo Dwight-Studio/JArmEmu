@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerAddressConverter;
 import fr.dwightstudio.jarmemu.util.converters.SpinnerStringConverter;
 import javafx.beans.value.ChangeListener;
+import javafx.fxml.Initializable;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
@@ -42,7 +43,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
-public class SettingsController extends AbstractJArmEmuModule {
+public class SettingsController implements Initializable {
 
     public static final ChangeListener<Toggle> PREVENT_UNSELECTION = (obs, oldVal, newVal) -> {
         if (newVal == null) {
@@ -120,12 +121,6 @@ public class SettingsController extends AbstractJArmEmuModule {
     private ToggleButton[] parserToggles;
     private ToggleButton[] themeToggles;
 
-
-    public SettingsController(JArmEmuApplication application) {
-        super(application);
-        initiated = false;
-    }
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -140,17 +135,17 @@ public class SettingsController extends AbstractJArmEmuModule {
         symbolsAddressValue.setConverter(new SpinnerAddressConverter(symbolsAddressValue));
         maxNotificationValue.setConverter(new SpinnerStringConverter(maxNotificationValue));
 
-        getController().settingsSimInterval.setValueFactory(simIntervalValue);
-        getController().settingsStackAddress.setValueFactory(stackAddressValue);
-        getController().settingsSymbolsAddress.setValueFactory(symbolsAddressValue);
-        getController().settingsMaxNotification.setValueFactory(maxNotificationValue);
+        JArmEmuApplication.getController().settingsSimInterval.setValueFactory(simIntervalValue);
+        JArmEmuApplication.getController().settingsStackAddress.setValueFactory(stackAddressValue);
+        JArmEmuApplication.getController().settingsSymbolsAddress.setValueFactory(symbolsAddressValue);
+        JArmEmuApplication.getController().settingsMaxNotification.setValueFactory(maxNotificationValue);
 
         // Gestion des ToggleGroups
         parserGroup = new ToggleGroup();
         themeGroup = new ToggleGroup();
 
-        parserToggles = new ToggleButton[] {getController().settingsRegex, getController().settingsLegacy};
-        themeToggles = new ToggleButton[] {getController().settingsDark, getController().settingsLight};
+        parserToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsRegex, JArmEmuApplication.getController().settingsLegacy};
+        themeToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsDark, JArmEmuApplication.getController().settingsLight};
 
         parserGroup.getToggles().addAll(Arrays.asList(parserToggles));
         themeGroup.getToggles().addAll(Arrays.asList(themeToggles));
@@ -159,38 +154,38 @@ public class SettingsController extends AbstractJArmEmuModule {
         themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
         // Gestion des ToggleSwitches
-        getController().manualBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setManualBreak(newVal));
-        getController().codeBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setCodeBreak(newVal));
-        getController().autoBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoBreak(newVal));
-        getController().memoryAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setMemoryAlignBreak(newVal));
-        getController().stackAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setStackAlignBreak(newVal));
-        getController().programAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setProgramAlignBreak(newVal));
-        getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreak(newVal));
-        getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreak(newVal));
-        getController().followSPSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFollowSPSetting(newVal));
-        getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHighlightUpdates(newVal));
+        JArmEmuApplication.getController().manualBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setManualBreak(newVal));
+        JArmEmuApplication.getController().codeBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setCodeBreak(newVal));
+        JArmEmuApplication.getController().autoBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoBreak(newVal));
+        JArmEmuApplication.getController().memoryAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setMemoryAlignBreak(newVal));
+        JArmEmuApplication.getController().stackAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setStackAlignBreak(newVal));
+        JArmEmuApplication.getController().programAlignBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setProgramAlignBreak(newVal));
+        JArmEmuApplication.getController().functionNestingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFunctionNestingBreak(newVal));
+        JArmEmuApplication.getController().readOnlyWritingBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setReadOnlyWritingBreak(newVal));
+        JArmEmuApplication.getController().followSPSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setFollowSPSetting(newVal));
+        JArmEmuApplication.getController().updateSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setHighlightUpdates(newVal));
 
         // Gestion des ChoiceBoxes
-        getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
+        JArmEmuApplication.getController().settingsFormat.getItems().addAll(Arrays.asList(DATA_FORMAT_LABEL_DICT));
 
-        getController().settingsFormat.valueProperty().addListener((obs, oldVal, newVal) -> {
+        JArmEmuApplication.getController().settingsFormat.valueProperty().addListener((obs, oldVal, newVal) -> {
             for (int i = 0 ; i < DATA_FORMAT_LABEL_DICT.length ; i++) {
                 if (DATA_FORMAT_LABEL_DICT[i].equals(newVal)) {
                     setDataFormat(i);
-                    if (initiated) getExecutionWorker().updateFormat();
+                    if (initiated) JArmEmuApplication.getExecutionWorker().updateFormat();
                 }
             }
         });
 
-        getController().settingsFamily.getItems().addAll(Arrays.asList(THEME_FAMILY_LABEL_DICT));
+        JArmEmuApplication.getController().settingsFamily.getItems().addAll(Arrays.asList(THEME_FAMILY_LABEL_DICT));
 
-        getController().settingsFamily.valueProperty().addListener((obs, oldVal, newVal) -> {
+        JArmEmuApplication.getController().settingsFamily.valueProperty().addListener((obs, oldVal, newVal) -> {
             for (int i = 0 ; i < THEME_FAMILY_LABEL_DICT.length ; i++) {
                 if (THEME_FAMILY_LABEL_DICT[i].equals(newVal)) setThemeFamily(i);
             }
         });
 
-        String path = getApplication().getClass().getPackage().getName().replaceAll("\\.", "/");
+        String path = JArmEmuApplication.class.getPackage().getName().replaceAll("\\.", "/");
         logger.info("Setting preferences node to '" + path + "'");
         preferences = Preferences.userRoot().node(path);
 
@@ -224,22 +219,22 @@ public class SettingsController extends AbstractJArmEmuModule {
         themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
         // ToggleSwitches
-        getController().manualBreakSwitch.setSelected(getManualBreak());
-        getController().codeBreakSwitch.setSelected(getCodeBreak());
-        getController().autoBreakSwitch.setSelected(getAutoBreak());
-        getController().memoryAlignBreakSwitch.setSelected(getMemoryAlignBreak());
-        getController().stackAlignBreakSwitch.setSelected(getStackAlignBreak());
-        getController().programAlignBreakSwitch.setSelected(getProgramAlignBreak());
-        getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreak());
-        getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreak());
-        getController().followSPSwitch.setSelected(getFollowSPSetting());
-        getController().updateSwitch.setSelected(getHighlightUpdates());
+        JArmEmuApplication.getController().manualBreakSwitch.setSelected(getManualBreak());
+        JArmEmuApplication.getController().codeBreakSwitch.setSelected(getCodeBreak());
+        JArmEmuApplication.getController().autoBreakSwitch.setSelected(getAutoBreak());
+        JArmEmuApplication.getController().memoryAlignBreakSwitch.setSelected(getMemoryAlignBreak());
+        JArmEmuApplication.getController().stackAlignBreakSwitch.setSelected(getStackAlignBreak());
+        JArmEmuApplication.getController().programAlignBreakSwitch.setSelected(getProgramAlignBreak());
+        JArmEmuApplication.getController().functionNestingBreakSwitch.setSelected(getFunctionNestingBreak());
+        JArmEmuApplication.getController().readOnlyWritingBreakSwitch.setSelected(getReadOnlyWritingBreak());
+        JArmEmuApplication.getController().followSPSwitch.setSelected(getFollowSPSetting());
+        JArmEmuApplication.getController().updateSwitch.setSelected(getHighlightUpdates());
 
         // ChoiceBoxes
-        getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
-        getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
+        JArmEmuApplication.getController().settingsFamily.setValue(THEME_FAMILY_LABEL_DICT[getThemeFamily()]);
+        JArmEmuApplication.getController().settingsFormat.setValue(DATA_FORMAT_LABEL_DICT[getDataFormat()]);
 
-        if (initiated) getController().applyLayout(getLayout());
+        if (initiated) JArmEmuApplication.getController().applyLayout(getLayout());
     }
 
     /**
@@ -302,7 +297,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     private void setSimulationInterval(int nb) {
         if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
-            getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.simulationInterval.message", ExecutionWorker.UPDATE_THRESHOLD));
+            JArmEmuApplication.getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.simulationInterval.message", ExecutionWorker.UPDATE_THRESHOLD));
         }
         preferences.putInt(SIMULATION_INTERVAL_KEY, nb);
     }
@@ -313,7 +308,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setSourceParser(int nb) {
         preferences.putInt(SOURCE_PARSER_KEY, nb);
-        application.newSourceParser();
+        JArmEmuApplication.getInstance().newSourceParser();
     }
 
     public int getSourceParserSetting() {
@@ -358,7 +353,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setThemeVariation(int nb) {
         preferences.putInt(THEME_VARIATION_KEY, nb);
-        getApplication().updateUserAgentStyle(nb, this.getThemeFamily());
+        JArmEmuApplication.getInstance().updateUserAgentStyle(nb, this.getThemeFamily());
     }
 
     public int getThemeFamily() {
@@ -367,7 +362,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setThemeFamily(int nb) {
         preferences.putInt(THEME_FAMILY_KEY, nb);
-        getApplication().updateUserAgentStyle(this.getThemeVariation(), nb);
+        JArmEmuApplication.getInstance().updateUserAgentStyle(this.getThemeVariation(), nb);
     }
 
     public boolean getManualBreak() {
@@ -391,11 +386,11 @@ public class SettingsController extends AbstractJArmEmuModule {
     }
 
     public void setAutoBreak(boolean b) {
-        getController().memoryAlignBreakSwitch.setDisable(!b);
-        getController().stackAlignBreakSwitch.setDisable(!b);
-        getController().programAlignBreakSwitch.setDisable(!b);
-        getController().functionNestingBreakSwitch.setDisable(!b);
-        getController().readOnlyWritingBreakSwitch.setDisable(!b);
+        JArmEmuApplication.getController().memoryAlignBreakSwitch.setDisable(!b);
+        JArmEmuApplication.getController().stackAlignBreakSwitch.setDisable(!b);
+        JArmEmuApplication.getController().programAlignBreakSwitch.setDisable(!b);
+        JArmEmuApplication.getController().functionNestingBreakSwitch.setDisable(!b);
+        JArmEmuApplication.getController().readOnlyWritingBreakSwitch.setDisable(!b);
         preferences.putBoolean(AUTO_BREAK_KEY, b);
     }
 
@@ -469,7 +464,7 @@ public class SettingsController extends AbstractJArmEmuModule {
 
     public void setMaxNotification(int i) {
         if (i == 0) {
-            getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.maxNotification.message"));
+            JArmEmuApplication.getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.maxNotification.message"));
         }
         preferences.putInt(MAX_NOTIFICATION_KEY, i);
     }

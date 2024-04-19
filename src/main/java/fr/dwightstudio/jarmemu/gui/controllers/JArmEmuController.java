@@ -150,12 +150,10 @@ public class JArmEmuController implements Initializable {
         mainPane.getChildren().addAll(modalPaneBack, modalPaneMiddle, modalPaneFront);
 
         JArmEmuApplication.getEditorController().initialize(url, resourceBundle);
-        JArmEmuApplication.getMainMenuController().initialize(url, resourceBundle);
         JArmEmuApplication.getMemoryDetailsController().initialize(url, resourceBundle);
         JArmEmuApplication.getMemoryOverviewController().initialize(url, resourceBundle);
         JArmEmuApplication.getRegistersController().initialize(url, resourceBundle);
         JArmEmuApplication.getSettingsController().initialize(url, resourceBundle);
-        JArmEmuApplication.getSimulationMenuController().initialize(url, resourceBundle);
         JArmEmuApplication.getStackController().initialize(url, resourceBundle);
         JArmEmuApplication.getSymbolsController().initialize(url, resourceBundle);
         JArmEmuApplication.getLabelsController().initialize(url, resourceBundle);

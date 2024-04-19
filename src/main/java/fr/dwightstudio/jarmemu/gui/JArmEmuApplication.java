@@ -132,7 +132,7 @@ public class JArmEmuApplication extends Application {
         labelsController = new LabelsController();
         dialogs = new JArmEmuDialogs();
 
-        fxmlLoader.setController(new JArmEmuController(this));
+        fxmlLoader.setController(new JArmEmuController());
         controller = fxmlLoader.getController();
 
         fxmlLoader.setResources(BUNDLE);
@@ -149,9 +149,9 @@ public class JArmEmuApplication extends Application {
         }
 
         // Autres
-        shortcutHandler = new ShortcutHandler(this);
+        shortcutHandler = new ShortcutHandler();
         codeInterpreter = new CodeInterpreter();
-        executionWorker = new ExecutionWorker(this);
+        executionWorker = new ExecutionWorker();
 
         for (String fontURL : FONTS_URL) {
             Font font = Font.loadFont(getResourceAsStream("fonts/" + fontURL), 14);

@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.sim.entity.Register;
 import fr.dwightstudio.jarmemu.sim.entity.StateContainer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -49,7 +50,7 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
-public class StackController extends AbstractJArmEmuModule {
+public class StackController implements Initializable {
 
     private static final int MAX_NUMBER = 500;
 
@@ -59,11 +60,6 @@ public class StackController extends AbstractJArmEmuModule {
     private TableColumn<MemoryWordView, Number> col2;
     private ObservableList<MemoryWordView> views;
     private TableView<MemoryWordView> stackTable;
-
-
-    public StackController(JArmEmuApplication application) {
-        super(application);
-    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -98,7 +94,7 @@ public class StackController extends AbstractJArmEmuModule {
         col2.setPrefWidth(80);
         col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
-        col2.setCellFactory(ValueTableCell.factoryDynamicFormat(application));
+        col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         stackTable = new TableView<>();
         views = stackTable.getItems();
@@ -123,7 +119,7 @@ public class StackController extends AbstractJArmEmuModule {
         AnchorPane.setBottomAnchor(stackTable, 0d);
         AnchorPane.setLeftAnchor(stackTable, 0d);
 
-        getController().stackPane.getChildren().add(stackTable);
+        JArmEmuApplication.getController().stackPane.getChildren().add(stackTable);
     }
 
     private ArrayList<Integer> getLowerValues(StateContainer container) {
@@ -190,7 +186,7 @@ public class StackController extends AbstractJArmEmuModule {
                 stackTable.sort();
                 col1.setSortable(false);
 
-                if (getSettingsController().getFollowSPSetting()) {
+                if (JArmEmuApplication.getSettingsController().getFollowSPSetting()) {
                     for (int i = 0; i < views.size(); i++) {
                         if (views.get(i).getCursorProperty().get()) {
                             stackTable.scrollTo(i);

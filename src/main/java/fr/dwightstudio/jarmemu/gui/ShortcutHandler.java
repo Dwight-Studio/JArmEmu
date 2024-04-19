@@ -48,13 +48,13 @@ public class ShortcutHandler {
                 }
             } else {
                 switch (event.getCode()) {
-                    case F2 -> getSimulationMenuController().onSimulate();
-                    case F3 -> getSimulationMenuController().onStepInto();
-                    case F4 -> getSimulationMenuController().onStepOver();
-                    case F5 -> getSimulationMenuController().onContinue();
-                    case F6 -> getSimulationMenuController().onPause();
-                    case F7 -> getSimulationMenuController().onStop();
-                    case F8 -> getSimulationMenuController().onRestart();
+                    case F2 -> JArmEmuApplication.getSimulationMenuController().onSimulate();
+                    case F3 -> JArmEmuApplication.getSimulationMenuController().onStepInto();
+                    case F4 -> JArmEmuApplication.getSimulationMenuController().onStepOver();
+                    case F5 -> JArmEmuApplication.getSimulationMenuController().onContinue();
+                    case F6 -> JArmEmuApplication.getSimulationMenuController().onPause();
+                    case F7 -> JArmEmuApplication.getSimulationMenuController().onStop();
+                    case F8 -> JArmEmuApplication.getSimulationMenuController().onRestart();
                 }
             }
         } catch (IndexOutOfBoundsException | NullPointerException ignored) {}
