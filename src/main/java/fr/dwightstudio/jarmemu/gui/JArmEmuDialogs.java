@@ -125,6 +125,7 @@ public class JArmEmuDialogs extends AbstractJArmEmuModule {
         });
 
         getController().openDialogFront(dialog);
+        getApplication().stage.requestFocus();
 
         return rtn;
     }

@@ -301,7 +301,13 @@ public class RealTimeParser extends RealTimeAnalyzer {
                     try {
                         final int finalLine = line;
                         StyleSpans<Collection<String>> spans = spansBuilder.create();
-                        Platform.runLater(() -> editor.getCodeArea().setStyleSpans(finalLine, 0, spans));
+                        Platform.runLater(() -> {
+                            try {
+                                editor.getCodeArea().setStyleSpans(finalLine, 0, spans);
+                            } catch (IndexOutOfBoundsException e) {
+                                logger.warning("Wrong StyleSpans length for line " + finalLine);
+                            }
+                        });
                     } catch (IllegalStateException ignored) {
                     }
                 } catch (Exception e) {
