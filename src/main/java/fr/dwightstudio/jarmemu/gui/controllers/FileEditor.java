@@ -155,10 +155,11 @@ public class FileEditor {
         codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE ->
         {
             if (KE.getCode() == KeyCode.ENTER) {
-                int caretPosition = codeArea.getCaretPosition();
-                int currentParagraph = codeArea.getCurrentParagraph();
-                Matcher m0 = whiteSpace.matcher( codeArea.getParagraph( currentParagraph-1 ).getSegments().get( 0 ) );
-                if ( m0.find() ) Platform.runLater( () -> codeArea.insertText( caretPosition, m0.group() ) );
+                String add = getRealTimeParser().lineDefinesLabel(codeArea.getCurrentParagraph() - 1) ? "\t" : "";
+
+                Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph()-1).getSegments().getFirst());
+                if (matcher.find()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + add));
+                else if (!add.isEmpty()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), add));
             } else if (KE.getCode() == KeyCode.TAB && KE.isShiftDown()) {
                 int parN = codeArea.getCurrentParagraph();
                 Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);

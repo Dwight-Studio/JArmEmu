@@ -29,9 +29,11 @@ import fr.dwightstudio.jarmemu.asm.instruction.Condition;
 import fr.dwightstudio.jarmemu.asm.instruction.DataMode;
 import fr.dwightstudio.jarmemu.asm.instruction.Instruction;
 import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
@@ -80,6 +82,7 @@ public class KeywordHighlighter extends RealTimeParser {
                     + "|(?<BRACE>" + BRACE_PATTERN + ")"
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
     );
+    private static final Pattern LABEL_COMPILED_PATTERN = Pattern.compile(LABEL_PATTERN);
 
     private final FileEditor editor;
     private final BlockingQueue<Integer> queue;
@@ -165,6 +168,12 @@ public class KeywordHighlighter extends RealTimeParser {
     @Override
     public Set<String> getSymbols() {
         return Set.of();
+    }
+
+    @Override
+    public boolean lineDefinesLabel(int currentParagraph) {
+        CodeArea codeArea = JArmEmuApplication.getEditorController().currentFileEditor().getCodeArea();
+        return LABEL_COMPILED_PATTERN.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph()).getText()).find();
     }
 
     /**

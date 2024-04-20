@@ -96,13 +96,13 @@ public class SmartHighlighter extends RealTimeParser {
 
     private static final Object LOCK = new Object();
     private static HashMap<FilePos, String> globals;
-    private HashMap<Integer, String> labels;
-    private HashMap<Integer, String> symbols;
-    private HashMap<Integer, Set<String>> references;
+    private final HashMap<Integer, String> labels;
+    private final HashMap<Integer, String> symbols;
+    private final HashMap<Integer, Set<String>> references;
     private String addGlobals;
     private String addLabels;
     private String addSymbols;
-    private HashSet<String> addReferences;
+    private final HashSet<String> addReferences;
 
     private Context context;
     private SubContext subContext;
@@ -936,6 +936,11 @@ public class SmartHighlighter extends RealTimeParser {
     @Override
     public Set<String> getSymbols() {
         return new HashSet<>(symbols.values());
+    }
+
+    @Override
+    public boolean lineDefinesLabel(int line) {
+        return labels.containsKey(line);
     }
 
     @Override

@@ -31,4 +31,6 @@ public abstract class RealTimeParser extends Thread {
     public abstract Set<String> getAccessibleLabels();
 
     public abstract Set<String> getSymbols();
+
+    public abstract boolean lineDefinesLabel(int currentParagraph);
 }
