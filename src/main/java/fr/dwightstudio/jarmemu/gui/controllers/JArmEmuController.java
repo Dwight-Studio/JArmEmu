@@ -62,10 +62,6 @@ public class JArmEmuController implements Initializable {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
-    private final Timeline LAYOUT_INIT_TIMELINE = new Timeline(
-            new KeyFrame(Duration.ZERO, event -> applyLayout(JArmEmuApplication.getSettingsController().getLayout())),
-            new KeyFrame(Duration.millis(500), event -> registerLayoutChangeListener())
-    );
     private final Timeline LAYOUT_SAVING_TIMELINE = new Timeline(
             new KeyFrame(Duration.millis(2000), event -> saveLayout())
     );
@@ -174,7 +170,6 @@ public class JArmEmuController implements Initializable {
 
     public void registerLayoutChangeListener() {
         logger.info("Initializing layout listeners");
-        applyLayout(JArmEmuApplication.getSettingsController().getLayout());
 
         Platform.runLater(() -> {
             JArmEmuApplication.getInstance().maximizedProperty().addListener(obs -> notifyLayoutChange());
@@ -281,14 +276,6 @@ public class JArmEmuController implements Initializable {
             logger.info("Saving layout");
             JArmEmuApplication.getSettingsController().setLayout(getLayoutJSON());
         }
-    }
-
-    /**
-     * Initialise le layout.
-     */
-    public void initLayout() {
-        logger.info("Initialising layout");
-        LAYOUT_INIT_TIMELINE.play();
     }
 
     public void openDialogFront(ModalDialog dialog) {

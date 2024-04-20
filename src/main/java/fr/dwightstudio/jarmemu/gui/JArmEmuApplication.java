@@ -33,6 +33,8 @@ import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.gui.controllers.AutocompletionController;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -42,6 +44,7 @@ import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -94,6 +97,14 @@ public class JArmEmuApplication extends Application {
     private static CodeInterpreter codeInterpreter;
     private static ExecutionWorker executionWorker;
     private static JArmEmuDialogs dialogs;
+
+    // Starting logic
+    private final Timeline STARTING_TIMELINE = new Timeline(
+            new KeyFrame(Duration.millis(1000), actionEvent -> closeSplashScreen()),
+            new KeyFrame(Duration.millis(3000), event -> controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout())),
+            new KeyFrame(Duration.millis(4000), event -> controller.registerLayoutChangeListener()),
+            new KeyFrame(Duration.millis(4000), event -> logger.info("Startup finished"))
+    );
 
 
     public Theme theme;
@@ -182,16 +193,18 @@ public class JArmEmuApplication extends Application {
         getSimulationMenuController().onStop();
 
         updateTitle();
+        status.set(Status.EDITING);
         stage.setScene(scene);
         stage.show();
 
+        controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
+        STARTING_TIMELINE.play();
+    }
+
+    public void closeSplashScreen() {
         if (JArmEmuLauncher.splashScreen != null) {
             JArmEmuLauncher.splashScreen.close();
         }
-
-        status.set(Status.EDITING);
-        getController().initLayout();
-        logger.info("Startup finished");
     }
 
     public void updateTitle() {
