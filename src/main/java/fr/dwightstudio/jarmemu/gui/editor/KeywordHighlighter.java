@@ -38,6 +38,7 @@ import org.reactfx.Subscription;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
@@ -45,7 +46,7 @@ import java.util.regex.Pattern;
 
 import static fr.dwightstudio.jarmemu.util.EnumUtils.getFromEnum;
 
-public class DummyHighlighter extends Thread {
+public class KeywordHighlighter extends RealTimeParser {
 
     private static final String[] INSTRUCTIONS = getFromEnum(Instruction.values(), false);
     private static final String[] DIRECTIVES = ArrayUtils.addAll(getFromEnum(Directive.values(), false), getFromEnum(Section.values(), false));
@@ -75,7 +76,7 @@ public class DummyHighlighter extends Thread {
                     + "|(?<DIRECTIVE>" + DIRECTIVES_PATTERN + ")"
                     + "|(?<INSTRUCTION>" + INSTRUCTION_PATTERN + ")"
                     + "|(?<REGISTER>" + REGISTER_PATTERN + ")"
-                    + "|(?<IMM>" + IMM_PATTERN + ")"
+                    + "|(?<IMMEDIATE>" + IMM_PATTERN + ")"
                     + "|(?<BRACE>" + BRACE_PATTERN + ")"
                     + "|(?<BRACKET>" + BRACKET_PATTERN + ")"
     );
@@ -84,7 +85,7 @@ public class DummyHighlighter extends Thread {
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
 
-    public DummyHighlighter(FileEditor editor) {
+    public KeywordHighlighter(FileEditor editor) {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
         this.queue = new LinkedBlockingQueue<>();
@@ -126,7 +127,7 @@ public class DummyHighlighter extends Thread {
                             : matcher.group("REGISTER") != null ? "register"
                             : matcher.group("BRACE") != null ? "brace"
                             : matcher.group("BRACKET") != null ? "bracket"
-                            : matcher.group("IMM") != null ? "imm" : null;
+                            : matcher.group("IMMEDIATE") != null ? "immediate" : null;
 
                     spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
                     spansBuilder.add(Collections.singleton(styleClass), matcher.end() - matcher.start());
@@ -154,6 +155,16 @@ public class DummyHighlighter extends Thread {
      */
     public void markDirty(int line) {
         this.queue.add(line);
+    }
+
+    @Override
+    public Set<String> getAccessibleLabels() {
+        return Set.of();
+    }
+
+    @Override
+    public Set<String> getSymbols() {
+        return Set.of();
     }
 
     /**

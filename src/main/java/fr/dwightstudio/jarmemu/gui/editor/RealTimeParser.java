@@ -29,4 +29,6 @@ public abstract class RealTimeParser extends Thread {
      * @return les labels accessibles dans ce fichier
      */
     public abstract Set<String> getAccessibleLabels();
+
+    public abstract Set<String> getSymbols();
 }

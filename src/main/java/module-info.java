@@ -19,6 +19,7 @@ module fr.dwightstudio.jarmemu {
     requires org.apache.commons.collections4;
     requires org.json;
     requires commons.collections;
+    requires velocity.tools;
 
     exports fr.dwightstudio.jarmemu;
     exports fr.dwightstudio.jarmemu.gui;

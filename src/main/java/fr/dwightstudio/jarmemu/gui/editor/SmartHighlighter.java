@@ -36,6 +36,7 @@ import fr.dwightstudio.jarmemu.util.RegisterUtils;
 import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.velocity.tools.generic.ClassTool;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 import org.fxmisc.richtext.model.TwoDimensional;
@@ -105,6 +106,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     private Context context;
     private SubContext subContext;
+    private int contextLength;
     private String text;
     private int cursorPos;
     private StyleSpansBuilder<Collection<String>> spansBuilder;
@@ -152,6 +154,7 @@ public class SmartHighlighter extends RealTimeParser {
 
         context = Context.NONE;
         subContext = SubContext.NONE;
+        contextLength = 0;
         spansBuilder = new StyleSpansBuilder<>();
         command = "";
         argType = "";
@@ -180,7 +183,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                         if (cursorPos <= 0) {
                             cursorPos = Integer.MAX_VALUE;
-                            JArmEmuApplication.getAutocompletionController().update(editor, context, subContext, command, argType, bracket, brace);
+                            JArmEmuApplication.getAutocompletionController().update(editor, context, subContext, contextLength, command, argType, bracket, brace);
                         }
 
                         if (text.isEmpty()) break;
@@ -216,27 +219,15 @@ public class SmartHighlighter extends RealTimeParser {
                                     continue;
                                 }
 
-                                if (matchCondition()) continue;
-                                if (matchFlags()) continue;
-                            }
+                                switch (subContext) {
+                                    case NONE -> {
+                                        if (matchCondition()) continue;
+                                        if (matchFlags()) continue;
+                                    }
 
-                            case CONDITION -> {
-                                if (matchBlank()) {
-                                    context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                    instruction = Instruction.valueOf(command.toUpperCase());
-                                    argType = instruction.getArgumentType(context.getIndex());
-                                    continue;
-                                }
-
-                                if (matchFlags()) continue;
-                            }
-
-                            case FLAGS -> {
-                                if (matchBlank()) {
-                                    context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                    instruction = Instruction.valueOf(command.toUpperCase());
-                                    argType = instruction.getArgumentType(context.getIndex());
-                                    continue;
+                                    case CONDITION -> {
+                                        if (matchFlags()) continue;
+                                    }
                                 }
                             }
 
@@ -378,6 +369,7 @@ public class SmartHighlighter extends RealTimeParser {
         if (matcher.find()) {
             command = matcher.group();
             context = Context.INSTRUCTION;
+            subContext = SubContext.NONE;
             tag("instruction", matcher);
             return true;
         }
@@ -389,7 +381,7 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = CONDITION_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            context = Context.CONDITION;
+            subContext = SubContext.CONDITION;
             tag("condition", matcher);
             return true;
         }
@@ -401,7 +393,7 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = FLAGS_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            context = Context.FLAGS;
+            subContext = SubContext.FLAGS;
             tag("flags", matcher);
             return true;
         }
@@ -676,9 +668,11 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private boolean matchLabelArgument() {
+        if (subContext == SubContext.LABEL_REF) return false;
         Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            subContext = SubContext.LABEL_REF;
             String label = matcher.group().toUpperCase();
 
             addReferences.add(label);
@@ -851,45 +845,42 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private void tag(String highlight, Matcher matcher) {
-        int end = matcher.end();
-        addSpan(Collections.singleton(highlight), end);
-        find.replaceAll(f -> f.offset(end));
+        contextLength = matcher.end();
+        addSpan(Collections.singleton(highlight), contextLength);
+        find.replaceAll(f -> f.offset(contextLength));
         find.removeIf(Objects::isNull);
-        text = text.substring(end);
-        cursorPos -= end;
+        text = text.substring(contextLength);
+        cursorPos -= contextLength;
     }
 
     private void tagBlank(Matcher matcher) {
-        int end = matcher.end();
-        addSpan(Collections.emptyList(), end);
-        find.replaceAll(f -> f.offset(end));
+        contextLength = matcher.end();
+        addSpan(Collections.emptyList(), contextLength);
+        find.replaceAll(f -> f.offset(contextLength));
         find.removeIf(Objects::isNull);
-        text = text.substring(end);
-        cursorPos -= end;
+        text = text.substring(contextLength);
+        cursorPos -= contextLength;
     }
 
     private void tagError(String highlight, Matcher matcher) {
-        int end = matcher.end();
-        addSpan(List.of(highlight, "error-secondary"), end);
-        find.replaceAll(f -> f.offset(end));
+        contextLength = matcher.end();
+        addSpan(List.of(highlight, "error-secondary"), contextLength);
+        find.replaceAll(f -> f.offset(contextLength));
         find.removeIf(Objects::isNull);
-        text = text.substring(end);
-        cursorPos -= end;
+        text = text.substring(contextLength);
+        cursorPos -= contextLength;
     }
 
     private void tagError() {
-        context = Context.ERROR;
-        subContext = SubContext.NONE;
-
         Matcher matcher = ERROR_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            int end = matcher.end();
-            addSpan(Collections.singleton("error"), end);
-            find.replaceAll(f -> f.offset(end));
+            contextLength = matcher.end();
+            addSpan(Collections.singleton("error"), contextLength);
+            find.replaceAll(f -> f.offset(contextLength));
             find.removeIf(Objects::isNull);
-            text = text.substring(end);
-            cursorPos -= end;
+            text = text.substring(contextLength);
+            cursorPos -= contextLength;
         } else {
             matcher = GENERAL_SEPARATOR_PATTERN.matcher(text);
 
@@ -940,6 +931,11 @@ public class SmartHighlighter extends RealTimeParser {
         Set<String> rtn = new HashSet<>(labels.values());
         rtn.addAll(globals.values());
         return rtn;
+    }
+
+    @Override
+    public Set<String> getSymbols() {
+        return new HashSet<>(symbols.values());
     }
 
     @Override

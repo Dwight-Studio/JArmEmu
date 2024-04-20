@@ -237,7 +237,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
             lineNo.setOnMouseExited(event -> {
 
                 if (!breakpoint) {
-                    lineNo.setText(String.format("%4d", line));
+                    lineNo.setText(String.format("%4d", line + 1));
                     lineNo.getStyleClass().clear();
                     lineNo.getStyleClass().add("lineno");
                 }
@@ -307,7 +307,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 lineNo.getStyleClass().clear();
                 lineNo.getStyleClass().add("breakpoint");
             } else {
-                lineNo.setText(String.format("%4d", line));
+                lineNo.setText(String.format("%4d", line + 1));
                 lineNo.getStyleClass().clear();
                 lineNo.getStyleClass().add("lineno");
             }

@@ -758,26 +758,4 @@ public class FileEditor {
 
         previousFind = newFinds;
     }
-
-    /**
-     * @return renvoie le mot en cours d'écriture
-     */
-    public String getCurrentWord() {
-        String text = codeArea.getParagraph(codeArea.getCurrentParagraph()).getText();
-        int pos = codeArea.getCaretColumn();
-
-        Matcher matcher = Pattern.compile("\\w+").matcher(text);
-
-        while (matcher.find()) {
-            if (matcher.end() >= pos) {
-                if (matcher.start() <= pos) {
-                    return text.substring(matcher.start(), matcher.end());
-                }
-
-                break;
-            }
-        }
-
-        return "";
-    }
 }

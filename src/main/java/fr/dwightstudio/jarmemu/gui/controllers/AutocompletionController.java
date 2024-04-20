@@ -4,7 +4,10 @@ import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
+import fr.dwightstudio.jarmemu.asm.instruction.Condition;
+import fr.dwightstudio.jarmemu.asm.instruction.DataMode;
 import fr.dwightstudio.jarmemu.asm.instruction.Instruction;
+import fr.dwightstudio.jarmemu.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.gui.editor.Context;
 import fr.dwightstudio.jarmemu.gui.editor.SubContext;
@@ -15,9 +18,7 @@ import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.Region;
 import javafx.util.Duration;
-import org.fxmisc.richtext.CodeArea;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class AutocompletionController implements Initializable {
     private FileEditor editor;
     private Context context;
     private SubContext subContext;
+    private int contextLength;
     private String command;
     private String argType;
     private boolean bracket;
@@ -59,11 +61,11 @@ public class AutocompletionController implements Initializable {
                     String selected = listView.getSelectionModel().getSelectedItem();
 
                     if (selected != null) {
-                        FileEditor editor = JArmEmuApplication.getEditorController().currentFileEditor();
-                        editor.getCodeArea().selectWord();
-                        if (editor.getCodeArea().getSelectedText().isEmpty() && !editor.getCurrentWord().isEmpty()) {
-                            editor.getCodeArea().moveTo(editor.getCodeArea().getCaretPosition() - 1);
-                            editor.getCodeArea().selectWord();
+                        if (getCurrentContext().isBlank() || context == Context.INSTRUCTION) {
+                            int pos = editor.getCodeArea().getCaretPosition();
+                            editor.getCodeArea().selectRange(pos, pos);
+                        } else {
+                            selectCurrentContext();
                         }
                         editor.getCodeArea().replaceSelection(selected);
                     }
@@ -86,14 +88,16 @@ public class AutocompletionController implements Initializable {
         openingTimeline = new Timeline(new KeyFrame(Duration.millis(250), event -> update()));
     }
 
-    public void update(FileEditor editor, Context context, SubContext subContext, String command, String argType, boolean bracket, boolean brace) {
+    public void update(FileEditor editor, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
         this.editor = editor;
         this.context = context;
         this.subContext = subContext;
+        this.contextLength = lastTagLength;
         this.command = command;
         this.argType = argType;
         this.bracket = bracket;
         this.brace = brace;
+
         openingTimeline.stop();
         openingTimeline.play();
     }
@@ -105,6 +109,38 @@ public class AutocompletionController implements Initializable {
             case NONE -> {
                 for (Instruction instruction : Instruction.values()) {
                     list.add(instruction.name());
+                }
+            }
+
+            case INSTRUCTION -> {
+                switch (subContext) {
+                    case NONE -> {
+                        for (Condition condition : Condition.values()) {
+                            list.add(condition.name());
+                        }
+
+                        for (DataMode dataMode : DataMode.values()) {
+                            list.add(dataMode.toString());
+                        }
+
+                        for (UpdateMode updateMode : UpdateMode.values()) {
+                            list.add(updateMode.name());
+                        }
+
+                        list.add("S");
+                    }
+
+                    case CONDITION -> {
+                        for (DataMode dataMode : DataMode.values()) {
+                            list.add(dataMode.toString());
+                        }
+
+                        for (UpdateMode updateMode : UpdateMode.values()) {
+                            list.add(updateMode.name());
+                        }
+
+                        list.add("S");
+                    }
                 }
             }
 
@@ -120,6 +156,7 @@ public class AutocompletionController implements Initializable {
 
                     case "ImmediateArgument", "RotatedImmediateArgument" -> {
                         if (subContext != SubContext.IMMEDIATE) list.add("#");
+                        else list.addAll(editor.getRealTimeParser().getSymbols());
                     }
 
                     case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> {
@@ -159,7 +196,9 @@ public class AutocompletionController implements Initializable {
                         }
                     }
 
-                    case "LabelArgument" -> list.addAll(editor.getRealTimeParser().getAccessibleLabels());
+                    case "LabelArgument" -> {
+                        if (subContext != SubContext.LABEL_REF) list.addAll(editor.getRealTimeParser().getAccessibleLabels());
+                    }
 
                     case "LabelOrRegisterArgument" -> {
                         list.addAll(editor.getRealTimeParser().getAccessibleLabels());
@@ -197,9 +236,11 @@ public class AutocompletionController implements Initializable {
             }
         }
 
-        String currentWord = editor.getCurrentWord();
-        list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
-        list.removeIf(s -> s.equalsIgnoreCase(currentWord));
+        String currentWord = context == Context.INSTRUCTION ? "" : getCurrentContext().strip();
+        if (!currentWord.isEmpty()) {
+            list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
+            list.removeIf(s -> s.equalsIgnoreCase(currentWord));
+        }
 
         show();
     }
@@ -225,8 +266,27 @@ public class AutocompletionController implements Initializable {
         }
     }
 
+    public String getCurrentContext() {
+        int start = editor.getCodeArea().getCaretColumn() - contextLength;
+        int stop = editor.getCodeArea().getCaretColumn();
+        if (start < 0 || stop - start <= 0) return "";
+        return editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).substring(start, stop);
+    }
+
+    public void selectCurrentContext() {
+        int start = editor.getCodeArea().getCaretColumn() - contextLength;
+        int stop = editor.getCodeArea().getCaretColumn();
+
+        if (start < 0 || stop - start <= 0) {
+            int pos = editor.getCodeArea().getCaretPosition();
+            editor.getCodeArea().selectRange(pos, pos);
+        } else {
+            int line = editor.getCodeArea().getCurrentParagraph();
+            editor.getCodeArea().selectRange(editor.getCodeArea().getAbsolutePosition(line, start), editor.getCodeArea().getAbsolutePosition(line, stop));
+        }
+    }
+
     public void scroll() {
-        System.out.println("d");
         Platform.runLater(this::show);
     }
 
