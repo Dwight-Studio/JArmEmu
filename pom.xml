@@ -30,6 +30,7 @@
     <groupId>fr.dwightstudio.jarmemu</groupId>
     <artifactId>JArmEmu</artifactId>
     <version>0.2.0</version>
+    <packaging>jar</packaging>
 
     <scm>
         <connection>scm:git:https://github.com/Dwight-Studio/JArmEmu</connection>
@@ -231,7 +232,6 @@
                             <mainClass>fr.dwightstudio.jarmemu.JArmEmuLauncher</mainClass>
                         </manifest>
                         <manifestEntries>
-                            <SplashScreen-Image>fr/dwightstudio/jarmemu/medias/splash.png</SplashScreen-Image>
                             <Application-Name>JArmEmu ${project.version}</Application-Name>
                         </manifestEntries>
                     </archive>
@@ -260,5 +260,39 @@
             </plugin>
         </plugins>
     </build>
+
+    <developers>
+        <developer>
+            <id>aleconte</id>
+            <name>Alexandre Leconte</name>
+            <email>aleconte@dwightstudio.fr</email>
+            <url>https://dwightstudio.fr/deleranax</url>
+            <organization>Dwight Studio</organization>
+            <organizationUrl>https://www.dwightstudio.fr</organizationUrl>
+            <roles>
+                <role>UX/UI designer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+            <properties>
+                <picUrl>https://static.dwightstudio.fr/dwightstudio/PERSONAL/Deleranax/LOGO.png</picUrl>
+            </properties>
+        </developer>
+
+        <developer>
+            <id>ktollemer</id>
+            <name>Kévin Tollemer</name>
+            <email>ktollemer@dwightstudio.fr</email>
+            <url>https://dwightstudio.fr/yinx</url>
+            <organization>Dwight Studio</organization>
+            <organizationUrl>https://www.dwightstudio.fr</organizationUrl>
+            <roles>
+                <role>Backend developer</role>
+            </roles>
+            <timezone>Europe/Paris</timezone>
+            <properties>
+                <picUrl>https://static.dwightstudio.fr/dwightstudio/PERSONAL/Yinx/LOGO.png</picUrl>
+            </properties>
+        </developer>
+    </developers>
 
 </project>

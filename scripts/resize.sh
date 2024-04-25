@@ -33,14 +33,14 @@ do
 	magick logo.png -resize ${x}x${x} favicon@${x}.png
 done
 
-for x in 250 200 150 125 100
+for x in 1 2
 do
-	width=$(( (x*1920)/300 ))
-	height=$(( (x*1200)/300 ))
-	if [[ $x -eq 100 ]]
+	width=$(( (x*1920)/3 ))
+	height=$(( (x*1200)/3 ))
+	if [[ $x -eq 1 ]]
 	then
-		magick splash@300pct.png -resize ${width}x${height} splash.png
+		magick splash@3x.png -resize ${width}x${height} splash.png
 	else
-		magick splash@300pct.png -resize ${width}x${height} splash@${x}pct.png
+		magick splash@3x.png -resize ${width}x${height} splash@${x}x.png
 	fi
 done

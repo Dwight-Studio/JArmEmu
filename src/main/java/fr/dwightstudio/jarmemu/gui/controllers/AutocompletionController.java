@@ -165,10 +165,6 @@ public class AutocompletionController implements Initializable {
                                 list.add(value.name());
                             }
 
-                            for (RegisterUtils value : RegisterUtils.values()) {
-                                list.add(value.name());
-                            }
-
                             list.add("#");
                         }
                     }
@@ -287,7 +283,7 @@ public class AutocompletionController implements Initializable {
     }
 
     public void scroll() {
-        Platform.runLater(this::show);
+        close();
     }
 
     public void close() {

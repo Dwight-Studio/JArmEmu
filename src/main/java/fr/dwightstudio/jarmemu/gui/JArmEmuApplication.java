@@ -24,7 +24,6 @@
 package fr.dwightstudio.jarmemu.gui;
 
 import atlantafx.base.theme.*;
-import fr.dwightstudio.jarmemu.JArmEmuLauncher;
 import fr.dwightstudio.jarmemu.Status;
 import fr.dwightstudio.jarmemu.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.asm.parser.legacy.LegacySourceParser;
@@ -33,18 +32,20 @@ import fr.dwightstudio.jarmemu.gui.controllers.*;
 import fr.dwightstudio.jarmemu.gui.controllers.AutocompletionController;
 import fr.dwightstudio.jarmemu.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.sim.ExecutionWorker;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
-import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
@@ -98,19 +99,10 @@ public class JArmEmuApplication extends Application {
     private static ExecutionWorker executionWorker;
     private static JArmEmuDialogs dialogs;
 
-    // Starting logic
-    private final Timeline STARTING_TIMELINE = new Timeline(
-            new KeyFrame(Duration.millis(1000), actionEvent -> closeSplashScreen()),
-            new KeyFrame(Duration.millis(3000), event -> controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout())),
-            new KeyFrame(Duration.millis(4000), event -> controller.registerLayoutChangeListener()),
-            new KeyFrame(Duration.millis(4000), event -> logger.info("Startup finished"))
-    );
-
 
     public Theme theme;
     public SimpleObjectProperty<Status> status;
     public Stage stage;
-    public Scene scene;
     private String argSave;
 
     public static void main(String[] args) {
@@ -123,12 +115,15 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints)
 
+
     @Override
     public void start(Stage stage) throws IOException {
         this.stage = stage;
         this.status = new SimpleObjectProperty<>(Status.INITIALIZING);
 
         logger.info("Starting up JArmEmu v" + VERSION + " on " + OS_NAME + " v" + OS_VERSION + " (" + OS_ARCH + ")");
+
+        logger.info("Initializing application");
 
         FXMLLoader fxmlLoader = new FXMLLoader(getResource("main-view.fxml"));
 
@@ -172,7 +167,13 @@ public class JArmEmuApplication extends Application {
             logger.info("Font " + font.getFamily() + " " + font.getStyle() + " loaded");
         }
 
-        scene = new Scene(fxmlLoader.load(), 1280, 720);
+        Scene scene;
+
+        try {
+            scene = new Scene(fxmlLoader.load(), 1280, 720);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         updateUserAgentStyle(getSettingsController().getThemeVariation(), getSettingsController().getThemeFamily());
         scene.getStylesheets().add(getResource("jarmemu-style.css").toExternalForm());
 
@@ -192,20 +193,14 @@ public class JArmEmuApplication extends Application {
         status.addListener((observable -> updateTitle()));
         getSimulationMenuController().onStop();
 
-        updateTitle();
-        status.set(Status.EDITING);
         stage.setScene(scene);
         stage.show();
+        status.set(Status.EDITING);
+        logger.info("Startup finished");
 
         controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
-        STARTING_TIMELINE.play();
     }
 
-    public void closeSplashScreen() {
-        if (JArmEmuLauncher.splashScreen != null) {
-            JArmEmuLauncher.splashScreen.close();
-        }
-    }
 
     public void updateTitle() {
         stage.setTitle("JArmEmu v" + VERSION + " - " + status.get());

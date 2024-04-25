@@ -25,54 +25,17 @@ package fr.dwightstudio.jarmemu;
 
 import fr.dwightstudio.jarmemu.gui.JArmEmuApplication;
 
-import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class JArmEmuLauncher {
-
-    private static final int BASE_DPI = 96;
-    public static final SplashScreen splashScreen = SplashScreen.getSplashScreen();
 
     private static Logger logger = Logger.getLogger(JArmEmuLauncher.class.getSimpleName());
 
     public static void main(String[] args) throws IOException {
         System.setProperty("prism.dirtyopts", "false");
         setUpLogger();
-
-        if (splashScreen != null) {
-            double scale = GraphicsEnvironment
-                    .getLocalGraphicsEnvironment()
-                    .getDefaultScreenDevice()
-                    .getDefaultConfiguration()
-                    .getDefaultTransform()
-                    .getScaleY();
-
-            logger.info("Adapting SplashScreen to current screen scale (" + scale + ")");
-
-            URL url;
-
-            if (scale >= 1.25 && scale < 1.5) {
-                url = JArmEmuApplication.getResource("medias/splash@125pct.png");
-            } else if (scale >= 1.5 && scale < 2.0) {
-                url = JArmEmuApplication.getResource("medias/splash@150pct.png");
-            } else if (scale >= 2.0 && scale < 2.5) {
-                url = JArmEmuApplication.getResource("medias/splash@200pct.png");
-            } else if (scale >= 2.5 && scale < 3.0) {
-                url = JArmEmuApplication.getResource("medias/splash@250pct.png");
-            } else if (scale >= 3.0) {
-                url = JArmEmuApplication.getResource("jarmemu/medias/splash@300pct.png");
-            } else {
-                url = JArmEmuApplication.getResource("medias/splash.png");
-            }
-
-            logger.info("Loading SplashScreen: " + url);
-            splashScreen.setImageURL(url);
-        } else {
-            logger.info("No SplashScreen detected");
-        }
 
         JArmEmuApplication.main(args);
     }
