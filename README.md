@@ -1,5 +1,6 @@
-# JArmEmu
 [![Copr build status](https://copr.fedorainfracloud.org/coprs/dwight-studio/JArmEmu/package/jarmemu/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/dwight-studio/JArmEmu/package/jarmemu/)
+
+# JArmEmu
 Simple ARMv7 simulator written in Java, intended for educational purpose.
 
 ## Features
