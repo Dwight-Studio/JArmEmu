@@ -27,8 +27,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>JArmEmu</name>
     <groupId>fr.dwightstudio.jarmemu</groupId>
-    <artifactId>JArmEmu</artifactId>
+    <artifactId>jarmemu</artifactId>
     <version>0.2.0</version>
     <packaging>jar</packaging>
 
@@ -182,7 +183,7 @@
     </dependencies>
 
     <build>
-        <finalName>JArmEmu</finalName>
+        <finalName>jarmemu</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
