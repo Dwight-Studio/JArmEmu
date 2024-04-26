@@ -7,6 +7,7 @@
 - Added version auto-checking
 - Improved splash screen
 - Improved code highlighting (real time parsing)
+- Improved notifications layout
 - Added BLXNS instruction
 - Added BXNS instruction
 - Fixed BLX instruction not being able to use labels
