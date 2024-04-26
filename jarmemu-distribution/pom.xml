@@ -9,6 +9,7 @@
         <version>0.2.1</version>
     </parent>
 
+    <name>Distribution</name>
     <artifactId>jarmemu-distribution</artifactId>
 
     <properties>

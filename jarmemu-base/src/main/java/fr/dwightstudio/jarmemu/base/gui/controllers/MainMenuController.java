@@ -246,6 +246,7 @@ public class MainMenuController {
         List<File> files = JArmEmuApplication.getEditorController().getSavePaths();
         String paths = String.join(";", files.stream().map(File::getAbsolutePath).toList());
         JArmEmuApplication.getSettingsController().setLastSavePath(paths);
+        logger.info("Saved opened files (" + paths + ")");
     }
 
     /**

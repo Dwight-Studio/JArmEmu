@@ -9,6 +9,7 @@
         <version>0.2.1</version>
     </parent>
 
+    <name>Medias</name>
     <artifactId>jarmemu-medias</artifactId>
 
     <properties>
