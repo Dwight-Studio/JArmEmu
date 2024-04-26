@@ -25,13 +25,16 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
+import atlantafx.base.util.Animations;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.util.FileUtils;
+import javafx.animation.Timeline;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.util.Duration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -84,9 +87,16 @@ public class EditorController implements Initializable {
             default -> notification = new Notification(titleString + ": " + contentString);
         }
 
+        notification.setOnClose(event -> {
+            Timeline closingTimeline = Animations.slideOutDown(notification, Duration.millis(250));
+            closingTimeline.setOnFinished(event2 -> JArmEmuApplication.getController().notifications.getChildren().remove(notification));
+            closingTimeline.playFromStart();
+        });
+
         notification.getStyleClass().add(classString);
-        notification.setOnClose((event) -> JArmEmuApplication.getController().notifications.getChildren().remove(notification));
         notification.setMouseTransparent(false);
+        notification.setMaxWidth(Double.MAX_VALUE);
+        notification.setMinWidth(400);
 
         notification.setPrimaryActions(buttons);
 

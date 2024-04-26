@@ -233,6 +233,8 @@ public class JArmEmuApplication extends Application {
                 logger.warning("Can't verify version information (" + exception.getMessage() + ")");
                 logger.warning(ExceptionUtils.getStackTrace(exception));
             }
+
+            executorService.shutdownNow();
         }
     }
 
