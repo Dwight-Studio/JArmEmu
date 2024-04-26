@@ -169,7 +169,7 @@ public class JArmEmuApplication extends Application {
         executionWorker = new ExecutionWorker();
 
         for (String fontURL : FONTS_URL) {
-            Font font = Font.loadFont(getResourceAsStream("fonts/" + fontURL), 14);
+            Font font = Font.loadFont(getMediaAsStream("fonts/" + fontURL), 14);
             logger.info("Font " + font.getFamily() + " " + font.getStyle() + " loaded");
         }
 
@@ -186,13 +186,13 @@ public class JArmEmuApplication extends Application {
         scene.setOnKeyPressed(shortcutHandler::handle);
 
         icons = List.of(
-                new Image(getResourceAsStream("medias/favicon@16.png")),
-                new Image(getResourceAsStream("medias/favicon@32.png")),
-                new Image(getResourceAsStream("medias/favicon@64.png")),
-                new Image(getResourceAsStream("medias/favicon@128.png")),
-                new Image(getResourceAsStream("medias/favicon@256.png")),
-                new Image(getResourceAsStream("medias/favicon@512.png")),
-                new Image(getResourceAsStream("medias/logo.png"))
+                new Image(getMediaAsStream("images/favicon@16.png")),
+                new Image(getMediaAsStream("images/favicon@32.png")),
+                new Image(getMediaAsStream("images/favicon@64.png")),
+                new Image(getMediaAsStream("images/favicon@128.png")),
+                new Image(getMediaAsStream("images/favicon@256.png")),
+                new Image(getMediaAsStream("images/favicon@512.png")),
+                new Image(getMediaAsStream("images/logo.png"))
         );
 
         // Check for update
@@ -414,6 +414,14 @@ public class JArmEmuApplication extends Application {
 
     public static @NotNull InputStream getResourceAsStream(String name) {
         return Objects.requireNonNull(JArmEmuApplication.class.getResourceAsStream("/fr/dwightstudio/jarmemu/base/" + name));
+    }
+
+    public static @NotNull URL getMedia(String name) {
+        return Objects.requireNonNull(JArmEmuApplication.class.getResource("/fr/dwightstudio/jarmemu/medias/" + name));
+    }
+
+    public static @NotNull InputStream getMediaAsStream(String name) {
+        return Objects.requireNonNull(JArmEmuApplication.class.getResourceAsStream("/fr/dwightstudio/jarmemu/medias/" + name));
     }
 
     public static String formatMessage(String message, Object... args) {

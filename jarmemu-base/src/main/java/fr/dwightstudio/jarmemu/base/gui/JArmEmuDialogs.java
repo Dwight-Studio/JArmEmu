@@ -125,7 +125,7 @@ public class JArmEmuDialogs {
     }
 
     public void about() {
-        Image image = new Image(JArmEmuApplication.getResourceAsStream("medias/logo.png"));
+        Image image = new Image(JArmEmuApplication.getMediaAsStream("images/logo.png"));
         ImageView picture = new ImageView(image);
         picture.setPreserveRatio(true);
         picture.setFitHeight(128);
@@ -207,7 +207,7 @@ public class JArmEmuDialogs {
     }
 
     private void credits() {
-        Image image = new Image(JArmEmuApplication.getResourceAsStream("medias/dwstd.png"));
+        Image image = new Image(JArmEmuApplication.getMediaAsStream("images/dwstd.png"));
         ImageView picture = new ImageView(image);
         picture.setPreserveRatio(true);
         picture.setSmooth(true);

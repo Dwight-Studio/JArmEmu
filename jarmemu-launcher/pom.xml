@@ -26,6 +26,11 @@
             <artifactId>jarmemu-base</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>jarmemu-medias</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

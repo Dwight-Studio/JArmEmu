@@ -3,24 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <parent>
         <groupId>fr.dwightstudio.jarmemu</groupId>
         <artifactId>jarmemu</artifactId>
         <version>0.2.1</version>
     </parent>
 
-    <name>Base</name>
-    <artifactId>jarmemu-base</artifactId>
-    <packaging>jar</packaging>
-
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jarmemu-medias</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
+    <artifactId>jarmemu-medias</artifactId>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>

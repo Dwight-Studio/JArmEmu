@@ -37,6 +37,7 @@
         <module>jarmemu-base</module>
         <module>jarmemu-launcher</module>
         <module>jarmemu-distribution</module>
+        <module>jarmemu-medias</module>
     </modules>
 
     <scm>

@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.launcher;
 import atlantafx.base.theme.PrimerDark;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.base.gui.CloseNotification;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.LoadingNotification;
 import javafx.application.Application;
 import javafx.application.Preloader;
@@ -51,6 +52,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -60,6 +62,7 @@ public class JArmEmuPreloader extends Preloader {
 
     private static final Logger logger = Logger.getLogger(JArmEmuPreloader.class.getSimpleName());
 
+    private List<Image> icons;
     private Stage stage;
     private Scene scene;
     private ProgressBar progressBar;
@@ -72,6 +75,16 @@ public class JArmEmuPreloader extends Preloader {
 
     @Override
     public void init() throws Exception {
+        icons = List.of(
+                new Image(getMediaAsStream("images/favicon@16.png")),
+                new Image(getMediaAsStream("images/favicon@32.png")),
+                new Image(getMediaAsStream("images/favicon@64.png")),
+                new Image(getMediaAsStream("images/favicon@128.png")),
+                new Image(getMediaAsStream("images/favicon@256.png")),
+                new Image(getMediaAsStream("images/favicon@512.png")),
+                new Image(getMediaAsStream("images/logo.png"))
+        );
+
         progressBar = new ProgressBar();
         progressBar.setMaxWidth(Double.MAX_VALUE);
         progressBar.getStyleClass().add(Styles.LARGE);
@@ -83,7 +96,7 @@ public class JArmEmuPreloader extends Preloader {
         StackPane stackPane = new StackPane(progressBar);
         stackPane.getChildren().add(progressLabel);
 
-        Image image = new Image(getResource("medias/splash.png").toExternalForm());
+        Image image = new Image(getMedia("images/splash.png").toExternalForm());
         ImageView imageView = new ImageView(image);
 
         VBox.setMargin(stackPane, new Insets(0, 40, 0, 40));
@@ -106,6 +119,7 @@ public class JArmEmuPreloader extends Preloader {
         stage.setAlwaysOnTop(true);
         stage.setResizable(false);
         stage.initStyle(StageStyle.TRANSPARENT);
+        stage.getIcons().addAll(icons);
 
         Application.setUserAgentStylesheet(new PrimerDark().getUserAgentStylesheet());
 
@@ -169,5 +183,13 @@ public class JArmEmuPreloader extends Preloader {
 
     public static @NotNull InputStream getResourceAsStream(String name) {
         return Objects.requireNonNull(JArmEmuPreloader.class.getResourceAsStream("/fr/dwightstudio/jarmemu/launcher/" + name));
+    }
+
+    public static @NotNull URL getMedia(String name) {
+        return Objects.requireNonNull(JArmEmuApplication.class.getResource("/fr/dwightstudio/jarmemu/medias/" + name));
+    }
+
+    public static @NotNull InputStream getMediaAsStream(String name) {
+        return Objects.requireNonNull(JArmEmuApplication.class.getResourceAsStream("/fr/dwightstudio/jarmemu/medias/" + name));
     }
 }
