@@ -69,8 +69,11 @@ public class SettingsController implements Initializable {
     public static final int DEFAULT_MAX_NOTIFICATION = 4;
     public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"maximized\":true,\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
 
+
+    // Clés
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
+    public static final String IGNORE_VERSION_KEY = "ignoreVersion";
 
     public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
     public static final String SOURCE_PARSER_KEY = "sourceParser";
@@ -242,6 +245,7 @@ public class SettingsController implements Initializable {
     public void setToDefaults() {
         preferences.put(VERSION_KEY, JArmEmuApplication.VERSION);
         preferences.put(LAST_SAVE_PATH_KEY, "");
+        preferences.put(IGNORE_VERSION_KEY, "");
 
         setSimulationInterval(ExecutionWorker.FALLBACK_UPDATE_INTERVAL);
         setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
@@ -466,5 +470,13 @@ public class SettingsController implements Initializable {
             JArmEmuApplication.getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.maxNotification.message"));
         }
         preferences.putInt(MAX_NOTIFICATION_KEY, i);
+    }
+
+    public String getIgnoreVersion() {
+        return preferences.get(IGNORE_VERSION_KEY, "");
+    }
+
+    public void setIgnoreVersion(String s) {
+        preferences.put(IGNORE_VERSION_KEY, s);
     }
 }

@@ -4,6 +4,8 @@
 - Added Find & Replace menu in code editor
 - Added autocompletion system
 - Added unintentation (Shift+Tab)
+- Added version auto-checking
+- Improved splash screen
 - Improved code highlighting (real time parsing)
 - Added BLXNS instruction
 - Added BXNS instruction

@@ -32,23 +32,24 @@ import fr.dwightstudio.jarmemu.base.gui.controllers.*;
 import fr.dwightstudio.jarmemu.base.gui.controllers.AutocompletionController;
 import fr.dwightstudio.jarmemu.base.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;
-import fr.dwightstudio.jarmemu.base.gui.controllers.*;
 import javafx.animation.KeyFrame;
-import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Preloader;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
+import org.kohsuke.github.GHRelease;
+import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.io.BufferedReader;
@@ -57,6 +58,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -67,7 +69,7 @@ public class JArmEmuApplication extends Application {
     public static final String OS_NAME = System.getProperty("os.name").toLowerCase();
     public static final String OS_ARCH = System.getProperty("os.arch").toLowerCase();
     public static final String OS_VERSION = System.getProperty("os.version").toLowerCase();
-    public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "NotFound";
+    public static final String VERSION = JArmEmuApplication.class.getPackage().getImplementationVersion() != null ? JArmEmuApplication.class.getPackage().getImplementationVersion() : "0.0.0";
     public static final ResourceBundle BUNDLE = ResourceBundle.getBundle("fr.dwightstudio.jarmemu.base.bundles.Locale");
     public static String LICENCE;
     public static final String[] FONTS_URL = new String[]{
@@ -110,6 +112,9 @@ public class JArmEmuApplication extends Application {
     public Stage stage;
     private String argSave;
 
+    private URL downloadURL;
+    private String newVersion;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -117,7 +122,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter le support des directives pour l'autocomplétion
     // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
     // TODO: Ajouter un switch pour les instructions non implémentées
-    // TODO: Ajouter un switch pour la vérification des mises à jour au démarrage
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints)
 
@@ -196,22 +200,39 @@ public class JArmEmuApplication extends Application {
         );
 
         // Check for update
-        if (!VERSION.equals("NotFound")) {
-            JArmEmuApplication.notifyPreloader("Checking for Update");
-            try {
-                GitHub gitHub = GitHub.connectAnonymously();
-                gitHub.checkApiUrlValidity();
+        try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
+            Future<?> future = executorService.submit(() -> {
+                if (!VERSION.equals("NotFound")) {
+                    logger.info("Checking for update...");
+                    JArmEmuApplication.notifyPreloader("Checking for Update");
+                    try {
+                        GitHub gitHub = GitHub.connectAnonymously();
 
-                String latestVersion = gitHub.getRepository("Dwight-Studio/JArmEmu").getLatestRelease().getTagName().substring(1);
+                        GHRelease release = gitHub.getRepository("Dwight-Studio/JArmEmu").getLatestRelease();
+                        String latestVersion = release.getTagName().substring(1);
 
-                if (latestVersion.compareTo(VERSION) < 0) {
-                    logger.info("Running outdated version of JArmEmu (v" + VERSION + " -> v" + latestVersion + ")");
+                        if (latestVersion.compareTo(VERSION) > 0) {
+                            logger.info("Running outdated version of JArmEmu (v" + VERSION + " -> v" + latestVersion + ")");
+
+                            downloadURL = release.getHtmlUrl();
+                            newVersion = latestVersion;
+                        }
+                    } catch (IOException exception) {
+                        logger.warning("Can't verify version information (" + exception.getMessage() + ")");
+                    }
+                } else {
+                    logger.warning("Can't verify version information (unknown version)");
                 }
-            } catch (IOException exception) {
+            });
+
+            try {
+                future.get(5, TimeUnit.SECONDS);
+            } catch (TimeoutException e) {
+                logger.warning("Timed out waiting for version information");
+            } catch (ExecutionException | InterruptedException exception) {
                 logger.warning("Can't verify version information (" + exception.getMessage() + ")");
+                logger.warning(ExceptionUtils.getStackTrace(exception));
             }
-        } else {
-            logger.warning("Can't verify version information (unknown version)");
         }
     }
 
@@ -243,6 +264,35 @@ public class JArmEmuApplication extends Application {
                 new KeyFrame(Duration.seconds(2), actionEvent -> {
                     JArmEmuApplication.closePreloader();
                     controller.registerLayoutChangeListener();
+
+                    if (downloadURL != null) {
+                        if (newVersion.equals(getSettingsController().getIgnoreVersion())) {
+                            logger.info("Ignoring version update v" + newVersion);
+                            return;
+                        }
+
+                        Button download = new Button(JArmEmuApplication.formatMessage("%notification.outdated.download"));
+                        download.setOnAction(event -> {
+                            JArmEmuApplication.getEditorController().clearNotifications();
+                            JArmEmuApplication.openURL(downloadURL.toExternalForm());
+                        });
+                        download.getStyleClass().add(Styles.ACCENT);
+
+                        Button dontShowAgain = new Button(JArmEmuApplication.formatMessage("%notification.outdated.dontShowAgain"));
+                        dontShowAgain.setOnAction(event -> {
+                            getSettingsController().setIgnoreVersion(newVersion);
+                            JArmEmuApplication.getEditorController().clearNotifications();
+                        });
+                        dontShowAgain.getStyleClass().add(Styles.DANGER);
+
+                        getEditorController().addNotification(
+                                JArmEmuApplication.formatMessage("%notification.outdated.title", VERSION, newVersion),
+                                JArmEmuApplication.formatMessage("%notification.outdated.message"),
+                                Styles.ACCENT,
+                                download,
+                                dontShowAgain
+                        );
+                    }
                 })
         ).play();
     }
@@ -295,8 +345,8 @@ public class JArmEmuApplication extends Application {
 
     }
 
-    public void openURL(String url) {
-        getHostServices().showDocument(url);
+    public static void openURL(String url) {
+        instance.getHostServices().showDocument(url);
     }
 
     public static JArmEmuApplication getInstance() {

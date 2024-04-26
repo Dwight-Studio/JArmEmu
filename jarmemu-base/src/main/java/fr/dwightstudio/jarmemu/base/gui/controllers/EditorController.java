@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.util.FileUtils;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
@@ -68,17 +69,17 @@ public class EditorController implements Initializable {
      * @param contentString le corps du message
      * @param classString la classe à utiliser (Classes de BootstrapFX)
      */
-    public void addNotification(String titleString, String contentString, String classString) {
+    public void addNotification(String titleString, String contentString, String classString, Button... buttons) {
 
         if (JArmEmuApplication.getController().notifications.getChildren().size() >= JArmEmuApplication.getSettingsController().getMaxNotification()) return;
 
         Notification notification;
 
         switch (classString) {
-            case Styles.ACCENT -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedAL.INFO));
-            case Styles.SUCCESS -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
-            case Styles.WARNING -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
-            case Styles.DANGER -> notification = new Notification(titleString + "\n" + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
+            case Styles.ACCENT -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.INFO));
+            case Styles.SUCCESS -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
+            case Styles.WARNING -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
+            case Styles.DANGER -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
 
             default -> notification = new Notification(titleString + ": " + contentString);
         }
@@ -86,6 +87,8 @@ public class EditorController implements Initializable {
         notification.getStyleClass().add(classString);
         notification.setOnClose((event) -> JArmEmuApplication.getController().notifications.getChildren().remove(notification));
         notification.setMouseTransparent(false);
+
+        notification.setPrimaryActions(buttons);
 
         JArmEmuApplication.getController().notifications.getChildren().add(notification);
     }
@@ -129,7 +132,7 @@ public class EditorController implements Initializable {
     /**
      * Supprime les notifications.
      */
-    protected void clearNotifs() {
+    public void clearNotifications() {
         JArmEmuApplication.getController().notifications.getChildren().clear();
     }
 

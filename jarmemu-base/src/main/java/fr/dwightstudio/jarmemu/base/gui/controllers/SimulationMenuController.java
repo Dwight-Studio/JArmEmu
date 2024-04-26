@@ -42,7 +42,7 @@ public class SimulationMenuController {
 
         JArmEmuApplication.getController().toolSimulate.setDisable(true);
         JArmEmuApplication.getController().menuSimulate.setDisable(true);
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
 
         JArmEmuApplication.getEditorController().addNotification(
                 JArmEmuApplication.formatMessage("%notification.parsing.title"),
@@ -59,7 +59,7 @@ public class SimulationMenuController {
      * @param errors les erreurs rencontrées lors de l'analyse du code
      */
     public void launchSimulation(ASMException[] errors) {
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
 
         if (errors == null || errors.length == 0) {
             if (JArmEmuApplication.getCodeInterpreter().getInstructionCount() == 0) {
@@ -120,7 +120,7 @@ public class SimulationMenuController {
      * Méthode de rappel si la préparation de la simulation a échoué
      */
     public void abortSimulation() {
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getEditorController().addNotification(
                 JArmEmuApplication.formatMessage("%notification.parsingError.title"),
                 JArmEmuApplication.formatMessage("%notification.parsingError.message"),
@@ -135,7 +135,7 @@ public class SimulationMenuController {
      */
     public void onStepInto() {
         if (JArmEmuApplication.getController().menuStepInto.isDisable()) return;
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().stepInto();
     }
 
@@ -144,7 +144,7 @@ public class SimulationMenuController {
      */
     public void onStepOver() {
         if (JArmEmuApplication.getController().menuStepOver.isDisable()) return;
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().stepOver();
         JArmEmuApplication.getController().toolStepInto.setDisable(true);
         JArmEmuApplication.getController().menuStepInto.setDisable(true);
@@ -165,7 +165,7 @@ public class SimulationMenuController {
      */
     public void onContinue() {
         if (JArmEmuApplication.getController().menuContinue.isDisable()) return;
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().conti();
         JArmEmuApplication.getController().toolStepInto.setDisable(true);
         JArmEmuApplication.getController().menuStepInto.setDisable(true);
@@ -208,7 +208,7 @@ public class SimulationMenuController {
      */
     public void onStop() {
         if (JArmEmuApplication.getController().menuStop.isDisable()) return;
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().pause();
         JArmEmuApplication.getEditorController().onStop();
         JArmEmuApplication.getController().toolSimulate.setDisable(false);
@@ -250,7 +250,7 @@ public class SimulationMenuController {
      */
     public void onRestart() {
         if (JArmEmuApplication.getController().menuRestart.isDisable()) return;
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getEditorController().clearAllLineMarkings();
 
         JArmEmuApplication.getCodeInterpreter().restart();

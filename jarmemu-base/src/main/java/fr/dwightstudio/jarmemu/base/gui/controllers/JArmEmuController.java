@@ -391,7 +391,7 @@ public class JArmEmuController implements Initializable {
 
     @FXML
     protected void onClearNotifs() {
-        JArmEmuApplication.getEditorController().clearNotifs();
+        JArmEmuApplication.getEditorController().clearNotifications();
     }
 
     @FXML
