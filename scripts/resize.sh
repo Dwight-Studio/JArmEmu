@@ -26,12 +26,17 @@
 # Aller à la racine du dépôt
 cd $(git rev-parse --show-toplevel) || exit 1
 
-cd ./src/main/resources/fr/dwightstudio/jarmemu/medias || exit 1
+cd ./base/src/main/resources/fr/dwightstudio/jarmemu/base/medias || exit 1
 
 for x in 16 32 64 128 256 512
 do
 	magick logo.png -resize ${x}x${x} favicon@${x}.png
 done
+
+# Aller à la racine du dépôt
+cd $(git rev-parse --show-toplevel) || exit 1
+
+cd ./launcher/src/main/resources/fr/dwightstudio/jarmemu/launcher/medias || exit 1
 
 for x in 1 2
 do

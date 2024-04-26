@@ -30,8 +30,14 @@
     <name>JArmEmu</name>
     <groupId>fr.dwightstudio.jarmemu</groupId>
     <artifactId>jarmemu</artifactId>
-    <version>0.2.0</version>
-    <packaging>jar</packaging>
+    <version>0.2.1</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>jarmemu-base</module>
+        <module>jarmemu-launcher</module>
+        <module>jarmemu-distribution</module>
+    </modules>
 
     <scm>
         <connection>scm:git:https://github.com/Dwight-Studio/JArmEmu</connection>
@@ -47,6 +53,12 @@
 
     <dependencies>
         <!-- JavaFX - Linux -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>21</version>
+            <classifier>linux</classifier>
+        </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
@@ -69,6 +81,12 @@
         <!-- JavaFX - Windows -->
         <dependency>
             <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>21</version>
+            <classifier>win</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
             <version>21</version>
             <classifier>win</classifier>
@@ -87,6 +105,12 @@
         </dependency>
 
         <!-- JavaFX - Mac -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-base</artifactId>
+            <version>21</version>
+            <classifier>mac</classifier>
+        </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
@@ -147,11 +171,6 @@
             <version>0.4.8</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <version>3.6.1</version>
-        </dependency>
-        <dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>11.1.2</version>
@@ -181,49 +200,25 @@
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
+        <dependency>
+            <groupId>org.kohsuke</groupId>
+            <artifactId>github-api</artifactId>
+            <version>1.321</version>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>jarmemu</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <inherited>false</inherited>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                            <overWriteReleases>false</overWriteReleases>
-                            <overWriteSnapshots>false</overWriteSnapshots>
-                            <overWriteIfNewer>true</overWriteIfNewer>
-                            <includeScope>runtime</includeScope>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>fr.dwightstudio.jarmemu.JArmEmuLauncher</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Application-Name>JArmEmu ${project.version}</Application-Name>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -231,7 +226,9 @@
                 <configuration>
                     <compilerArgs>
                         <arg>--add-exports</arg>
-                        <arg>javafx.base/com.sun.javafx.collections=fr.dwightstudio.jarmemu</arg>
+                        <arg>javafx.base/com.sun.javafx.collections=fr.dwightstudio.jarmemu.base</arg>
+                        <arg>--add-exports</arg>
+                        <arg>javafx.graphics/com.sun.javafx.application=fr.dwightstudio.jarmemu.launcher</arg>
                     </compilerArgs>
                     <source>21</source>
                     <target>21</target>
@@ -242,9 +239,11 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
-                <version>1.2.1</version>
+                <version>3.2.0</version>
                 <configuration>
-                    <mainClass>fr.dwightstudio.jarmemu.JArmEmuLauncher</mainClass>
+                    <mainClass>none</mainClass>
+                    <executable>none</executable>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

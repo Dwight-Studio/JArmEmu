@@ -7,5 +7,5 @@ Icon=fr.dwightstudio.JArmEmu
 Type=Application
 Categories=Development;IDE;
 Keywords=java;arm;simulator;portable;educational;armv7;
-StartupWMClass=fr.dwightstudio.jarmemu.gui.JArmEmuApplication
+StartupWMClass=fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication
 MimeType=text/x-jarmemu-source;
