@@ -129,7 +129,9 @@ public class JArmEmuPreloader extends Preloader {
         stage.show();
         stage.centerOnScreen();
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        stage.setY((dimension.getHeight() - stage.getHeight()) / 2);
+        System.out.println(dimension.getHeight());
+        System.out.println(stage.getHeight());
+        stage.setY(((dimension.getHeight() - (stage.getHeight() * stage.getOutputScaleY())) / 2) / stage.getOutputScaleY());
     }
 
     @Override
