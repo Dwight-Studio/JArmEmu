@@ -3,7 +3,9 @@
     <id>fr.dwightstudio.JArmEmu</id>
     <name>JArmEmu</name>
     <summary>Simple ARMv7 simulator written in Java, intended for educational purpose</summary>
-    <developer_name>Dwight Studio</developer_name>
+    <developer id="fr.dwightstudio">
+        <name>Dwight Studio</name>
+    </developer>
     <launchable type="desktop-id">fr.dwightstudio.JArmEmu.desktop</launchable>
     <project_license>GPL-3.0</project_license>
     <metadata_license>CC0-1.0</metadata_license>
@@ -20,20 +22,15 @@
         <display_length compare="ge">360</display_length>
     </requires>
     <description>
-        <p>JArmEmu is a simple simulator with a graphical interface that offers basic control and information about a
-            simulated ARMv7 architecture.
-        </p>
-        <p>You can write your program and include GNU Assembly directives (only the basic ones are implemented, refer to
-            synthaxic colorimetry to see if it is implemented).
-        </p>
-        <p>JArmEmu is powered by an ARMv7 interpreter made Ex Nihilo for this project.</p>
-        <p>Currently, known limitations or differences with the real architecture:</p>
-        <ul>
-            <li>SWI instruction is not implemented</li>
-        </ul>
+        <p>JArmEmu is a simple, user-friendly simulator that provides basic control and information about a simulated
+            ARMv7 architecture.</p>
+        <p>JArmEmu is powered by an ARMv7 interpreter built <em>Ex Nihilo</em> for this project, which provides real-time
+            syntax highlighting, intelligent auto-completion, memory, stack and register monitoring...</p>
+        <p>You can write your program using the ARMv7 instruction set (refer to Instructions.md in the GitHub repository)
+            and include GNU Assembly directives (only the basic ones are implemented, you can refer to syntax
+            highlighting or auto-completion to see if it is available).</p>
         <p>This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA
-            Rennes (independent project). It is distributed in open source under GPL3 (refer to the LICENCE file).
-        </p>
+            Rennes (independent project). It is distributed in open source under GPL3 (refer to the LICENCE file).</p>
     </description>
     <categories>
         <category>Development</category>
