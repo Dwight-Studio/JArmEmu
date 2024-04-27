@@ -48,7 +48,7 @@ JArmEmu is available on Chocolatey, but the repository is not actively maintaine
 choco install fr.dwightstudio.jarmemu --pre 
 ```
 
-You can download an installer for JArmEmu on the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest). The executables aren't signed, and can trigger a warning screen from Windows UAC (which you can simply ignore).
+You can download an installer for JArmEmu (or the portable version) on the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest). The executables aren't signed, and can trigger a warning screen from Windows UAC (which you can simply ignore).
 
 ## Debian
 [![Debian](https://img.shields.io/badge/Debian-A81D33?style=for-the-badge&logo=debian&logoColor=white)](#debian)
@@ -57,9 +57,9 @@ You can download an installer for JArmEmu on the [release page](https://github.c
 [![Linux Mint](https://img.shields.io/badge/Linux_Mint-87CF3E?style=for-the-badge&logo=linux-mint&logoColor=white)](#debian)
 [![Kali Linux](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kali-linux&logoColor=white)](#debian)
 
-JArmEmu is not yet available on Launchpad (maybe soon!).
+JArmEmu is not yet available in an APT repository (soon!).
 
-Meanwhile, you can download and install the DEB packages from the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest).
+Meanwhile, you can download and install the DEB packages (or the portable version) from the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest).
 
 ## Licence
 This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (independent
