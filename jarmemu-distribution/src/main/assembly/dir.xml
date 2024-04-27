@@ -22,6 +22,7 @@
             <includes>
                 <include>${project.groupId}:jarmemu-launcher</include>
             </includes>
+            <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
             <scope>runtime</scope>
         </dependencySet>
     </dependencySets>
@@ -29,6 +30,14 @@
     <files>
         <file>
             <source>${parent.basedir}/data/README</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>${parent.basedir}/data/launch.sh</source>
+            <outputDirectory>/</outputDirectory>
+        </file>
+        <file>
+            <source>${parent.basedir}/data/launch.bat</source>
             <outputDirectory>/</outputDirectory>
         </file>
     </files>

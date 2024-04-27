@@ -1,1 +1,1 @@
-To launch JArmEmu, execute launcher.jar (or execute the command 'java -jar launcher.jar').
+To launch JArmEmu, run jarmemu-launcher.jar (using launch.sh/launch.bat or by executing the command 'java -jar jarmemu-launcher.jar').

@@ -34,10 +34,10 @@ for d in /lib/jvm/*; do
 done
 
 echo "Trying to execute java version at '$_java'..."
-if $_java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/jarmemu-launcher-*.jar "$@" ; then exit 0 ;
+if $_java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/jarmemu-launcher.jar "$@" ; then exit 0 ;
 else
   echo "Fallback to java in the path..."
-  if java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/jarmemu-launcher-*.jar "$@" ; then exit 0 ;
+  if java -Dprism.dirtyopts=false -jar /usr/share/java/jarmemu/jarmemu-launcher.jar "$@" ; then exit 0 ;
   else
     echo "Could not find the right java version, please install a Java Runtime Environment 21 or later."
   fi
