@@ -91,7 +91,6 @@ public class JArmEmuPreloader extends Preloader {
 
         progressLabel = new Label();
         progressLabel.setStyle("-fx-text-fill: white;");
-        progressLabel.setLabelFor(progressLabel);
 
         StackPane stackPane = new StackPane(progressBar);
         stackPane.getChildren().add(1, progressLabel);

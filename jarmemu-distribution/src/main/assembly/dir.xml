@@ -27,17 +27,29 @@
         </dependencySet>
     </dependencySets>
 
+    <fileSets>
+        <fileSet>
+            <directory>${parent.basedir}/resources</directory>
+            <outputDirectory>/resources</outputDirectory>
+            <excludes>
+                <exclude>README</exclude>
+                <exclude>launch.sh</exclude>
+                <exclude>launch.bat</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+
     <files>
         <file>
-            <source>${parent.basedir}/data/README</source>
+            <source>${parent.basedir}/resources/README</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>${parent.basedir}/data/launch.sh</source>
+            <source>${parent.basedir}/resources/launch.sh</source>
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>${parent.basedir}/data/launch.bat</source>
+            <source>${parent.basedir}/resources/launch.bat</source>
             <outputDirectory>/</outputDirectory>
         </file>
     </files>
