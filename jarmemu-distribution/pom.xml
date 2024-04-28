@@ -48,7 +48,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>distro-assembly</id>
+                        <id>distribution-assembly</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>

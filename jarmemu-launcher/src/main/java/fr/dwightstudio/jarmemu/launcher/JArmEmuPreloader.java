@@ -94,7 +94,7 @@ public class JArmEmuPreloader extends Preloader {
         progressLabel.setLabelFor(progressLabel);
 
         StackPane stackPane = new StackPane(progressBar);
-        stackPane.getChildren().add(progressLabel);
+        stackPane.getChildren().add(1, progressLabel);
 
         Image image = new Image(getMedia("images/splash.png").toExternalForm());
         ImageView imageView = new ImageView(image);
