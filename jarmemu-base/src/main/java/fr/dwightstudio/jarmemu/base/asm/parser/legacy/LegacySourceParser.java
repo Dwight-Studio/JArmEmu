@@ -158,6 +158,7 @@ public class LegacySourceParser implements SourceParser {
      */
     @Override
     public ParsedFile parse(SourceScanner scanner) throws ASMException {
+        currentSection = Section.NONE;
         ParsedFile file = new ParsedFile(scanner);
         sourceScanner = scanner;
         sourceScanner.goTo(-1);
