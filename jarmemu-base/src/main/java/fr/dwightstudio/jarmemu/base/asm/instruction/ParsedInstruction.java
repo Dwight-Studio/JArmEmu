@@ -155,10 +155,10 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
      */
     public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
-            arg1.contextualize(stateContainer);
-            arg2.contextualize(stateContainer);
-            arg3.contextualize(stateContainer);
-            arg4.contextualize(stateContainer);
+            if (arg1 != null) arg1.contextualize(stateContainer);
+            if (arg1 != null) arg2.contextualize(stateContainer);
+            if (arg1 != null) arg3.contextualize(stateContainer);
+            if (arg1 != null) arg4.contextualize(stateContainer);
         } catch (ASMException exception) {
             throw exception.with(getLineNumber()).with(this).with(getFile());
         }

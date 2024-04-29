@@ -833,6 +833,7 @@ public class SmartHighlighter extends RealTimeParser {
                         if (matcher.find()) {
                             tag("label", matcher);
                             subContext = SubContext.PRIMARY;
+                            addSymbols = matcher.group().toUpperCase().strip();
                             return true;
                         }
 

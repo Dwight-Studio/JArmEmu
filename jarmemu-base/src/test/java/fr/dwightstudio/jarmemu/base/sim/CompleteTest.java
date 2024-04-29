@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.sim;
 
+import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.base.JArmEmuTest;
 import fr.dwightstudio.jarmemu.base.asm.exception.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
@@ -168,9 +169,9 @@ public class CompleteTest extends JArmEmuTest {
         codeInterpreter.restart();
 
         // Execution
-        assertTimeoutPreemptively(Duration.ofMillis(1000000), () -> {
+        assertTimeoutPreemptively(Duration.ofMillis(1000), () -> {
             boolean flag = true;
-            while (codeInterpreter.hasNext() && flag) {
+            while (codeInterpreter.hasNext() && flag && !Thread.interrupted()) {
                 try {
                     codeInterpreter.executeCurrentLine(false);
                 } catch (StuckExecutionASMException e) {

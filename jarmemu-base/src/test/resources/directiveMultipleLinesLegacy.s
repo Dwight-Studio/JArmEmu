@@ -15,3 +15,4 @@ A:
 .text
 LDR R1, =b
 .end
+.text

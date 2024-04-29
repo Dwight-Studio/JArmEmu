@@ -25,9 +25,14 @@ import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AutocompletionController implements Initializable {
+
+    private static Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ ]+$");
 
     private Timeline openingTimeline;
     private Timeline idlingTimeline;
@@ -90,7 +95,7 @@ public class AutocompletionController implements Initializable {
         popover.setHideOnEscape(true);
         popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
 
-        openingTimeline = new Timeline(new KeyFrame(Duration.millis(250), event -> update(false)));
+        openingTimeline = new Timeline(new KeyFrame(Duration.millis(100), event -> update(false)));
         idlingTimeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> update(true)));
     }
 
@@ -123,19 +128,14 @@ public class AutocompletionController implements Initializable {
             idlingTimeline.stop();
         }
 
+        String currentWord = "";
+        boolean considerWord = false;
+
         if (section == Section.TEXT) {
             switch (context) {
                 case NONE -> {
                     for (Instruction instruction : Instruction.values()) {
                         list.add(instruction.name());
-                    }
-
-                    for (Directive directive : Directive.values()) {
-                        list.add("." + directive.name());
-                    }
-
-                    for (Section sec : Section.values()) {
-                        if (sec != Section.NONE) list.add("." + sec.name());
                     }
                 }
 
@@ -183,7 +183,10 @@ public class AutocompletionController implements Initializable {
 
                         case "ImmediateArgument", "RotatedImmediateArgument" -> {
                             if (subContext != SubContext.IMMEDIATE) list.add("#");
-                            else list.addAll(editor.getRealTimeParser().getSymbols());
+                            else {
+                                list.addAll(editor.getRealTimeParser().getSymbols());
+                                considerWord = true;
+                            }
                         }
 
                         case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> {
@@ -260,12 +263,10 @@ public class AutocompletionController implements Initializable {
                 }
             }
 
-            String currentWord = (context == Context.INSTRUCTION) ? "" : getCurrentContext().strip();
-            if (!currentWord.isEmpty()) {
-                list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
-                list.removeIf(s -> s.equalsIgnoreCase(currentWord));
-            }
-        } else if (section.isDataRelatedSection() || section == Section.NONE) {
+            currentWord = (context == Context.INSTRUCTION) ? "" : getCurrentContext().strip();
+        }
+
+        if (section.isDataRelatedSection() || section == Section.NONE || section == Section.TEXT) {
             switch (context) {
                 case NONE -> {
                     for (Directive directive : Directive.values()) {
@@ -276,13 +277,34 @@ public class AutocompletionController implements Initializable {
                         if (sec != Section.NONE) list.add("." + sec.name());
                     }
                 }
+
+                case DIRECTIVE_ARGUMENTS -> {
+                    switch (command.toUpperCase()) {
+                        case "SET", "EQU", "EQUIV", "EQV" -> {
+                            if (Objects.requireNonNull(subContext) == SubContext.SECONDARY) {
+                                list.addAll(editor.getRealTimeParser().getSymbols());
+                                considerWord = true;
+                            }
+                        }
+                    }
+                }
             }
 
-            String currentWord = getCurrentContext().strip();
-            if (!currentWord.isEmpty()) {
-                list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
-                list.removeIf(s -> s.equalsIgnoreCase(currentWord));
+            currentWord = getCurrentContext().strip();
+        }
+
+        if (considerWord) {
+            Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
+            if (matcher.find()) {
+                currentWord = matcher.group();
             }
+        }
+
+
+        if (!currentWord.isEmpty()) {
+            String finalCurrentWord = currentWord;
+            list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()));
+            list.removeIf(s -> s.equalsIgnoreCase(finalCurrentWord));
         }
 
         list.replaceAll(String::toLowerCase);

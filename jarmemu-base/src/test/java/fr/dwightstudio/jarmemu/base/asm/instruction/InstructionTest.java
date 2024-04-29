@@ -92,6 +92,7 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
                             ParsedArgument.class,
                             ParsedArgument.class)
                     .newInstance(Condition.AL, updateFlags, dataMode, updateMode, null, null, null, null);
+            ins.contextualize(stateContainer);
             ins.verify(() -> new StateContainer(stateContainer), arg1, arg2, arg3, arg4);
             ins.execute(container, ignoreExceptions, arg1, arg2, arg3, arg4);
         } catch (InstantiationException | NoSuchMethodException | IllegalAccessException e) {
