@@ -30,6 +30,8 @@ import fr.dwightstudio.jarmemu.base.asm.argument.RegisterWithUpdateArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.MemoryAccessMisalignedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -113,8 +115,7 @@ public class LDMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
         arg1.update(value);
     }
 
-    @Override
-    protected void verify(StateContainer stateContainer, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) {
-
+    protected void verify(StateContainer stateContainer, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws SyntaxASMException {
+        if (updateMode == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.missingUpdateMode"));
     }
 }
