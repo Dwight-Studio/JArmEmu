@@ -105,7 +105,7 @@ public class SimulationMenuController {
 
                 JArmEmuApplication.getExecutionWorker().restart();
 
-                JArmEmuApplication.getInstance().status.set(Status.SIMULATING);
+                JArmEmuApplication.setStatus(Status.SIMULATING);
             }
         } else {
             JArmEmuApplication.getController().toolSimulate.setDisable(false);
@@ -241,7 +241,7 @@ public class SimulationMenuController {
         JArmEmuApplication.getController().stackPane.setDisable(true);
         JArmEmuApplication.getController().findAndReplace.setDisable(true);
 
-        JArmEmuApplication.getInstance().status.set(Status.EDITING);
+        JArmEmuApplication.setStatus(Status.EDITING);
         JArmEmuApplication.getExecutionWorker().updateGUI();
     }
 

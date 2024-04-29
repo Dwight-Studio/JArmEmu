@@ -22,6 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.util.Duration;
+import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -32,16 +33,19 @@ import java.util.regex.Pattern;
 
 public class AutocompletionController implements Initializable {
 
-    private static Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ ]+$");
+    private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()]+$");
 
-    private Timeline openingTimeline;
     private Timeline idlingTimeline;
     private ObservableListWrapper<String> list;
     private ListView<String> listView;
     private Popover popover;
+    private boolean reopened;
+    private String currentWord;
+    private boolean considerWord;
 
     // Data
     private FileEditor editor;
+    private int line;
     private Section section;
     private Context context;
     private SubContext subContext;
@@ -71,13 +75,31 @@ public class AutocompletionController implements Initializable {
                     String selected = listView.getSelectionModel().getSelectedItem();
 
                     if (selected != null) {
-                        if (getCurrentContext().isBlank() || context == Context.INSTRUCTION) {
-                            int pos = editor.getCodeArea().getCaretPosition();
+                        int pos = editor.getCodeArea().getCaretPosition();
+
+                        if (currentWord.isBlank()) {
                             editor.getCodeArea().selectRange(pos, pos);
                         } else {
                             selectCurrentContext();
                         }
                         editor.getCodeArea().replaceSelection(selected);
+
+                        if (selected.length() == 1) switch (selected) {
+                            case "[" -> {
+                                editor.getCodeArea().insertText(pos + 1,"]" );
+                                editor.getCodeArea().moveTo(pos + 1);
+                            }
+
+                            case "{" -> {
+                                editor.getCodeArea().insertText(pos + 1,"}");
+                                editor.getCodeArea().moveTo(pos + 1);
+                            }
+
+                            case "\"" -> {
+                                editor.getCodeArea().insertText(pos + 1,"\"");
+                                editor.getCodeArea().moveTo(pos + 1);
+                            }
+                        }
                     }
                 }
 
@@ -95,12 +117,12 @@ public class AutocompletionController implements Initializable {
         popover.setHideOnEscape(true);
         popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
 
-        openingTimeline = new Timeline(new KeyFrame(Duration.millis(100), event -> update(false)));
         idlingTimeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> update(true)));
     }
 
-    public void update(FileEditor editor, Section section, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
+    public void update(FileEditor editor, int line, Section section, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
         this.editor = editor;
+        this.line = line;
         this.section = section;
         this.context = context;
         this.subContext = subContext;
@@ -110,12 +132,11 @@ public class AutocompletionController implements Initializable {
         this.bracket = bracket;
         this.brace = brace;
 
-        if (JArmEmuApplication.getInstance().status.get() == Status.EDITING) {
-            openingTimeline.stop();
-            idlingTimeline.stop();
+        if (JArmEmuApplication.getStatus() == Status.EDITING) {
+            Platform.runLater(() -> update(false));
 
-            openingTimeline.play();
-            idlingTimeline.play();
+            idlingTimeline.stop();
+            //idlingTimeline.play();
         }
     }
 
@@ -123,13 +144,11 @@ public class AutocompletionController implements Initializable {
         list.clear();
 
         if (editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).getText().isBlank() && !idling) {
+            close();
             return;
         } else {
             idlingTimeline.stop();
         }
-
-        String currentWord = "";
-        boolean considerWord = false;
 
         if (section == Section.TEXT) {
             switch (context) {
@@ -146,24 +165,28 @@ public class AutocompletionController implements Initializable {
                                 list.add(condition.name());
                             }
 
-                            for (DataMode dataMode : DataMode.values()) {
-                                list.add(dataMode.toString());
-                            }
-
-                            for (UpdateMode updateMode : UpdateMode.values()) {
-                                list.add(updateMode.name());
+                            if (command.equalsIgnoreCase("STM") || command.equalsIgnoreCase("LDM")) {
+                                for (UpdateMode updateMode : UpdateMode.values()) {
+                                    list.add(updateMode.name());
+                                }
+                            } else {
+                                for (DataMode dataMode : DataMode.values()) {
+                                    list.add(dataMode.toString());
+                                }
                             }
 
                             list.add("S");
                         }
 
                         case CONDITION -> {
-                            for (DataMode dataMode : DataMode.values()) {
-                                list.add(dataMode.toString());
-                            }
-
-                            for (UpdateMode updateMode : UpdateMode.values()) {
-                                list.add(updateMode.name());
+                            if (command.equalsIgnoreCase("STM") || command.equalsIgnoreCase("LDM")) {
+                                for (UpdateMode updateMode : UpdateMode.values()) {
+                                    list.add(updateMode.name());
+                                }
+                            } else {
+                                for (DataMode dataMode : DataMode.values()) {
+                                    list.add(dataMode.toString());
+                                }
                             }
 
                             list.add("S");
@@ -196,6 +219,9 @@ public class AutocompletionController implements Initializable {
                                 }
 
                                 list.add("#");
+                            } else if (subContext == SubContext.IMMEDIATE) {
+                                list.addAll(editor.getRealTimeParser().getSymbols());
+                                considerWord = true;
                             }
                         }
 
@@ -205,6 +231,7 @@ public class AutocompletionController implements Initializable {
                         }
 
                         case "RegisterAddressArgument" -> {
+                            System.out.println(subContext);
                             if (subContext != SubContext.ADDRESS) {
                                 for (RegisterUtils value : RegisterUtils.values()) {
                                     list.add("[" + value.name() + "]");
@@ -219,6 +246,8 @@ public class AutocompletionController implements Initializable {
                                         list.add(value.name());
                                     }
                                 }
+                            } else {
+                                list.add("{");
                             }
                         }
 
@@ -235,7 +264,7 @@ public class AutocompletionController implements Initializable {
                         }
 
                         case "AddressArgument" -> {
-                            if (subContext != SubContext.ADDRESS) {
+                            if (subContext != SubContext.ADDRESS && subContext != SubContext.PSEUDO) {
                                 if (bracket) {
                                     switch (subContext) {
                                         case NONE -> {
@@ -255,15 +284,24 @@ public class AutocompletionController implements Initializable {
                                         case TERTIARY -> list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
 
                                         case SHIFT -> list.add("#");
+
+                                        case IMMEDIATE -> {
+                                            list.addAll(editor.getRealTimeParser().getSymbols());
+                                            considerWord = true;
+                                        }
                                     }
+                                } else {
+                                    list.add("[");
+                                    list.add("=");
                                 }
+                            } else if (subContext == SubContext.PSEUDO) {
+                                list.addAll(editor.getRealTimeParser().getSymbols());
+                                considerWord = true;
                             }
                         }
                     }
                 }
             }
-
-            currentWord = (context == Context.INSTRUCTION) ? "" : getCurrentContext().strip();
         }
 
         if (section.isDataRelatedSection() || section == Section.NONE || section == Section.TEXT) {
@@ -289,9 +327,9 @@ public class AutocompletionController implements Initializable {
                     }
                 }
             }
-
-            currentWord = getCurrentContext().strip();
         }
+
+        currentWord = getCurrentContext();
 
         if (considerWord) {
             Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
@@ -300,6 +338,10 @@ public class AutocompletionController implements Initializable {
             }
         }
 
+        currentWord = currentWord.strip();
+
+        System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
+        System.out.println(list);
 
         if (!currentWord.isEmpty()) {
             String finalCurrentWord = currentWord;
@@ -318,6 +360,7 @@ public class AutocompletionController implements Initializable {
                 double height = list.size() * listView.getFixedCellSize();
                 listView.setPrefHeight(height);
 
+                reopened = true;
                 if (bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY()) {
                     popover.setArrowLocation(Popover.ArrowLocation.BOTTOM_LEFT);
                     popover.show(editor.getCodeArea(), bounds.getCenterX(), bounds.getMinY() - bounds.getHeight() / 4);
@@ -330,7 +373,7 @@ public class AutocompletionController implements Initializable {
                 listView.getSelectionModel().selectFirst();
                 listView.scrollTo(0);
             });
-        }
+        } else close();
     }
 
     public String getCurrentContext() {
@@ -341,7 +384,7 @@ public class AutocompletionController implements Initializable {
     }
 
     public void selectCurrentContext() {
-        int start = editor.getCodeArea().getCaretColumn() - contextLength;
+        int start = editor.getCodeArea().getCaretColumn() - currentWord.length();
         int stop = editor.getCodeArea().getCaretColumn();
 
         if (start < 0 || stop - start <= 0) {
@@ -361,5 +404,12 @@ public class AutocompletionController implements Initializable {
         Platform.runLater(() -> {
             if (popover.isShowing()) popover.hide();
         });
+    }
+
+    public void caretMoved() {
+        if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line) close();
+
+        if (!reopened) close();
+        else reopened = false;
     }
 }

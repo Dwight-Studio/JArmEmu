@@ -381,9 +381,9 @@ public class FileEditor {
         });
 
         codeArea.caretPositionProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null) return;
+            if (newValue == null || JArmEmuApplication.getStatus() == Status.INITIALIZING) return;
 
-            JArmEmuApplication.getAutocompletionController().close();
+            JArmEmuApplication.getAutocompletionController().caretMoved();
         });
 
         editorScroll.estimatedScrollYProperty().addListener((obs, oldValue, newValue) -> JArmEmuApplication.getAutocompletionController().scroll());
@@ -539,7 +539,7 @@ public class FileEditor {
      * Alterne l'ouverture du menu rechercher/remplacer
      */
     public void toggleFindAndReplace() {
-        if (findPane.isVisible() || JArmEmuApplication.getInstance().status.get() == Status.SIMULATING) closeFindAndReplace();
+        if (findPane.isVisible() || JArmEmuApplication.getStatus() == Status.SIMULATING) closeFindAndReplace();
         else openFindAndReplace();
     }
 
@@ -636,7 +636,7 @@ public class FileEditor {
                 setSaved();
                 logger.info("File reloaded: " + path.getAbsolutePath());
             } catch (Exception exception) {
-                new ExceptionDialog(exception).show();
+                Platform.runLater(() -> new ExceptionDialog(exception).show());
                 logger.severe(ExceptionUtils.getStackTrace(exception));
             }
         }

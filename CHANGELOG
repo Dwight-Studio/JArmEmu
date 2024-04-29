@@ -11,8 +11,10 @@
 - Added BLXNS instruction
 - Added BXNS instruction
 - Added PUSH instruction
+- Added POP instruction
 - Fixed BLX instruction not being able to use labels
 - Fixed STM/LDM instruction not detecting the lack of update mode
+- Fixed LDM update mode effects
 
 
 0.1.10 -> 0.2.0

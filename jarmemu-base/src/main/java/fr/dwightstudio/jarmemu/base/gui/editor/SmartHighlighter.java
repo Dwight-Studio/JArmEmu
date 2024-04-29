@@ -70,7 +70,8 @@ public class SmartHighlighter extends RealTimeParser {
 
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", INSTRUCTIONS) + ")(?-i)");
     private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
-    private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + "|" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
+    private static final Pattern UPDATE_MODE_PATTERN = Pattern.compile("^(?i)(" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
+    private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + ")\\b(?-i)");
     private static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + ")(?-i)\\b");
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
     private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_0-9]+)[ \t]*:");
@@ -190,7 +191,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                     int iter;
                     for (iter = 0; !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        //System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
@@ -198,7 +199,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                         if (cursorPos <= 0) {
                             cursorPos = Integer.MAX_VALUE;
-                            JArmEmuApplication.getAutocompletionController().update(editor, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
+                            JArmEmuApplication.getAutocompletionController().update(editor, line, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
                         }
 
                         if (text.isEmpty()) break;
@@ -228,7 +229,6 @@ public class SmartHighlighter extends RealTimeParser {
                                 case INSTRUCTION -> {
                                     if (matchBlank()) {
                                         context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                        instruction = Instruction.valueOf(command.toUpperCase());
                                         argType = instruction.getArgumentType(context.getIndex());
                                         continue;
                                     }
@@ -449,9 +449,11 @@ public class SmartHighlighter extends RealTimeParser {
 
         if (matcher.find()) {
             command = matcher.group();
+            instruction = Instruction.valueOf(command.toUpperCase());
             context = Context.INSTRUCTION;
             subContext = SubContext.NONE;
             tag("instruction", matcher);
+            contextLength = 0;
             return true;
         }
 
@@ -464,6 +466,7 @@ public class SmartHighlighter extends RealTimeParser {
         if (matcher.find()) {
             subContext = SubContext.CONDITION;
             tag("condition", matcher);
+            contextLength = 0;
             return true;
         }
 
@@ -471,14 +474,20 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private boolean matchFlags() {
-        Matcher matcher = FLAGS_PATTERN.matcher(text);
+        Matcher matcher;
+        if (instruction == Instruction.STM || instruction == Instruction.LDM) {
+            matcher = UPDATE_MODE_PATTERN.matcher(text);
 
+        } else {
+            matcher = FLAGS_PATTERN.matcher(text);
+
+        }
         if (matcher.find()) {
             subContext = SubContext.FLAGS;
             tag("flags", matcher);
+            contextLength = 0;
             return true;
         }
-
         return false;
     }
 
@@ -558,6 +567,7 @@ public class SmartHighlighter extends RealTimeParser {
 
         if (matcher.find()) {
             tag("pseudo-instruction", matcher);
+            subContext = SubContext.PSEUDO;
             return true;
         }
 
@@ -668,9 +678,9 @@ public class SmartHighlighter extends RealTimeParser {
                 }
 
                 case PRIMARY -> {
-                    if (matchImmediateOrRegister()) {
+                    if (matchRegister()) {
                         subContext = SubContext.SECONDARY;
-                    } else return false;
+                    } else if (!matchImmediate()) return false;
                 }
 
                 case SECONDARY -> {

@@ -2,7 +2,6 @@ package fr.dwightstudio.jarmemu.base.gui.editor;
 
 public enum SubContext {
     NONE,
-
     CONDITION,
     FLAGS,
 
@@ -12,6 +11,7 @@ public enum SubContext {
 
     REGISTER,
     IMMEDIATE,
+    PSEUDO,
     SHIFT,
     ADDRESS,
     LABEL_REF;

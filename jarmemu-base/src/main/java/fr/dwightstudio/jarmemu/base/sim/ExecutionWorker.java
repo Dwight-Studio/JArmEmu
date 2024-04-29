@@ -525,7 +525,7 @@ public class ExecutionWorker {
 
                 JArmEmuApplication.getStackController().updateGUI(JArmEmuApplication.getCodeInterpreter().stateContainer);
 
-                if (JArmEmuApplication.getInstance().status.get() != Status.SIMULATING) {
+                if (JArmEmuApplication.getStatus() != Status.SIMULATING) {
                     JArmEmuApplication.getEditorController().clearAllLineMarkings();
                 } else if (line != null) {
                     Platform.runLater(() -> {

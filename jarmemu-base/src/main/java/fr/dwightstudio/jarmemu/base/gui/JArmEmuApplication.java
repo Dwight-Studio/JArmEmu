@@ -377,6 +377,14 @@ public class JArmEmuApplication extends Application {
         return instance;
     }
 
+    public static Status getStatus() {
+        return instance.status.get();
+    }
+
+    public static void setStatus(Status status) {
+        instance.status.set(status);
+    }
+
     public static JArmEmuController getController() {
         return controller;
     }
