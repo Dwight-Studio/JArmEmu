@@ -27,10 +27,8 @@ import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArrayArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterWithUpdateArgument;
-import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.IllegalDataWritingASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.MemoryAccessMisalignedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.*;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
@@ -123,7 +121,7 @@ public class STMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) {
-
+    protected void verify(StateContainer stateContainer, RegisterWithUpdateArgument.UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws SyntaxASMException {
+        if (updateMode == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.missingUpdateMode"));
     }
 }
