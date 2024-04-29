@@ -163,7 +163,7 @@ public class LegacySourceParser implements SourceParser {
         sourceScanner.goTo(-1);
 
         while (this.sourceScanner.hasNextLine()) {
-            if (currentSection == Section.END) break;
+            if (Section.END.equals(currentSection)) break;
             parseOneLine(file);
         }
 
@@ -302,6 +302,7 @@ public class LegacySourceParser implements SourceParser {
      * @return un ParsedObject non vérifié
      */
     public void parseOneLine(ParsedFile file) throws ASMException {
+
         readOneLineASM(file);
 
         String arg1 = null;
