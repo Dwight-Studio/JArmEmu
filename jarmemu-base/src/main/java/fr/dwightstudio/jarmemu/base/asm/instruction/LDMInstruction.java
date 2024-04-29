@@ -87,25 +87,25 @@ public class LDMInstruction extends ParsedInstruction<RegisterWithUpdateArgument
         }
 
         switch (updateMode) {
-            case FD, DB -> {
+            case FD, IA -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() + 4 * i));
                 }
                 value = 4 * length;
             }
-            case FA, IB -> {
+            case FA, DA -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * i));
                 }
                 value = - 4 * length;
             }
-            case ED, DA -> {
+            case ED, IB -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() + 4 * (i + 1)));
                 }
                 value = 4 * length;
             }
-            case EA, IA -> {
+            case EA, DB -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * (i + 1)));
                 }

@@ -55,7 +55,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(10988, 54);
         stateContainer.getMemory().putWord(10992, 12);
         stateContainer.getMemory().putWord(10996, 65);
-        execute(stateContainer, false, false, null, DB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        execute(stateContainer, false, false, null, IA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -74,7 +74,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(12012, 54);
         stateContainer.getMemory().putWord(12008, 12);
         stateContainer.getMemory().putWord(12004, 65);
-        execute(stateContainer, false, false, null, IB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        execute(stateContainer, false, false, null, DA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -93,7 +93,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(12992, 54);
         stateContainer.getMemory().putWord(12996, 12);
         stateContainer.getMemory().putWord(13000, 65);
-        execute(stateContainer, false, false, null, DA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        execute(stateContainer, false, false, null, IB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -112,7 +112,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(14008, 54);
         stateContainer.getMemory().putWord(14004, 12);
         stateContainer.getMemory().putWord(14000, 65);
-        execute(stateContainer, false, false, null, IA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        execute(stateContainer, false, false, null, DB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
