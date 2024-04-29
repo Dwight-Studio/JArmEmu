@@ -52,7 +52,7 @@ public class RegexSourceParser implements SourceParser {
             String line = sourceScanner.nextLine();
 
             line = prepare(line);
-            if (line.isEmpty()) continue;
+            if (line.isEmpty() || Section.END.equals(currentSection)) continue;
 
             try {
                 boolean found = DirectiveParser.parseOneLine(this, line, sourceScanner, file);

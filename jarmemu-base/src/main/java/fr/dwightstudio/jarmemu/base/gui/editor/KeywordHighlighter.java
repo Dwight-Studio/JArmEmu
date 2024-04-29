@@ -47,8 +47,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static fr.dwightstudio.jarmemu.base.util.EnumUtils.getFromEnum;
-
 public class KeywordHighlighter extends RealTimeParser {
 
     private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values(), false);

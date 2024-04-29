@@ -13,6 +13,7 @@ public enum Context {
 
     LABEL,
 
+    SECTION,
     DIRECTIVE,
     DIRECTIVE_ARGUMENTS;
 

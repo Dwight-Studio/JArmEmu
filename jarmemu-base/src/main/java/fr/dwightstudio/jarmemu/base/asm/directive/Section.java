@@ -41,7 +41,7 @@ public enum Section {
         this.dataInitialisation = dataInitialisation;
     }
 
-    public boolean onlyDirectivesAllowed() {
+    public boolean isDataRelatedSection() {
         return onlyDirective;
     }
 

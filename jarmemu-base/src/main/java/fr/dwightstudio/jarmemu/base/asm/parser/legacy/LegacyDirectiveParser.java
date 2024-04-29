@@ -77,7 +77,7 @@ public class LegacyDirectiveParser {
                 parsedFile.add(directive.create(parser.currentSection, argsString == null ? "" : argsString.strip()).withLineNumber(sourceScanner.getLineNumber()));
                 rtn =  true;
             } catch (IllegalArgumentException exception) {
-                if (parser.currentSection.onlyDirectivesAllowed()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownDirective", directiveString)).with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
+                if (parser.currentSection.isDataRelatedSection()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownDirective", directiveString)).with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
             }
         }
 

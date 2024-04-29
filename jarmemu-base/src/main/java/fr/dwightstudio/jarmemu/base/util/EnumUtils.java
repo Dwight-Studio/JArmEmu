@@ -23,11 +23,19 @@
 
 package fr.dwightstudio.jarmemu.base.util;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class EnumUtils {
+
+
+    /**
+     * Get all values' name from enum.
+     *
+     * @param list the array of all values
+     * @param addEmpty true if it has to include an empty string
+     * @return an array containing all the values' name
+     * @param <T> the type of the enum
+     */
     public static <T extends Enum<T>> String[] getFromEnum(T[] list, boolean addEmpty) {
         List<String> rtn = new ArrayList<>();
 
@@ -43,7 +51,28 @@ public class EnumUtils {
         return rtn.toArray(new String[0]);
     }
 
+    /**
+     * Get all values' name from enum.
+     *
+     * @param list the array of all values
+     * @return an array containing all the values' name
+     * @param <T> the type of the enum
+     */
     public static <T extends Enum<T>> String[] getFromEnum(T[] list) {
         return getFromEnum(list, false);
+    }
+
+    /**
+     * Get all values' name from enum without some values.
+     *
+     * @param list the array of all values
+     * @param without the array of values to exclude
+     * @return an array containing all the values' name
+     * @param <T> the type of the enum
+     */
+    @SafeVarargs
+    public static <T extends Enum<T>> String[] getFromEnum(T[] list, T ... without) {
+        String[] withoutString = getFromEnum(without);
+        return Arrays.stream(getFromEnum(list, false)).filter(el -> !Arrays.asList(withoutString).contains(el)).toArray(String[]::new);
     }
 }

@@ -63,6 +63,7 @@
                 <configuration>
                     <mainClass>fr.dwightstudio.jarmemu.launcher/fr.dwightstudio.jarmemu.launcher.JArmEmuLauncher</mainClass>
                     <skip>false</skip>
+                    <commandlineArgs>--offline</commandlineArgs>
                 </configuration>
             </plugin>
         </plugins>

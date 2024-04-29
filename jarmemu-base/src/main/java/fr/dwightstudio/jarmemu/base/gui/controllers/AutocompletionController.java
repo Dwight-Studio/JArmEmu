@@ -4,6 +4,9 @@ import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
+import fr.dwightstudio.jarmemu.base.Status;
+import fr.dwightstudio.jarmemu.base.asm.directive.Directive;
+import fr.dwightstudio.jarmemu.base.asm.directive.Section;
 import fr.dwightstudio.jarmemu.base.asm.instruction.Condition;
 import fr.dwightstudio.jarmemu.base.asm.instruction.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
@@ -27,12 +30,14 @@ import java.util.ResourceBundle;
 public class AutocompletionController implements Initializable {
 
     private Timeline openingTimeline;
+    private Timeline idlingTimeline;
     private ObservableListWrapper<String> list;
     private ListView<String> listView;
     private Popover popover;
 
     // Data
     private FileEditor editor;
+    private Section section;
     private Context context;
     private SubContext subContext;
     private int contextLength;
@@ -85,11 +90,13 @@ public class AutocompletionController implements Initializable {
         popover.setHideOnEscape(true);
         popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
 
-        openingTimeline = new Timeline(new KeyFrame(Duration.millis(250), event -> update()));
+        openingTimeline = new Timeline(new KeyFrame(Duration.millis(250), event -> update(false)));
+        idlingTimeline = new Timeline(new KeyFrame(Duration.millis(1000), event -> update(true)));
     }
 
-    public void update(FileEditor editor, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
+    public void update(FileEditor editor, Section section, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
         this.editor = editor;
+        this.section = section;
         this.context = context;
         this.subContext = subContext;
         this.contextLength = lastTagLength;
@@ -98,145 +105,187 @@ public class AutocompletionController implements Initializable {
         this.bracket = bracket;
         this.brace = brace;
 
-        openingTimeline.stop();
-        openingTimeline.play();
+        if (JArmEmuApplication.getInstance().status.get() == Status.EDITING) {
+            openingTimeline.stop();
+            idlingTimeline.stop();
+
+            openingTimeline.play();
+            idlingTimeline.play();
+        }
     }
 
-    private void update() {
+    private void update(boolean idling) {
         list.clear();
 
-        switch (context) {
-            case NONE -> {
-                for (Instruction instruction : Instruction.values()) {
-                    list.add(instruction.name());
-                }
-            }
+        if (editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).getText().isBlank() && !idling) {
+            return;
+        } else {
+            idlingTimeline.stop();
+        }
 
-            case INSTRUCTION -> {
-                switch (subContext) {
-                    case NONE -> {
-                        for (Condition condition : Condition.values()) {
-                            list.add(condition.name());
-                        }
-
-                        for (DataMode dataMode : DataMode.values()) {
-                            list.add(dataMode.toString());
-                        }
-
-                        for (UpdateMode updateMode : UpdateMode.values()) {
-                            list.add(updateMode.name());
-                        }
-
-                        list.add("S");
+        if (section == Section.TEXT) {
+            switch (context) {
+                case NONE -> {
+                    for (Instruction instruction : Instruction.values()) {
+                        list.add(instruction.name());
                     }
 
-                    case CONDITION -> {
-                        for (DataMode dataMode : DataMode.values()) {
-                            list.add(dataMode.toString());
-                        }
+                    for (Directive directive : Directive.values()) {
+                        list.add("." + directive.name());
+                    }
 
-                        for (UpdateMode updateMode : UpdateMode.values()) {
-                            list.add(updateMode.name());
-                        }
-
-                        list.add("S");
+                    for (Section sec : Section.values()) {
+                        if (sec != Section.NONE) list.add("." + sec.name());
                     }
                 }
-            }
 
-            case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3, INSTRUCTION_ARGUMENT_4 -> {
-                switch (argType) {
-                    case "RegisterArgument", "RegisterWithUpdateArgument" -> {
-                        if (subContext != SubContext.REGISTER) {
-                            for (RegisterUtils value : RegisterUtils.values()) {
-                                list.add(value.name());
-                            }
-                        }
-                    }
-
-                    case "ImmediateArgument", "RotatedImmediateArgument" -> {
-                        if (subContext != SubContext.IMMEDIATE) list.add("#");
-                        else list.addAll(editor.getRealTimeParser().getSymbols());
-                    }
-
-                    case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> {
-                        if (subContext != SubContext.REGISTER && subContext != SubContext.IMMEDIATE) {
-                            for (RegisterUtils value : RegisterUtils.values()) {
-                                list.add(value.name());
+                case INSTRUCTION -> {
+                    switch (subContext) {
+                        case NONE -> {
+                            for (Condition condition : Condition.values()) {
+                                list.add(condition.name());
                             }
 
-                            list.add("#");
-                        }
-                    }
-
-                    case "ShiftArgument" -> {
-                        if (subContext == SubContext.SHIFT) list.add("#");
-                        else if (subContext != SubContext.IMMEDIATE) list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
-                    }
-
-                    case "RegisterAddressArgument" -> {
-                        if (subContext != SubContext.ADDRESS) {
-                            for (RegisterUtils value : RegisterUtils.values()) {
-                                list.add("[" + value.name() + "]");
+                            for (DataMode dataMode : DataMode.values()) {
+                                list.add(dataMode.toString());
                             }
+
+                            for (UpdateMode updateMode : UpdateMode.values()) {
+                                list.add(updateMode.name());
+                            }
+
+                            list.add("S");
+                        }
+
+                        case CONDITION -> {
+                            for (DataMode dataMode : DataMode.values()) {
+                                list.add(dataMode.toString());
+                            }
+
+                            for (UpdateMode updateMode : UpdateMode.values()) {
+                                list.add(updateMode.name());
+                            }
+
+                            list.add("S");
                         }
                     }
+                }
 
-                    case "RegisterArrayArgument" -> {
-                        if (brace) {
+                case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3, INSTRUCTION_ARGUMENT_4 -> {
+                    switch (argType) {
+                        case "RegisterArgument", "RegisterWithUpdateArgument" -> {
                             if (subContext != SubContext.REGISTER) {
                                 for (RegisterUtils value : RegisterUtils.values()) {
                                     list.add(value.name());
                                 }
                             }
                         }
-                    }
 
-                    case "LabelArgument" -> {
-                        if (subContext != SubContext.LABEL_REF) list.addAll(editor.getRealTimeParser().getAccessibleLabels());
-                    }
-
-                    case "LabelOrRegisterArgument" -> {
-                        list.addAll(editor.getRealTimeParser().getAccessibleLabels());
-                        for (RegisterUtils value : RegisterUtils.values()) {
-                            list.add("[" + value.name() + "]");
+                        case "ImmediateArgument", "RotatedImmediateArgument" -> {
+                            if (subContext != SubContext.IMMEDIATE) list.add("#");
+                            else list.addAll(editor.getRealTimeParser().getSymbols());
                         }
-                    }
 
-                    case "AddressArgument" -> {
-                        if (subContext != SubContext.ADDRESS) {
-                            if (bracket) {
-                                switch (subContext) {
-                                    case NONE -> {
-                                        for (RegisterUtils value : RegisterUtils.values()) {
-                                            list.add(value.name());
-                                        }
+                        case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> {
+                            if (subContext != SubContext.REGISTER && subContext != SubContext.IMMEDIATE) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    list.add(value.name());
+                                }
+
+                                list.add("#");
+                            }
+                        }
+
+                        case "ShiftArgument" -> {
+                            if (subContext == SubContext.SHIFT) list.add("#");
+                            else if (subContext != SubContext.IMMEDIATE) list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
+                        }
+
+                        case "RegisterAddressArgument" -> {
+                            if (subContext != SubContext.ADDRESS) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    list.add("[" + value.name() + "]");
+                                }
+                            }
+                        }
+
+                        case "RegisterArrayArgument" -> {
+                            if (brace) {
+                                if (subContext != SubContext.REGISTER) {
+                                    for (RegisterUtils value : RegisterUtils.values()) {
+                                        list.add(value.name());
                                     }
+                                }
+                            }
+                        }
 
-                                    case PRIMARY -> {
-                                        for (RegisterUtils value : RegisterUtils.values()) {
-                                            list.add(value.name());
+                        case "LabelArgument" -> {
+                            if (subContext != SubContext.LABEL_REF)
+                                list.addAll(editor.getRealTimeParser().getAccessibleLabels());
+                        }
+
+                        case "LabelOrRegisterArgument" -> {
+                            list.addAll(editor.getRealTimeParser().getAccessibleLabels());
+                            for (RegisterUtils value : RegisterUtils.values()) {
+                                list.add("[" + value.name() + "]");
+                            }
+                        }
+
+                        case "AddressArgument" -> {
+                            if (subContext != SubContext.ADDRESS) {
+                                if (bracket) {
+                                    switch (subContext) {
+                                        case NONE -> {
+                                            for (RegisterUtils value : RegisterUtils.values()) {
+                                                list.add(value.name());
+                                            }
                                         }
 
-                                        list.add("#");
+                                        case PRIMARY -> {
+                                            for (RegisterUtils value : RegisterUtils.values()) {
+                                                list.add(value.name());
+                                            }
+
+                                            list.add("#");
+                                        }
+
+                                        case TERTIARY -> list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
+
+                                        case SHIFT -> list.add("#");
                                     }
-
-                                    case TERTIARY -> list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
-
-                                    case SHIFT -> list.add("#");
                                 }
                             }
                         }
                     }
                 }
             }
+
+            String currentWord = (context == Context.INSTRUCTION) ? "" : getCurrentContext().strip();
+            if (!currentWord.isEmpty()) {
+                list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
+                list.removeIf(s -> s.equalsIgnoreCase(currentWord));
+            }
+        } else if (section.isDataRelatedSection() || section == Section.NONE) {
+            switch (context) {
+                case NONE -> {
+                    for (Directive directive : Directive.values()) {
+                        list.add("." + directive.name());
+                    }
+
+                    for (Section sec : Section.values()) {
+                        if (sec != Section.NONE) list.add("." + sec.name());
+                    }
+                }
+            }
+
+            String currentWord = getCurrentContext().strip();
+            if (!currentWord.isEmpty()) {
+                list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
+                list.removeIf(s -> s.equalsIgnoreCase(currentWord));
+            }
         }
 
-        String currentWord = context == Context.INSTRUCTION ? "" : getCurrentContext().strip();
-        if (!currentWord.isEmpty()) {
-            list.removeIf(s -> !s.toUpperCase().startsWith(currentWord.toUpperCase()));
-            list.removeIf(s -> s.equalsIgnoreCase(currentWord));
-        }
+        list.replaceAll(String::toLowerCase);
 
         show();
     }

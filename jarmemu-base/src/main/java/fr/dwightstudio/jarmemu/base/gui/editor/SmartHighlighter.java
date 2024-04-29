@@ -49,14 +49,13 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static fr.dwightstudio.jarmemu.base.util.EnumUtils.getFromEnum;
-
 public class SmartHighlighter extends RealTimeParser {
 
     public static final int MAXIMUM_ITER_NUM = 1000;
 
     private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values());
-    private static final String[] DIRECTIVES = ArrayUtils.addAll(EnumUtils.getFromEnum(Directive.values()), EnumUtils.getFromEnum(Section.values()));
+    private static final String[] SECTIONS = EnumUtils.getFromEnum(Section.values(), Section.NONE);
+    private static final String[] DIRECTIVES = EnumUtils.getFromEnum(Directive.values());
     private static final String[] REGISTERS = EnumUtils.getFromEnum(RegisterUtils.values());
     private static final String[] CONDITIONS = EnumUtils.getFromEnum(Condition.values());
     private static final String[] DATA_MODES = EnumUtils.getFromEnum(DataMode.values());
@@ -72,6 +71,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", INSTRUCTIONS) + ")(?-i)");
     private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
     private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + "|" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
+    private static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + ")(?-i)\\b");
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
     private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_0-9]+)[ \t]*:");
 
@@ -86,6 +86,8 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
     private static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_0-9]+");
 
+    private static final Pattern NOTE_PATTERN = Pattern.compile("^[^\n]+");
+
     private static final Logger logger = Logger.getLogger(SmartHighlighter.class.getSimpleName());
 
     private final FileEditor editor;
@@ -96,14 +98,17 @@ public class SmartHighlighter extends RealTimeParser {
 
     private static final Object LOCK = new Object();
     private static HashMap<FilePos, String> globals;
+    private final TreeMap<Integer, Section> sections;
     private final HashMap<Integer, String> labels;
     private final HashMap<Integer, String> symbols;
     private final HashMap<Integer, Set<String>> references;
     private String addGlobals;
+    private Section addSection;
     private String addLabels;
     private String addSymbols;
     private final HashSet<String> addReferences;
 
+    private Section currentSection;
     private Context context;
     private SubContext subContext;
     private int contextLength;
@@ -117,6 +122,9 @@ public class SmartHighlighter extends RealTimeParser {
     private boolean brace;
     private boolean bracket;
     private List<Find> find;
+
+    private boolean error;
+    private boolean errorOnLastIter;
 
     public SmartHighlighter(FileEditor editor) {
         super("RealTimeParser" + editor.getRealIndex());
@@ -137,6 +145,7 @@ public class SmartHighlighter extends RealTimeParser {
         });
 
         globals = new HashMap<>();
+        sections = new TreeMap<>();
         labels = new HashMap<>();
         symbols = new HashMap<>();
         references = new HashMap<>();
@@ -147,7 +156,9 @@ public class SmartHighlighter extends RealTimeParser {
         text = editor.getCodeArea().getParagraph(line).getText();
         cursorPos = editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
 
+        currentSection = getCurrentSection();
         addGlobals = "";
+        addSection = null;
         addLabels = "";
         addSymbols = "";
         addReferences.clear();
@@ -181,75 +192,119 @@ public class SmartHighlighter extends RealTimeParser {
                     for (iter = 0; !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
                         //System.out.println(context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
+                        errorOnLastIter = error;
+                        error = false;
+
+
                         if (cursorPos <= 0) {
                             cursorPos = Integer.MAX_VALUE;
-                            JArmEmuApplication.getAutocompletionController().update(editor, context, subContext, contextLength, command, argType, bracket, brace);
+                            JArmEmuApplication.getAutocompletionController().update(editor, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
                         }
 
                         if (text.isEmpty()) break;
 
-                        if (matchComment()) continue;
+                        if (currentSection == Section.TEXT) {
+                            if (matchComment()) continue;
 
-                        switch (context) {
-                            case ERROR -> {
-                                if (matchBlank()) continue;
-                            }
-
-                            case NONE -> {
-                                if (matchBlank()) continue;
-                                if (matchLabel()) continue;
-                                if (matchInstruction()) continue;
-                                if (matchDirective()) continue;
-                            }
-
-                            case LABEL -> {
-                                if (matchBlank()) continue;
-                                if (matchInstruction()) continue;
-                                if (matchDirective()) continue;
-                            }
-
-                            case COMMENT -> {
-                            }
-
-                            case INSTRUCTION -> {
-                                if (matchBlank()) {
-                                    context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
-                                    instruction = Instruction.valueOf(command.toUpperCase());
-                                    argType = instruction.getArgumentType(context.getIndex());
-                                    continue;
+                            switch (context) {
+                                case ERROR -> {
+                                    if (matchBlank()) continue;
                                 }
 
-                                switch (subContext) {
-                                    case NONE -> {
-                                        if (matchCondition()) continue;
-                                        if (matchFlags()) continue;
+                                case NONE -> {
+                                    if (matchBlank()) continue;
+                                    if (matchLabel()) continue;
+                                    if (matchInstruction()) continue;
+                                    if (matchSection()) continue;
+                                    if (matchDirective()) continue;
+                                }
+
+                                case LABEL -> {
+                                    if (matchBlank()) continue;
+                                    if (matchInstruction()) continue;
+                                    if (matchDirective()) continue;
+                                }
+
+                                case INSTRUCTION -> {
+                                    if (matchBlank()) {
+                                        context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
+                                        instruction = Instruction.valueOf(command.toUpperCase());
+                                        argType = instruction.getArgumentType(context.getIndex());
+                                        continue;
                                     }
 
-                                    case CONDITION -> {
-                                        if (matchFlags()) continue;
+                                    switch (subContext) {
+                                        case NONE -> {
+                                            if (matchCondition()) continue;
+                                            if (matchFlags()) continue;
+                                        }
+
+                                        case CONDITION -> {
+                                            if (matchFlags()) continue;
+                                        }
                                     }
                                 }
-                            }
 
-                            case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
-                                 INSTRUCTION_ARGUMENT_4 -> {
-                                if (matchBlank()) continue;
-                                if (!bracket && !brace && matchInstructionArgumentSeparator()) continue;
+                                case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
+                                     INSTRUCTION_ARGUMENT_4 -> {
+                                    if (matchBlank()) continue;
+                                    if (!bracket && !brace && matchInstructionArgumentSeparator()) continue;
 
-                                if (matchInstructionArgument()) continue;
-                            }
+                                    if (matchInstructionArgument()) continue;
+                                }
 
-                            case DIRECTIVE -> {
-                                if (matchBlank()) {
-                                    context = Context.DIRECTIVE_ARGUMENTS;
-                                    continue;
+                                case DIRECTIVE -> {
+                                    if (matchBlank()) {
+                                        context = Context.DIRECTIVE_ARGUMENTS;
+                                        continue;
+                                    }
+                                }
+
+                                case DIRECTIVE_ARGUMENTS -> {
+                                    if (matchBlank()) continue;
+                                    if (matchDirectiveArguments()) continue;
                                 }
                             }
+                        } else if (currentSection.isDataRelatedSection() || currentSection == Section.NONE) {
+                            if (matchComment()) continue;
 
-                            case DIRECTIVE_ARGUMENTS -> {
-                                if (matchBlank()) continue;
-                                if (matchDirectiveArguments()) continue;
+                            switch (context) {
+                                case ERROR -> {
+                                    if (matchBlank()) continue;
+                                }
+
+                                case NONE -> {
+                                    if (matchBlank()) continue;
+                                    if (matchLabel()) continue;
+                                    if (matchSection()) continue;
+                                    if (matchDirective()) continue;
+                                }
+
+                                case LABEL -> {
+                                    if (matchBlank()) continue;
+                                    if (matchDirective()) continue;
+                                }
+
+                                case DIRECTIVE -> {
+                                    if (matchBlank()) {
+                                        context = Context.DIRECTIVE_ARGUMENTS;
+                                        continue;
+                                    }
+                                }
+
+                                case DIRECTIVE_ARGUMENTS -> {
+                                    if (matchBlank()) continue;
+                                    if (matchDirectiveArguments()) continue;
+                                }
                             }
+                        } else if (currentSection == Section.COMMENT || currentSection == Section.NOTE) {
+                            if (matchBlank()) continue;
+                            if (matchSection()) continue;
+                            matchNote();
+                            break;
+                        } else if (currentSection == Section.END) {
+                            matchNote();
+                            break;
                         }
 
                         tagError();
@@ -261,6 +316,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                     synchronized (LOCK) {
                         String remGlobal = globals.getOrDefault(new FilePos(editor.getRealIndex(), line), "");
+                        Section remSection = sections.getOrDefault(line, null);
                         String remLabel = labels.getOrDefault(line, "");
                         String remSymbol = symbols.getOrDefault(line, "");
 
@@ -271,6 +327,20 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 globals.remove(new FilePos(editor.getRealIndex(), line));
                                 updateGlobals(remGlobal);
+                            }
+                        }
+
+                        if (remSection != addSection) {
+                            if (remSection == null) {
+                                sections.put(line, addSection);
+                            } else {
+                                sections.remove(line);
+                            }
+
+                            if (addSection != Section.END) {
+                                markDirty(line + 1, getNextSectionLine());
+                            } else {
+                                markDirty(line + 1, editor.getCodeArea().getParagraphs().size());
                             }
                         }
 
@@ -323,6 +393,17 @@ public class SmartHighlighter extends RealTimeParser {
             }
         } catch (InterruptedException ignored) {
         }
+    }
+
+    private boolean matchNote() {
+        Matcher matcher = NOTE_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            tagBlank(matcher);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean matchComment() {
@@ -533,27 +614,23 @@ public class SmartHighlighter extends RealTimeParser {
         if (matcher.find()) {
             return switch (matcher.group()) {
                 case "[" -> {
-                    if (bracket) tagError();
+                    if (bracket) yield false;
                     else {
                         tag("bracket", matcher);
                         bracket = true;
                         subContext = SubContext.NONE;
                         yield true;
                     }
-
-                    yield false;
                 }
 
                 case "]" -> {
-                    if (!bracket) tagError();
+                    if (!bracket) yield false;
                     else {
                         tag("bracket", matcher);
                         bracket = false;
                         subContext = SubContext.NONE;
                         yield true;
                     }
-
-                    yield false;
                 }
 
                 default -> false;
@@ -659,7 +736,7 @@ public class SmartHighlighter extends RealTimeParser {
                         return true;
                     } else if (matchSubSeparator()) {
                         subContext = SubContext.NONE;
-                    } else tagError();
+                    } else return false;
                 }
             }
 
@@ -714,6 +791,19 @@ public class SmartHighlighter extends RealTimeParser {
 
         if (matcher.find()) {
             tagBlank(matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchSection() {
+        Matcher matcher = SECTION_PATTERN.matcher(text);
+
+        if (matcher.find()) {
+            currentSection = addSection = Section.valueOf(matcher.group("SECTION").toUpperCase());
+            context = Context.SECTION;
+            tag("section", matcher);
             return true;
         }
 
@@ -875,17 +965,25 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = ERROR_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            int lcl = contextLength;
             contextLength = matcher.end();
             addSpan(Collections.singleton("error"), contextLength);
             find.replaceAll(f -> f.offset(contextLength));
             find.removeIf(Objects::isNull);
             text = text.substring(contextLength);
             cursorPos -= contextLength;
+
+            if (errorOnLastIter) {
+                contextLength += lcl;
+            }
+
+            error = true;
         } else {
             matcher = GENERAL_SEPARATOR_PATTERN.matcher(text);
 
             if (matcher.find()) {
                 tag("error", matcher);
+                error = true;
             }
         }
     }
@@ -914,6 +1012,36 @@ public class SmartHighlighter extends RealTimeParser {
         });
     }
 
+    /**
+     * @return the current section (as the highlighter memorized)
+     */
+    private Section getCurrentSection() {
+        Section current = Section.NONE;
+
+        for (Map.Entry<Integer, Section> entry : sections.entrySet()) {
+            if (entry.getKey() > line) {
+                break;
+            } else {
+                current = entry.getValue();
+            }
+        }
+
+        return current;
+    }
+
+    /**
+     * @return the starting line of the next section
+     */
+    private int getNextSectionLine() {
+        for (int i : sections.keySet()) {
+            if (i > line) {
+                return i;
+            }
+        }
+
+        return editor.getCodeArea().getParagraphs().size();
+    }
+
     @Override
     public void interrupt() {
         super.interrupt();
@@ -923,7 +1051,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int line) {
-        this.queue.add(line);
+        if (!queue.contains(line)) queue.add(line);
     }
 
     @Override
@@ -945,8 +1073,9 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        for (int i = startLine; i <= stopLine; i++) {
-            queue.add(i);
+        int max = editor.getCodeArea().getParagraphs().size();
+        for (int i = startLine; i <= stopLine && i < max; i++) {
+            markDirty(i);
         }
     }
 }

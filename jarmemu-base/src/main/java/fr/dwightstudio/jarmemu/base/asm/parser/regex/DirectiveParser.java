@@ -92,7 +92,7 @@ public class DirectiveParser {
                 }
             } else if (parser.currentSection != Section.COMMENT) {
                 if (labelString != null && !labelString.isEmpty()) {
-                    if (parser.currentSection.onlyDirectivesAllowed()) {
+                    if (parser.currentSection.isDataRelatedSection()) {
                         rtn = true;
                         parsedFile.add(new ParsedLabel(parser.currentSection, labelString.strip().toUpperCase()).withLineNumber(sourceScanner.getLineNumber()));
                     }
@@ -102,7 +102,7 @@ public class DirectiveParser {
                         Directive directive = Directive.valueOf(directiveString.toUpperCase());
                         parsedFile.add(directive.create(parser.currentSection, argsString == null ? "" : argsString.strip()).withLineNumber(sourceScanner.getLineNumber()));
                     } catch (IllegalArgumentException exception) {
-                        if (parser.currentSection.onlyDirectivesAllowed())
+                        if (parser.currentSection.isDataRelatedSection())
                             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownDirective", directiveString)).with(sourceScanner.getLineNumber()).with(parsedFile);
                     }
                 }
@@ -112,7 +112,7 @@ public class DirectiveParser {
         }
 
         if (!flag) {
-            if (parser.currentSection.onlyDirectivesAllowed()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", line)).with(sourceScanner.getLineNumber()).with(parsedFile);
+            if (parser.currentSection.isDataRelatedSection()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", line)).with(sourceScanner.getLineNumber()).with(parsedFile);
         }
 
         return rtn;

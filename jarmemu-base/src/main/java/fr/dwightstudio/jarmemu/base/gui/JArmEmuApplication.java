@@ -49,7 +49,6 @@ import javafx.util.Duration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 import org.kohsuke.github.GHRelease;
-import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
 import java.io.BufferedReader;
@@ -74,8 +73,25 @@ public class JArmEmuApplication extends Application {
     public static String LICENCE;
     public static final String[] FONTS_URL = new String[]{
             "Cantarell/Cantarell-Regular.ttf",
+            "Cantarell/Cantarell-Italic.ttf",
+            "Cantarell/Cantarell-Bold.ttf",
+            "Cantarell/Cantarell-BoldItalic.ttf",
             "SourceCodePro/SourceCodePro-Regular.ttf",
-            "SourceCodePro/SourceCodePro-Italic.ttf"
+            "SourceCodePro/SourceCodePro-Italic.ttf",
+            "SourceCodePro/SourceCodePro-ExtraLight.ttf",
+            "SourceCodePro/SourceCodePro-ExtraLightItalic.ttf",
+            "SourceCodePro/SourceCodePro-Light.ttf",
+            "SourceCodePro/SourceCodePro-LightItalic.ttf",
+            "SourceCodePro/SourceCodePro-Medium.ttf",
+            "SourceCodePro/SourceCodePro-MediumItalic.ttf",
+            "SourceCodePro/SourceCodePro-SemiBold.ttf",
+            "SourceCodePro/SourceCodePro-SemiBoldItalic.ttf",
+            "SourceCodePro/SourceCodePro-Bold.ttf",
+            "SourceCodePro/SourceCodePro-BoldItalic.ttf",
+            "SourceCodePro/SourceCodePro-ExtraBold.ttf",
+            "SourceCodePro/SourceCodePro-ExtraBoldItalic.ttf",
+            "SourceCodePro/SourceCodePro-Black.ttf",
+            "SourceCodePro/SourceCodePro-BlackItalic.ttf",
     };
 
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getSimpleName());
@@ -110,7 +126,7 @@ public class JArmEmuApplication extends Application {
     public Theme theme;
     public SimpleObjectProperty<Status> status;
     public Stage stage;
-    private String argSave;
+    private ArrayList<String> argSave;
 
     private URL downloadURL;
     private String newVersion;
@@ -160,11 +176,13 @@ public class JArmEmuApplication extends Application {
         }
 
         // Essayer d'ouvrir le fichier passé en paramètre
+        argSave = new ArrayList<String>();
         if (!getParameters().getUnnamed().isEmpty()) {
-            logger.info("Detecting file argument: " + getParameters().getUnnamed().getFirst());
-            argSave = getParameters().getUnnamed().getFirst();
-        } else {
-            argSave = null;
+            for (String arg : getParameters().getUnnamed()) {
+                if (arg.startsWith("--")) continue;
+                logger.info("Detecting file argument: " + getParameters().getUnnamed().getFirst());
+                argSave.add(arg);
+            }
         }
 
         // Autres
@@ -200,41 +218,45 @@ public class JArmEmuApplication extends Application {
         );
 
         // Check for update
-        try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
-            Future<?> future = executorService.submit(() -> {
-                if (!VERSION.equals("NotFound")) {
-                    logger.info("Checking for update...");
-                    JArmEmuApplication.notifyPreloader("Checking for Update");
-                    try {
-                        GitHub gitHub = GitHub.connectAnonymously();
+        if (!getParameters().getRaw().contains("--offline")) {
+            if (!VERSION.equals("NotFound")) {
+                try (ExecutorService executorService = Executors.newSingleThreadExecutor()) {
+                    Future<?> future = executorService.submit(() -> {
+                        logger.info("Checking for update...");
+                        JArmEmuApplication.notifyPreloader("Checking for Update");
+                        try {
+                            GitHub gitHub = GitHub.connectAnonymously();
 
-                        GHRelease release = gitHub.getRepository("Dwight-Studio/JArmEmu").getLatestRelease();
-                        String latestVersion = release.getTagName().substring(1);
+                            GHRelease release = gitHub.getRepository("Dwight-Studio/JArmEmu").getLatestRelease();
+                            String latestVersion = release.getTagName().substring(1);
 
-                        if (latestVersion.compareTo(VERSION) > 0) {
-                            logger.info("Running outdated version of JArmEmu (v" + VERSION + " -> v" + latestVersion + ")");
+                            if (latestVersion.compareTo(VERSION) > 0) {
+                                logger.info("Running outdated version of JArmEmu (v" + VERSION + " -> v" + latestVersion + ")");
 
-                            downloadURL = release.getHtmlUrl();
-                            newVersion = latestVersion;
+                                downloadURL = release.getHtmlUrl();
+                                newVersion = latestVersion;
+                            }
+                        } catch (IOException exception) {
+                            logger.warning("Can't verify version information (" + exception.getMessage() + ")");
                         }
-                    } catch (IOException exception) {
+                    });
+
+                    try {
+                        future.get(5, TimeUnit.SECONDS);
+                    } catch (TimeoutException e) {
+                        logger.warning("Timed out waiting for version information");
+                    } catch (ExecutionException | InterruptedException exception) {
                         logger.warning("Can't verify version information (" + exception.getMessage() + ")");
+                        logger.warning(ExceptionUtils.getStackTrace(exception));
                     }
-                } else {
-                    logger.warning("Can't verify version information (unknown version)");
+
+                    executorService.shutdownNow();
                 }
-            });
-
-            try {
-                future.get(5, TimeUnit.SECONDS);
-            } catch (TimeoutException e) {
-                logger.warning("Timed out waiting for version information");
-            } catch (ExecutionException | InterruptedException exception) {
-                logger.warning("Can't verify version information (" + exception.getMessage() + ")");
-                logger.warning(ExceptionUtils.getStackTrace(exception));
+            } else {
+                logger.warning("Can't verify version information (unknown version)");
             }
-
-            executorService.shutdownNow();
+        } else {
+            logger.info("Skipping checking for update (offline mode)");
         }
     }
 
@@ -456,8 +478,8 @@ public class JArmEmuApplication extends Application {
     /**
      * @return le chemin vers le fichier passé en paramètre (ou null si rien n'est passé en paramètre)
      */
-    public String getArgSave() {
-        return argSave;
+    public String[] getArgSave() {
+        return argSave.toArray(String[]::new);
     }
 
     public static @NotNull URL getResource(String name) {

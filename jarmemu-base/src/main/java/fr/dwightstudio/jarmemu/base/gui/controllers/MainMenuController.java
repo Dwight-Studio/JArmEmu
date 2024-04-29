@@ -255,10 +255,10 @@ public class MainMenuController {
     public void openLastSave() {
         String[] paths;
 
-        if (JArmEmuApplication.getInstance().getArgSave() == null) {
+        if (JArmEmuApplication.getInstance().getArgSave().length == 0) {
             paths = JArmEmuApplication.getSettingsController().getLastSavePath().split(";");
         } else {
-            paths = JArmEmuApplication.getInstance().getArgSave().split(";");
+            paths = JArmEmuApplication.getInstance().getArgSave();
         }
 
         logger.info("Trying to open last saves...");
