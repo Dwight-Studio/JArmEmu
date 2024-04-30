@@ -88,7 +88,7 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class)
-                    .newInstance(new InstructionModifier(Condition.AL, doUpdateFlags, null, null), null, null, null, null);
+                    .newInstance(new InstructionModifier(Condition.AL, doUpdateFlags, dataMode, updateMode), null, null, null, null);
             ins.contextualize(stateContainer);
             ins.verify(() -> new StateContainer(stateContainer), arg1, arg2, arg3, arg4);
             ins.execute(container, ignoreExceptions, arg1, arg2, arg3, arg4);
