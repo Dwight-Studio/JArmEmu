@@ -12,6 +12,6 @@ public class CDPInstructionTest extends InstructionTest<String, Object, Object, 
 
     @Test
     public void testExecute() {
-        assertThrows(SyntaxASMException.class, () -> new CDPInstruction(new InstructionModifier(Condition.AL, false, null, null), "something", null, null, null));
+        assertThrows(SyntaxASMException.class, () -> new CDPInstruction(new InstructionModifier(Condition.AL, false, null, null), "p5, 2, c12, c10, c3, 4", null, null, null));
     }
 }

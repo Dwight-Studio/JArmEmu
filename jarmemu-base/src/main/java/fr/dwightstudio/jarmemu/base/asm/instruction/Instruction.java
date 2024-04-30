@@ -95,7 +95,7 @@ public enum Instruction {
 
     //Coprocessor-related
     CDP(CDPInstruction.class),
-    //CDP2(CDP2Instruction.class),
+    CDP2(CDP2Instruction.class),
 
     // Others
     BKPT(BKPTInstruction.class),

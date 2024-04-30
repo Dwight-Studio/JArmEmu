@@ -60,5 +60,4 @@ public class CDPInstruction extends ParsedInstruction<String, Object, Object, Ob
     protected void verify(StateContainer stateContainer, String arg1, Object arg2, Object arg3, Object arg4) throws ASMException {
 
     }
-    //TODO: Faire les tests
 }
