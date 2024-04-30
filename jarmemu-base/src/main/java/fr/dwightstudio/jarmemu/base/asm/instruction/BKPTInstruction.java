@@ -33,12 +33,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, Object> {
-    public BKPTInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public BKPTInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public BKPTInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public BKPTInstruction(InstructionModifier modifier, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override

@@ -27,10 +27,7 @@ import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.base.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Condition;
-import fr.dwightstudio.jarmemu.base.asm.instruction.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
-import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.instruction.*;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.util.EnumUtils;
@@ -171,7 +168,7 @@ public class ASMParser {
                     if (arg4.isEmpty()) arg4 = null;
                 }
 
-                parsedFile.add(instruction.create(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
+                parsedFile.add(instruction.create(new InstructionModifier(condition, updateFlags, dataMode, updateMode),  arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
             }
         } else {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unexpectedStatement", line)).with(sourceScanner.getLineNumber()).with(parsedFile);

@@ -35,12 +35,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class BFIInstruction extends ParsedInstruction<Register, Register, Integer, Integer> {
-    public BFIInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public BFIInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public BFIInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Integer> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public BFIInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Integer> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override

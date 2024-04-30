@@ -34,12 +34,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class ORRInstruction extends ParsedInstruction<Register, Register, Integer, ShiftArgument.ShiftFunction> {
-    public ORRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public ORRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public ORRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public ORRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ORRInstruction extends ParsedInstruction<Register, Register, Intege
         int i1 = arg4.apply(arg3);
         arg1.setData(arg2.getData() | i1);  // arg1 = arg2 || (arg4 SHIFT arg3)
 
-        if (updateFlags) {
+        if (modifier.doUpdateFlags()) {
             stateContainer.getCPSR().setN(arg1.getData() < 0);
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
         }

@@ -14,12 +14,12 @@ public class POPInstruction extends ParsedInstruction<Register[], Object, Object
 
     LDMInstruction ldmInstruction;
 
-    public POPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register[]> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public POPInstruction(InstructionModifier modifier, ParsedArgument<Register[]> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public POPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public POPInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class POPInstruction extends ParsedInstruction<Register[], Object, Object
         super.contextualize(stateContainer);
         RegisterWithUpdateArgument rg = new RegisterWithUpdateArgument("SP!");
         rg.contextualize(stateContainer);
-        this.ldmInstruction = new LDMInstruction(condition, updateFlags, dataMode, UpdateMode.IA, rg, arg1, arg2, arg3);
+        this.ldmInstruction = new LDMInstruction(modifier.withUpdateMode(UpdateMode.IA), rg, arg1, arg2, arg3);
     }
 
     @Override

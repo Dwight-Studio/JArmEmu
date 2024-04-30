@@ -14,12 +14,12 @@ public class PUSHInstruction extends ParsedInstruction<Register[], Object, Objec
 
     STMInstruction stmInstruction;
 
-    public PUSHInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register[]> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public PUSHInstruction(InstructionModifier modifier, ParsedArgument<Register[]> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public PUSHInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public PUSHInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class PUSHInstruction extends ParsedInstruction<Register[], Object, Objec
         super.contextualize(stateContainer);
         RegisterWithUpdateArgument rg = new RegisterWithUpdateArgument("SP!");
         rg.contextualize(stateContainer);
-        this.stmInstruction = new STMInstruction(condition, updateFlags, dataMode, UpdateMode.DB, rg, arg1, arg2, arg3);
+        this.stmInstruction = new STMInstruction(modifier.withUpdateMode(UpdateMode.DB), rg, arg1, arg2, arg3);
     }
 
     @Override

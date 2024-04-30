@@ -33,12 +33,12 @@ import org.jetbrains.annotations.NotNull;
 
 
 public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftArgument.ShiftFunction, Object> {
-    public MOVInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public MOVInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public MOVInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public MOVInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftAr
 
         arg1.setData(i1); // arg1 = (arg3 SHIFT arg2)
 
-        if(updateFlags){
+        if(modifier.doUpdateFlags()){
             stateContainer.getCPSR().setN(arg1.getData() < 0);
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
         }
@@ -94,6 +94,6 @@ public class MOVInstruction extends ParsedInstruction<Register, Integer, ShiftAr
 
     public ParsedInstruction<?, ?, ?, ?> getShiftInstruction() throws ASMException {
         String argString = this.arg3.getOriginalString();
-        return Instruction.valueOf(argString.substring(0, 3)).create(this.condition, this.updateFlags, this.dataMode, this.updateMode, arg1.getOriginalString(), arg2.getOriginalString(), argString.substring(3), arg4.getOriginalString()).withLineNumber(this.getLineNumber()).withFile(this.getFile());
+        return Instruction.valueOf(argString.substring(0, 3)).create(modifier, arg1.getOriginalString(), arg2.getOriginalString(), argString.substring(3), arg4.getOriginalString()).withLineNumber(this.getLineNumber()).withFile(this.getFile());
     }
 }

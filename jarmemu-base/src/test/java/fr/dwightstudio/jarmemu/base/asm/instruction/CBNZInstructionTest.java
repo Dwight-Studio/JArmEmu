@@ -22,9 +22,9 @@ class CBNZInstructionTest extends InstructionTest<Register, Integer, Object, Obj
         r3.setData(15);
         stateContainer.getAccessibleLabels().put("COUCOU", 20);
         Integer value =  label(stateContainer, "COUCOU");
-        execute(stateContainer, false, false, null, null, r2, value, null, null);
+        legacyExecute(stateContainer, false, false, null, null, r2, value, null, null);
         assertEquals(32, pc.getData());
-        execute(stateContainer, false, false, null, null, r3, value, null, null);
+        legacyExecute(stateContainer, false, false, null, null, r3, value, null, null);
         assertEquals(20, pc.getData());
     }
 }

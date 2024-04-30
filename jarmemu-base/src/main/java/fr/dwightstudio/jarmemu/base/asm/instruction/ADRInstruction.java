@@ -36,12 +36,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class ADRInstruction extends ParsedInstruction<Register, Integer, Object, Object> {
-    public ADRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public ADRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public ADRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public ADRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ADRInstruction extends ParsedInstruction<Register, Integer, Object,
 
     @Override
     protected void verify(StateContainer stateContainer, Register arg1, Integer arg2, Object arg3, Object arg4) throws ASMException {
-        if (updateFlags) {
+        if (modifier.doUpdateFlags()) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.illegalSFlag"));
         }
     }

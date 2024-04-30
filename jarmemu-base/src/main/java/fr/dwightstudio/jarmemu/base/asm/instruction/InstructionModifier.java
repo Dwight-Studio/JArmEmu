@@ -23,32 +23,24 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.base.sim.entity.Register;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-class MLSInstructionTest extends InstructionTest<Register, Register, Register, Register> {
-    MLSInstructionTest() {
-        super(MLSInstruction.class);
+public record InstructionModifier(Condition condition, boolean doUpdateFlags, DataMode dataMode, UpdateMode updateMode) {
+    public InstructionModifier() {
+        this(Condition.AL, false, null, null);
     }
 
-    @Test
-    public void simpleMlsTest() throws ASMException {
-        Register r0 = stateContainer.getRegister(0);
-        Register r1 = stateContainer.getRegister(1);
-        Register r2 = stateContainer.getRegister(2);
-        Register r3 = stateContainer.getRegister(3);
-        r3.setData(100);
-        r2.setData(4);
-        r1.setData(5);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
-        assertEquals(80, r0.getData());
-        r3.setData(65847685);
-        r2.setData(456456);
-        r1.setData(456456456);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
-        assertEquals(936264005, r0.getData());
+    public InstructionModifier withCondition(Condition condition) {
+        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
+    }
+
+    public InstructionModifier withDoUpdateFlags(boolean doUpdateFlags) {
+        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
+    }
+
+    public InstructionModifier withDataMode(DataMode dataMode) {
+        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
+    }
+
+    public InstructionModifier withUpdateMode(UpdateMode updateMode) {
+        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
     }
 }

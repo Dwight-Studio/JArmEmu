@@ -16,6 +16,6 @@ class BXJInstructionTest extends InstructionTest<Register, Object, Object, Objec
     public void testExecute() {
         Register lr = stateContainer.getRegister(0);
         lr.setData(24);
-        assertThrows(SyntaxASMException.class, () -> execute(stateContainer, false, false, null, null, lr, null, null, null));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, lr, null, null, null));
     }
 }

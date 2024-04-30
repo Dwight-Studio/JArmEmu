@@ -10,13 +10,13 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class CLREXInstruction extends ParsedInstruction<Object, Object, Object, Object> {
-    public CLREXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Object> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public CLREXInstruction(InstructionModifier modifier, ParsedArgument<Object> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
         throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.notImplemented", "CLREX"));
     }
 
-    public CLREXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public CLREXInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
         throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.notImplemented", "CLREX"));
     }
 

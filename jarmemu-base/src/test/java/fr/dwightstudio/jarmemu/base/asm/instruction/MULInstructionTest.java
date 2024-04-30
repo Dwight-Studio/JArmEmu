@@ -41,14 +41,14 @@ class MULInstructionTest extends InstructionTest<Register, Register, Register, O
         Register r2 = stateContainer.getRegister(2);
         r0.setData(16);
         r1.setData(16);
-        execute(stateContainer, false, false, null, null, r2, r1, r0, shift());
+        legacyExecute(stateContainer, false, false, null, null, r2, r1, r0, shift());
         assertEquals(16*16, r2.getData());
         r1.setData(-1);
-        execute(stateContainer, false, false, null, null, r0, r1, r2, shift());
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, shift());
         assertEquals(-16*16, r0.getData());
         r0.setData(8594297);
         r1.setData(859425);
-        execute(stateContainer, false, false, null, null, r2, r1, r0, shift());
+        legacyExecute(stateContainer, false, false, null, null, r2, r1, r0, shift());
         assertEquals(-1190049895, r2.getData());
     }
 
@@ -58,15 +58,15 @@ class MULInstructionTest extends InstructionTest<Register, Register, Register, O
         Register r1 = stateContainer.getRegister(1);
         r0.setData(16);
         r1.setData(16);
-        execute(stateContainer, false, true, null, null, r1, r1, r0, shift());
+        legacyExecute(stateContainer, false, true, null, null, r1, r1, r0, shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(-1);
-        execute(stateContainer, false, true, null, null, r1, r1, r0, shift());
+        legacyExecute(stateContainer, false, true, null, null, r1, r1, r0, shift());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(0);
-        execute(stateContainer, false, true, null, null, r1, r1, r0, shift());
+        legacyExecute(stateContainer, false, true, null, null, r1, r1, r0, shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
     }

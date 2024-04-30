@@ -41,7 +41,7 @@ class BLXInstructionTest extends InstructionTest<Integer, Object, Object, Object
         Register pc = stateContainer.getPC();
         pc.setData(8);
         r0.setData(45);
-        execute(stateContainer, false, false, null, null, r0.getData(), null, null, null);
+        legacyExecute(stateContainer, false, false, null, null, r0.getData(), null, null, null);
         assertEquals(12, stateContainer.getLR().getData());
         assertEquals(45, pc.getData());
         assertTrue(stateContainer.getCPSR().getT());

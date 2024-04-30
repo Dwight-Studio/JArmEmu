@@ -36,6 +36,6 @@ class BKPTInstructionTest extends InstructionTest<Integer, Object, Object, Objec
 
     @Test
     public void simpleBkptTest() {
-        Assertions.assertThrows(BreakpointASMException.class, () -> execute(new StateContainer(), false, false, null, null, 1, null, null, null));
+        Assertions.assertThrows(BreakpointASMException.class, () -> legacyExecute(new StateContainer(), false, false, null, null, 1, null, null, null));
     }
 }

@@ -42,15 +42,15 @@ class SMLALInstructionTest extends InstructionTest<Register, Register, Register,
         Register r3 = stateContainer.getRegister(3);
         r2.setData(4);
         r3.setData(5);
-        execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(0, r1.getData());
         assertEquals(20, r0.getData());
-        execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(0, r1.getData());
         assertEquals(40, r0.getData());
         r2.setData(Integer.MAX_VALUE);
         r3.setData(-4);
-        execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(-2, r1.getData());
         assertEquals(44, r0.getData());
     }
@@ -63,20 +63,20 @@ class SMLALInstructionTest extends InstructionTest<Register, Register, Register,
         Register r3 = stateContainer.getRegister(3);
         r2.setData(4);
         r3.setData(-5);
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r2.setData(4);
         r3.setData(5);
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r2.setData(1);
         r3.setData(1);
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
     }

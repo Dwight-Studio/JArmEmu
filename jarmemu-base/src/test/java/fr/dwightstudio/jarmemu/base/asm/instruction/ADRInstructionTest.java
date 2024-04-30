@@ -44,7 +44,7 @@ public class ADRInstructionTest extends InstructionTest<Register, Integer, Objec
         pc.setData(24);
         stateContainer.getAccessibleLabels().put("COUCOU", 20);
         Integer value = label(stateContainer, "COUCOU");
-        execute(stateContainer, false, false, null, null, r2, value, null, null);
+        legacyExecute(stateContainer, false, false, null, null, r2, value, null, null);
         assertEquals(20, r2.getData());
     }
 
@@ -56,6 +56,6 @@ public class ADRInstructionTest extends InstructionTest<Register, Integer, Objec
         pc.setData(24);
         stateContainer.getAccessibleLabels().put("COUCOU", 20);
         Integer value =  label(stateContainer, "COUCOU");
-        assertThrows(SyntaxASMException.class, () -> execute(stateContainer, false, true, null, null, r2, value, null, null));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, true, null, null, r2, value, null, null));
     }
 }

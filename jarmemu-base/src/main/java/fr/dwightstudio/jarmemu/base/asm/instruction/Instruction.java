@@ -128,9 +128,9 @@ public enum Instruction {
         }
     }
 
-    public ParsedInstruction<?, ?, ?, ?> create(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public ParsedInstruction<?, ?, ?, ?> create(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
-            return this.instructionClass.getDeclaredConstructor(Condition.class, boolean.class, DataMode.class, UpdateMode.class, String.class, String.class, String.class, String.class).newInstance(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+            return this.instructionClass.getDeclaredConstructor(InstructionModifier.class, String.class, String.class, String.class, String.class).newInstance(modifier, arg1, arg2, arg3, arg4);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
             if (e.getCause() instanceof ASMException ex) throw ex;
@@ -140,15 +140,12 @@ public enum Instruction {
 
     private ParsedInstruction<?, ?, ?, ?> create() {
         try {
-            return instructionClass.getDeclaredConstructor(Condition.class,
-                            boolean.class,
-                            DataMode.class,
-                            UpdateMode.class,
+            return instructionClass.getDeclaredConstructor(InstructionModifier.class,
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class)
-                    .newInstance(Condition.AL, false, null, null, null, null, null, null);
+                    .newInstance(new InstructionModifier(Condition.AL, false, null, null), null, null, null, null);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException ignored) {}
 

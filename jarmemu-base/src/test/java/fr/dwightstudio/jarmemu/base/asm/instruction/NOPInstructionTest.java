@@ -13,7 +13,7 @@ public class NOPInstructionTest extends InstructionTest<Object, Object, Object, 
 
     @Test
     public void simpleNopTest() throws ASMException {
-        NOPInstruction nopInstruction = new NOPInstruction(Condition.AL, false, null, null, (String) null, null, null, null);
+        NOPInstruction nopInstruction = new NOPInstruction(new InstructionModifier(Condition.AL, false, null, null), (String) null, null, null, null);
         Register r0 = stateContainer.getRegister(0);
         r0.setData(21);
         nopInstruction.contextualize(stateContainer);

@@ -13,7 +13,7 @@ public class POPInstructionTest extends InstructionTest<Register[], Object, Obje
 
     @Test
     public void simplePopTest() throws ASMException {
-        POPInstruction popInstruction = new POPInstruction(Condition.AL, false, null, null, "{r0-r2}", null, null, null);
+        POPInstruction popInstruction = new POPInstruction(new InstructionModifier(Condition.AL, false, null, null), "{r0-r2}", null, null, null);
         Register sp = stateContainer.getRegister(13);
         Register r0 = stateContainer.getRegister(0);
         Register r1 = stateContainer.getRegister(1);

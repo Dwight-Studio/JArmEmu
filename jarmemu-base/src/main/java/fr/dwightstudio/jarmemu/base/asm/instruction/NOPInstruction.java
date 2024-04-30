@@ -10,12 +10,12 @@ public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Ob
 
     MOVInstruction movInstruction;
 
-    public NOPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Object> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public NOPInstruction(InstructionModifier modifier, ParsedArgument<Object> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public NOPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public NOPInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Ob
         r0bis.contextualize(stateContainer);
         ShiftArgument noShift = new ShiftArgument(null);
         noShift.contextualize(stateContainer);
-        this.movInstruction = new MOVInstruction(condition, updateFlags, dataMode, updateMode, r0, r0bis, noShift, arg4);
+        this.movInstruction = new MOVInstruction(modifier,  r0, r0bis, noShift, arg4);
     }
 
     @Override

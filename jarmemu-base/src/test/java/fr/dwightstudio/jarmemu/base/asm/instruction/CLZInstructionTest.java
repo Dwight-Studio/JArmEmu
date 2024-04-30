@@ -18,10 +18,10 @@ class CLZInstructionTest extends InstructionTest<Register, Register, Object, Obj
         Register r1 = stateContainer.getRegister(1);
         r0.setData(0);
         r1.setData(-1);
-        execute(stateContainer, false, false, null, null, r0, r1, null, null);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, null, null);
         assertEquals(0, r0.getData());
         r1.setData(16);
-        execute(stateContainer, false, false, null, null, r0, r1, null, null);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, null, null);
         assertEquals(27, r0.getData());
     }
 }

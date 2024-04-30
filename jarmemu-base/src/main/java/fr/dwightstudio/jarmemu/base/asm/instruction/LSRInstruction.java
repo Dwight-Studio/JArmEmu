@@ -34,12 +34,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class LSRInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
-    public LSRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public LSRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public LSRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public LSRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class LSRInstruction extends ParsedInstruction<Register, Register, Intege
         int oldValue = arg2.getData();
         arg1.setData(arg2.getData() >>> arg3);
 
-        if (updateFlags) {
+        if (modifier.doUpdateFlags()) {
             stateContainer.getCPSR().setN(false);
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
             stateContainer.getCPSR().setC((oldValue & (1 << (arg3 - 1))) != 0);

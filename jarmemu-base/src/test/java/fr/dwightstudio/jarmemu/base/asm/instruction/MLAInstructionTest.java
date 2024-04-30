@@ -43,12 +43,12 @@ class MLAInstructionTest extends InstructionTest<Register, Register, Register, R
         r1.setData(10);
         r2.setData(6);
         r3.setData(-15);
-        execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(45, r0.getData());
         r1.setData(65847685);
         r2.setData(456456);
         r3.setData(456456456);
-        execute(stateContainer, false, false, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, false, null, null, r0, r1, r2, r3);
         assertEquals(846223408, r0.getData());
     }
 
@@ -61,19 +61,19 @@ class MLAInstructionTest extends InstructionTest<Register, Register, Register, R
         r1.setData(10);
         r2.setData(-15);
         r3.setData(6);
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(10);
         r2.setData(15);
         r3.setData(-6);
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(10);
         r2.setData(1);
         r3.setData(-10);
-        execute(stateContainer, false, true, null, null, r0, r1, r2, r3);
+        legacyExecute(stateContainer, false, true, null, null, r0, r1, r2, r3);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
     }

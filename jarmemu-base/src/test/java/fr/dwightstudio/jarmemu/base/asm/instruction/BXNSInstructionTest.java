@@ -17,6 +17,6 @@ class BXNSInstructionTest extends InstructionTest<Register, Object, Object, Obje
         Register pc = stateContainer.getPC();
         lr.setData(24);
         pc.setData(48);
-        assertThrows(ASMException.class, () -> execute(stateContainer, false, false, null, null, lr, null, null, null));
+        assertThrows(ASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, lr, null, null, null));
     }
 }

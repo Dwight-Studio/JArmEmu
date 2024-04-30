@@ -12,13 +12,13 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class BXNSInstruction extends ParsedInstruction<Register, Object, Object, Object>{
-    public BXNSInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public BXNSInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
         throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.wrongVersion", "BXNS"));
     }
 
-    public BXNSInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public BXNSInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
         throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.wrongVersion", "BXNS"));
     }
 

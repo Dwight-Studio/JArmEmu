@@ -34,12 +34,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class STRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
-    public STRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public STRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public STRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public STRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -80,7 +80,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
         if (!ignoreExceptions) {
             int dataLength;
 
-            switch (dataMode) {
+            switch (modifier.dataMode()) {
                 case HALF_WORD -> dataLength = 2;
                 case BYTE -> dataLength = 1;
                 case null, default -> dataLength = 4;
@@ -90,7 +90,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
             if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
         }
 
-        switch (dataMode){
+        switch (modifier.dataMode()){
             case null -> stateContainer.getMemory().putWord(address, arg1.getData());
             case HALF_WORD -> stateContainer.getMemory().putHalf(address, (short) arg1.getData());
             case BYTE -> stateContainer.getMemory().putByte(address, (byte) arg1.getData());

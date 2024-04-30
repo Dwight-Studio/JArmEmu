@@ -43,15 +43,15 @@ class BFCInstructionTest extends InstructionTest<Register, Integer, Integer, Obj
         Random rand = new Random();
         Register r2 = stateContainer.getRegister(2);
         r2.setData(0b010101010101010);
-        execute(stateContainer, false, false, null, null, r2, 3, 4, null);
+        legacyExecute(stateContainer, false, false, null, null, r2, 3, 4, null);
         assertEquals(0b010101010000010, r2.getData());
         for (int i = 0; i < 1000; i++) {
             int value = rand.nextInt(Integer.MIN_VALUE, Integer.MAX_VALUE);
             r2.setData(value);
-            execute(stateContainer, false, false, null, null, r2, 28, 4, null);
+            legacyExecute(stateContainer, false, false, null, null, r2, 28, 4, null);
             assertEquals(value & 0xFFFFFFF, r2.getData());
             r2.setData(value);
-            execute(stateContainer, false, false, null, null, r2, 0, 4, null);
+            legacyExecute(stateContainer, false, false, null, null, r2, 0, 4, null);
             assertEquals(value & 0xFFFFFFF0, r2.getData());
         }
     }
@@ -60,10 +60,10 @@ class BFCInstructionTest extends InstructionTest<Register, Integer, Integer, Obj
     public void edgeCaseTest() throws ASMException {
         Register r2 = stateContainer.getRegister(2);
         r2.setData(15);
-        execute(stateContainer, false, false, null, null, r2, 0, 32, null);
+        legacyExecute(stateContainer, false, false, null, null, r2, 0, 32, null);
         assertEquals(0, r2.getData());
         r2.setData(15);
-        execute(stateContainer, false, false, null, null, r2, 1, 31, null);
+        legacyExecute(stateContainer, false, false, null, null, r2, 1, 31, null);
         assertEquals(1, r2.getData());
     }
 
@@ -71,7 +71,7 @@ class BFCInstructionTest extends InstructionTest<Register, Integer, Integer, Obj
     public void failAdrTest() {
         Register r2 = stateContainer.getRegister(2);
         r2.setData(0b010101010101010);
-        assertThrows(SyntaxASMException.class, () -> execute(stateContainer, false, true, null, null, r2, -2, 4, null));
-        assertThrows(SyntaxASMException.class, () -> execute(stateContainer, false, true, null, null, r2, 3, 32, null));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r2, -2, 4, null));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r2, 3, 32, null));
     }
 }

@@ -18,6 +18,6 @@ public class BLXNSInstructionTest extends InstructionTest<Integer, Object, Objec
         Register pc = stateContainer.getPC();
         pc.setData(8);
         r0.setData(45);
-        assertThrows(ASMException.class, () -> execute(stateContainer, false, false, null, null, r0.getData(), null, null, null));
+        assertThrows(ASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r0.getData(), null, null, null));
     }
 }

@@ -13,6 +13,6 @@ class CLREXInstructionTest extends InstructionTest<Object, Object, Object, Objec
 
     @Test
     public void testExecute() {
-        assertThrows(SyntaxASMException.class, () -> execute(stateContainer, false, false, null, null, null, null, null, null));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, null, null, null, null));
     }
 }

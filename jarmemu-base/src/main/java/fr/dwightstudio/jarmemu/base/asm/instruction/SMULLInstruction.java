@@ -32,12 +32,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class SMULLInstruction extends ParsedInstruction<Register, Register, Register, Register> {
-    public SMULLInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public SMULLInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public SMULLInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Register> arg3, ParsedArgument<Register> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public SMULLInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Register> arg3, ParsedArgument<Register> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SMULLInstruction extends ParsedInstruction<Register, Register, Regi
         arg1.setData((int) (result));   // arg1 = result[31..0]
         arg2.setData((int) (result >>> 32)); // arg1 = result[63..32]
 
-        if (updateFlags) {
+        if (modifier.doUpdateFlags()) {
             stateContainer.getCPSR().setN(arg2.getData() < 0);
             stateContainer.getCPSR().setZ(arg1.getData() == 0 && arg2.getData() == 0);
         }

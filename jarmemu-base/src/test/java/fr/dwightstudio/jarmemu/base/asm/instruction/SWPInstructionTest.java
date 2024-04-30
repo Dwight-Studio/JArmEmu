@@ -37,6 +37,6 @@ class SWPInstructionTest extends InstructionTest<Register, Register, Integer, Ob
     @Test
     public void simpleSwpTest() {
         Register r0 = stateContainer.getRegister(0);
-        assertThrows(SyntaxASMException.class, () -> execute(stateContainer, false, false, null, null, r0, null, null, null));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r0, null, null, null));
     }
 }

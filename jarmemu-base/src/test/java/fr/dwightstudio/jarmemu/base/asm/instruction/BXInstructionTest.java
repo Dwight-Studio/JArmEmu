@@ -41,11 +41,11 @@ class BXInstructionTest extends InstructionTest<Register, Object, Object, Object
         Register pc = stateContainer.getPC();
         lr.setData(24);
         pc.setData(48);
-        execute(stateContainer, false, false, null, null, lr, null, null, null);
+        legacyExecute(stateContainer, false, false, null, null, lr, null, null, null);
         assertEquals(24, pc.getData());
         assertFalse(stateContainer.getCPSR().getT());
         lr.setData(45);
-        execute(stateContainer, false, false, null, null, lr, null, null, null);
+        legacyExecute(stateContainer, false, false, null, null, lr, null, null, null);
         assertEquals(45, pc.getData());
         assertTrue(stateContainer.getCPSR().getT());
     }
@@ -53,6 +53,6 @@ class BXInstructionTest extends InstructionTest<Register, Object, Object, Object
     @Test
     public void BxExceptionTest() {
         Register pc = stateContainer.getPC();
-        assertThrows(StuckExecutionASMException.class, () -> execute(stateContainer, false, false, null, null, pc, null, null, null));
+        assertThrows(StuckExecutionASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, pc, null, null, null));
     }
 }

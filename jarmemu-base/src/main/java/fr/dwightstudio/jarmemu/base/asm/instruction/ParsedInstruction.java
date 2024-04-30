@@ -40,32 +40,23 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
     private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getSimpleName());
 
-    protected final Condition condition;
-    protected final boolean updateFlags;
-    protected final DataMode dataMode;
-    protected UpdateMode updateMode;
+    protected final InstructionModifier modifier;
     protected final ParsedArgument<A> arg1;
     protected final ParsedArgument<B> arg2;
     protected final ParsedArgument<C> arg3;
     protected final ParsedArgument<D> arg4;
 
-    public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<A> arg1, ParsedArgument<B> arg2, ParsedArgument<C> arg3, ParsedArgument<D> arg4) {
-        this.condition = condition;
-        this.updateFlags = updateFlags;
-        this.dataMode = dataMode;
-        this.updateMode = updateMode;
+    public ParsedInstruction(InstructionModifier modifier, ParsedArgument<A> arg1, ParsedArgument<B> arg2, ParsedArgument<C> arg3, ParsedArgument<D> arg4) {
+        this.modifier = modifier;
         this.arg1 = arg1;
         this.arg2 = arg2;
         this.arg3 = arg3;
         this.arg4 = arg4;
     }
 
-    public ParsedInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public ParsedInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
-            this.condition = condition;
-            this.updateFlags = updateFlags;
-            this.dataMode = dataMode;
-            this.updateMode = updateMode;
+            this.modifier = modifier;
 
             ParsedArgument<A> arg1Temp;
             ParsedArgument<B> arg2Temp;
@@ -124,7 +115,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
      * @throws ExecutionASMException en cas d'erreur
      */
     public final void execute(StateContainer stateContainer, boolean forceExecution) throws ExecutionASMException {
-        if (condition.eval(stateContainer)) {
+        if (modifier.condition().eval(stateContainer)) {
                 this.execute(
                         stateContainer,
                         forceExecution,
@@ -213,36 +204,36 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
         if (!(this.getClass().isInstance(pInst))) return false;
 
-        if (!(pInst.updateFlags == this.updateFlags)) {
+        if (!(pInst.modifier.doUpdateFlags() == this.modifier.doUpdateFlags())) {
             if (ParsedObject.VERBOSE) logger.info("Difference: Flags");
             return false;
         }
 
-        if (pInst.dataMode == null) {
-            if (!(this.dataMode == null)) {
+        if (pInst.modifier.dataMode() == null) {
+            if (!(this.modifier.dataMode() == null)) {
                 if (VERBOSE) logger.info("Difference: DataMode (Null)");
                 return false;
             }
         } else {
-            if (!(pInst.dataMode.equals(this.dataMode))) {
+            if (!(pInst.modifier.dataMode().equals(this.modifier.dataMode()))) {
                 if (VERBOSE) logger.info("Difference: DataMode");
                 return false;
             }
         }
 
-        if (pInst.updateMode == null) {
-            if (!(this.updateMode == null)) {
+        if (pInst.modifier.updateMode() == null) {
+            if (!(this.modifier.updateMode() == null)) {
                 if (VERBOSE) logger.info("Difference: UpdateMode (Null)");
                 return false;
             }
         } else {
-            if (!(pInst.updateMode.equals(this.updateMode))) {
+            if (!(pInst.modifier.updateMode().equals(this.modifier.updateMode()))) {
                 if (VERBOSE) logger.info("Difference: UpdateMode");
                 return false;
             }
         }
 
-        if (!(pInst.condition == this.condition)) {
+        if (!(pInst.modifier.condition() == this.modifier.condition())) {
             if (VERBOSE) logger.info("Difference: Condition");
             return false;
         }

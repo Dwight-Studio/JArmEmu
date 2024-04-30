@@ -40,10 +40,10 @@ class MOVInstructionTest extends InstructionTest<Register, Integer, ShiftArgumen
         Register r0 = stateContainer.getRegister(0);
         Register r1 = stateContainer.getRegister(1);
         Register r2 = stateContainer.getRegister(2);
-        execute(stateContainer, false, false, null, null, r0, 5, shift(), null);
-        execute(stateContainer, false, false, null, null, r1, r0.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, 5, shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r1, r0.getData(), shift(), null);
         r1.setData(r1.getData()+1);
-        execute(stateContainer, false, false, null, null, r2, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r2, r1.getData(), shift(), null);
         assertEquals(5, r0.getData());
         assertEquals(6, r1.getData());
         assertEquals(6, r2.getData());
@@ -54,14 +54,14 @@ class MOVInstructionTest extends InstructionTest<Register, Integer, ShiftArgumen
         Register r0 = stateContainer.getRegister(0);
         Register r1 = stateContainer.getRegister(1);
         Register r2 = stateContainer.getRegister(2);
-        execute(stateContainer, false, true, null, null, r0, 0, shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r0, 0, shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
-        execute(stateContainer, false, true, null, null, r1, -2, shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r1, -2, shift(), null);
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(4);
-        execute(stateContainer, false, true, null, null, r2, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r2, r1.getData(), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
     }

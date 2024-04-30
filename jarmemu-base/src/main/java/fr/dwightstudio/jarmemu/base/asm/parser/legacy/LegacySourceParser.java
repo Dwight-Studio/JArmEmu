@@ -28,10 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.ParsedSection;
 import fr.dwightstudio.jarmemu.base.asm.directive.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Condition;
-import fr.dwightstudio.jarmemu.base.asm.instruction.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
-import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.instruction.*;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
@@ -333,6 +330,6 @@ public class LegacySourceParser implements SourceParser {
             arg4 = arguments.get(3);
         } catch (IndexOutOfBoundsException ignored) {}
 
-        if (instruction != null) file.add(instruction.create(conditionExec, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
+        if (instruction != null) file.add(instruction.create(new InstructionModifier(conditionExec, updateFlags, dataMode, updateMode), arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
     }
 }

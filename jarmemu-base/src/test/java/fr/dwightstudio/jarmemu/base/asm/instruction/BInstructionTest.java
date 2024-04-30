@@ -42,7 +42,7 @@ public class BInstructionTest extends InstructionTest<Integer, Object, Object, O
         pc.setData(24);
         stateContainer.getAccessibleLabels().put("COUCOU", 20);
         Integer value =  label(stateContainer, "COUCOU");
-        execute(stateContainer, false, false, null, null, value, null, null, null);
+        legacyExecute(stateContainer, false, false, null, null, value, null, null, null);
         assertEquals(20, pc.getData());
     }
 
@@ -52,6 +52,6 @@ public class BInstructionTest extends InstructionTest<Integer, Object, Object, O
         pc.setData(24);
         stateContainer.getAccessibleLabels().put("COUCOU", 24);
         Integer value =  label(stateContainer, "COUCOU");
-        assertThrows(StuckExecutionASMException.class, () -> execute(stateContainer, false, false, null, null, value, null, null, null));
+        assertThrows(StuckExecutionASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, value, null, null, null));
     }
 }

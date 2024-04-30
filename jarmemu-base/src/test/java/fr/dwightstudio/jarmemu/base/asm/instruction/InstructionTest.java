@@ -80,18 +80,15 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
         }
     }
 
-    protected void execute(StateContainer container, boolean ignoreExceptions, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, A arg1, B arg2, C arg3, D arg4) throws ASMException {
+    protected void legacyExecute(StateContainer container, boolean ignoreExceptions, boolean doUpdateFlags, DataMode dataMode, UpdateMode updateMode, A arg1, B arg2, C arg3, D arg4) throws ASMException {
         try {
             Constructor<?>[] c = instructionClass.getConstructors();
-            ParsedInstruction<A, B, C, D> ins = instructionClass.getDeclaredConstructor(Condition.class,
-                            boolean.class,
-                            DataMode.class,
-                            UpdateMode.class,
+            ParsedInstruction<A, B, C, D> ins = instructionClass.getDeclaredConstructor(InstructionModifier.class,
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class)
-                    .newInstance(Condition.AL, updateFlags, dataMode, updateMode, null, null, null, null);
+                    .newInstance(new InstructionModifier(Condition.AL, doUpdateFlags, null, null), null, null, null, null);
             ins.contextualize(stateContainer);
             ins.verify(() -> new StateContainer(stateContainer), arg1, arg2, arg3, arg4);
             ins.execute(container, ignoreExceptions, arg1, arg2, arg3, arg4);

@@ -35,6 +35,6 @@ class SWIInstructionTest extends InstructionTest<Integer, Object, Object, Object
 
     @Test
     public void simpleSwiTest() {
-        assertThrows(SoftwareInterruptionASMException.class, () -> execute(stateContainer, false, false, null, null, 0, null, null, null));
+        assertThrows(SoftwareInterruptionASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, 0, null, null, null));
     }
 }

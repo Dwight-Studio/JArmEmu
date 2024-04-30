@@ -41,25 +41,25 @@ class BFIInstructionTest extends InstructionTest<Register, Register, Integer, In
         Register r3 = stateContainer.getRegister(3);
         r2.setData(13);
         r3.setData(1);
-        execute(stateContainer, false, false, null, null, r2, r3, 0, 1);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 0, 1);
         assertEquals(13, r2.getData());
-        execute(stateContainer, false, false, null, null, r2, r3, 1, 1);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 1, 1);
         assertEquals(15, r2.getData());
         r2.setData(13);
-        execute(stateContainer, false, false, null, null, r2, r3, 0, 3);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 0, 3);
         assertEquals(9, r2.getData());
         r2.setData(13);
         r3.setData(2);
-        execute(stateContainer, false, false, null, null, r2, r3, 1, 1);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 1, 1);
         assertEquals(13, r2.getData());
-        execute(stateContainer, false, false, null, null, r2, r3, 0, 1);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 0, 1);
         assertEquals(12, r2.getData());
         r2.setData(13);
-        execute(stateContainer, false, false, null, null, r2, r3, 0, 2);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 0, 2);
         assertEquals(14, r2.getData());
         r2.setData(13);
         r3.setData(3);
-        execute(stateContainer, false, false, null, null, r2, r3, 0, 2);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 0, 2);
         assertEquals(15, r2.getData());
     }
 
@@ -69,7 +69,7 @@ class BFIInstructionTest extends InstructionTest<Register, Register, Integer, In
         Register r3 = stateContainer.getRegister(3);
         r2.setData(654651635);
         r3.setData(0);
-        execute(stateContainer, false, false, null, null, r2, r3, 0, 32);
+        legacyExecute(stateContainer, false, false, null, null, r2, r3, 0, 32);
         assertEquals(0, r2.getData());
     }
 }

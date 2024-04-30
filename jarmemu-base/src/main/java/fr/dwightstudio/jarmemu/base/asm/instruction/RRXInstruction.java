@@ -33,12 +33,12 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class RRXInstruction extends ParsedInstruction<Register, Register, Object, Object> {
-    public RRXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public RRXInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public RRXInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public RRXInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
         }
         arg1.setData(i);
 
-        if (updateFlags) {
+        if (modifier.doUpdateFlags()) {
             stateContainer.getCPSR().setN(arg1.getData() < 0);
             stateContainer.getCPSR().setZ(arg1.getData() == 0);
             stateContainer.getCPSR().setC(c);

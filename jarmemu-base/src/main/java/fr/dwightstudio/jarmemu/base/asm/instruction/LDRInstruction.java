@@ -43,12 +43,12 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     private WordDirective dir;
 
-    public LDRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public LDRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public LDRInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public LDRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+        super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
         if (!ignoreExceptions) {
             int dataLength;
 
-            switch (dataMode) {
+            switch (modifier.dataMode()) {
                 case HALF_WORD -> dataLength = 2;
                 case BYTE -> dataLength = 1;
                 case null, default -> dataLength = 4;
@@ -98,7 +98,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
         }
 
-        switch (dataMode) {
+        switch (modifier.dataMode()) {
             case null -> arg1.setData(stateContainer.getMemory().getWord(address));
             case HALF_WORD -> arg1.setData(stateContainer.getMemory().getHalf(address));
             case BYTE -> arg1.setData(stateContainer.getMemory().getByte(address));

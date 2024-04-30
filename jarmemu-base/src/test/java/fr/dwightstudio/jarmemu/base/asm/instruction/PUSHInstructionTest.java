@@ -13,7 +13,7 @@ class PUSHInstructionTest extends InstructionTest<Register[], Object, Object, Ob
 
     @Test
     public void simplePushTest() throws ASMException {
-        PUSHInstruction pushInstruction = new PUSHInstruction(Condition.AL, false, null, null, "{r0-r2}", null, null, null);
+        PUSHInstruction pushInstruction = new PUSHInstruction(new InstructionModifier(Condition.AL, false, null, null), "{r0-r2}", null, null, null);
         Register sp = stateContainer.getRegister(13);
         sp.setData(1000);
         Register r0 = stateContainer.getRegister(0);

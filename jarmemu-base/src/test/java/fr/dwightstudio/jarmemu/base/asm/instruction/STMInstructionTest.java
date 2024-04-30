@@ -28,7 +28,6 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class STMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.UpdatableRegister, Register[], Object, Object> {
@@ -46,7 +45,7 @@ class STMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         r0.setData(54);
         r1.setData(12);
         r2.setData(65);
-        execute(stateContainer, false, false, null, FD, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.FD, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(996));
         assertEquals(12, stateContainer.getMemory().getWord(992));
         assertEquals(54, stateContainer.getMemory().getWord(988));
@@ -55,46 +54,46 @@ class STMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         r0.setData(54);
         r1.setData(12);
         r2.setData(65);
-        execute(stateContainer, false, false, null, DB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.DB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(9996));
         assertEquals(12, stateContainer.getMemory().getWord(9992));
         assertEquals(54, stateContainer.getMemory().getWord(9988));
         assertEquals(9988, sp.getData());
 
         sp.setData(2000);
-        execute(stateContainer, false, false, null, FA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.FA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(2004));
         assertEquals(12, stateContainer.getMemory().getWord(2008));
         assertEquals(54, stateContainer.getMemory().getWord(2012));
         assertEquals(2012, sp.getData());
         sp.setData(20000);
-        execute(stateContainer, false, false, null, IB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.IB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(20004));
         assertEquals(12, stateContainer.getMemory().getWord(20008));
         assertEquals(54, stateContainer.getMemory().getWord(20012));
         assertEquals(20012, sp.getData());
 
         sp.setData(3000);
-        execute(stateContainer, false, false, null, ED, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.ED, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(3000));
         assertEquals(12, stateContainer.getMemory().getWord(2996));
         assertEquals(54, stateContainer.getMemory().getWord(2992));
         assertEquals(2988, sp.getData());
         sp.setData(30000);
-        execute(stateContainer, false, false, null, DA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.DA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(30000));
         assertEquals(12, stateContainer.getMemory().getWord(29996));
         assertEquals(54, stateContainer.getMemory().getWord(29992));
         assertEquals(29988, sp.getData());
 
         sp.setData(4000);
-        execute(stateContainer, false, false, null, EA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.EA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(4000));
         assertEquals(12, stateContainer.getMemory().getWord(4004));
         assertEquals(54, stateContainer.getMemory().getWord(4008));
         assertEquals(4012, sp.getData());
         sp.setData(40000);
-        execute(stateContainer, false, false, null, IA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.IA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, stateContainer.getMemory().getWord(40000));
         assertEquals(12, stateContainer.getMemory().getWord(40004));
         assertEquals(54, stateContainer.getMemory().getWord(40008));

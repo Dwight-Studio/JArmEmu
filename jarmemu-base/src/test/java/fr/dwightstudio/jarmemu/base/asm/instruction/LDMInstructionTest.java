@@ -28,7 +28,6 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.UpdatableRegister, Register[], Object, Object> {
@@ -46,7 +45,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(988, 54);
         stateContainer.getMemory().putWord(992, 12);
         stateContainer.getMemory().putWord(996, 65);
-        execute(stateContainer, false, false, null, FD, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.FD, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -55,7 +54,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(10988, 54);
         stateContainer.getMemory().putWord(10992, 12);
         stateContainer.getMemory().putWord(10996, 65);
-        execute(stateContainer, false, false, null, IA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.IA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -65,7 +64,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(2012, 54);
         stateContainer.getMemory().putWord(2008, 12);
         stateContainer.getMemory().putWord(2004, 65);
-        execute(stateContainer, false, false, null, FA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.FA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -74,7 +73,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(12012, 54);
         stateContainer.getMemory().putWord(12008, 12);
         stateContainer.getMemory().putWord(12004, 65);
-        execute(stateContainer, false, false, null, DA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.DA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -84,7 +83,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(2992, 54);
         stateContainer.getMemory().putWord(2996, 12);
         stateContainer.getMemory().putWord(3000, 65);
-        execute(stateContainer, false, false, null, ED, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.ED, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -93,7 +92,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(12992, 54);
         stateContainer.getMemory().putWord(12996, 12);
         stateContainer.getMemory().putWord(13000, 65);
-        execute(stateContainer, false, false, null, IB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.IB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -103,7 +102,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(4008, 54);
         stateContainer.getMemory().putWord(4004, 12);
         stateContainer.getMemory().putWord(4000, 65);
-        execute(stateContainer, false, false, null, EA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.EA, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());
@@ -112,7 +111,7 @@ class LDMInstructionTest extends InstructionTest<RegisterWithUpdateArgument.Upda
         stateContainer.getMemory().putWord(14008, 54);
         stateContainer.getMemory().putWord(14004, 12);
         stateContainer.getMemory().putWord(14000, 65);
-        execute(stateContainer, false, false, null, DB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
+        legacyExecute(stateContainer, false, false, null, UpdateMode.DB, new RegisterWithUpdateArgument.UpdatableRegister(sp, true), new Register[]{r0, r1, r2}, null, null);
         assertEquals(65, r2.getData());
         assertEquals(12, r1.getData());
         assertEquals(54, r0.getData());

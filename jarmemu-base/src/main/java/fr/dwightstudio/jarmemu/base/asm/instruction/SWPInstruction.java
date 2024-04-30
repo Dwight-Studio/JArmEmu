@@ -36,13 +36,13 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 public class SWPInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
-    public SWPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public SWPInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
         throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
-    public SWPInstruction(Condition condition, boolean updateFlags, DataMode dataMode, UpdateMode updateMode, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
-        super(condition, updateFlags, dataMode, updateMode, arg1, arg2, arg3, arg4);
+    public SWPInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
+        super(modifier,  arg1, arg2, arg3, arg4);
         throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
