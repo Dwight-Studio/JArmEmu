@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BXJInstructionTest extends InstructionTest<Register, Object, Object, Object> {
 
-    public BXJInstructionTest() {
+    BXJInstructionTest() {
         super(BXJInstruction.class);
     }
 

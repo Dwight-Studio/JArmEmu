@@ -93,6 +93,10 @@ public enum Instruction {
     BX(BXInstruction.class),
     BXNS(BXNSInstruction.class),
 
+    //Coprocessor-related
+    CDP(CDPInstruction.class),
+    //CDP2(CDP2Instruction.class),
+
     // Others
     BKPT(BKPTInstruction.class),
     NOP(NOPInstruction.class),
