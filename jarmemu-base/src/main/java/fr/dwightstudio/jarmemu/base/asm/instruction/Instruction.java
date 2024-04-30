@@ -89,7 +89,9 @@ public enum Instruction {
     B(BInstruction.class),
     BL(BLInstruction.class),
     BLX(BLXInstruction.class),
+    BLXNS(BLXNSInstruction.class),
     BX(BXInstruction.class),
+    BXNS(BXNSInstruction.class),
 
     // Others
     BKPT(BKPTInstruction.class),
