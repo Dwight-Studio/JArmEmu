@@ -171,7 +171,7 @@ public class EditorController implements Initializable {
      * Ouvre un nouvel éditeur vide.
      */
     public void newFile() {
-        open("New File", SAMPLE_CODE);
+        open(JArmEmuApplication.formatMessage("%menu.file.newFile"), SAMPLE_CODE);
     }
 
     /**
@@ -193,6 +193,7 @@ public class EditorController implements Initializable {
     public void open(File path) {
         FileEditor editor = new FileEditor(path);
         fileEditors.add(editor);
+        JArmEmuApplication.getEditorController().updateSimulationButtons();
     }
 
     /**
