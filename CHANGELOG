@@ -16,6 +16,7 @@
 - Fixed STM/LDM instruction not detecting the lack of update mode
 - Fixed LDM update mode effects
 - Fixed labels/symbols validation
+- Fixed editor behaviour when simulation with no opened files
 
 
 0.1.10 -> 0.2.0

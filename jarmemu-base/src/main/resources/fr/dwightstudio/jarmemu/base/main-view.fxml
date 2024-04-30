@@ -136,7 +136,7 @@
                         </Menu>
                         <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.simulation.title">
                             <items>
-                                <MenuItem fx:id="menuSimulate" mnemonicParsing="false" onAction="#onSimulate" text="%menu.simulation.simulate" accelerator="F2">
+                                <MenuItem fx:id="menuSimulate" disable="true" mnemonicParsing="false" onAction="#onSimulate" text="%menu.simulation.simulate" accelerator="F2">
                                     <graphic>
                                         <FontIcon iconLiteral="mdmz-plagiarism" />
                                     </graphic>

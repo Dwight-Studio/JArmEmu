@@ -182,6 +182,7 @@ public class EditorController implements Initializable {
      */
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(fileName, content));
+        JArmEmuApplication.getEditorController().updateSimulationButtons();
     }
 
     /**
@@ -294,6 +295,7 @@ public class EditorController implements Initializable {
      */
     public void cleanClosedEditors() {
         fileEditors.removeIf(FileEditor::isClosed);
+        JArmEmuApplication.getEditorController().updateSimulationButtons();
     }
 
     /**
@@ -378,5 +380,21 @@ public class EditorController implements Initializable {
      */
     public int getFileIndex(FileEditor fileEditor) {
         return fileEditors.indexOf(fileEditor);
+    }
+
+    /**
+     * Checks if there is still opened files to allow simulation
+     */
+    public void updateSimulationButtons() {
+        for (FileEditor fileEditor : fileEditors) {
+            if (!fileEditor.isClosed()) {
+                JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                return;
+            }
+        }
+
+        JArmEmuApplication.getController().menuSimulate.setDisable(true);
+        JArmEmuApplication.getController().toolSimulate.setDisable(true);
     }
 }
