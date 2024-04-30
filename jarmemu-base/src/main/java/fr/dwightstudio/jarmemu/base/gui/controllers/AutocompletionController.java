@@ -71,26 +71,15 @@ public class AutocompletionController implements Initializable {
 
         listView.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
-                case ENTER, TAB -> {
-                    String selected = listView.getSelectionModel().getSelectedItem();
-
-                    if (selected != null) {
-                        int pos = editor.getCodeArea().getCaretPosition();
-
-                        if (currentWord.isBlank()) {
-                            editor.getCodeArea().selectRange(pos, pos);
-                        } else {
-                            selectCurrentWord();
-                        }
-                        editor.getCodeArea().replaceSelection(selected);
-
-                        if (selected.length() == 1) {
-                            autocompleteChar(selected, pos + 1);
-                        }
-                    }
-                }
+                case ENTER, TAB -> applyAutocomplete();
 
                 case ESCAPE -> close();
+            }
+        });
+
+        listView.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getClickCount() >= 2) {
+                applyAutocomplete();
             }
         });
 
@@ -457,6 +446,28 @@ public class AutocompletionController implements Initializable {
             editor.getCodeArea().insertText(pos, newChar);
             reopened = true;
             editor.getCodeArea().moveTo(pos);
+        }
+    }
+
+    /**
+     * Applies autocompletion according to selected item
+     */
+    private void applyAutocomplete() {
+        String selected = listView.getSelectionModel().getSelectedItem();
+
+        if (selected != null) {
+            int pos = editor.getCodeArea().getCaretPosition();
+
+            if (currentWord.isBlank()) {
+                editor.getCodeArea().selectRange(pos, pos);
+            } else {
+                selectCurrentWord();
+            }
+            editor.getCodeArea().replaceSelection(selected);
+
+            if (selected.length() == 1) {
+                autocompleteChar(selected, pos + 1);
+            }
         }
     }
 }
