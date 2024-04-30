@@ -228,19 +228,13 @@ public class LegacySourceParser implements SourceParser {
                         argument.deleteCharAt(argument.length() - 1);
                         ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
                         argumentArray.replaceAll(String::strip);
-                        if (argumentArray.size() > 1) {
-                            argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
-                            for (String arg : argumentArray) {
-                                arg = this.joinString(arg);
-                                argument.append(arg).append(",");
-                            }
-                            argument.deleteCharAt(argument.length() - 1);
-                            argument.append("}");
-                        } else {
-                            argument = new StringBuilder(argumentArray.getFirst());
-                            argument.append("}");
-                            argument.insert(0, "{");
+                        argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
+                        for (String arg : argumentArray) {
+                            arg = this.joinString(arg);
+                            argument.append(arg).append(",");
                         }
+                        argument.deleteCharAt(argument.length() - 1);
+                        argument.append("}");
                         this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
                         this.arguments.replaceAll(String::strip);
                     } else if (currentLine.contains("[")) {
