@@ -23,7 +23,7 @@ public class BLXNSInstruction extends ParsedInstruction<Integer, Object, Object,
 
     @Override
     protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
-        return LabelOrRegisterArgument.class;;
+        return LabelOrRegisterArgument.class;
     }
 
     @Override
