@@ -8,11 +8,13 @@ public enum SubContext {
     PRIMARY,
     SECONDARY,
     TERTIARY,
+    QUATERNARY,
 
     REGISTER,
     IMMEDIATE,
     PSEUDO,
     SHIFT,
     ADDRESS,
+    REGISTER_ARRAY,
     LABEL_REF;
 }

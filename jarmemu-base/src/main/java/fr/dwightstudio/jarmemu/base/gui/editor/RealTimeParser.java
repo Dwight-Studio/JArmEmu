@@ -11,26 +11,38 @@ public abstract class RealTimeParser extends Thread {
     }
 
     /**
-     * Marque les lignes comme nécessitant une actualisation
+     * Marks lines as requiring update
      *
-     * @param startLine la ligne de début
-     * @param stopLine la ligne de fin (exclue)
+     * @param startLine starting line
+     * @param stopLine stop line (excluded)
      */
     public abstract void markDirty(int startLine, int stopLine);
 
     /**
-     * Marque la ligne comme nécessitant une actualisation
+     * Marks line as requiring update
      *
-     * @param line la ligne à actualiser
+     * @param line the line to update
      */
     public abstract void markDirty(int line);
 
     /**
-     * @return les labels accessibles dans ce fichier
+     * @return the labels accessible from this file
      */
     public abstract Set<String> getAccessibleLabels();
 
+    /**
+     * @return the symbols accessible from this file
+     */
     public abstract Set<String> getSymbols();
 
+    /**
+     * @return true if the line defines a label
+     */
     public abstract boolean lineDefinesLabel(int currentParagraph);
+
+    /**
+     * Cancels line analysis if in progress
+     * @param cancelLine the line to cancel
+     */
+    public abstract void cancelLine(int cancelLine);
 }

@@ -35,7 +35,6 @@ import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import fr.dwightstudio.jarmemu.base.util.EnumUtils;
 import javafx.application.Platform;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
@@ -77,6 +76,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_0-9]+)[ \t]*:");
 
     private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
+    private static final Pattern RANGE_SEPARATOR = Pattern.compile("^-");
     private static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
     private static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
     private static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
@@ -96,6 +96,7 @@ public class SmartHighlighter extends RealTimeParser {
     private final Subscription subscription;
 
     private int line;
+    private int cancelLine;
 
     private static final Object LOCK = new Object();
     private static HashMap<FilePos, String> globals;
@@ -151,6 +152,8 @@ public class SmartHighlighter extends RealTimeParser {
         symbols = new HashMap<>();
         references = new HashMap<>();
         addReferences = new HashSet<>();
+
+        cancelLine = -1;
     }
 
     private void setup() {
@@ -190,12 +193,11 @@ public class SmartHighlighter extends RealTimeParser {
                     setup();
 
                     int iter;
-                    for (iter = 0; !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
+                    for (iter = 0; cancelLine != line && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
                         //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
-
 
                         if (cursorPos <= 0) {
                             cursorPos = Integer.MAX_VALUE;
@@ -309,6 +311,8 @@ public class SmartHighlighter extends RealTimeParser {
 
                         tagError();
                     }
+
+                    cancelLine = -1;
 
                     if (iter >= MAXIMUM_ITER_NUM - 1) {
                         logger.severe("Hanging line " + line + " parsing after " + MAXIMUM_ITER_NUM + " iterations");
@@ -597,6 +601,7 @@ public class SmartHighlighter extends RealTimeParser {
                         tag("brace", matcher);
                         brace = true;
                         subContext = SubContext.NONE;
+                        contextLength = 0;
                         yield true;
                     }
                 }
@@ -607,6 +612,7 @@ public class SmartHighlighter extends RealTimeParser {
                         tag("brace", matcher);
                         brace = false;
                         subContext = SubContext.NONE;
+                        contextLength = 0;
                         yield true;
                     }
                 }
@@ -629,6 +635,7 @@ public class SmartHighlighter extends RealTimeParser {
                         tag("bracket", matcher);
                         bracket = true;
                         subContext = SubContext.NONE;
+                        contextLength = 0;
                         yield true;
                     }
                 }
@@ -639,6 +646,7 @@ public class SmartHighlighter extends RealTimeParser {
                         tag("bracket", matcher);
                         bracket = false;
                         subContext = SubContext.NONE;
+                        contextLength = 0;
                         yield true;
                     }
                 }
@@ -743,10 +751,44 @@ public class SmartHighlighter extends RealTimeParser {
 
                 case REGISTER -> {
                     if (matchBrace()) {
+                        subContext = SubContext.REGISTER_ARRAY;
                         return true;
                     } else if (matchSubSeparator()) {
-                        subContext = SubContext.NONE;
+                        subContext = SubContext.PRIMARY;
+                    } else if (matchRegisterRangeSeparator()) {
+                        subContext = SubContext.TERTIARY;
+                        contextLength = 0;
                     } else return false;
+                }
+
+                case PRIMARY -> {
+                    if (matchRegister()) {
+                        subContext =  SubContext.SECONDARY;
+                    } else return false;
+                }
+
+                case SECONDARY -> {
+                    if (matchBrace()) {
+                        subContext = SubContext.REGISTER_ARRAY;
+                        return true;
+                    } else if (matchSubSeparator()) {
+                        subContext = SubContext.PRIMARY;
+                    } else return false;
+                }
+
+                case TERTIARY -> {
+                    if (matchRegister()) {
+                        subContext = SubContext.QUATERNARY;
+                    } else return false;
+                }
+
+                case QUATERNARY -> {
+                    if (matchBrace()) {
+                        subContext = SubContext.REGISTER_ARRAY;
+                        return true;
+                    } else {
+                        return false;
+                    }
                 }
             }
 
@@ -801,6 +843,17 @@ public class SmartHighlighter extends RealTimeParser {
 
         if (matcher.find()) {
             tagBlank(matcher);
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean matchRegisterRangeSeparator() {
+        Matcher matcher = RANGE_SEPARATOR.matcher(text);
+
+        if (matcher.find()) {
+            tag("register", matcher);
             return true;
         }
 
@@ -1088,5 +1141,11 @@ public class SmartHighlighter extends RealTimeParser {
         for (int i = startLine; i <= stopLine && i < max; i++) {
             markDirty(i);
         }
+    }
+
+    @Override
+    public void cancelLine(int cancelLine) {
+        queue.remove(cancelLine);
+        this.cancelLine = cancelLine;
     }
 }

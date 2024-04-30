@@ -87,6 +87,8 @@ public class KeywordHighlighter extends RealTimeParser {
     private final BlockingQueue<Integer> queue;
     private final Subscription subscription;
 
+    private int cancelLine;
+
     public KeywordHighlighter(FileEditor editor) {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
@@ -100,6 +102,8 @@ public class KeywordHighlighter extends RealTimeParser {
                 queue.add(i);
             }
         });
+
+        cancelLine = -1;
 
         this.start();
     }
@@ -118,7 +122,7 @@ public class KeywordHighlighter extends RealTimeParser {
                 String text = editor.getCodeArea().getParagraph(line).getText();
                 Matcher matcher = PATTERN.matcher(text);
 
-                while (matcher.find()) {
+                while (matcher.find() && cancelLine != line && !this.isInterrupted()) {
 
                     String styleClass = matcher.group("COMMENT") != null ? "comment"
                             : matcher.group("STRING") != null ? "string"
@@ -136,6 +140,8 @@ public class KeywordHighlighter extends RealTimeParser {
                     lastKwEnd = matcher.end();
                 }
 
+                cancelLine = -1;
+
                 if (lastKwEnd != 0) editor.getCodeArea().setStyleSpans(line, 0, spansBuilder.create());
             } catch (InterruptedException e) {
                 this.interrupt();
@@ -150,13 +156,9 @@ public class KeywordHighlighter extends RealTimeParser {
         subscription.unsubscribe();
     }
 
-    /**
-     * Marque la ligne comme nécessitant une actualisation
-     *
-     * @param line la ligne à actualiser
-     */
+    @Override
     public void markDirty(int line) {
-        this.queue.add(line);
+        if (!queue.contains(line)) queue.add(line);
     }
 
     @Override
@@ -175,15 +177,17 @@ public class KeywordHighlighter extends RealTimeParser {
         return LABEL_COMPILED_PATTERN.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph()).getText()).find();
     }
 
-    /**
-     * Marque les lignes comme nécessitant une actualisation
-     *
-     * @param startLine la ligne de début
-     * @param stopLine la ligne de fin (exclue)
-     */
+    @Override
     public void markDirty(int startLine, int stopLine) {
-        for (int i = startLine; i <= stopLine; i++) {
-            queue.add(i);
+        int max = editor.getCodeArea().getParagraphs().size();
+        for (int i = startLine; i <= stopLine && i < max; i++) {
+            markDirty(i);
         }
+    }
+
+    @Override
+    public void cancelLine(int cancelLine) {
+        queue.remove(cancelLine);
+        this.cancelLine = cancelLine;
     }
 }

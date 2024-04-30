@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 public class AutocompletionController implements Initializable {
 
-    private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()]+$");
+    private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()\\[\\]{}]+$");
 
     private Timeline idlingTimeline;
     private ObservableListWrapper<String> list;
@@ -80,25 +80,12 @@ public class AutocompletionController implements Initializable {
                         if (currentWord.isBlank()) {
                             editor.getCodeArea().selectRange(pos, pos);
                         } else {
-                            selectCurrentContext();
+                            selectCurrentWord();
                         }
                         editor.getCodeArea().replaceSelection(selected);
 
-                        if (selected.length() == 1) switch (selected) {
-                            case "[" -> {
-                                editor.getCodeArea().insertText(pos + 1,"]" );
-                                editor.getCodeArea().moveTo(pos + 1);
-                            }
-
-                            case "{" -> {
-                                editor.getCodeArea().insertText(pos + 1,"}");
-                                editor.getCodeArea().moveTo(pos + 1);
-                            }
-
-                            case "\"" -> {
-                                editor.getCodeArea().insertText(pos + 1,"\"");
-                                editor.getCodeArea().moveTo(pos + 1);
-                            }
+                        if (selected.length() == 1) {
+                            autocompleteChar(selected, pos + 1);
                         }
                     }
                 }
@@ -196,10 +183,19 @@ public class AutocompletionController implements Initializable {
 
                 case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3, INSTRUCTION_ARGUMENT_4 -> {
                     switch (argType) {
-                        case "RegisterArgument", "RegisterWithUpdateArgument" -> {
+                        case "RegisterArgument" -> {
                             if (subContext != SubContext.REGISTER) {
                                 for (RegisterUtils value : RegisterUtils.values()) {
                                     list.add(value.name());
+                                }
+                            }
+                        }
+
+                        case "RegisterWithUpdateArgument" -> {
+                            if (subContext != SubContext.REGISTER) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    list.add(value.name());
+                                    list.add(value.name() + "!");
                                 }
                             }
                         }
@@ -241,6 +237,20 @@ public class AutocompletionController implements Initializable {
 
                         case "RegisterArrayArgument" -> {
                             if (brace) {
+                                switch (subContext) {
+                                    case NONE -> {
+                                        for (RegisterUtils value : RegisterUtils.values()) {
+                                            list.add(value.name());
+                                            list.add(value.name() + "-");
+                                        }
+                                    }
+
+                                    case PRIMARY, TERTIARY -> {
+                                        for (RegisterUtils value : RegisterUtils.values()) {
+                                            list.add(value.name());
+                                        }
+                                    }
+                                }
                                 if (subContext != SubContext.REGISTER) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
                                         list.add(value.name());
@@ -343,10 +353,14 @@ public class AutocompletionController implements Initializable {
         System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
         System.out.println(list);
 
-        if (!currentWord.isEmpty()) {
-            String finalCurrentWord = currentWord;
-            list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()));
-            list.removeIf(s -> s.equalsIgnoreCase(finalCurrentWord));
+        switch (currentWord) {
+            case "" -> {}
+            case "{", "[" -> currentWord = "";
+            default ->  {
+                final String finalCurrentWord = currentWord;
+                list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()));
+                list.removeIf(s -> s.equalsIgnoreCase(finalCurrentWord));
+            }
         }
 
         list.replaceAll(String::toLowerCase);
@@ -376,14 +390,14 @@ public class AutocompletionController implements Initializable {
         } else close();
     }
 
-    public String getCurrentContext() {
+    private String getCurrentContext() {
         int start = editor.getCodeArea().getCaretColumn() - contextLength;
         int stop = editor.getCodeArea().getCaretColumn();
         if (start < 0 || stop - start <= 0) return "";
         return editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).substring(start, stop);
     }
 
-    public void selectCurrentContext() {
+    private void selectCurrentWord() {
         int start = editor.getCodeArea().getCaretColumn() - currentWord.length();
         int stop = editor.getCodeArea().getCaretColumn();
 
@@ -396,20 +410,58 @@ public class AutocompletionController implements Initializable {
         }
     }
 
+    /**
+     * Updates autocompletion popover when scrolling
+     */
     public void scroll() {
         close();
     }
 
+    /**
+     * Closes autocompletion popover
+     */
     public void close() {
         Platform.runLater(() -> {
             if (popover.isShowing()) popover.hide();
         });
     }
 
+    /**
+     * Updates autocompletion popover when moving caret
+     */
     public void caretMoved() {
+        if (editor == null) return;
         if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line) close();
 
         if (!reopened) close();
         else reopened = false;
+    }
+
+    /**
+     * Autocompletes braces/brackets/parenthesis...
+     *
+     * @param character the character to autocomplete
+     * @param pos the caret position
+     */
+    public void autocompleteChar(String character, int pos) {
+        final String newChar = switch (character) {
+            case "[" -> "]";
+
+            case "{" -> "}";
+
+            case "\"" -> "\"";
+
+            case "(" -> ")";
+
+            default -> "";
+        };
+
+        if (!newChar.isEmpty()) {
+            editor.getRealTimeParser().cancelLine(line);
+            reopened = true;
+            editor.getCodeArea().insertText(pos, newChar);
+            reopened = true;
+            editor.getCodeArea().moveTo(pos);
+        }
     }
 }

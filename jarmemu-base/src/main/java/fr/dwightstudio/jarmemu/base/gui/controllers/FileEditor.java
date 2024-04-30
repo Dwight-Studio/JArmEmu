@@ -174,22 +174,7 @@ public class FileEditor {
         {
             int caretPosition = codeArea.getCaretPosition();
             Platform.runLater( () -> {
-                switch (KE.getCharacter()) {
-                    case "[" -> {
-                        codeArea.insertText(caretPosition,"]" );
-                        codeArea.moveTo(caretPosition);
-                    }
-
-                    case "{" -> {
-                        codeArea.insertText(caretPosition,"}");
-                        codeArea.moveTo(caretPosition);
-                    }
-
-                    case "\"" -> {
-                        codeArea.insertText(caretPosition,"\"");
-                        codeArea.moveTo(caretPosition);
-                    }
-                }
+                JArmEmuApplication.getAutocompletionController().autocompleteChar(KE.getCharacter(), caretPosition);
             } );
         });
 
@@ -381,7 +366,7 @@ public class FileEditor {
         });
 
         codeArea.caretPositionProperty().addListener((obs, oldValue, newValue) -> {
-            if (newValue == null || JArmEmuApplication.getStatus() == Status.INITIALIZING) return;
+            if (newValue == null || JArmEmuApplication.getStatus() != Status.EDITING) return;
 
             JArmEmuApplication.getAutocompletionController().caretMoved();
         });
