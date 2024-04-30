@@ -111,6 +111,9 @@ public class JArmEmuController implements Initializable {
     @FXML protected Spinner<Integer> settingsSimInterval;
     @FXML protected ToggleButton settingsRegex;
     @FXML protected ToggleButton settingsLegacy;
+    @FXML protected ToggleSwitch notImplementedSwitch;
+    @FXML protected ToggleSwitch deprecatedSwitch;
+
     @FXML protected ToggleSwitch manualBreakSwitch;
     @FXML protected ToggleSwitch codeBreakSwitch;
     @FXML protected ToggleSwitch autoBreakSwitch;
@@ -119,10 +122,12 @@ public class JArmEmuController implements Initializable {
     @FXML protected ToggleSwitch programAlignBreakSwitch;
     @FXML protected ToggleSwitch functionNestingBreakSwitch;
     @FXML protected ToggleSwitch readOnlyWritingBreakSwitch;
+
     @FXML protected ToggleSwitch followSPSwitch;
     @FXML protected ToggleSwitch updateSwitch;
     @FXML protected Spinner<Integer> settingsStackAddress;
     @FXML protected Spinner<Integer> settingsSymbolsAddress;
+
     @FXML protected ChoiceBox<String> settingsFormat;
     @FXML protected ChoiceBox<String> settingsFamily;
     @FXML protected ToggleButton settingsDark;

@@ -26,7 +26,10 @@ package fr.dwightstudio.jarmemu.base.asm.parser.regex;
 import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.base.asm.directive.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,6 +60,14 @@ public class RegexSourceParser implements SourceParser {
             try {
                 boolean found = DirectiveParser.parseOneLine(this, line, sourceScanner, file);
                 if (!found && currentSection == Section.TEXT) ASMParser.parseOneLine(this, line, sourceScanner, file);
+            } catch (NotImplementedASMException exception) {
+                if (!JArmEmuApplication.getSettingsController().getIgnoreUnimplemented()) {
+                    throw exception.with(file).with(sourceScanner.getLineNumber());
+                }
+            } catch (DeprecatedASMException exception) {
+                if (!JArmEmuApplication.getSettingsController().getIgnoreDeprecated()) {
+                    throw exception.with(file).with(sourceScanner.getLineNumber());
+                }
             } catch (ASMException exception) {
                 throw exception.with(file).with(sourceScanner.getLineNumber());
             }

@@ -137,7 +137,6 @@ public class JArmEmuApplication extends Application {
 
     // TODO: Ajouter le support des directives pour l'autocomplétion
     // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
-    // TODO: Ajouter un switch pour les instructions non implémentées
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux

@@ -27,6 +27,8 @@ import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.base.asm.ParsedSection;
 import fr.dwightstudio.jarmemu.base.asm.directive.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.instruction.*;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
@@ -162,7 +164,19 @@ public class LegacySourceParser implements SourceParser {
 
         while (this.sourceScanner.hasNextLine()) {
             if (Section.END.equals(currentSection)) break;
-            parseOneLine(file);
+            try {
+                parseOneLine(file);
+            } catch (NotImplementedASMException exception) {
+                if (!JArmEmuApplication.getSettingsController().getIgnoreUnimplemented()) {
+                    throw exception.with(file).with(sourceScanner.getLineNumber());
+                }
+            } catch (DeprecatedASMException exception) {
+                if (!JArmEmuApplication.getSettingsController().getIgnoreDeprecated()) {
+                    throw exception.with(file).with(sourceScanner.getLineNumber());
+                }
+            } catch (ASMException exception) {
+                throw exception.with(file).with(sourceScanner.getLineNumber());
+            }
         }
 
         return file;

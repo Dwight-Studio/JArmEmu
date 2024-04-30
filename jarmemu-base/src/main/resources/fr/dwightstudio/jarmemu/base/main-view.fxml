@@ -485,6 +485,38 @@
                                                                                     <Insets bottom="20.0"/>
                                                                                 </VBox.margin>
                                                                             </AnchorPane>
+                                                                            <GridPane alignment="CENTER" hgap="20.0"
+                                                                                      vgap="10.0"
+                                                                                      AnchorPane.leftAnchor="0.0"
+                                                                                      AnchorPane.rightAnchor="0.0">
+                                                                                <columnConstraints>
+                                                                                    <ColumnConstraints hgrow="ALWAYS"/>
+                                                                                    <ColumnConstraints
+                                                                                            hgrow="SOMETIMES"/>
+                                                                                </columnConstraints>
+                                                                                <rowConstraints>
+                                                                                    <RowConstraints vgrow="SOMETIMES"/>
+                                                                                    <RowConstraints vgrow="SOMETIMES"/>
+                                                                                </rowConstraints>
+                                                                                <children>
+                                                                                    <Text text="%settings.simulation.notImplemented"
+                                                                                          GridPane.halignment="LEFT"
+                                                                                          GridPane.valignment="CENTER"/>
+                                                                                    <ToggleSwitch
+                                                                                            fx:id="notImplementedSwitch"
+                                                                                            selected="false"
+                                                                                            GridPane.columnIndex="1"/>
+                                                                                    <Text text="%settings.simulation.deprecated"
+                                                                                          GridPane.halignment="LEFT"
+                                                                                          GridPane.rowIndex="1"
+                                                                                          GridPane.valignment="CENTER"/>
+                                                                                    <ToggleSwitch
+                                                                                            fx:id="deprecatedSwitch"
+                                                                                            selected="false"
+                                                                                            GridPane.columnIndex="1"
+                                                                                            GridPane.rowIndex="1"/>
+                                                                                </children>
+                                                                            </GridPane>
                                                                         </children>
                                                                     </VBox>
                                                                 </children>

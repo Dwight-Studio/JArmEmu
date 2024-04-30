@@ -82,7 +82,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
     private static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
     private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@]*");
-    private static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n\\]@]*");
+    private static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n@]*");
     private static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
     private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
@@ -136,15 +136,20 @@ public class SmartHighlighter extends RealTimeParser {
         this.queue = new LinkedBlockingQueue<>();
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
-            int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
-
-            if (change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                markDirty(start, editor.getCodeArea().getParagraphs().size());
-            } else {
+            try {
+                int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
                 int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
-                int stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+
+                int stop;
+                if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
+                    stop = editor.getCodeArea().getParagraphs().size();
+                } else {
+                    stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+                }
 
                 markDirty(start, stop);
+            } catch (Exception e) {
+                logger.warning(ExceptionUtils.getStackTrace(e));
             }
         });
 
@@ -463,8 +468,16 @@ public class SmartHighlighter extends RealTimeParser {
             instruction = Instruction.valueOf(command.toUpperCase());
             context = Context.INSTRUCTION;
             subContext = SubContext.NONE;
-            tag("instruction", matcher);
-            contextLength = 0;
+
+            if (instruction.isValid()) {
+                tag("instruction", matcher);
+                contextLength = 0;
+            } else {
+                matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
+                if (matcher.find()) {
+                    tag("invalid-instruction", matcher);
+                }
+            }
             return true;
         }
 

@@ -12,6 +12,7 @@
 - Added BXNS instruction
 - Added PUSH instruction
 - Added POP instruction
+- Added switch to ignore unimplemented/deprecated instructions
 - Fixed BLX instruction not being able to use labels
 - Fixed STM/LDM instruction not detecting the lack of update mode
 - Fixed LDM update mode effects

@@ -67,6 +67,10 @@
     -fx-fill: #d9a544;
     -fx-font-weight: bold;
 }
+.code-area .text.invalid-instruction {
+    -fx-fill: #cda4df;
+    -fx-font-style: italic;
+}
 .code-area .text.instruction {
     -fx-fill: #ab44d9;
     -fx-font-weight: bold;

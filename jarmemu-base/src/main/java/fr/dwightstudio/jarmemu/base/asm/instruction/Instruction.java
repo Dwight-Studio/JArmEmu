@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.asm.instruction;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 public enum Instruction {
@@ -102,24 +103,42 @@ public enum Instruction {
     NOP(NOPInstruction.class),
     CLREX(CLREXInstruction.class);
 
-    private final Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass;
-    private final String arg1Type;
-    private final String arg2Type;
-    private final String arg3Type;
-    private final String arg4Type;
-    private final boolean workingRegister;
+    private Constructor<? extends ParsedInstruction<?, ?, ?, ?>> mainConstructor;
+    private Constructor<? extends ParsedInstruction<?, ?, ?, ?>> debugConstructor;
+    private boolean valid;
+
+    private String arg1Type;
+    private String arg2Type;
+    private String arg3Type;
+    private String arg4Type;
+    private boolean workingRegister;
 
     Instruction(Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass) {
-        this.instructionClass = instructionClass;
 
-        ParsedInstruction<?, ?, ?, ?> instruction = this.create();
-        if (instruction != null) {
-            arg1Type = instruction.getParsedArg1Class().getSimpleName();
-            arg2Type = instruction.getParsedArg2Class().getSimpleName();
-            arg3Type = instruction.getParsedArg3Class().getSimpleName();
-            arg4Type = instruction.getParsedArg4Class().getSimpleName();
-            workingRegister = instruction.hasWorkingRegister();
-        } else {
+        try {
+            mainConstructor = instructionClass.getDeclaredConstructor(InstructionModifier.class, String.class, String.class, String.class, String.class);
+            debugConstructor = instructionClass.getDeclaredConstructor(InstructionModifier.class, ParsedArgument.class, ParsedArgument.class, ParsedArgument.class, ParsedArgument.class);
+
+            ParsedInstruction<?, ?, ?, ?> instruction = this.create();
+
+            if (instruction != null) {
+                arg1Type = instruction.getParsedArg1Class().getSimpleName();
+                arg2Type = instruction.getParsedArg2Class().getSimpleName();
+                arg3Type = instruction.getParsedArg3Class().getSimpleName();
+                arg4Type = instruction.getParsedArg4Class().getSimpleName();
+                workingRegister = instruction.hasWorkingRegister();
+
+                valid = true;
+            } else {
+                valid = false;
+            }
+        } catch (NoSuchMethodException exception) {
+            mainConstructor = null;
+            debugConstructor = null;
+            valid = false;
+        }
+
+        if (!valid) {
             arg1Type = null;
             arg2Type = null;
             arg3Type = null;
@@ -130,9 +149,9 @@ public enum Instruction {
 
     public ParsedInstruction<?, ?, ?, ?> create(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
-            return this.instructionClass.getDeclaredConstructor(InstructionModifier.class, String.class, String.class, String.class, String.class).newInstance(modifier, arg1, arg2, arg3, arg4);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException e) {
+            if (valid) return mainConstructor.newInstance(modifier, arg1, arg2, arg3, arg4);
+            else return null;
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             if (e.getCause() instanceof ASMException ex) throw ex;
             else throw new RuntimeException(e);
         }
@@ -140,26 +159,25 @@ public enum Instruction {
 
     private ParsedInstruction<?, ?, ?, ?> create() {
         try {
-            return instructionClass.getDeclaredConstructor(InstructionModifier.class,
-                            ParsedArgument.class,
-                            ParsedArgument.class,
-                            ParsedArgument.class,
-                            ParsedArgument.class)
-                    .newInstance(new InstructionModifier(Condition.AL, false, null, null), null, null, null, null);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
-                 InvocationTargetException ignored) {}
+            return debugConstructor.newInstance(new InstructionModifier(Condition.AL, false, null, null), null, null, null, null);
+        } catch (NullPointerException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {}
 
         return null;
     }
 
     public String getArgumentType(int i) {
-        return switch (i) {
+        if (valid) return switch (i) {
             case 0 -> arg1Type;
             case 1 -> arg2Type;
             case 2 -> arg3Type;
             case 3 -> arg4Type;
             default -> "";
         };
+        else return null;
+    }
+
+    public boolean isValid() {
+        return valid;
     }
 
     public boolean hasWorkingRegister() {

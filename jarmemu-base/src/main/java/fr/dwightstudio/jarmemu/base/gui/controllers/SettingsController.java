@@ -51,6 +51,9 @@ public class SettingsController implements Initializable {
     };
 
     // Valeurs par défaut
+    public static final boolean DEFAULT_IGNORE_UNIMPLEMENTED = false;
+    public static final boolean DEFAULT_IGNORE_DEPRECATED = false;
+
     public static final boolean DEFAULT_MANUAL_BREAK = true;
     public static final boolean DEFAULT_CODE_BREAK = true;
     public static final boolean DEFAULT_AUTO_BREAK = true;
@@ -77,6 +80,8 @@ public class SettingsController implements Initializable {
 
     public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
     public static final String SOURCE_PARSER_KEY = "sourceParser";
+    public static final String IGNORE_UNIMPLEMENTED_KEY = "ignoreUnimplemented";
+    public static final String IGNORE_DEPRECATED_KEY = "ignoreDeprecated";
 
     public static final String MANUAL_BREAK_KEY = "manualBreakpoints";
     public static final String CODE_BREAK_KEY = "codeBreakpoints";
@@ -156,6 +161,8 @@ public class SettingsController implements Initializable {
         themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
         // Gestion des ToggleSwitches
+        JArmEmuApplication.getController().notImplementedSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setIgnoreUnimplemented(newVal));
+        JArmEmuApplication.getController().deprecatedSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setIgnoreDeprecated(newVal));
         JArmEmuApplication.getController().manualBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setManualBreak(newVal));
         JArmEmuApplication.getController().codeBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setCodeBreak(newVal));
         JArmEmuApplication.getController().autoBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoBreak(newVal));
@@ -221,6 +228,8 @@ public class SettingsController implements Initializable {
         themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
         // ToggleSwitches
+        JArmEmuApplication.getController().notImplementedSwitch.setSelected(getIgnoreUnimplemented());
+        JArmEmuApplication.getController().deprecatedSwitch.setSelected(getIgnoreDeprecated());
         JArmEmuApplication.getController().manualBreakSwitch.setSelected(getManualBreak());
         JArmEmuApplication.getController().codeBreakSwitch.setSelected(getCodeBreak());
         JArmEmuApplication.getController().autoBreakSwitch.setSelected(getAutoBreak());
@@ -249,6 +258,8 @@ public class SettingsController implements Initializable {
 
         setSimulationInterval(ExecutionWorker.FALLBACK_UPDATE_INTERVAL);
         setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
+        setIgnoreUnimplemented(false);
+        setIgnoreDeprecated(false);
 
         setManualBreak(DEFAULT_MANUAL_BREAK);
         setCodeBreak(DEFAULT_CODE_BREAK);
@@ -478,5 +489,21 @@ public class SettingsController implements Initializable {
 
     public void setIgnoreVersion(String s) {
         preferences.put(IGNORE_VERSION_KEY, s);
+    }
+
+    public void setIgnoreUnimplemented(boolean b) {
+        preferences.putBoolean(IGNORE_UNIMPLEMENTED_KEY, b);
+    }
+
+    public boolean getIgnoreUnimplemented() {
+        return preferences.getBoolean(IGNORE_UNIMPLEMENTED_KEY, DEFAULT_IGNORE_UNIMPLEMENTED);
+    }
+
+    public void setIgnoreDeprecated(boolean b) {
+        preferences.putBoolean(IGNORE_DEPRECATED_KEY, b);
+    }
+
+    public boolean getIgnoreDeprecated() {
+        return preferences.getBoolean(IGNORE_DEPRECATED_KEY, DEFAULT_IGNORE_DEPRECATED);
     }
 }

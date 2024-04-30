@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterAddressArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
@@ -38,12 +39,12 @@ import org.jetbrains.annotations.NotNull;
 public class SWPInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
     public SWPInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
-        throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
+        throw new DeprecatedASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
-    public SWPInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws SyntaxASMException {
+    public SWPInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
-        throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
+        throw new DeprecatedASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
     @Override
