@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
+import fr.dwightstudio.jarmemu.base.util.CaseIndependentEntry;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import fr.dwightstudio.jarmemu.base.util.EnumUtils;
 import javafx.application.Platform;
@@ -99,6 +100,7 @@ public class SmartHighlighter extends RealTimeParser {
     private int cancelLine;
 
     private static final Object LOCK = new Object();
+    private static HashSet<CaseIndependentEntry> caseTranslationTable;
     private static HashMap<FilePos, String> globals;
     private final TreeMap<Integer, Section> sections;
     private final HashMap<Integer, String> labels;
@@ -146,6 +148,7 @@ public class SmartHighlighter extends RealTimeParser {
             }
         });
 
+        caseTranslationTable = new HashSet<>();
         globals = new HashMap<>();
         sections = new TreeMap<>();
         labels = new HashMap<>();
