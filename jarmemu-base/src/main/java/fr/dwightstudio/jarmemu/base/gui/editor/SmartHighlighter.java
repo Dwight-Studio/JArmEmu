@@ -334,6 +334,7 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 globals.remove(new FilePos(editor.getRealIndex(), line));
                                 updateGlobals(remGlobal);
+                                caseTranslationTable.remove(new CaseIndependentEntry(addGlobals));
                             }
                         }
 
@@ -342,6 +343,7 @@ public class SmartHighlighter extends RealTimeParser {
                                 sections.put(line, addSection);
                             } else {
                                 sections.remove(line);
+                                caseTranslationTable.remove(new CaseIndependentEntry(addSection.name()));
                             }
 
                             if (addSection != Section.END) {
@@ -358,6 +360,7 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 labels.remove(line);
                                 updateReferences(remLabel);
+                                caseTranslationTable.remove(new CaseIndependentEntry(addLabels));
                             }
                             updateReferences(remLabel.toUpperCase());
                         }
@@ -369,6 +372,7 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 symbols.remove(line);
                                 updateReferences(remSymbol);
+                                caseTranslationTable.remove(new CaseIndependentEntry(addSymbols));
                             }
                         }
 
@@ -838,7 +842,11 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = SECTION_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            String s = matcher.group("SECTION").toUpperCase();
+            String s = matcher.group("SECTION").strip();
+            
+            caseTranslationTable.add(new CaseIndependentEntry(s));
+            s = s.toUpperCase();
+            
             if (!s.equalsIgnoreCase("Section")) {
                 currentSection = addSection = Section.valueOf(s);
                 context = Context.SECTION;
@@ -873,7 +881,10 @@ public class SmartHighlighter extends RealTimeParser {
                         if (matcher.find()) {
                             tag("label", matcher);
                             subContext = SubContext.PRIMARY;
-                            addSymbols = matcher.group().toUpperCase().strip();
+                            addSymbols = matcher.group().strip();
+                            
+                            caseTranslationTable.add(new CaseIndependentEntry(addSymbols));
+                            addSymbols = addSymbols.toUpperCase();
                             return true;
                         }
 
@@ -910,7 +921,11 @@ public class SmartHighlighter extends RealTimeParser {
                 Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
 
                 if (matcher.find()) {
-                    addGlobals = matcher.group().toUpperCase();
+                    addGlobals = matcher.group().strip();
+                    
+                    caseTranslationTable.add(new CaseIndependentEntry(addGlobals));
+                    addGlobals = addGlobals.toUpperCase();
+                    
                     addReferences.add(addGlobals);
                     context = Context.ERROR;
 
@@ -1105,6 +1120,11 @@ public class SmartHighlighter extends RealTimeParser {
     @Override
     public Set<String> getSymbols() {
         return new HashSet<>(symbols.values());
+    }
+    
+    @Override
+    public Set<CaseIndependentEntry> getCaseTranslationTable() {
+        return caseTranslationTable;
     }
 
     @Override

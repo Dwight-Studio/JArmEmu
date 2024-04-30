@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
+import fr.dwightstudio.jarmemu.base.util.CaseIndependentEntry;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import fr.dwightstudio.jarmemu.base.util.EnumUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -168,6 +169,11 @@ public class KeywordHighlighter extends RealTimeParser {
 
     @Override
     public Set<String> getSymbols() {
+        return Set.of();
+    }
+
+    @Override
+    public Set<CaseIndependentEntry> getCaseTranslationTable() {
         return Set.of();
     }
 

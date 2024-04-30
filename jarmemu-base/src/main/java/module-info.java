@@ -27,12 +27,13 @@ module fr.dwightstudio.jarmemu.base {
     exports fr.dwightstudio.jarmemu.base.sim.entity;
     exports fr.dwightstudio.jarmemu.base.asm;
     exports fr.dwightstudio.jarmemu.base.asm.parser.regex;
-    //exports fr.dwightstudio.jarmemu.asm.parser.legacy;
+    exports fr.dwightstudio.jarmemu.base.asm.parser.legacy;
     exports fr.dwightstudio.jarmemu.base.asm.exception;
     exports fr.dwightstudio.jarmemu.base.asm.instruction;
     exports fr.dwightstudio.jarmemu.base.asm.directive;
     exports fr.dwightstudio.jarmemu.base.asm.argument;
     exports fr.dwightstudio.jarmemu.base.asm.parser;
+    exports fr.dwightstudio.jarmemu.base.util;
 
     opens fr.dwightstudio.jarmemu.base to javafx.fxml;
     opens fr.dwightstudio.jarmemu.base.gui to javafx.fxml;

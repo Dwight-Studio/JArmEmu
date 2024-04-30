@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.base.gui.editor;
 
+import fr.dwightstudio.jarmemu.base.util.CaseIndependentEntry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -34,6 +35,11 @@ public abstract class RealTimeParser extends Thread {
      * @return the symbols accessible from this file
      */
     public abstract Set<String> getSymbols();
+
+    /**
+     * @return the symbols and labels translation table (from identifier to name with case)
+     */
+    public abstract Set<CaseIndependentEntry> getCaseTranslationTable();
 
     /**
      * @return true if the line defines a label

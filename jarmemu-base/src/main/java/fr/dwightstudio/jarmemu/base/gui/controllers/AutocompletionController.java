@@ -216,7 +216,6 @@ public class AutocompletionController implements Initializable {
                         }
 
                         case "RegisterAddressArgument" -> {
-                            System.out.println(subContext);
                             if (subContext != SubContext.ADDRESS) {
                                 for (RegisterUtils value : RegisterUtils.values()) {
                                     list.add("[" + value.name() + "]");
@@ -334,8 +333,8 @@ public class AutocompletionController implements Initializable {
 
         currentWord = currentWord.strip();
 
-        System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
-        System.out.println(list);
+        //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
+        //System.out.println(list);
 
         switch (currentWord) {
             case "" -> {}
@@ -348,6 +347,8 @@ public class AutocompletionController implements Initializable {
         }
 
         list.replaceAll(String::toLowerCase);
+
+        editor.getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
 
         show();
     }
