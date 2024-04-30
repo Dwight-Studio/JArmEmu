@@ -113,7 +113,15 @@ public class LegacySourceParser implements SourceParser {
      * @return La ligne modifiée ou non
      */
     public String removeFlags(@NotNull String instructionString){
-        if (instructionString.endsWith("S") && (instructionString.length() % 2 == 0) && (!instructionString.equals("BXNS"))){
+        if (instructionString.length()==7 || instructionString.length()==5) {
+            UpdateMode[] updateModes = UpdateMode.values();
+            for (UpdateMode updatemode:updateModes) {
+                if (instructionString.endsWith(updatemode.toString().toUpperCase())) {
+                    updateMode = updatemode;
+                    instructionString = instructionString.substring(0, instructionString.length()-2);
+                }
+            }
+        } else if (instructionString.endsWith("S") && (instructionString.length() % 2 == 0) && (!instructionString.equals("BXNS"))){
             updateFlags = true;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.endsWith("H") && (!instructionString.equals("PUSH"))) {
@@ -122,14 +130,6 @@ public class LegacySourceParser implements SourceParser {
         } else if (instructionString.endsWith("B") && (!instructionString.equals("SUB") && !instructionString.equals("RSB") && !instructionString.equals("B"))) {
             dataMode = DataMode.BYTE;
             instructionString = instructionString.substring(0, instructionString.length()-1);
-        } else if (instructionString.length()==7 || instructionString.length()==5) {
-            UpdateMode[] updateModes = UpdateMode.values();
-            for (UpdateMode updatemode:updateModes) {
-                if (instructionString.endsWith(updatemode.toString().toUpperCase())) {
-                    updateMode = updatemode;
-                    instructionString = instructionString.substring(0, instructionString.length()-2);
-                }
-            }
         }
         return instructionString;
     }
