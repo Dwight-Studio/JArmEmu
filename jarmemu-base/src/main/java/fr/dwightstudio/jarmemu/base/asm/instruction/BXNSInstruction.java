@@ -1,6 +1,8 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
@@ -22,22 +24,22 @@ public class BXNSInstruction extends ParsedInstruction<Register, Object, Object,
 
     @Override
     protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
-        return null;
+        return RegisterArgument.class;
     }
 
     @Override
     protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
-        return null;
+        return NullArgument.class;
     }
 
     @Override
     protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
-        return null;
+        return NullArgument.class;
     }
 
     @Override
     protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
-        return null;
+        return NullArgument.class;
     }
 
     @Override

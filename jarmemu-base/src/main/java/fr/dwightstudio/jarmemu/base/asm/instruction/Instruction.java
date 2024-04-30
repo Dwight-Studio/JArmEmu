@@ -81,6 +81,8 @@ public enum Instruction {
     STR(STRInstruction.class),
     STM(STMInstruction.class),
     LDM(LDMInstruction.class),
+    POP(POPInstruction.class),
+    PUSH(PUSHInstruction.class),
     SWP(SWPInstruction.class),
 
     // Branching
@@ -91,6 +93,7 @@ public enum Instruction {
 
     // Others
     BKPT(BKPTInstruction.class),
+    NOP(NOPInstruction.class),
     CLREX(CLREXInstruction.class);
 
     private final Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass;

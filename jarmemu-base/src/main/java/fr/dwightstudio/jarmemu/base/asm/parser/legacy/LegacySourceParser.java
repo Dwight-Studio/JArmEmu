@@ -113,13 +113,13 @@ public class LegacySourceParser implements SourceParser {
      * @return La ligne modifiée ou non
      */
     public String removeFlags(@NotNull String instructionString){
-        if (instructionString.endsWith("S") && (instructionString.length()%2==0)){
+        if (instructionString.endsWith("S") && (instructionString.length() % 2 == 0) && (!instructionString.equals("BXNS"))){
             updateFlags = true;
             instructionString = instructionString.substring(0, instructionString.length()-1);
-        } else if (instructionString.endsWith("H")) {
+        } else if (instructionString.endsWith("H") && (!instructionString.equals("PUSH"))) {
             dataMode = DataMode.HALF_WORD;
             instructionString = instructionString.substring(0, instructionString.length()-1);
-        } else if (instructionString.endsWith("B") && ((!instructionString.equals("SUB") && !instructionString.equals("RSB") && !instructionString.equals("B")))) {
+        } else if (instructionString.endsWith("B") && (!instructionString.equals("SUB") && !instructionString.equals("RSB") && !instructionString.equals("B"))) {
             dataMode = DataMode.BYTE;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.length()==7 || instructionString.length()==5) {
@@ -217,18 +217,30 @@ public class LegacySourceParser implements SourceParser {
                     if (this.instruction == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownInstruction", oldInstructionString)).with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
 
                     if (currentLine.contains("{")) {
-                        StringBuilder argument = new StringBuilder(currentLine.substring(instructionLength).split(",", 2)[1].strip());
+                        String[] split = currentLine.substring(instructionLength).split(",", 2);
+                        StringBuilder argument;
+                        if (split.length > 1) {
+                            argument = new StringBuilder(split[1].strip());
+                        } else {
+                            argument =  new StringBuilder(currentLine.substring(instructionLength).split(" ", 2)[1].strip());
+                        }
                         argument.deleteCharAt(0);
                         argument.deleteCharAt(argument.length() - 1);
                         ArrayList<String> argumentArray = new ArrayList<>(Arrays.asList(argument.toString().split(",")));
                         argumentArray.replaceAll(String::strip);
-                        argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
-                        for (String arg : argumentArray) {
-                            arg = this.joinString(arg);
-                            argument.append(arg).append(",");
+                        if (argumentArray.size() > 1) {
+                            argument = new StringBuilder(currentLine.substring(instructionLength).split(",")[0].strip() + "," + "{");
+                            for (String arg : argumentArray) {
+                                arg = this.joinString(arg);
+                                argument.append(arg).append(",");
+                            }
+                            argument.deleteCharAt(argument.length() - 1);
+                            argument.append("}");
+                        } else {
+                            argument = new StringBuilder(argumentArray.getFirst());
+                            argument.append("}");
+                            argument.insert(0, "{");
                         }
-                        argument.deleteCharAt(argument.length() - 1);
-                        argument.append("}");
                         this.arguments.addAll(Arrays.asList(argument.toString().split(",", 2)));
                         this.arguments.replaceAll(String::strip);
                     } else if (currentLine.contains("[")) {
