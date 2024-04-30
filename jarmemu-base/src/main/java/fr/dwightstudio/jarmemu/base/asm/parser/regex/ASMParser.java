@@ -63,7 +63,7 @@ public class ASMParser {
             + "|(?<DATA>" + DATA_REGEX + ")"
             + "|(?<UPDATE>" + UPDATE_REGEX + ")"
             + "|)"
-            + "[ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*"
+            + "(([ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG2>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)";
