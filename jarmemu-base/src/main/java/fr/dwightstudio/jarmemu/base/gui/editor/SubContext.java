@@ -16,5 +16,6 @@ public enum SubContext {
     SHIFT,
     ADDRESS,
     REGISTER_ARRAY,
-    LABEL_REF;
+    LABEL_REF,
+    INVALID_LABEL_REF;
 }

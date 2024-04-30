@@ -249,7 +249,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                                 case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
                                      INSTRUCTION_ARGUMENT_4 -> {
-                                    if (matchBlank()) continue;
+                                    if (subContext != SubContext.INVALID_LABEL_REF) if (matchBlank()) continue;
                                     if (!bracket && !brace && matchInstructionArgumentSeparator()) continue;
 
                                     if (matchInstructionArgument()) continue;
@@ -810,6 +810,7 @@ public class SmartHighlighter extends RealTimeParser {
                 tag("label-ref", matcher);
             } else {
                 tagError("label-ref", matcher);
+                subContext = SubContext.INVALID_LABEL_REF;
             }
 
             return true;
