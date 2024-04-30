@@ -58,6 +58,11 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
                     if (stringArray.length != 2) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpectedArgumentRegisterArray", originalString));
                     int registerFirst = Integer.parseInt(stringArray[0].strip().substring(1));
                     int registerSecond = Integer.parseInt(stringArray[1].strip().substring(1));
+
+                    if (registerFirst > registerSecond) {
+                        throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.emptyArgumentRegisterArray", regString));
+                    }
+
                     for (int i = registerFirst; i <= registerSecond; i++) {
                         arguments.add(new RegisterArgument("R" + i));
                     }
@@ -65,6 +70,11 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
                     arguments.add(new RegisterArgument(regString.strip()));
                 }
             }
+
+            if (arguments.isEmpty()) {
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.emptyArgumentRegisterArray", originalString));
+            }
+
         } else {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unexpectedArgumentRegisterArray", originalString));
         }

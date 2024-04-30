@@ -245,15 +245,10 @@ public class AutocompletionController implements Initializable {
                                         }
                                     }
 
-                                    case PRIMARY, TERTIARY -> {
+                                    case PRIMARY -> {
                                         for (RegisterUtils value : RegisterUtils.values()) {
                                             list.add(value.name());
                                         }
-                                    }
-                                }
-                                if (subContext != SubContext.REGISTER) {
-                                    for (RegisterUtils value : RegisterUtils.values()) {
-                                        list.add(value.name());
                                     }
                                 }
                             } else {

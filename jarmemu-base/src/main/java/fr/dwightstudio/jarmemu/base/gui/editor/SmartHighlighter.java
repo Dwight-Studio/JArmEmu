@@ -72,7 +72,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
     private static final Pattern UPDATE_MODE_PATTERN = Pattern.compile("^(?i)(" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
     private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + ")\\b(?-i)");
-    private static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + ")(?-i)\\b");
+    private static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + "|SECTION)(?-i)\\b");
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
     private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*:");
 
@@ -748,7 +748,7 @@ public class SmartHighlighter extends RealTimeParser {
     private boolean matchRegisterArray() {
         if (brace || matchBrace()) {
             switch (subContext) {
-                case NONE -> {
+                case NONE, PRIMARY -> {
                     if (!matchRegister()) return false;
                 }
 
@@ -757,41 +757,11 @@ public class SmartHighlighter extends RealTimeParser {
                         subContext = SubContext.REGISTER_ARRAY;
                         return true;
                     } else if (matchSubSeparator()) {
-                        subContext = SubContext.PRIMARY;
+                        subContext = SubContext.NONE;
                     } else if (matchRegisterRangeSeparator()) {
-                        subContext = SubContext.TERTIARY;
+                        subContext = SubContext.PRIMARY;
                         contextLength = 0;
                     } else return false;
-                }
-
-                case PRIMARY -> {
-                    if (matchRegister()) {
-                        subContext =  SubContext.SECONDARY;
-                    } else return false;
-                }
-
-                case SECONDARY -> {
-                    if (matchBrace()) {
-                        subContext = SubContext.REGISTER_ARRAY;
-                        return true;
-                    } else if (matchSubSeparator()) {
-                        subContext = SubContext.PRIMARY;
-                    } else return false;
-                }
-
-                case TERTIARY -> {
-                    if (matchRegister()) {
-                        subContext = SubContext.QUATERNARY;
-                    } else return false;
-                }
-
-                case QUATERNARY -> {
-                    if (matchBrace()) {
-                        subContext = SubContext.REGISTER_ARRAY;
-                        return true;
-                    } else {
-                        return false;
-                    }
                 }
             }
 
@@ -868,8 +838,11 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = SECTION_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            currentSection = addSection = Section.valueOf(matcher.group("SECTION").toUpperCase());
-            context = Context.SECTION;
+            String s = matcher.group("SECTION").toUpperCase();
+            if (!s.equalsIgnoreCase("Section")) {
+                currentSection = addSection = Section.valueOf(s);
+                context = Context.SECTION;
+            }
             tag("section", matcher);
             return true;
         }
