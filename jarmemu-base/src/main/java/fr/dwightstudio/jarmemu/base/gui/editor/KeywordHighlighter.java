@@ -64,7 +64,7 @@ public class KeywordHighlighter extends RealTimeParser {
     private static final String SHIFT_PATTERN = "\\b(?i)(" + String.join("|", SHIFTS) + ")(?-i)\\b";
     private static final String BRACE_PATTERN = "\\{|\\}";
     private static final String BRACKET_PATTERN = "\\[|\\]";
-    private static final String LABEL_PATTERN = "[A-Za-z_0-9]+[ \t]*:";
+    private static final String LABEL_PATTERN = "[A-Za-z_]+[A-Za-z_0-9]*[ \t]*:";
     private static final String STRING_PATTERN = "\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'";
     private static final String COMMENT_PATTERN = "@[^\n]*";
     private static final String IMM_PATTERN = "=[^\n@]*|#[^\n\\]@]*";

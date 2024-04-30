@@ -42,7 +42,7 @@ public class EquivalentDirective extends ParsedDirective {
         if (arg.length == 2) {
             symbol = arg[0].toUpperCase();
 
-            if (!symbol.matches("[A-Za-z_0-9]+")) {
+            if (!symbol.matches("[A-Za-z_]+[A-Za-z_0-9]*")) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidSymbolName", symbol));
             } else {
                 argument = arg[1];

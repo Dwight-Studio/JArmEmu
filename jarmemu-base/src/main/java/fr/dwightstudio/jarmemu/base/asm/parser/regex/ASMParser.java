@@ -68,7 +68,7 @@ public class ASMParser {
             + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)";
 
-    private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
+    private static final String LABEL_REGEX = "[A-Za-z_]+[A-Za-z_0-9]*";
 
     private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
             "(?i)[ \t]*"

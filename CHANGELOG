@@ -15,6 +15,7 @@
 - Fixed BLX instruction not being able to use labels
 - Fixed STM/LDM instruction not detecting the lack of update mode
 - Fixed LDM update mode effects
+- Fixed labels/symbols validation
 
 
 0.1.10 -> 0.2.0

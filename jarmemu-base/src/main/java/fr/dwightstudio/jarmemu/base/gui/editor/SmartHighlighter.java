@@ -73,7 +73,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + ")\\b(?-i)");
     private static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + ")(?-i)\\b");
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
-    private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_0-9]+)[ \t]*:");
+    private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*:");
 
     private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
     private static final Pattern RANGE_SEPARATOR = Pattern.compile("^-");
@@ -85,7 +85,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
     private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
-    private static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_0-9]+");
+    private static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_]+[A-Za-z_0-9]*");
 
     private static final Pattern NOTE_PATTERN = Pattern.compile("^[^\n]+");
 

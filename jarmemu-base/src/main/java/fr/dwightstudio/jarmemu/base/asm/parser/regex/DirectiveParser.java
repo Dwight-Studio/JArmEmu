@@ -44,7 +44,7 @@ public class DirectiveParser {
     private static final String SECTION_REGEX = String.join("|", SECTIONS);
     private static final String DIRECTIVE_REGEX = String.join("|", DIRECTIVES);
     private static final String SSECTION_REGEX = "SECTION";
-    private static final String LABEL_REGEX = "[A-Za-z_0-9]+";
+    private static final String LABEL_REGEX = "[A-Za-z_]+[A-Za-z_0-9]*";
     private static final String ARGS_REGEX = "[^\n.]*";
     private static final Pattern DIRECTIVE_PATTERN = Pattern.compile(
             "(?i)"
