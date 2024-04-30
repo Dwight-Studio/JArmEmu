@@ -217,6 +217,9 @@ public class LegacySourceParser implements SourceParser {
                     if (this.instruction == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.parser.unknownInstruction", oldInstructionString)).with(sourceScanner.getLineNumber()).with(new ParsedFile(sourceScanner));
 
                     if (currentLine.contains("{")) {
+
+                        //Fixme: Aled
+
                         String[] split = currentLine.substring(instructionLength).split(",", 2);
                         StringBuilder argument;
                         if (split.length > 1) {
