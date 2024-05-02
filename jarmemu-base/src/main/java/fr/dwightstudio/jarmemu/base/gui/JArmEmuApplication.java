@@ -140,6 +140,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter un detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux
+    // TODO: Enregistrer la position de la fenêtre en fullscreen/pas en fullscreen
 
     @Override
     public void init() {

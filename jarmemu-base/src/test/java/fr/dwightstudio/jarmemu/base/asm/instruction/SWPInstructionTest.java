@@ -23,6 +23,8 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
@@ -37,6 +39,6 @@ class SWPInstructionTest extends InstructionTest<Register, Register, Integer, Ob
     @Test
     public void simpleSwpTest() {
         Register r0 = stateContainer.getRegister(0);
-        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r0, null, null, null));
+        assertThrows(DeprecatedASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r0, null, null, null));
     }
 }

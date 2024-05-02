@@ -1,5 +1,6 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import org.junit.jupiter.api.Test;
 
@@ -13,6 +14,6 @@ class CLREXInstructionTest extends InstructionTest<Object, Object, Object, Objec
 
     @Test
     public void testExecute() {
-        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, null, null, null, null));
+        assertThrows(NotImplementedASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, null, null, null, null));
     }
 }
