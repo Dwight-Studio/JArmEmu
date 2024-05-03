@@ -141,6 +141,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux
     // TODO: Enregistrer la position de la fenêtre en fullscreen/pas en fullscreen
+    // TODO: Ajouter la personnalisation des "flags" d'instruction (Update Mode/Data mode/Update flags...)
 
     @Override
     public void init() {
