@@ -81,6 +81,8 @@ public enum Instruction {
     LDR(LDRInstruction.class),
     STR(STRInstruction.class),
     STM(STMInstruction.class),
+    LDA(LDAInstruction.class),
+    LDAEX(LDAEXInstruction.class),
     LDM(LDMInstruction.class),
     POP(POPInstruction.class),
     PUSH(PUSHInstruction.class),
@@ -97,11 +99,17 @@ public enum Instruction {
     //Coprocessor-related
     CDP(CDPInstruction.class),
     CDP2(CDP2Instruction.class),
+    LDC(LDCInstruction.class),
+    LDC2(LDC2Instruction.class),
 
     // Others
     BKPT(BKPTInstruction.class),
-    NOP(NOPInstruction.class),
-    CLREX(CLREXInstruction.class);
+    CLREX(CLREXInstruction.class),
+    CRC32(CRC32Instruction.class),
+    CRC32C(CRC32CInstruction.class),
+    DBG(DBGInstruction.class),
+    HLT(HLTInstruction.class),
+    NOP(NOPInstruction.class);
 
     private Constructor<? extends ParsedInstruction<?, ?, ?, ?>> mainConstructor;
     private Constructor<? extends ParsedInstruction<?, ?, ?, ?>> debugConstructor;
