@@ -61,6 +61,7 @@ import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class JArmEmuApplication extends Application {
@@ -95,6 +96,8 @@ public class JArmEmuApplication extends Application {
     };
 
     public static final Logger logger = Logger.getLogger(JArmEmuApplication.class.getSimpleName());
+
+    private static final Pattern TRANSLATION_KEY_PATTERN = Pattern.compile("%(?<KEY>[a-zA-Z0-9.]+)");
 
     // Controllers
     private static JArmEmuApplication instance;
@@ -508,16 +511,26 @@ public class JArmEmuApplication extends Application {
     }
 
     public static String formatMessage(String message, Object... args) {
-        AtomicReference<String> string = new AtomicReference<>(message);
-        BUNDLE.keySet().stream().sorted((s1, s2) -> -Integer.compare(s1.length(), s2.length())).forEach(key -> {
-            string.set(string.get().replaceAll("%" + key, Matcher.quoteReplacement(BUNDLE.getString(key))));
-        });
-        message = string.get();
+        StringBuilder builder = new StringBuilder();
+        Matcher matcher = TRANSLATION_KEY_PATTERN.matcher(message);
+
+        while (matcher.find()) {
+            String key = matcher.group("KEY");
+            String replacement = key;
+            try {
+                replacement = BUNDLE.getString(key);
+            } catch (MissingResourceException exception) {
+                logger.warning("Can't find translation key '" + key + "'");
+            } finally {
+                matcher.appendReplacement(builder, Matcher.quoteReplacement(replacement));
+            }
+        }
+
         try {
-            return message.formatted(args);
-        } catch (Exception e) {
-            logger.severe(message);
-            throw e;
+            return builder.toString().formatted(args);
+        } catch (IllegalFormatException e) {
+            logger.severe(ExceptionUtils.getStackTrace(e));
+            return "#Invalid translation string#";
         }
     }
 

@@ -339,7 +339,7 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 globals.remove(new FilePos(editor.getRealIndex(), line));
                                 updateGlobals(remGlobal);
-                                caseTranslationTable.remove(new CaseIndependentEntry(addGlobals));
+                                caseTranslationTable.remove(new CaseIndependentEntry(remGlobal));
                             }
                         }
 
@@ -348,7 +348,7 @@ public class SmartHighlighter extends RealTimeParser {
                                 sections.put(line, addSection);
                             } else {
                                 sections.remove(line);
-                                caseTranslationTable.remove(new CaseIndependentEntry(addSection.name()));
+                                caseTranslationTable.remove(new CaseIndependentEntry(remSection.name()));
                             }
 
                             if (addSection != Section.END) {
@@ -365,7 +365,7 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 labels.remove(line);
                                 updateReferences(remLabel);
-                                caseTranslationTable.remove(new CaseIndependentEntry(addLabels));
+                                caseTranslationTable.remove(new CaseIndependentEntry(remLabel));
                             }
                             updateReferences(remLabel.toUpperCase());
                         }
@@ -377,7 +377,7 @@ public class SmartHighlighter extends RealTimeParser {
                             } else {
                                 symbols.remove(line);
                                 updateReferences(remSymbol);
-                                caseTranslationTable.remove(new CaseIndependentEntry(addSymbols));
+                                caseTranslationTable.remove(new CaseIndependentEntry(remSymbol));
                             }
                         }
 
