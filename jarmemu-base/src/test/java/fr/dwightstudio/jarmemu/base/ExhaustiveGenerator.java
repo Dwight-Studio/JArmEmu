@@ -2,14 +2,11 @@ package fr.dwightstudio.jarmemu.base;
 
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
-import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
-import fr.dwightstudio.jarmemu.base.asm.modifier.RequiredModifierParameter;
 import fr.dwightstudio.jarmemu.base.util.ModifierUtils;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -18,19 +15,20 @@ public class ExhaustiveGenerator {
 
     private static Logger logger = Logger.getLogger(ExhaustiveGenerator.class.getSimpleName());
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) throws Exception {
         LogManager.getLogManager().readConfiguration(ExhaustiveGenerator.class.getResourceAsStream("/logging.properties"));
 
 
 
         try (FileWriter fileWriter = new FileWriter("./jarmemu-base/src/test/resources/exhaustive.s", false)) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-                generateAllInstructions(bufferedWriter);
+                generateAllInstructions(bufferedWriter::append);
             }
         }
     }
 
-    public static void generateAllInstructions(BufferedWriter buffer) throws IOException {
+    public static void generateAllInstructions(AppendableString buffer) throws Exception {
         int count = 0;
         final int total = Instruction.values().length - 1;
 
@@ -42,13 +40,11 @@ public class ExhaustiveGenerator {
             logger.info("%3d%% - Generating for %s".formatted(Math.floorDiv(count * 100, total), instruction));
             count++;
 
-            buffer.append(generateInstruction(instruction));
+            buffer.append(generateInstruction(buffer, instruction));
         }
     }
 
-    public static String generateInstruction(Instruction instruction) {
-        StringBuilder buffer = new StringBuilder();
-
+    public static String generateInstruction(AppendableString buffer, Instruction instruction) throws Exception {
         if (!instruction.isValid()) return "";
 
         String argType1 = instruction.getArgumentType(0);
@@ -112,17 +108,22 @@ public class ExhaustiveGenerator {
         return buffer.toString();
     }
 
-    private static void addInstruction(StringBuilder buffer, Instruction instruction, Modifier modifier, String arg1, String arg2, String arg3, String arg4) {
-        buffer.append(instruction.name()).append(modifier.toString()).append(" ");
+    private static void addInstruction(AppendableString buffer, Instruction instruction, Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws Exception {
+        buffer.append(instruction.name());
+        buffer.append(modifier.toString());
+        buffer.append(" ");
 
         if (arg1 != null) {
             buffer.append(arg1);
             if (arg2 != null) {
-                buffer.append(", ").append(arg2);
+                buffer.append(", ");
+                buffer.append(arg2);
                 if (arg3 != null) {
-                    buffer.append(", ").append(arg3);
+                    buffer.append(", ");
+                    buffer.append(arg3);
                     if (arg4 != null) {
-                        buffer.append(", ").append(arg4);
+                        buffer.append(", ");
+                        buffer.append(arg4);
                     }
                 }
             }
@@ -235,5 +236,9 @@ public class ExhaustiveGenerator {
         list.add(prefix + "2" + suffix);
          */
         list.add(prefix + "4/2" + suffix);
+    }
+
+    public static interface AppendableString {
+        void append(String string) throws Exception;
     }
 }
