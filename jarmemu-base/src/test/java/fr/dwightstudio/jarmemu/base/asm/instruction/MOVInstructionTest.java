@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MOVInstructionTest extends InstructionTest<Register, Integer, ShiftArgument.ShiftFunction, Object> {
+class MOVInstructionTest extends InstructionTest<Register, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction, Object> {
     MOVInstructionTest() {
         super(MOVInstruction.class);
     }
@@ -40,10 +41,10 @@ class MOVInstructionTest extends InstructionTest<Register, Integer, ShiftArgumen
         Register r0 = stateContainer.getRegister(0);
         Register r1 = stateContainer.getRegister(1);
         Register r2 = stateContainer.getRegister(2);
-        legacyExecute(stateContainer, false, false, null, null, r0, 5, shift(), null);
-        legacyExecute(stateContainer, false, false, null, null, r1, r0.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new ImmediateOrRegisterArgument.RegisterOrImmediate(5), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(r0), shift(), null);
         r1.setData(r1.getData()+1);
-        legacyExecute(stateContainer, false, false, null, null, r2, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r2, new ImmediateOrRegisterArgument.RegisterOrImmediate(r1), shift(), null);
         assertEquals(5, r0.getData());
         assertEquals(6, r1.getData());
         assertEquals(6, r2.getData());
@@ -54,14 +55,14 @@ class MOVInstructionTest extends InstructionTest<Register, Integer, ShiftArgumen
         Register r0 = stateContainer.getRegister(0);
         Register r1 = stateContainer.getRegister(1);
         Register r2 = stateContainer.getRegister(2);
-        legacyExecute(stateContainer, false, true, null, null, r0, 0, shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r0, new ImmediateOrRegisterArgument.RegisterOrImmediate(0), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
-        legacyExecute(stateContainer, false, true, null, null, r1, -2, shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(-2), shift(), null);
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(4);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r2, new ImmediateOrRegisterArgument.RegisterOrImmediate(r1), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
     }

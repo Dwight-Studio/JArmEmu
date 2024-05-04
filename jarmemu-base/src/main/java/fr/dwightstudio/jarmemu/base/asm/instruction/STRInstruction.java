@@ -24,10 +24,7 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.*;
-import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.IllegalDataWritingASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.MemoryAccessMisalignedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.*;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
@@ -39,12 +36,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class STRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
+public class STRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction> {
     public STRInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public STRInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+    public STRInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
@@ -62,7 +59,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg3Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
@@ -89,7 +86,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, AddressArgument.UpdatableInteger arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, AddressArgument.UpdatableInteger arg2, ImmediateOrRegisterArgument.RegisterOrImmediate arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
         int i1 = arg4.apply(arg3);
         int address = arg2.toInt() + i1;
 
@@ -116,7 +113,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, AddressArgument.UpdatableInteger arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) {
-
+    protected void verify(StateContainer stateContainer, Register arg1, AddressArgument.UpdatableInteger arg2, ImmediateOrRegisterArgument.RegisterOrImmediate arg3, ShiftArgument.ShiftFunction arg4) throws SyntaxASMException {
+        arg4.check(arg3);
     }
 }

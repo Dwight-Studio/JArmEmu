@@ -96,20 +96,24 @@ public class KeywordHighlighter extends RealTimeParser {
         this.queue = new LinkedBlockingQueue<>();
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
+            editor.updateSaveState();
             int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
-            int stop = editor.getCodeArea().offsetToPosition(change.getInsertionEnd(), TwoDimensional.Bias.Forward).getMajor();
+            int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
-            for (int i = start; i <= stop; i++) {
-                queue.add(i);
+            int stop;
+            if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
+                stop = editor.getCodeArea().getParagraphs().size();
+            } else {
+                stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
             }
+
+            markDirty(start, stop);
         });
 
         cancelLine = -1;
 
         this.start();
     }
-
-    // TODO: Ajouter le support des du Find&Replace
 
     @Override
     public void run() {

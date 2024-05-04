@@ -53,7 +53,7 @@ public class ParsedFile implements Collection<ParsedObject> {
     }
 
     public String getName() {
-        return this.sourceScanner.getName() == null ? "Unknown" : this.sourceScanner.getName();
+        return this.sourceScanner.getName() == null ? "???" : this.sourceScanner.getName();
     }
 
     public SourceScanner getSourceScanner() {

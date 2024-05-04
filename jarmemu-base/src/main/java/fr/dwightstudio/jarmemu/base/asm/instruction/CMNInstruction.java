@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.asm.instruction;
 import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
@@ -37,12 +38,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class CMNInstruction extends ParsedInstruction<Register, Integer, ShiftArgument.ShiftFunction, Object> {
+public class CMNInstruction extends ParsedInstruction<Register, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction, Object> {
     public CMNInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public CMNInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Integer> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
+    public CMNInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
@@ -54,7 +55,7 @@ public class CMNInstruction extends ParsedInstruction<Register, Integer, ShiftAr
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<Integer>> getParsedArg2Class() {
+    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg2Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
@@ -87,7 +88,7 @@ public class CMNInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, ImmediateOrRegisterArgument.RegisterOrImmediate arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
         int i1 = arg3.apply(arg2);
 
         int result = arg1.getData() + i1; // result = arg1 + (arg3 SHIFT arg2)
@@ -99,7 +100,7 @@ public class CMNInstruction extends ParsedInstruction<Register, Integer, ShiftAr
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, Integer arg2, ShiftArgument.ShiftFunction arg3, Object arg4) {
-
+    protected void verify(StateContainer stateContainer, Register arg1, ImmediateOrRegisterArgument.RegisterOrImmediate arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws SyntaxASMException {
+        arg3.check(arg2);
     }
 }

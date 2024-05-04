@@ -23,10 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RotatedImmediateOrRegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
@@ -40,12 +37,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class RORInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
+public class RORInstruction extends ParsedInstruction<Register, Register, ImmediateOrRegisterArgument.RegisterOrImmediate, Object> {
     public RORInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public RORInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) {
+    public RORInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
@@ -63,7 +60,7 @@ public class RORInstruction extends ParsedInstruction<Register, Register, Intege
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg3Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
@@ -90,8 +87,8 @@ public class RORInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Integer arg3, Object arg4) throws ExecutionASMException {
-        arg1.setData(Integer.rotateRight(arg2.getData(), arg3));
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, ImmediateOrRegisterArgument.RegisterOrImmediate arg3, Object arg4) throws ExecutionASMException {
+        arg1.setData(Integer.rotateRight(arg2.getData(), arg3.intValue()));
 
         if (modifier.doUpdateFlags()) {
             stateContainer.getCPSR().setN(arg1.getData() < 0);
@@ -101,7 +98,7 @@ public class RORInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Integer arg3, Object arg4) {
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, ImmediateOrRegisterArgument.RegisterOrImmediate arg3, Object arg4) {
 
     }
 }

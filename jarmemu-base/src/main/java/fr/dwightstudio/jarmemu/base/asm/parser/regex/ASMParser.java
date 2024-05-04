@@ -98,10 +98,6 @@ public class ASMParser {
                     + "[ \t]*$(?-i)"
     );
 
-    static {
-        System.out.println(INSTRUCTION_PATTERN.pattern());
-    }
-
     /**
      * Lecture d'une ligne avec assembler
      *

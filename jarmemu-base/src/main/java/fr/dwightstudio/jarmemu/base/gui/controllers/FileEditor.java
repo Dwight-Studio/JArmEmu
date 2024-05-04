@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class FileEditor {
 
@@ -668,7 +669,7 @@ public class FileEditor {
      * @return un nouveau SourceScanner du fichier modifié
      */
     public SourceScanner getSourceScanner() {
-        return new SourceScanner(codeArea.getText(), path == null ? "New File" : path.getName(), JArmEmuApplication.getEditorController().getFileIndex(this));
+        return new SourceScanner(codeArea.getText(), path == null ? JArmEmuApplication.formatMessage("%menu.file.newFile") : path.getName(), JArmEmuApplication.getEditorController().getFileIndex(this));
     }
 
     /**
@@ -720,10 +721,13 @@ public class FileEditor {
                 find = "(?i)" + find + "(?-i)";
             }
 
-            Matcher matcher = Pattern.compile(find).matcher(text);
+            try {
+                Matcher matcher = Pattern.compile(find).matcher(text);
 
-            while (matcher.find()) {
-                rtn.add(new Find(matcher.start(), matcher.end()));
+                while (matcher.find()) {
+                    rtn.add(new Find(matcher.start(), matcher.end()));
+                }
+            } catch (PatternSyntaxException ignored) {
             }
         }
 

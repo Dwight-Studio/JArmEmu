@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
@@ -31,7 +32,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class TSTInstructionTest extends InstructionTest<Register, Integer, ShiftArgument.ShiftFunction, Object> {
+class TSTInstructionTest extends InstructionTest<Register, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction, Object> {
     TSTInstructionTest() {
         super(TSTInstruction.class);
     }
@@ -42,17 +43,17 @@ class TSTInstructionTest extends InstructionTest<Register, Integer, ShiftArgumen
         Register r1 = stateContainer.getRegister(1);
         r0.setData(0b110101);
         r1.setData(0b110101);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new ImmediateOrRegisterArgument.RegisterOrImmediate(r1), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r0.setData(0b0011);
         r1.setData(0b1100);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new ImmediateOrRegisterArgument.RegisterOrImmediate(r1), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1.getData(), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new ImmediateOrRegisterArgument.RegisterOrImmediate(r1), shift(), null);
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
     }

@@ -19,6 +19,7 @@
 - Fixed LDM update mode effects
 - Fixed labels/symbols validation
 - Fixed editor behaviour when simulation with no opened files
+- Fixed shift argument syntax (only usable with registers)
 
 
 0.1.10 -> 0.2.0

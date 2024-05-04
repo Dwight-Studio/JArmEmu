@@ -26,11 +26,13 @@ package fr.dwightstudio.jarmemu.base.asm.argument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
-public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
+public class ImmediateOrRegisterArgument extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> {
 
     private boolean immediate;
     private ImmediateArgument immediateArgument;
@@ -62,15 +64,15 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
+    public ImmediateOrRegisterArgument.RegisterOrImmediate getValue(StateContainer stateContainer) throws ExecutionASMException {
         if (originalString != null) {
             if (immediate) {
-                return immediateArgument.getValue(stateContainer);
+                return new RegisterOrImmediate(immediateArgument.getValue(stateContainer));
             } else {
-                return registerArgument.getValue(stateContainer).getData();
+                return new RegisterOrImmediate(registerArgument.getValue(stateContainer));
             }
         } else {
-            return 0; // FIXME: Pas sûr de ça, est-ce que cela pose un problème si il n'y a pas d'argument?
+            return new RegisterOrImmediate(0);
         }
     }
 
@@ -84,6 +86,69 @@ public class ImmediateOrRegisterArgument extends ParsedArgument<Integer> {
             }
 
             super.verify(stateSupplier);
+        }
+    }
+
+    public static class RegisterOrImmediate extends Number {
+        private final Integer immediate;
+        private final Register register;
+
+        public RegisterOrImmediate(int immediate) {
+            this.immediate = immediate;
+            this.register = null;
+        }
+
+        public RegisterOrImmediate(Register register) {
+            this.immediate = null;
+            this.register = register;
+        }
+
+        public boolean isRegister() {
+            return register != null;
+        }
+
+        private int getValue() {
+            if (isRegister()) {
+                return register.getData();
+            } else {
+                return immediate;
+            }
+        }
+
+        @Override
+        public int intValue() {
+            return getValue();
+        }
+
+        @Override
+        public long longValue() {
+            return getValue();
+        }
+
+        @Override
+        public float floatValue() {
+            return getValue();
+        }
+
+        @Override
+        public double doubleValue() {
+            return getValue();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof RegisterOrImmediate registerOrImmediate) {
+                if (isRegister()) {
+                    return Objects.equals(register, registerOrImmediate.register);
+                } else {
+                    return Objects.equals(immediate, registerOrImmediate.immediate);
+                }
+            } else if (obj instanceof Register reg) {
+                return isRegister() && reg.equals(register);
+            } else if (obj instanceof Number number) {
+                return intValue() == number.intValue();
+            }
+            return false;
         }
     }
 }

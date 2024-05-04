@@ -30,7 +30,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 
-public class RotatedImmediateOrRegisterArgument extends ParsedArgument<Integer> {
+public class RotatedImmediateOrRegisterArgument extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> {
 
     private boolean immediate;
     private RotatedImmediateArgument immediateArgument;
@@ -62,17 +62,17 @@ public class RotatedImmediateOrRegisterArgument extends ParsedArgument<Integer> 
     }
 
     @Override
-    public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
+    public ImmediateOrRegisterArgument.RegisterOrImmediate getValue(StateContainer stateContainer) throws ExecutionASMException {
         if (originalString != null) {
             if (immediate) {
                 stateContainer.setAddressRegisterUpdateValue(immediateArgument.getValue(stateContainer));
-                return immediateArgument.getValue(stateContainer);
+                return new ImmediateOrRegisterArgument.RegisterOrImmediate(immediateArgument.getValue(stateContainer));
             } else {
                 stateContainer.setAddressRegisterUpdateValue(registerArgument.getValue(stateContainer).getData());
-                return registerArgument.getValue(stateContainer).getData();
+                return new ImmediateOrRegisterArgument.RegisterOrImmediate(registerArgument.getValue(stateContainer));
             }
         } else {
-            return 0; // FIXME: Pas sûr de ça, est-ce que cela pose un problème si il n'y a pas d'argument?
+            return new ImmediateOrRegisterArgument.RegisterOrImmediate(0);
         }
     }
 

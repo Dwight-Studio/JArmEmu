@@ -58,4 +58,14 @@ public enum RegisterUtils {
     public boolean isSpecial() {
         return (getN() > 15);
     }
+
+    public static RegisterUtils get(int n) {
+        for (RegisterUtils u : RegisterUtils.values()) {
+            if (u.getN() == n) {
+                return u;
+            }
+        }
+
+        return null;
+    }
 }

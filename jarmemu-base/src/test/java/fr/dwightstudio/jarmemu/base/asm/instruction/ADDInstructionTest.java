@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
@@ -30,7 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ADDInstructionTest extends InstructionTest<Register, Register, Integer, ShiftArgument.ShiftFunction> {
+public class ADDInstructionTest extends InstructionTest<Register, Register, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction> {
     protected ADDInstructionTest() {
         super(ADDInstruction.class);
     }
@@ -44,7 +45,7 @@ public class ADDInstructionTest extends InstructionTest<Register, Register, Inte
         r1.setData(5);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(20);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, r2.getData(), shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(r2), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -57,7 +58,7 @@ public class ADDInstructionTest extends InstructionTest<Register, Register, Inte
         r1.setData(13);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(456);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r2, r1.getData(), shift(stateContainerBis, "LSL#3"));
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r2, new ImmediateOrRegisterArgument.RegisterOrImmediate(r1), shift(stateContainerBis, "LSL#3"));
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -68,7 +69,7 @@ public class ADDInstructionTest extends InstructionTest<Register, Register, Inte
         r0.setData(99);
         Register r1 = stateContainerBis.getRegister(1);
         r1.setData(456);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, 0xFF00, shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(0xFF00), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -79,38 +80,38 @@ public class ADDInstructionTest extends InstructionTest<Register, Register, Inte
         Register r1 = stateContainer.getRegister(1);
         r1.setData(45);
         Register r2 = stateContainer.getRegister(2);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(r0), shift());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         assertFalse(stateContainer.getCPSR().getC());
         assertFalse(stateContainer.getCPSR().getV());
-        legacyExecute(stateContainer, false, false, null, null, r2, r2, 10, shift());
+        legacyExecute(stateContainer, false, false, null, null, r2, r2, new ImmediateOrRegisterArgument.RegisterOrImmediate(10), shift());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         assertFalse(stateContainer.getCPSR().getC());
         assertFalse(stateContainer.getCPSR().getV());
-        legacyExecute(stateContainer, false, true, null, null, r2, r2, 0, shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r2, new ImmediateOrRegisterArgument.RegisterOrImmediate(0), shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         assertFalse(stateContainer.getCPSR().getC());
         assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b01111111111111111111111111111111);
         r1.setData(1);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(r0), shift());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         assertFalse(stateContainer.getCPSR().getC());
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(1);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(r0), shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         assertTrue(stateContainer.getCPSR().getC());
         assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b10000000000000000000000000000000);
         r1.setData(0b10000000000000000000000000000000);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1, r0.getData(), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r1, new ImmediateOrRegisterArgument.RegisterOrImmediate(r0), shift());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         assertTrue(stateContainer.getCPSR().getC());

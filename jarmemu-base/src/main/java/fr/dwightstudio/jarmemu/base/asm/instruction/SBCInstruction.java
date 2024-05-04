@@ -23,12 +23,10 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RotatedImmediateOrRegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
@@ -41,12 +39,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class SBCInstruction extends ParsedInstruction<Register, Register, Integer, ShiftArgument.ShiftFunction> {
+public class SBCInstruction extends ParsedInstruction<Register, Register, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction> {
     public SBCInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public SBCInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+    public SBCInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
@@ -64,7 +62,7 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Intege
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg3Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
@@ -91,7 +89,7 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, ImmediateOrRegisterArgument.RegisterOrImmediate arg3, ShiftArgument.ShiftFunction arg4) throws ExecutionASMException {
         int carry = stateContainer.getCPSR().getC() ? 0 : 1;
         int shiftedValue = arg4.apply(arg3);
         int i1 = shiftedValue + carry;
@@ -107,7 +105,7 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Integer arg3, ShiftArgument.ShiftFunction arg4) {
-
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, ImmediateOrRegisterArgument.RegisterOrImmediate arg3, ShiftArgument.ShiftFunction arg4) throws SyntaxASMException {
+        arg4.check(arg3);
     }
 }

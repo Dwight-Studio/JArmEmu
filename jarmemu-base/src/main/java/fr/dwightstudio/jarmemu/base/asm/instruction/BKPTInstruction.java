@@ -38,18 +38,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, Object> {
+public class BKPTInstruction extends ParsedInstruction<ImmediateOrRegisterArgument.RegisterOrImmediate, Object, Object, Object> {
     public BKPTInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public BKPTInstruction(Modifier modifier, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+    public BKPTInstruction(Modifier modifier, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
+    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg1Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
@@ -88,12 +88,12 @@ public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, 
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
-        if (!ignoreExceptions) throw new BreakpointASMException(arg1);
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, ImmediateOrRegisterArgument.RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
+        if (!ignoreExceptions) throw new BreakpointASMException(arg1.intValue());
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Integer arg1, Object arg2, Object arg3, Object arg4) {
+    protected void verify(StateContainer stateContainer, ImmediateOrRegisterArgument.RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) {
 
     }
 }

@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.AddressArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
@@ -32,7 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class LDRInstructionTest extends InstructionTest<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
+class LDRInstructionTest extends InstructionTest<Register, AddressArgument.UpdatableInteger, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction> {
     LDRInstructionTest() {
         super(LDRInstruction.class);
     }
@@ -45,11 +46,11 @@ class LDRInstructionTest extends InstructionTest<Register, AddressArgument.Updat
         stateContainer.getMemory().putWord(100, 54);
         stateContainer.getMemory().putHalf(104, (short) 54);
         stateContainer.getMemory().putByte(106, (byte) 54);
-        legacyExecute(stateContainer, false, false, null, null, r0, new AddressArgument.UpdatableInteger(100, stateContainer, false, false, null), 0, shift());
+        legacyExecute(stateContainer, false, false, null, null, r0, new AddressArgument.UpdatableInteger(100, stateContainer, false, false, null), new ImmediateOrRegisterArgument.RegisterOrImmediate(0), shift());
         assertEquals(54, r0.getData());
-        legacyExecute(stateContainer, false, false, DataMode.H, null, r1, new AddressArgument.UpdatableInteger(104, stateContainer, false, false, null), 0, shift());
+        legacyExecute(stateContainer, false, false, DataMode.H, null, r1, new AddressArgument.UpdatableInteger(104, stateContainer, false, false, null), new ImmediateOrRegisterArgument.RegisterOrImmediate(0), shift());
         assertEquals(54, r1.getData());
-        legacyExecute(stateContainer, false, false, DataMode.B, null, r2, new AddressArgument.UpdatableInteger(106, stateContainer, false, false, null), 0, shift());
+        legacyExecute(stateContainer, false, false, DataMode.B, null, r2, new AddressArgument.UpdatableInteger(106, stateContainer, false, false, null), new ImmediateOrRegisterArgument.RegisterOrImmediate(0), shift());
         assertEquals(54, r2.getData());
     }
 }

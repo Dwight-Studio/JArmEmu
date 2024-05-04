@@ -81,7 +81,7 @@ public class SmartHighlighter extends RealTimeParser {
     private static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
     private static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
     private static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
-    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@]*");
+    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@,]*");
     private static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n@]*");
     private static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
     private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
@@ -137,6 +137,7 @@ public class SmartHighlighter extends RealTimeParser {
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             try {
+                editor.updateSaveState();
                 int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
                 int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 

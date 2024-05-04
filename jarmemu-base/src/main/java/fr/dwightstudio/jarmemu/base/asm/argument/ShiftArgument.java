@@ -87,7 +87,7 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
             try {
                 if (!rrx) {
                     argument.contextualize(stateContainer);
-                    int value = argument.getValue(stateContainer);
+                    int value = argument.getValue(stateContainer).intValue();
 
                     func = switch (type) {
                         case "LSL" -> {
@@ -124,7 +124,7 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
         if (originalString != null) {
             return new ShiftFunction(stateContainer, func);
         } else {
-            return new ShiftFunction(null, (StateContainer, i) -> i);
+            return new ShiftFunction();
         }
     }
 
@@ -141,20 +141,51 @@ public class ShiftArgument extends ParsedArgument<ShiftArgument.ShiftFunction> {
 
     public static class ShiftFunction {
 
+        private final boolean identity;
         private final StateContainer stateContainer;
         private final BiFunction<StateContainer, Integer, Integer> shift;
         private boolean called;
 
         public ShiftFunction(StateContainer stateContainer, BiFunction<StateContainer, Integer, Integer> shift) {
+            this.identity = false;
             this.stateContainer = stateContainer;
             this.shift = shift;
             this.called = false;
         }
 
+        public ShiftFunction() {
+            this.identity = true;
+            this.stateContainer = null;
+            this.shift = null;
+            this.called = false;
+        }
+
+        /**
+         * Checks if the RegisterOrImmediate can be shifted
+         */
+        public void check(ImmediateOrRegisterArgument.RegisterOrImmediate i) throws SyntaxASMException {
+            if (!identity && !i.isRegister()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.registerShift"));
+        }
+
+        public final int apply(ImmediateOrRegisterArgument.RegisterOrImmediate i) {
+            if (called) throw new IllegalStateException("ShiftFunctions are single-use functions");
+            int rtn = i.intValue();
+            if (!identity) {
+                if (!i.isRegister()) throw new IllegalStateException("Immediate can't be shifted");
+                rtn = this.shift.apply(stateContainer, rtn);
+                if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
+            }
+            called = true;
+            return rtn;
+        }
+
         public final int apply(int i) {
             if (called) throw new IllegalStateException("ShiftFunctions are single-use functions");
-            int rtn = this.shift.apply(stateContainer, i);
-            if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
+            int rtn = i;
+            if (!identity) {
+                rtn = this.shift.apply(stateContainer, rtn);
+                if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
+            }
             called = true;
             return rtn;
         }
