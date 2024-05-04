@@ -26,8 +26,8 @@ package fr.dwightstudio.jarmemu.base.asm.parser.regex;
 import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.base.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.base.asm.ParsedSection;
-import fr.dwightstudio.jarmemu.base.asm.directive.Directive;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
+import fr.dwightstudio.jarmemu.base.asm.Directive;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
@@ -39,8 +39,8 @@ import java.util.regex.Pattern;
 
 public class DirectiveParser {
 
-    private static final String[] DIRECTIVES = EnumUtils.getFromEnum(Directive.values(), false);
-    private static final String[] SECTIONS = EnumUtils.getFromEnum(Section.values(), false);
+    private static final String[] DIRECTIVES = EnumUtils.valuesToString(Directive.values(), false);
+    private static final String[] SECTIONS = EnumUtils.valuesToString(Section.values(), false);
     private static final String SECTION_REGEX = String.join("|", SECTIONS);
     private static final String DIRECTIVE_REGEX = String.join("|", DIRECTIVES);
     private static final String SSECTION_REGEX = "SECTION";

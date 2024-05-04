@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.base.asm;
 
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
@@ -56,5 +55,10 @@ public class ParsedSection extends ParsedObject {
     public ParsedSection withLineNumber(int lineNumber) {
         setLineNumber(lineNumber);
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + " at " + getFilePos();
     }
 }

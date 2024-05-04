@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.base.asm.directive;
 
 import fr.dwightstudio.jarmemu.base.asm.ParsedLabel;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;

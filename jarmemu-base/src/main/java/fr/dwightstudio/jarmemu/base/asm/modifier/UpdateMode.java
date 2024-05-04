@@ -21,26 +21,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.base.asm.instruction;
+package fr.dwightstudio.jarmemu.base.asm.modifier;
 
-public record InstructionModifier(Condition condition, boolean doUpdateFlags, DataMode dataMode, UpdateMode updateMode) {
-    public InstructionModifier() {
-        this(Condition.AL, false, null, null);
-    }
+public enum UpdateMode implements RequiredModifierParameter {
 
-    public InstructionModifier withCondition(Condition condition) {
-        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
-    }
+    FA, IB,
+    EA, IA,
+    FD, DB,
+    ED, DA
 
-    public InstructionModifier withDoUpdateFlags(boolean doUpdateFlags) {
-        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
-    }
-
-    public InstructionModifier withDataMode(DataMode dataMode) {
-        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
-    }
-
-    public InstructionModifier withUpdateMode(UpdateMode updateMode) {
-        return new InstructionModifier(condition, doUpdateFlags, dataMode, updateMode);
-    }
 }

@@ -5,12 +5,12 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
 import fr.dwightstudio.jarmemu.base.Status;
-import fr.dwightstudio.jarmemu.base.asm.directive.Directive;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Condition;
-import fr.dwightstudio.jarmemu.base.asm.instruction.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
-import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.Directive;
+import fr.dwightstudio.jarmemu.base.asm.Section;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.Instruction;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.editor.Context;
 import fr.dwightstudio.jarmemu.base.gui.editor.SubContext;
@@ -197,10 +197,10 @@ public class AutocompletionController implements Initializable {
                             }
                         }
 
-                        case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> {
+                        case "ImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> {
                             if (subContext != SubContext.REGISTER && subContext != SubContext.IMMEDIATE) {
                                 for (RegisterUtils value : RegisterUtils.values()) {
-                                    list.add(value.name());
+                                    if (!value.isSpecial()) list.add(value.name());
                                 }
 
                                 list.add("#");
@@ -218,7 +218,7 @@ public class AutocompletionController implements Initializable {
                         case "RegisterAddressArgument" -> {
                             if (subContext != SubContext.ADDRESS) {
                                 for (RegisterUtils value : RegisterUtils.values()) {
-                                    list.add("[" + value.name() + "]");
+                                    if (!value.isSpecial()) list.add("[" + value.name() + "]");
                                 }
                             }
                         }
@@ -228,14 +228,16 @@ public class AutocompletionController implements Initializable {
                                 switch (subContext) {
                                     case NONE -> {
                                         for (RegisterUtils value : RegisterUtils.values()) {
-                                            list.add(value.name());
-                                            list.add(value.name() + "-");
+                                            if (!value.isSpecial()) {
+                                                list.add(value.name());
+                                                list.add(value.name() + "-");
+                                            }
                                         }
                                     }
 
                                     case PRIMARY -> {
                                         for (RegisterUtils value : RegisterUtils.values()) {
-                                            list.add(value.name());
+                                            if (!value.isSpecial()) list.add(value.name());
                                         }
                                     }
                                 }
@@ -252,7 +254,7 @@ public class AutocompletionController implements Initializable {
                         case "LabelOrRegisterArgument" -> {
                             list.addAll(editor.getRealTimeParser().getAccessibleLabels());
                             for (RegisterUtils value : RegisterUtils.values()) {
-                                list.add("[" + value.name() + "]");
+                                if (!value.isSpecial()) list.add("[" + value.name() + "]");
                             }
                         }
 
@@ -262,13 +264,13 @@ public class AutocompletionController implements Initializable {
                                     switch (subContext) {
                                         case NONE -> {
                                             for (RegisterUtils value : RegisterUtils.values()) {
-                                                list.add(value.name());
+                                                if (!value.isSpecial()) list.add(value.name());
                                             }
                                         }
 
                                         case PRIMARY -> {
                                             for (RegisterUtils value : RegisterUtils.values()) {
-                                                list.add(value.name());
+                                                if (!value.isSpecial()) list.add(value.name());
                                             }
 
                                             list.add("#");

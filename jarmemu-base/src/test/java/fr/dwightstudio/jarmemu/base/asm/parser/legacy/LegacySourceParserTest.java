@@ -26,9 +26,14 @@ package fr.dwightstudio.jarmemu.base.asm.parser.legacy;
 import fr.dwightstudio.jarmemu.base.JArmEmuTest;
 import fr.dwightstudio.jarmemu.base.asm.ParsedLabel;
 import fr.dwightstudio.jarmemu.base.asm.ParsedSection;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.directive.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.instruction.*;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
@@ -62,8 +67,8 @@ public class LegacySourceParserTest extends JArmEmuTest {
     public void TestFormatLine() throws URISyntaxException, IOException, ASMException {
         ins = new Object[3];
         ins[0] = new ParsedSection(Section.TEXT);
-        ins[1] = new ADDInstruction(new InstructionModifier(Condition.AL, false, null, null), "R1", "R0", null, null);
-        ins[2] = new ADCInstruction(new InstructionModifier(Condition.CC, true, null, null), "R2", "R1", "R3", null);
+        ins[1] = new ADDInstruction(new Modifier(Condition.AL, false, null, null), "R1", "R0", null, null);
+        ins[2] = new ADCInstruction(new Modifier(Condition.CC, true, null, null), "R2", "R1", "R3", null);
 
         test("/formatLines.s");
     }
@@ -72,9 +77,9 @@ public class LegacySourceParserTest extends JArmEmuTest {
     public void TestReadInstruction() throws URISyntaxException, IOException, ASMException {
         ins = new Object[4];
         ins[0] = new ParsedSection(Section.TEXT);
-        ins[1] = new LDRInstruction(new InstructionModifier(Condition.AL, false, null, null), "R1", "[R2]", null, null);
-        ins[2] = new LDRInstruction(new InstructionModifier(Condition.CC, false, null, null), "R1", "[R2]", null, null);
-        ins[3] = new LDRInstruction(new InstructionModifier(Condition.EQ, false, DataMode.BYTE, null), "R1", "[R2]", null, null);
+        ins[1] = new LDRInstruction(new Modifier(Condition.AL, false, null, null), "R1", "[R2]", null, null);
+        ins[2] = new LDRInstruction(new Modifier(Condition.CC, false, null, null), "R1", "[R2]", null, null);
+        ins[3] = new LDRInstruction(new Modifier(Condition.EQ, false, DataMode.B, null), "R1", "[R2]", null, null);
 
         test("/normalLines.s");
     }
@@ -83,8 +88,8 @@ public class LegacySourceParserTest extends JArmEmuTest {
     public void TestReadInstructionSub() throws URISyntaxException, IOException, ASMException {
         ins = new Object[3];
         ins[0] = new ParsedSection(Section.TEXT);
-        ins[1] = new SUBInstruction(new InstructionModifier(Condition.AL, false, null, null), "r2", "r0", "r1", null);
-        ins[2] = new SUBInstruction(new InstructionModifier(Condition.AL, false, null, null), "r0", "r1", null, null);
+        ins[1] = new SUBInstruction(new Modifier(Condition.AL, false, null, null), "r2", "r0", "r1", null);
+        ins[2] = new SUBInstruction(new Modifier(Condition.AL, false, null, null), "r0", "r1", null, null);
 
         test("/subLine.s");
     }
@@ -93,17 +98,17 @@ public class LegacySourceParserTest extends JArmEmuTest {
     public void TestReadInstructionComplexer() throws URISyntaxException, IOException, ASMException {
         ins = new Object[12];
         ins[0] = new ParsedSection(Section.TEXT);
-        ins[1] = new ADDInstruction(new InstructionModifier(Condition.CC, true, null, null), "r0", "r9", "#2", null);
-        ins[2] = new MLAInstruction(new InstructionModifier(Condition.EQ, false, null, null), "r0", "r0", "r1", "r2");
-        ins[3] = new SMLALInstruction(new InstructionModifier(Condition.AL, true, null, null), "r4", "r5", "r6", "r7");
-        ins[4] = new BICInstruction(new InstructionModifier(Condition.LO, false, null, null), "r5", "r6", "#5", null);
-        ins[5] = new LDRInstruction(new InstructionModifier(Condition.AL, false, DataMode.BYTE, null), "r0", "=x", null, null);
-        ins[6] = new STMInstruction(new InstructionModifier(Condition.AL, false, null, UpdateMode.FD), "sp!", "{r0,r1,r2}", null, null);
-        ins[7] = new BInstruction(new InstructionModifier(Condition.AL, false, null, null), "etiquette", null, null, null);
+        ins[1] = new ADDInstruction(new Modifier(Condition.CC, true, null, null), "r0", "r9", "#2", null);
+        ins[2] = new MLAInstruction(new Modifier(Condition.EQ, false, null, null), "r0", "r0", "r1", "r2");
+        ins[3] = new SMLALInstruction(new Modifier(Condition.AL, true, null, null), "r4", "r5", "r6", "r7");
+        ins[4] = new BICInstruction(new Modifier(Condition.LO, false, null, null), "r5", "r6", "#5", null);
+        ins[5] = new LDRInstruction(new Modifier(Condition.AL, false, DataMode.B, null), "r0", "=x", null, null);
+        ins[6] = new STMInstruction(new Modifier(Condition.AL, false, null, UpdateMode.FD), "sp!", "{r0,r1,r2}", null, null);
+        ins[7] = new BInstruction(new Modifier(Condition.AL, false, null, null), "etiquette", null, null, null);
         ins[8] = new ParsedLabel(Section.TEXT, "CECIESTUNEETIQUETTE");
-        ins[9] = new LDRInstruction(new InstructionModifier(Condition.AL, false, null, null), "R1", "[R0,R1,LSL#2]", null, null);
-        ins[10] = new LDRInstruction(new InstructionModifier(Condition.AL, false, null, null), "R1", "[R0]", "R1" , "LSL#2");
-        ins[11] = new STRInstruction(new InstructionModifier(Condition.AL, false, null, null), "fp", "[sp,#-4]!", null , null);
+        ins[9] = new LDRInstruction(new Modifier(Condition.AL, false, null, null), "R1", "[R0,R1,LSL#2]", null, null);
+        ins[10] = new LDRInstruction(new Modifier(Condition.AL, false, null, null), "R1", "[R0]", "R1" , "LSL#2");
+        ins[11] = new STRInstruction(new Modifier(Condition.AL, false, null, null), "fp", "[sp,#-4]!", null , null);
 
         test("/multipleLines.s");
     }
@@ -125,7 +130,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         ins[11] = new ParsedSection(Section.DATA);
         ins[12] = new ParsedSection(Section.COMMENT);
         ins[13] = new ParsedSection(Section.TEXT);
-        ins[14] = new LDRInstruction(new InstructionModifier(Condition.AL, false, null, null), "R1", "=b", null, null);
+        ins[14] = new LDRInstruction(new Modifier(Condition.AL, false, null, null), "R1", "=b", null, null);
         ins[15] = new ParsedSection(Section.END);
 
         test("/directiveMultipleLinesLegacy.s");

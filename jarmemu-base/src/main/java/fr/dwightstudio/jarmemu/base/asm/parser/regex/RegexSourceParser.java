@@ -24,7 +24,7 @@
 package fr.dwightstudio.jarmemu.base.asm.parser.regex;
 
 import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;

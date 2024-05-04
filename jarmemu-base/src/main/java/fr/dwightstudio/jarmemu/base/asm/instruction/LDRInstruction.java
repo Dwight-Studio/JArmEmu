@@ -24,17 +24,22 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.ParsedObject;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.argument.*;
-import fr.dwightstudio.jarmemu.base.asm.argument.*;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
 import fr.dwightstudio.jarmemu.base.asm.directive.WordDirective;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.MemoryAccessMisalignedASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.SequencedSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,32 +48,42 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     private WordDirective dir;
 
-    public LDRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public LDRInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public LDRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+    public LDRInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
         return AddressArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
         return ShiftArgument.class;
+    }
+
+    @Override
+    @NotNull
+    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
+        return SequencedSetUtils.of(Condition.class, DataMode.class);
     }
 
     @Override
@@ -90,8 +105,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
             int dataLength;
 
             switch (modifier.dataMode()) {
-                case HALF_WORD -> dataLength = 2;
-                case BYTE -> dataLength = 1;
+                case H -> dataLength = 2;
+                case B -> dataLength = 1;
                 case null, default -> dataLength = 4;
             }
 
@@ -100,8 +115,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
         switch (modifier.dataMode()) {
             case null -> arg1.setData(stateContainer.getMemory().getWord(address));
-            case HALF_WORD -> arg1.setData(stateContainer.getMemory().getHalf(address));
-            case BYTE -> arg1.setData(stateContainer.getMemory().getByte(address));
+            case H -> arg1.setData(stateContainer.getMemory().getHalf(address));
+            case B -> arg1.setData(stateContainer.getMemory().getByte(address));
         }
 
         if (!isPseudoInstruction()) arg2.update();

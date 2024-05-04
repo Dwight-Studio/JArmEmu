@@ -6,19 +6,26 @@ import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArrayArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterWithUpdateArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.SequencedSet;
 
 public class PUSHInstruction extends ParsedInstruction<Register[], Object, Object, Object> {
 
     STMInstruction stmInstruction;
 
-    public PUSHInstruction(InstructionModifier modifier, ParsedArgument<Register[]> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+    public PUSHInstruction(Modifier modifier, ParsedArgument<Register[]> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public PUSHInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public PUSHInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
@@ -31,23 +38,33 @@ public class PUSHInstruction extends ParsedInstruction<Register[], Object, Objec
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Register[]>> getParsedArg1Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Register[]>> getParsedArg1Class() {
         return RegisterArrayArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Object>> getParsedArg2Class() {
         return NullArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
         return NullArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
         return NullArgument.class;
+    }
+
+    @Override
+    @NotNull
+    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
+        return SequencedSetUtils.of(Condition.class);
     }
 
     @Override

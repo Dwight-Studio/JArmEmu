@@ -21,13 +21,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.base.asm.instruction;
+package fr.dwightstudio.jarmemu.base.asm.modifier;
 
-public enum UpdateMode {
+public enum DataMode implements ModifierParameter {
 
-    FA, IB,
-    EA, IA,
-    FD, DB,
-    ED, DA
-
+    H,
+    B;
 }

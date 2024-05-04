@@ -23,12 +23,12 @@
 
 package fr.dwightstudio.jarmemu.base.gui.editor;
 
-import fr.dwightstudio.jarmemu.base.asm.directive.Directive;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Condition;
-import fr.dwightstudio.jarmemu.base.asm.instruction.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
-import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.Directive;
+import fr.dwightstudio.jarmemu.base.asm.Section;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.Instruction;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.base.util.CaseIndependentEntry;
@@ -50,12 +50,12 @@ import java.util.regex.Pattern;
 
 public class KeywordHighlighter extends RealTimeParser {
 
-    private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values(), false);
-    private static final String[] DIRECTIVES = ArrayUtils.addAll(EnumUtils.getFromEnum(Directive.values(), false), EnumUtils.getFromEnum(Section.values(), false));
-    private static final String[] REGISTERS = EnumUtils.getFromEnum(RegisterUtils.values(), false);
-    private static final String[] CONDITIONS = EnumUtils.getFromEnum(Condition.values(), true);
-    private static final String[] DATA_MODES = EnumUtils.getFromEnum(DataMode.values(), true);
-    private static final String[] UPDATE_MODES = EnumUtils.getFromEnum(UpdateMode.values(), true);
+    private static final String[] INSTRUCTIONS = EnumUtils.valuesToString(Instruction.values(), false);
+    private static final String[] DIRECTIVES = ArrayUtils.addAll(EnumUtils.valuesToString(Directive.values(), false), EnumUtils.valuesToString(Section.values(), false));
+    private static final String[] REGISTERS = EnumUtils.valuesToString(RegisterUtils.values(), false);
+    private static final String[] CONDITIONS = EnumUtils.valuesToString(Condition.values(), true);
+    private static final String[] DATA_MODES = EnumUtils.valuesToString(DataMode.values(), true);
+    private static final String[] UPDATE_MODES = EnumUtils.valuesToString(UpdateMode.values(), true);
     private static final String[] SHIFTS = new String[]{"LSL", "LSR", "ASR", "ROR", "RRX"};
     private static final String[] UPDATE_FLAG = new String[]{"S", ""};
 

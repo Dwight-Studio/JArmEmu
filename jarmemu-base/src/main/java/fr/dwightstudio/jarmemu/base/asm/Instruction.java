@@ -21,13 +21,20 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.base.asm.instruction;
+package fr.dwightstudio.jarmemu.base.asm;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.instruction.*;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 
 public enum Instruction {
 
@@ -120,12 +127,13 @@ public enum Instruction {
     private String arg3Type;
     private String arg4Type;
     private boolean workingRegister;
+    private Set<Class<? extends Enum<? extends ModifierParameter>>> parameters;
 
     Instruction(Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass) {
 
         try {
-            mainConstructor = instructionClass.getDeclaredConstructor(InstructionModifier.class, String.class, String.class, String.class, String.class);
-            debugConstructor = instructionClass.getDeclaredConstructor(InstructionModifier.class, ParsedArgument.class, ParsedArgument.class, ParsedArgument.class, ParsedArgument.class);
+            mainConstructor = instructionClass.getDeclaredConstructor(Modifier.class, String.class, String.class, String.class, String.class);
+            debugConstructor = instructionClass.getDeclaredConstructor(Modifier.class, ParsedArgument.class, ParsedArgument.class, ParsedArgument.class, ParsedArgument.class);
 
             ParsedInstruction<?, ?, ?, ?> instruction = this.create();
 
@@ -135,6 +143,7 @@ public enum Instruction {
                 arg3Type = instruction.getParsedArg3Class().getSimpleName();
                 arg4Type = instruction.getParsedArg4Class().getSimpleName();
                 workingRegister = instruction.hasWorkingRegister();
+                parameters = instruction.getModifierParameterClasses();
 
                 valid = true;
             } else {
@@ -155,19 +164,21 @@ public enum Instruction {
         }
     }
 
-    public ParsedInstruction<?, ?, ?, ?> create(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    @NotNull
+    public ParsedInstruction<?, ?, ?, ?> create(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
             if (valid) return mainConstructor.newInstance(modifier, arg1, arg2, arg3, arg4);
-            else return null;
+            else return new DummyInstruction(modifier, arg1, arg2, arg3, arg4);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             if (e.getCause() instanceof ASMException ex) throw ex;
             else throw new RuntimeException(e);
         }
     }
 
+    @Nullable
     private ParsedInstruction<?, ?, ?, ?> create() {
         try {
-            return debugConstructor.newInstance(new InstructionModifier(Condition.AL, false, null, null), null, null, null, null);
+            return debugConstructor.newInstance(new Modifier(Condition.AL, false, null, null), null, null, null, null);
         } catch (NullPointerException | InstantiationException | IllegalAccessException | InvocationTargetException ignored) {}
 
         return null;
@@ -181,7 +192,7 @@ public enum Instruction {
             case 3 -> arg4Type;
             default -> "";
         };
-        else return null;
+        else throw new NullPointerException("Instruction not valid");
     }
 
     public boolean isValid() {
@@ -190,5 +201,9 @@ public enum Instruction {
 
     public boolean hasWorkingRegister() {
         return workingRegister;
+    }
+
+    public Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        return parameters;
     }
 }

@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.asm.instruction;
 import fr.dwightstudio.jarmemu.base.asm.argument.AddressArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
@@ -46,9 +47,9 @@ class LDRInstructionTest extends InstructionTest<Register, AddressArgument.Updat
         stateContainer.getMemory().putByte(106, (byte) 54);
         legacyExecute(stateContainer, false, false, null, null, r0, new AddressArgument.UpdatableInteger(100, stateContainer, false, false, null), 0, shift());
         assertEquals(54, r0.getData());
-        legacyExecute(stateContainer, false, false, DataMode.HALF_WORD, null, r1, new AddressArgument.UpdatableInteger(104, stateContainer, false, false, null), 0, shift());
+        legacyExecute(stateContainer, false, false, DataMode.H, null, r1, new AddressArgument.UpdatableInteger(104, stateContainer, false, false, null), 0, shift());
         assertEquals(54, r1.getData());
-        legacyExecute(stateContainer, false, false, DataMode.BYTE, null, r2, new AddressArgument.UpdatableInteger(106, stateContainer, false, false, null), 0, shift());
+        legacyExecute(stateContainer, false, false, DataMode.B, null, r2, new AddressArgument.UpdatableInteger(106, stateContainer, false, false, null), 0, shift());
         assertEquals(54, r2.getData());
     }
 }

@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.base.asm.directive;
 
 import fr.dwightstudio.jarmemu.base.asm.Contextualized;
 import fr.dwightstudio.jarmemu.base.asm.ParsedObject;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;

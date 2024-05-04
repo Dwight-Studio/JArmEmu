@@ -26,6 +26,8 @@ package fr.dwightstudio.jarmemu.base.sim;
 import fr.dwightstudio.jarmemu.base.JArmEmuTest;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.instruction.*;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
@@ -50,10 +52,10 @@ public class CodePreparatorTest extends JArmEmuTest {
     public void convertMovToShiftTest() throws ASMException {
         SourceScanner sourceScanner = new SourceScanner(".TEXT \n ADD R0, R0 \n MOVEQS R1, R0 \n MOVS R1, R0, LSL#5", "Test.s", 0);
 
-        ADDInstruction add = new ADDInstruction(new InstructionModifier(Condition.AL, false, null, null), "r0", "r0", null, null);
-        MOVInstruction mov = new MOVInstruction(new InstructionModifier(Condition.EQ, true, null, null), "r1", "r0", null, null);
+        ADDInstruction add = new ADDInstruction(new Modifier(Condition.AL, false, null, null), "r0", "r0", null, null);
+        MOVInstruction mov = new MOVInstruction(new Modifier(Condition.EQ, true, null, null), "r1", "r0", null, null);
         // MOVInstruction movShift = new MOVInstruction(Condition.AL, true, null, null, "r1", "r0", "LSL#5", null);
-        LSLInstruction shift = new LSLInstruction(new InstructionModifier(Condition.AL, true, null, null), "r1", "r0", "#5", null);
+        LSLInstruction shift = new LSLInstruction(new Modifier(Condition.AL, true, null, null), "r1", "r0", "#5", null);
 
         Assertions.assertEquals(0, codePreparator.load(new RegexSourceParser(), List.of(sourceScanner)).length);
         Assertions.assertEquals(0, codePreparator.initiate(new StateContainer()).length);

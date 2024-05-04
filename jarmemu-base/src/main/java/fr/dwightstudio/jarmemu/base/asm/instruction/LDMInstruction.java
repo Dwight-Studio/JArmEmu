@@ -31,38 +31,55 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.MemoryAccessMisalignedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.SequencedSet;
+
 public class LDMInstruction extends ParsedInstruction<RegisterWithUpdateArgument.UpdatableRegister, Register[], Object, Object> {
-    public LDMInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public LDMInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public LDMInstruction(InstructionModifier modifier, ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister> arg1, ParsedArgument<Register[]> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+    public LDMInstruction(Modifier modifier, ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister> arg1, ParsedArgument<Register[]> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister>> getParsedArg1Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister>> getParsedArg1Class() {
         return RegisterWithUpdateArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Register[]>> getParsedArg2Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Register[]>> getParsedArg2Class() {
         return RegisterArrayArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Object>> getParsedArg3Class() {
         return NullArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Object>> getParsedArg4Class() {
         return NullArgument.class;
+    }
+
+    @Override
+    @NotNull
+    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
+        return SequencedSetUtils.of(Condition.class, UpdateMode.class);
     }
 
     @Override

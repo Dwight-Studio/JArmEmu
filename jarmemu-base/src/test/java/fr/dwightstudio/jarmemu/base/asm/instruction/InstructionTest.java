@@ -30,6 +30,10 @@ import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -83,12 +87,12 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
     protected void legacyExecute(StateContainer container, boolean ignoreExceptions, boolean doUpdateFlags, DataMode dataMode, UpdateMode updateMode, A arg1, B arg2, C arg3, D arg4) throws ASMException {
         try {
             Constructor<?>[] c = instructionClass.getConstructors();
-            ParsedInstruction<A, B, C, D> ins = instructionClass.getDeclaredConstructor(InstructionModifier.class,
+            ParsedInstruction<A, B, C, D> ins = instructionClass.getDeclaredConstructor(Modifier.class,
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class,
                             ParsedArgument.class)
-                    .newInstance(new InstructionModifier(Condition.AL, doUpdateFlags, dataMode, updateMode), null, null, null, null);
+                    .newInstance(new Modifier(Condition.AL, doUpdateFlags, dataMode, updateMode), null, null, null, null);
             ins.contextualize(stateContainer);
             ins.verify(() -> new StateContainer(stateContainer), arg1, arg2, arg3, arg4);
             ins.execute(container, ignoreExceptions, arg1, arg2, arg3, arg4);

@@ -24,42 +24,58 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.*;
-import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.IllegalDataWritingASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.MemoryAccessMisalignedASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.SequencedSet;
+
 public class STRInstruction extends ParsedInstruction<Register, AddressArgument.UpdatableInteger, Integer, ShiftArgument.ShiftFunction> {
-    public STRInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public STRInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public STRInstruction(InstructionModifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
+    public STRInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<AddressArgument.UpdatableInteger> arg2, ParsedArgument<Integer> arg3, ParsedArgument<ShiftArgument.ShiftFunction> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Register>> getParsedArg1Class() {
         return RegisterArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<AddressArgument.UpdatableInteger>> getParsedArg2Class() {
         return AddressArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<Integer>> getParsedArg3Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
     @Override
-    protected @NotNull Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
+    @NotNull
+    public Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg4Class() {
         return ShiftArgument.class;
+    }
+
+    @Override
+    @NotNull
+    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
+        return SequencedSetUtils.of(Condition.class, DataMode.class);
     }
 
     @Override
@@ -81,8 +97,8 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
             int dataLength;
 
             switch (modifier.dataMode()) {
-                case HALF_WORD -> dataLength = 2;
-                case BYTE -> dataLength = 1;
+                case H -> dataLength = 2;
+                case B -> dataLength = 1;
                 case null, default -> dataLength = 4;
             }
 
@@ -92,8 +108,8 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
 
         switch (modifier.dataMode()){
             case null -> stateContainer.getMemory().putWord(address, arg1.getData());
-            case HALF_WORD -> stateContainer.getMemory().putHalf(address, (short) arg1.getData());
-            case BYTE -> stateContainer.getMemory().putByte(address, (byte) arg1.getData());
+            case H -> stateContainer.getMemory().putHalf(address, (short) arg1.getData());
+            case B -> stateContainer.getMemory().putByte(address, (byte) arg1.getData());
         }
 
         arg2.update();

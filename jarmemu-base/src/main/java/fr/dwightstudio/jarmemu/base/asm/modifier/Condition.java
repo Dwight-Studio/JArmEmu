@@ -21,13 +21,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.base.asm.instruction;
+package fr.dwightstudio.jarmemu.base.asm.modifier;
 
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
 import java.util.function.Function;
 
-public enum Condition {
+public enum Condition implements ModifierParameter {
 
     AL((state) -> true),
     EQ((state) -> state.getCPSR().getZ()),

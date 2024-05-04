@@ -25,11 +25,13 @@ package fr.dwightstudio.jarmemu.base.sim;
 
 import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.base.JArmEmuTest;
+import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.StuckExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.RegexSourceParser;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -176,6 +178,10 @@ public class CompleteTest extends JArmEmuTest {
                     codeInterpreter.executeCurrentLine(false);
                 } catch (StuckExecutionASMException e) {
                     flag = false;
+                } catch (ASMException e) {
+                    logger.severe("Exception at line " + codeInterpreter.getCurrentLine());
+                    logger.severe(ExceptionUtils.getStackTrace(e));
+                    break;
                 }
             }
         });

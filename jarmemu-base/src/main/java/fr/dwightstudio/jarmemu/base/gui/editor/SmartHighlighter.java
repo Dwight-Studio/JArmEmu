@@ -23,12 +23,12 @@
 
 package fr.dwightstudio.jarmemu.base.gui.editor;
 
-import fr.dwightstudio.jarmemu.base.asm.directive.Directive;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Condition;
-import fr.dwightstudio.jarmemu.base.asm.instruction.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.instruction.Instruction;
-import fr.dwightstudio.jarmemu.base.asm.instruction.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.Directive;
+import fr.dwightstudio.jarmemu.base.asm.Section;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
+import fr.dwightstudio.jarmemu.base.asm.Instruction;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
@@ -53,13 +53,13 @@ public class SmartHighlighter extends RealTimeParser {
 
     public static final int MAXIMUM_ITER_NUM = 1000;
 
-    private static final String[] INSTRUCTIONS = EnumUtils.getFromEnum(Instruction.values());
-    private static final String[] SECTIONS = EnumUtils.getFromEnum(Section.values(), Section.NONE);
-    private static final String[] DIRECTIVES = EnumUtils.getFromEnum(Directive.values());
-    private static final String[] REGISTERS = EnumUtils.getFromEnum(RegisterUtils.values());
-    private static final String[] CONDITIONS = EnumUtils.getFromEnum(Condition.values());
-    private static final String[] DATA_MODES = EnumUtils.getFromEnum(DataMode.values());
-    private static final String[] UPDATE_MODES = EnumUtils.getFromEnum(UpdateMode.values());
+    private static final String[] INSTRUCTIONS = EnumUtils.valuesToString(Instruction.values());
+    private static final String[] SECTIONS = EnumUtils.valuesToString(Section.values(), Section.NONE);
+    private static final String[] DIRECTIVES = EnumUtils.valuesToString(Directive.values());
+    private static final String[] REGISTERS = EnumUtils.valuesToString(RegisterUtils.values());
+    private static final String[] CONDITIONS = EnumUtils.valuesToString(Condition.values());
+    private static final String[] DATA_MODES = EnumUtils.valuesToString(DataMode.values());
+    private static final String[] UPDATE_MODES = EnumUtils.valuesToString(UpdateMode.values());
     private static final String[] SHIFTS = new String[]{"LSL", "LSR", "ASR", "ROR", "RRX"};
     private static final String[] UPDATE_FLAG = new String[]{"S"};
 

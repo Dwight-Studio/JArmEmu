@@ -23,14 +23,15 @@
 
 package fr.dwightstudio.jarmemu.base.asm.parser.legacy;
 
+import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.base.asm.ParsedSection;
-import fr.dwightstudio.jarmemu.base.asm.directive.Section;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.base.asm.instruction.*;
+import fr.dwightstudio.jarmemu.base.asm.modifier.*;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
@@ -124,10 +125,10 @@ public class LegacySourceParser implements SourceParser {
             updateFlags = true;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.endsWith("H") && (!instructionString.equals("PUSH"))) {
-            dataMode = DataMode.HALF_WORD;
+            dataMode = DataMode.H;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         } else if (instructionString.endsWith("B") && (!instructionString.equals("SUB") && !instructionString.equals("RSB") && !instructionString.equals("B"))) {
-            dataMode = DataMode.BYTE;
+            dataMode = DataMode.B;
             instructionString = instructionString.substring(0, instructionString.length()-1);
         }
         return instructionString;
@@ -344,6 +345,6 @@ public class LegacySourceParser implements SourceParser {
             arg4 = arguments.get(3);
         } catch (IndexOutOfBoundsException ignored) {}
 
-        if (instruction != null) file.add(instruction.create(new InstructionModifier(conditionExec, updateFlags, dataMode, updateMode), arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
+        if (instruction != null) file.add(instruction.create(new Modifier(conditionExec, updateFlags, dataMode, updateMode), arg1, arg2, arg3, arg4).withLineNumber(sourceScanner.getLineNumber()));
     }
 }

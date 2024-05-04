@@ -21,26 +21,31 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.base.asm.instruction;
+package fr.dwightstudio.jarmemu.base.asm;
 
-public enum DataMode {
-    HALF_WORD,
-    BYTE;
+public enum Section {
+    NONE(false, false),
+    BSS(true, false), // Uninitialized read-write data.
+    COMMENT(false, false), // Version control information.
+    DATA(true, true), // Initialized read-write data.
+    RODATA(true, true), // Read-only data.
+    TEXT(false, false), // Executable instructions.
+    NOTE(false, false), // Special information from vendors or system builders.
+    END(false, false); // End of source file.
 
-    @Override
-    public String toString() {
-        return name().substring(0,1);
+    private final boolean onlyDirective;
+    private final boolean dataInitialisation;
+
+    Section(boolean onlyDirective, boolean dataInitialisation) {
+        this.onlyDirective = onlyDirective;
+        this.dataInitialisation = dataInitialisation;
     }
 
-    public static DataMode customValueOf(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException();
-        } else if (name.equalsIgnoreCase("H")) {
-            return HALF_WORD;
-        } else if (name.equalsIgnoreCase("B")) {
-            return BYTE;
-        } else {
-            throw new IllegalArgumentException();
-        }
+    public boolean isDataRelatedSection() {
+        return onlyDirective;
+    }
+
+    public boolean allowDataInitialisation() {
+        return dataInitialisation;
     }
 }

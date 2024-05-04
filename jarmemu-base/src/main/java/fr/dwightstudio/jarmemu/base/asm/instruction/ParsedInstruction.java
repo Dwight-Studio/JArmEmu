@@ -29,10 +29,13 @@ import fr.dwightstudio.jarmemu.base.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.SequencedSet;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -40,13 +43,13 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
     private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getSimpleName());
 
-    protected final InstructionModifier modifier;
+    protected final Modifier modifier;
     protected final ParsedArgument<A> arg1;
     protected final ParsedArgument<B> arg2;
     protected final ParsedArgument<C> arg3;
     protected final ParsedArgument<D> arg4;
 
-    public ParsedInstruction(InstructionModifier modifier, ParsedArgument<A> arg1, ParsedArgument<B> arg2, ParsedArgument<C> arg3, ParsedArgument<D> arg4) {
+    public ParsedInstruction(@NotNull Modifier modifier, ParsedArgument<A> arg1, ParsedArgument<B> arg2, ParsedArgument<C> arg3, ParsedArgument<D> arg4) {
         this.modifier = modifier;
         this.arg1 = arg1;
         this.arg2 = arg2;
@@ -54,7 +57,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         this.arg4 = arg4;
     }
 
-    public ParsedInstruction(InstructionModifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
+    public ParsedInstruction(@NotNull Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         try {
             this.modifier = modifier;
 
@@ -99,13 +102,16 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
         }
     }
 
-    protected abstract @NotNull Class<? extends ParsedArgument<A>> getParsedArg1Class();
+    public abstract @NotNull Class<? extends ParsedArgument<A>> getParsedArg1Class();
 
-    protected abstract @NotNull Class<? extends ParsedArgument<B>> getParsedArg2Class();
+    public abstract @NotNull Class<? extends ParsedArgument<B>> getParsedArg2Class();
 
-    protected abstract @NotNull Class<? extends ParsedArgument<C>> getParsedArg3Class();
+    public abstract @NotNull Class<? extends ParsedArgument<C>> getParsedArg3Class();
 
-    protected abstract @NotNull Class<? extends ParsedArgument<D>> getParsedArg4Class();
+    public abstract @NotNull Class<? extends ParsedArgument<D>> getParsedArg4Class();
+
+    @NotNull
+    public abstract SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses();
 
     /**
      * Exécute l'instruction sur le conteneur d'état
@@ -204,37 +210,12 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
         if (!(this.getClass().isInstance(pInst))) return false;
 
-        if (!(pInst.modifier.doUpdateFlags() == this.modifier.doUpdateFlags())) {
-            if (ParsedObject.VERBOSE) logger.info("Difference: Flags");
-            return false;
-        }
-
-        if (pInst.modifier.dataMode() == null) {
-            if (!(this.modifier.dataMode() == null)) {
-                if (VERBOSE) logger.info("Difference: DataMode (Null)");
-                return false;
+        if (!(pInst.modifier.equals(this.modifier))) {
+            if (VERBOSE) {
+                logger.info("Difference: Modifier");
+                logger.info(this.modifier.toString());
+                logger.info(pInst.modifier.toString());
             }
-        } else {
-            if (!(pInst.modifier.dataMode().equals(this.modifier.dataMode()))) {
-                if (VERBOSE) logger.info("Difference: DataMode");
-                return false;
-            }
-        }
-
-        if (pInst.modifier.updateMode() == null) {
-            if (!(this.modifier.updateMode() == null)) {
-                if (VERBOSE) logger.info("Difference: UpdateMode (Null)");
-                return false;
-            }
-        } else {
-            if (!(pInst.modifier.updateMode().equals(this.modifier.updateMode()))) {
-                if (VERBOSE) logger.info("Difference: UpdateMode");
-                return false;
-            }
-        }
-
-        if (!(pInst.modifier.condition() == this.modifier.condition())) {
-            if (VERBOSE) logger.info("Difference: Condition");
             return false;
         }
 

@@ -1,6 +1,8 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +15,7 @@ public class NOPInstructionTest extends InstructionTest<Object, Object, Object, 
 
     @Test
     public void simpleNopTest() throws ASMException {
-        NOPInstruction nopInstruction = new NOPInstruction(new InstructionModifier(Condition.AL, false, null, null), (String) null, null, null, null);
+        NOPInstruction nopInstruction = new NOPInstruction(new Modifier(Condition.AL, false, null, null), (String) null, null, null, null);
         Register r0 = stateContainer.getRegister(0);
         r0.setData(21);
         nopInstruction.contextualize(stateContainer);

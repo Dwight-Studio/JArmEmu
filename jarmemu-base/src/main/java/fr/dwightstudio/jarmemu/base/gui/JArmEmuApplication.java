@@ -145,6 +145,7 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter un enregistrement du layout des tableaux
     // TODO: Enregistrer la position de la fenêtre en fullscreen/pas en fullscreen
     // TODO: Ajouter la personnalisation des "flags" d'instruction (Update Mode/Data mode/Update flags...)
+    // TODO: Corriger le bug des raccourcis d'exécution qui sautent des lignes
 
     @Override
     public void init() {

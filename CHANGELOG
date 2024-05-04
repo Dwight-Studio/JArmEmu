@@ -8,6 +8,7 @@
 - Improved splash screen
 - Improved code highlighting (real time parsing)
 - Improved notifications layout
+- Improved instruction modifiers handling
 - Added BLXNS instruction
 - Added BXNS instruction
 - Added PUSH instruction

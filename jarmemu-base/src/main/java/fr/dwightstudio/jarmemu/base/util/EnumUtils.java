@@ -29,18 +29,19 @@ public class EnumUtils {
 
 
     /**
-     * Get all values' name from enum.
+     * Gets all values' name from enum.
      *
      * @param list the array of all values
      * @param addEmpty true if it has to include an empty string
      * @return an array containing all the values' name
      * @param <T> the type of the enum
      */
-    public static <T extends Enum<T>> String[] getFromEnum(T[] list, boolean addEmpty) {
+    public static <T extends Enum<T>> String[] valuesToString(T[] list, boolean addEmpty) {
         List<String> rtn = new ArrayList<>();
 
         for (T elmt : list) {
-            rtn.add(elmt.toString().toUpperCase());
+            String elmtStr = elmt.toString().toUpperCase();
+            if (!elmtStr.isEmpty()) rtn.add(elmtStr);
         }
 
         rtn.sort(Comparator.comparing(String::length));
@@ -52,18 +53,18 @@ public class EnumUtils {
     }
 
     /**
-     * Get all values' name from enum.
+     * Gets all values' name from enum.
      *
      * @param list the array of all values
      * @return an array containing all the values' name
      * @param <T> the type of the enum
      */
-    public static <T extends Enum<T>> String[] getFromEnum(T[] list) {
-        return getFromEnum(list, false);
+    public static <T extends Enum<T>> String[] valuesToString(T[] list) {
+        return valuesToString(list, false);
     }
 
     /**
-     * Get all values' name from enum without some values.
+     * Gets all values' name from enum without some values.
      *
      * @param list the array of all values
      * @param without the array of values to exclude
@@ -71,8 +72,40 @@ public class EnumUtils {
      * @param <T> the type of the enum
      */
     @SafeVarargs
-    public static <T extends Enum<T>> String[] getFromEnum(T[] list, T ... without) {
-        String[] withoutString = getFromEnum(without);
-        return Arrays.stream(getFromEnum(list, false)).filter(el -> !Arrays.asList(withoutString).contains(el)).toArray(String[]::new);
+    public static <T extends Enum<T>> String[] valuesToString(T[] list, T ... without) {
+        String[] withoutString = valuesToString(without);
+        return Arrays.stream(valuesToString(list, false)).filter(el -> !Arrays.asList(withoutString).contains(el)).toArray(String[]::new);
+    }
+
+    /**
+     * Maps all values from enum to its name.
+     *
+     * @param list the array of all values
+     * @param addEmpty true if it has to map an empty string
+     * @return a map containing all the values
+     * @param <T> the type of the enum
+     */
+    public static <T extends Enum<T>> Map<String, T> valuesToMap(T[] list, boolean addEmpty) {
+        Map<String, T> rtn = new HashMap<>();
+
+        for (T elmt : list) {
+            String elmtStr = elmt.toString().toUpperCase();
+            if (!elmtStr.isEmpty()) rtn.put(elmtStr, elmt);
+        }
+
+        if (addEmpty) rtn.put("", null);
+
+        return rtn;
+    }
+
+    /**
+     * Maps all values from enum to its name.
+     *
+     * @param list the array of all values
+     * @return a map containing all the values
+     * @param <T> the type of the enum
+     */
+    public static <T extends Enum<T>> Map<String, T> valuesToMap(T[] list) {
+        return valuesToMap(list, false);
     }
 }

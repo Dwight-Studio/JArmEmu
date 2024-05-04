@@ -45,4 +45,5 @@ module fr.dwightstudio.jarmemu.base {
     exports fr.dwightstudio.jarmemu.base.gui.editor;
     opens fr.dwightstudio.jarmemu.base.gui.editor to javafx.fxml;
     exports fr.dwightstudio.jarmemu.base.sim.prepare;
+    exports fr.dwightstudio.jarmemu.base.asm.modifier;
 }

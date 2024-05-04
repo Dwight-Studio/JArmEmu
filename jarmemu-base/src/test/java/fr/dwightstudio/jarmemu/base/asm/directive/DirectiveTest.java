@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.base.asm.directive;
 
 import fr.dwightstudio.jarmemu.base.JArmEmuTest;
+import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
