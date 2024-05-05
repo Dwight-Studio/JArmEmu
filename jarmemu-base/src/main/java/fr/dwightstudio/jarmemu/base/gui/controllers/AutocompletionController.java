@@ -127,7 +127,7 @@ public class AutocompletionController implements Initializable {
 
         if (section == Section.TEXT) {
             switch (context) {
-                case NONE, INSTRUCTION -> list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
+                case NONE, INSTRUCTION, LABEL -> list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
 
                 case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3, INSTRUCTION_ARGUMENT_4 -> {
                     switch (argType) {
@@ -260,7 +260,7 @@ public class AutocompletionController implements Initializable {
 
         if (section.isDataRelatedSection() || section == Section.NONE || section == Section.TEXT) {
             switch (context) {
-                case NONE -> {
+                case NONE, LABEL -> {
                     for (Directive directive : Directive.values()) {
                         list.add("." + directive.name());
                     }

@@ -479,6 +479,8 @@ public class SmartHighlighter extends RealTimeParser {
                         tag("invalid-instruction", matcher);
                     }
                 }
+
+                error = true;
                 return true;
             }
         }
