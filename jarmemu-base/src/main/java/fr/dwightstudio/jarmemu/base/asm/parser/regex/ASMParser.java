@@ -41,7 +41,7 @@ import java.util.regex.Pattern;
 
 public class ASMParser {
 
-    private static final Map<Class<? extends Enum<? extends ModifierParameter>>, Map<String, ? extends ModifierParameter>> MODIFIER_PARAMETERS = new HashMap<>();
+    public static final Map<Class<? extends Enum<? extends ModifierParameter>>, Map<String, ? extends ModifierParameter>> MODIFIER_PARAMETERS = new HashMap<>();
 
     static {
         MODIFIER_PARAMETERS.put(Condition.class, EnumUtils.valuesToMap(Condition.values(), true));
@@ -50,13 +50,17 @@ public class ASMParser {
         MODIFIER_PARAMETERS.put(UpdateMode.class, EnumUtils.valuesToMap(UpdateMode.values(), false));
     }
 
-    private static final int INSTRUCTION_NUMBER = Instruction.values().length;
-    private static final String INSTRUCTION_REGEX;
+    public static final int INSTRUCTION_NUMBER = Instruction.values().length;
+    public static final String[] INSTRUCTIONS;
+    public static final String INSTRUCTION_REGEX;
 
     static {
         StringBuilder buffer = new StringBuilder();
+        ArrayList<String> instructions = new ArrayList<>();
 
         Instruction[] values = Instruction.values();
+        Arrays.sort(values, Comparator.comparingInt(i -> -i.toString().length()));
+
         for (int i = 0; i < INSTRUCTION_NUMBER; i++) {
             Instruction instruction = values[i];
             if (instruction.isValid()) {
@@ -64,6 +68,7 @@ public class ASMParser {
                 buffer.append("(?<INS").append(i).append(">").append(instruction).append(")(?<MOD").append(i).append(">");
                 while (iterator.hasNext()) {
                     String modifier = iterator.next().toString();
+                    instructions.add(instruction + modifier);
                     buffer.append(modifier.isBlank() ? "" : modifier);
                     if (iterator.hasNext()) buffer.append("|");
                 }
@@ -76,22 +81,23 @@ public class ASMParser {
 
         buffer.deleteCharAt(buffer.length() - 1);
 
+        INSTRUCTIONS = instructions.toArray(new String[0]);
         INSTRUCTION_REGEX = buffer.toString();
     }
 
-    private static final String CONTENT_REGEX = "[^,\n\\[\\]\\{\\}]+";
-    private static final String BRACKET_REGEX = "[^\n\\[\\]\\{\\}]+";
-    private static final String ARG_REGEX = CONTENT_REGEX + "|\\[" + BRACKET_REGEX + "\\]!|\\[" + BRACKET_REGEX + "\\]|\\{" + BRACKET_REGEX + "\\}";
+    public static final String CONTENT_REGEX = "[^,\n\\[\\]\\{\\}]+";
+    public static final String BRACKET_REGEX = "[^\n\\[\\]\\{\\}]+";
+    public static final String ARG_REGEX = CONTENT_REGEX + "|\\[" + BRACKET_REGEX + "\\]!|\\[" + BRACKET_REGEX + "\\]|\\{" + BRACKET_REGEX + "\\}";
 
-    private static final String COMPLETE_INSTRUCTION_REGEX = "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")"
+    public static final String COMPLETE_INSTRUCTION_REGEX = "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")"
             + "(([ \t]+(?<ARG1>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG2>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG3>" + ARG_REGEX + ")[ \t]*)|)"
             + "((,[ \t]*(?<ARG4>" + ARG_REGEX + ")[ \t]*)|)";
 
-    private static final String LABEL_REGEX = "[A-Za-z_]+[A-Za-z_0-9]*";
+    public static final String LABEL_REGEX = "[A-Za-z_]+[A-Za-z_0-9]*";
 
-    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
+    public static final Pattern INSTRUCTION_PATTERN = Pattern.compile(
             "(?i)[ \t]*"
                     + "(((?<LABEL>" + LABEL_REGEX + ")[ \t]*:)|)[ \t]*"
                     + "((" + COMPLETE_INSTRUCTION_REGEX + ")|)"

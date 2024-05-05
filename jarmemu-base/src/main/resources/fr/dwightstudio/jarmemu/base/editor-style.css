@@ -75,12 +75,8 @@
     -fx-fill: #ab44d9;
     -fx-font-weight: bold;
 }
-.code-area .text.condition {
+.code-area .text.modifier {
     -fx-fill: #7e329f;
-}
-.code-area .text.flags {
-    -fx-fill: #4e2063;
-    -fx-underline: true;
 }
 .code-area .text.section {
     -fx-fill: #44b6d9;

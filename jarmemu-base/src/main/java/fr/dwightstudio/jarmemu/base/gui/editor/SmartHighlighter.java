@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
@@ -53,42 +54,34 @@ public class SmartHighlighter extends RealTimeParser {
 
     public static final int MAXIMUM_ITER_NUM = 1000;
 
-    private static final String[] INSTRUCTIONS = EnumUtils.valuesToString(Instruction.values());
-    private static final String[] SECTIONS = EnumUtils.valuesToString(Section.values(), Section.NONE);
-    private static final String[] DIRECTIVES = EnumUtils.valuesToString(Directive.values());
-    private static final String[] REGISTERS = EnumUtils.valuesToString(RegisterUtils.values());
-    private static final String[] CONDITIONS = EnumUtils.valuesToString(Condition.values());
-    private static final String[] DATA_MODES = EnumUtils.valuesToString(DataMode.values());
-    private static final String[] UPDATE_MODES = EnumUtils.valuesToString(UpdateMode.values());
-    private static final String[] SHIFTS = new String[]{"LSL", "LSR", "ASR", "ROR", "RRX"};
-    private static final String[] UPDATE_FLAG = new String[]{"S"};
+    public static final String[] SECTIONS = EnumUtils.valuesToString(Section.values(), Section.NONE);
+    public static final String[] DIRECTIVES = EnumUtils.valuesToString(Directive.values());
+    public static final String[] REGISTERS = EnumUtils.valuesToString(RegisterUtils.values());
+    public static final String[] SHIFTS = new String[]{"LSL", "LSR", "ASR", "ROR", "RRX"};
 
-    private static final Pattern BLANK_PATTERN = Pattern.compile("^[\t ]+");
-    private static final Pattern COMMENT_PATTERN = Pattern.compile("^@[^\n]*");
-    private static final Pattern ERROR_PATTERN = Pattern.compile("^[^ \t,.@\\[\\]{}]+");
-    private static final Pattern GENERAL_SEPARATOR_PATTERN = Pattern.compile("^[ \t,.@\\[\\]{}]");
+    public static final Pattern BLANK_PATTERN = Pattern.compile("^[\t ]+");
+    public static final Pattern COMMENT_PATTERN = Pattern.compile("^@[^\n]*");
+    public static final Pattern ERROR_PATTERN = Pattern.compile("^[^ \t,.@\\[\\]{}]+");
+    public static final Pattern GENERAL_SEPARATOR_PATTERN = Pattern.compile("^[ \t,.@\\[\\]{}]");
 
-    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", INSTRUCTIONS) + ")(?-i)");
-    private static final Pattern CONDITION_PATTERN = Pattern.compile("^(?i)(" + String.join("|", CONDITIONS) + ")(?-i)");
-    private static final Pattern UPDATE_MODE_PATTERN = Pattern.compile("^(?i)(" + String.join("|", UPDATE_MODES) + ")\\b(?-i)");
-    private static final Pattern FLAGS_PATTERN = Pattern.compile("^(?i)(" + String.join("|", DATA_MODES) + "|" + String.join("|", UPDATE_FLAG) + ")\\b(?-i)");
-    private static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + "|SECTION)(?-i)\\b");
-    private static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
-    private static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*:");
+    public static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + "|SECTION)(?-i)\\b");
+    public static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
+    public static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*:");
+    public static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + ASMParser.INSTRUCTION_REGEX + ")(?-i)");
 
-    private static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
-    private static final Pattern RANGE_SEPARATOR = Pattern.compile("^-");
-    private static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
-    private static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
-    private static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
-    private static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@,]*");
-    private static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n@]*");
-    private static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
-    private static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
-    private static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
-    private static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_]+[A-Za-z_0-9]*");
+    public static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
+    public static final Pattern RANGE_SEPARATOR = Pattern.compile("^-");
+    public static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
+    public static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
+    public static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
+    public static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@,]*");
+    public static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n@]*");
+    public static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
+    public static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
+    public static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
+    public static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_]+[A-Za-z_0-9]*");
 
-    private static final Pattern NOTE_PATTERN = Pattern.compile("^[^\n]+");
+    public static final Pattern NOTE_PATTERN = Pattern.compile("^[^\n]+");
 
     private static final Logger logger = Logger.getLogger(SmartHighlighter.class.getSimpleName());
 
@@ -120,6 +113,7 @@ public class SmartHighlighter extends RealTimeParser {
     private int cursorPos;
     private StyleSpansBuilder<Collection<String>> spansBuilder;
     private String command;
+    private String modifier;
     private Instruction instruction;
     private String argType;
     private boolean offsetArgument;
@@ -203,7 +197,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                     int iter;
                     for (iter = 0; cancelLine != line && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        //System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
@@ -242,17 +236,6 @@ public class SmartHighlighter extends RealTimeParser {
                                         context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
                                         argType = instruction.getArgumentType(context.getIndex());
                                         continue;
-                                    }
-
-                                    switch (subContext) {
-                                        case NONE -> {
-                                            if (matchCondition()) continue;
-                                            if (matchFlags()) continue;
-                                        }
-
-                                        case CONDITION -> {
-                                            if (matchFlags()) continue;
-                                        }
                                     }
                                 }
 
@@ -465,54 +448,41 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = INSTRUCTION_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            command = matcher.group();
-            instruction = Instruction.valueOf(command.toUpperCase());
-            context = Context.INSTRUCTION;
-            subContext = SubContext.NONE;
+            command = null;
+            modifier = null;
 
-            if (instruction.isValid()) {
-                tag("instruction", matcher);
-                contextLength = 0;
-            } else {
-                matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
-                if (matcher.find()) {
-                    tag("invalid-instruction", matcher);
+            for (int i = 0; i < ASMParser.INSTRUCTION_NUMBER; i++) {
+                if (matcher.group("INS" + i) != null) {
+                    command = matcher.group("INS" + i).toLowerCase();
+                    modifier = matcher.group("MOD" + i).toLowerCase();
+                    break;
                 }
             }
-            return true;
+
+            if (command != null) {
+                instruction = Instruction.valueOf(command.toUpperCase());
+                context = Context.INSTRUCTION;
+                subContext = SubContext.NONE;
+
+                if (instruction.isValid()) {
+                    matcher = Pattern.compile(command).matcher(command + modifier);
+                    if (matcher.find()) tag("instruction", matcher);
+
+                    int rc = contextLength;
+                    matcher = Pattern.compile(modifier).matcher(modifier);
+                    if (matcher.find()) tag("modifier", matcher);
+
+                    contextLength += rc;
+                } else {
+                    matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
+                    if (matcher.find()) {
+                        tag("invalid-instruction", matcher);
+                    }
+                }
+                return true;
+            }
         }
 
-        return false;
-    }
-
-    private boolean matchCondition() {
-        Matcher matcher = CONDITION_PATTERN.matcher(text);
-
-        if (matcher.find()) {
-            subContext = SubContext.CONDITION;
-            tag("condition", matcher);
-            contextLength = 0;
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean matchFlags() {
-        Matcher matcher;
-        if (instruction == Instruction.STM || instruction == Instruction.LDM) {
-            matcher = UPDATE_MODE_PATTERN.matcher(text);
-
-        } else {
-            matcher = FLAGS_PATTERN.matcher(text);
-
-        }
-        if (matcher.find()) {
-            subContext = SubContext.FLAGS;
-            tag("flags", matcher);
-            contextLength = 0;
-            return true;
-        }
         return false;
     }
 

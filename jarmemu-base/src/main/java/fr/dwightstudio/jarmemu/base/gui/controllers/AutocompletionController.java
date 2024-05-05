@@ -11,6 +11,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
+import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.editor.Context;
 import fr.dwightstudio.jarmemu.base.gui.editor.SubContext;
@@ -25,9 +26,7 @@ import javafx.util.Duration;
 import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -128,47 +127,7 @@ public class AutocompletionController implements Initializable {
 
         if (section == Section.TEXT) {
             switch (context) {
-                case NONE -> {
-                    for (Instruction instruction : Instruction.values()) {
-                        list.add(instruction.name());
-                    }
-                }
-
-                case INSTRUCTION -> {
-                    switch (subContext) {
-                        case NONE -> {
-                            for (Condition condition : Condition.values()) {
-                                list.add(condition.name());
-                            }
-
-                            if (command.equalsIgnoreCase("STM") || command.equalsIgnoreCase("LDM")) {
-                                for (UpdateMode updateMode : UpdateMode.values()) {
-                                    list.add(updateMode.name());
-                                }
-                            } else {
-                                for (DataMode dataMode : DataMode.values()) {
-                                    list.add(dataMode.toString());
-                                }
-                            }
-
-                            list.add("S");
-                        }
-
-                        case CONDITION -> {
-                            if (command.equalsIgnoreCase("STM") || command.equalsIgnoreCase("LDM")) {
-                                for (UpdateMode updateMode : UpdateMode.values()) {
-                                    list.add(updateMode.name());
-                                }
-                            } else {
-                                for (DataMode dataMode : DataMode.values()) {
-                                    list.add(dataMode.toString());
-                                }
-                            }
-
-                            list.add("S");
-                        }
-                    }
-                }
+                case NONE, INSTRUCTION -> list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
 
                 case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3, INSTRUCTION_ARGUMENT_4 -> {
                     switch (argType) {
@@ -349,6 +308,7 @@ public class AutocompletionController implements Initializable {
         }
 
         list.replaceAll(String::toLowerCase);
+        list.sort(Comparator.comparingInt(String::length));
 
         editor.getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
 
