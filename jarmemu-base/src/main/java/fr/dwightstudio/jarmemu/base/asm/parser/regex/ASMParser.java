@@ -74,7 +74,8 @@ public class ASMParser {
                 }
                 buffer.append(")");
             } else {
-                buffer.append("(?<INS").append(i).append(">").append(instruction).append(")").append("(?<MOD").append(i).append(">[a-zA-Z0-9]+)");
+                instructions.add(instruction.toString());
+                buffer.append("(?<INS").append(i).append(">").append(instruction).append(")").append("(?<MOD").append(i).append(">[a-zA-Z0-9]*)");
             }
             buffer.append("|");
         }
