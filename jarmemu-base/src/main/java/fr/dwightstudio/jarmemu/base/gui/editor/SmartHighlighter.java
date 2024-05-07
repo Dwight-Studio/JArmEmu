@@ -322,8 +322,8 @@ public class SmartHighlighter extends RealTimeParser {
                                 updateGlobals(addGlobals);
                             } else {
                                 globals.remove(new FilePos(editor.getRealIndex(), line));
-                                updateGlobals(remGlobal);
                                 caseTranslationTable.remove(new CaseIndependentEntry(remGlobal));
+                                updateGlobals(remGlobal);
                             }
                         }
 
@@ -332,7 +332,6 @@ public class SmartHighlighter extends RealTimeParser {
                                 sections.put(line, addSection);
                             } else {
                                 sections.remove(line);
-                                caseTranslationTable.remove(new CaseIndependentEntry(remSection.name()));
                             }
 
                             if (addSection != Section.END) {
@@ -348,8 +347,8 @@ public class SmartHighlighter extends RealTimeParser {
                                 updateReferences(addLabels);
                             } else {
                                 labels.remove(line);
-                                updateReferences(remLabel);
                                 caseTranslationTable.remove(new CaseIndependentEntry(remLabel));
+                                updateReferences(remLabel);
                             }
                             updateReferences(remLabel.toUpperCase());
                         }
@@ -360,8 +359,8 @@ public class SmartHighlighter extends RealTimeParser {
                                 updateReferences(addSymbols);
                             } else {
                                 symbols.remove(line);
-                                updateReferences(remSymbol);
                                 caseTranslationTable.remove(new CaseIndependentEntry(remSymbol));
+                                updateReferences(remSymbol);
                             }
                         }
 
@@ -433,7 +432,11 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = LABEL_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            addLabels = matcher.group("LABEL").toUpperCase();
+            addLabels = matcher.group("LABEL");
+
+            caseTranslationTable.add(new CaseIndependentEntry(addLabels));
+            addLabels = addLabels.toUpperCase();
+
             context = Context.LABEL;
             addReferences.add(addLabels);
             tag("label", matcher);
@@ -828,11 +831,7 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = SECTION_PATTERN.matcher(text);
 
         if (matcher.find()) {
-            String s = matcher.group("SECTION").strip();
-            
-            caseTranslationTable.add(new CaseIndependentEntry(s));
-            s = s.toUpperCase();
-            
+            String s = matcher.group("SECTION").toUpperCase().strip();
             if (!s.equalsIgnoreCase("Section")) {
                 currentSection = addSection = Section.valueOf(s);
                 context = Context.SECTION;

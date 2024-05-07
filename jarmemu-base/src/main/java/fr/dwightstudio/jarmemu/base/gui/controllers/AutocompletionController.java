@@ -306,6 +306,7 @@ public class AutocompletionController implements Initializable {
             list.replaceAll(String::toLowerCase);
             list.sort(Comparator.comparingInt(String::length));
 
+            System.out.println(editor.getRealTimeParser().getCaseTranslationTable());
             editor.getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
 
             show();
