@@ -70,6 +70,8 @@ public class SettingsController implements Initializable {
     public static final int DEFAULT_THEME_FAMILY = 0;
     public static final int DEFAULT_THEME_VARIATION = 0;
     public static final int DEFAULT_MAX_NOTIFICATION = 4;
+
+    public static final boolean DEFAULT_MAXIMIZED = false;
     public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"maximized\":true,\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
 
 
@@ -101,7 +103,10 @@ public class SettingsController implements Initializable {
     public static final String THEME_FAMILY_KEY = "themeFamily";
     public static final String THEME_VARIATION_KEY = "theme";
     public static final String MAX_NOTIFICATION_KEY = "maxNotification";
-    public static final String LAYOUT_KEY = "layout";
+
+    public static final String MAXIMIZED_KEY = "maximized";
+    public static final String MAXIMIZED_LAYOUT_KEY = "maximizedLayout";
+    public static final String MINIMIZED_LAYOUT_KEY = "minimizedLayout";
 
     private static final String[] DATA_FORMAT_LABEL_DICT = new String[]{
             JArmEmuApplication.formatMessage("%settings.dataManagement.hexadecimal"),
@@ -464,12 +469,22 @@ public class SettingsController implements Initializable {
         preferences.putBoolean(HIGHLIGHT_UPDATES_KEY, b);
     }
 
+    public boolean getMaximized() {
+        return preferences.getBoolean(MAXIMIZED_KEY, DEFAULT_MAXIMIZED);
+    }
+
+    public void setMaximized(boolean b) {
+        preferences.putBoolean(MAXIMIZED_KEY, b);
+    }
+
     public String getLayout() {
-        return preferences.get(LAYOUT_KEY, DEFAULT_LAYOUT);
+        if (getMaximized()) return preferences.get(MAXIMIZED_LAYOUT_KEY, DEFAULT_LAYOUT);
+        else return preferences.get(MINIMIZED_LAYOUT_KEY, DEFAULT_LAYOUT);
     }
 
     public void setLayout(String s) {
-        preferences.put(LAYOUT_KEY, s);
+        if (getMaximized()) preferences.put(MAXIMIZED_LAYOUT_KEY, s);
+        else preferences.put(MINIMIZED_LAYOUT_KEY, s);
     }
 
     public int getMaxNotification() {

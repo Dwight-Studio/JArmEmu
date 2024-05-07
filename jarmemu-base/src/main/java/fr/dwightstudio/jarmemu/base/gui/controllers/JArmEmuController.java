@@ -51,7 +51,7 @@ import java.util.logging.Logger;
 
 public class JArmEmuController implements Initializable {
 
-    public static final String MAXIMIZED_KEY = "maximized";
+    public static final String WINDOW_SIZE_KEY = "windowSize";
     public static final String SPLIT_PANES_KEY = "splitPanes";
     public static final String MAIN_SPLIT_PANE_KEY = "mainSplitPane";
     public static final String LEFT_SPLIT_PANE_KEY = "leftSplitPane";
@@ -62,7 +62,7 @@ public class JArmEmuController implements Initializable {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     private final Timeline LAYOUT_SAVING_TIMELINE = new Timeline(
-            new KeyFrame(Duration.millis(2000), event -> saveLayout())
+            new KeyFrame(Duration.millis(1000), event -> saveLayout())
     );
 
 
@@ -180,7 +180,17 @@ public class JArmEmuController implements Initializable {
         logger.info("Initializing layout listeners");
 
         Platform.runLater(() -> {
-            JArmEmuApplication.getInstance().maximizedProperty().addListener(obs -> notifyLayoutChange());
+            JArmEmuApplication.getInstance().maximizedProperty().addListener((obs, oldValue, newValue) -> {
+                if (!newValue.equals(JArmEmuApplication.getSettingsController().getMaximized())) {
+                    logger.info("Saving maximization");
+                    JArmEmuApplication.getSettingsController().setMaximized(newValue);
+
+                    Platform.runLater(() -> JArmEmuApplication.getController().applyLayout(JArmEmuApplication.getSettingsController().getLayout()));
+                }
+            });
+
+            JArmEmuApplication.getInstance().stage.widthProperty().addListener(obs -> notifyLayoutChange());
+            JArmEmuApplication.getInstance().stage.heightProperty().addListener(obs -> notifyLayoutChange());
 
             mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
             leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
@@ -208,7 +218,7 @@ public class JArmEmuController implements Initializable {
     public String getLayoutJSON() {
         HashMap<String, Object> layout = new HashMap<>();
 
-        layout.put(MAXIMIZED_KEY, JArmEmuApplication.getInstance().isMaximized());
+        layout.put(WINDOW_SIZE_KEY, new JSONArray(new double[]{JArmEmuApplication.getInstance().stage.getWidth(), JArmEmuApplication.getInstance().stage.getHeight()}));
 
         HashMap<String, JSONArray> splitPanes = new HashMap<>();
         splitPanes.put(MAIN_SPLIT_PANE_KEY, new JSONArray(mainSplitPane.getDividerPositions()));
@@ -239,11 +249,9 @@ public class JArmEmuController implements Initializable {
         try {
             JSONObject layout = new JSONObject(json);
 
-            boolean maximized = layout.getBoolean(MAXIMIZED_KEY);
-
-            if (maximized != JArmEmuApplication.getInstance().isMaximized()) {
-                JArmEmuApplication.getInstance().setMaximized(maximized);
-            }
+            JSONArray windowSize = layout.getJSONArray(WINDOW_SIZE_KEY);
+            JArmEmuApplication.getInstance().stage.setWidth(windowSize.getDouble(0));
+            JArmEmuApplication.getInstance().stage.setHeight(windowSize.getDouble(1));
 
             JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
 
@@ -273,7 +281,7 @@ public class JArmEmuController implements Initializable {
             logger.severe(ExceptionUtils.getStackTrace(exception));
         }
 
-        LAYOUT_SAVING_TIMELINE.stop();
+        Platform.runLater(LAYOUT_SAVING_TIMELINE::stop);
     }
 
     /**

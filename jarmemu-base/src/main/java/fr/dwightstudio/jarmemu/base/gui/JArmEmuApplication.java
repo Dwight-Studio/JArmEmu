@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
@@ -139,10 +140,9 @@ public class JArmEmuApplication extends Application {
 
     // TODO: Ajouter le support des directives pour l'autocomplétion
     // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
-    // TODO: Ajouter un detection des boucles infinies
+    // TODO: Ajouter une detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux
-    // TODO: Enregistrer la position de la fenêtre en fullscreen/pas en fullscreen
 
     @Override
     public void init() {
@@ -272,18 +272,26 @@ public class JArmEmuApplication extends Application {
         getSimulationMenuController().onStop();
 
         stage.setScene(scene);
+        stage.setMinHeight(360);
+        stage.setMinWidth(640);
+        stage.centerOnScreen();
+        if (settingsController.getMaximized() != isMaximized()) {
+            setMaximized(settingsController.getMaximized());
+        }
+        controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
         stage.show();
+
         status.set(Status.EDITING);
         logger.info("Startup finished");
 
         JArmEmuApplication.notifyPreloader("Applying GUI layout");
-        controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
 
         new Timeline(
                 new KeyFrame(Duration.seconds(1), actionEvent -> {
                     JArmEmuApplication.notifyPreloader("Finishing up");
                     controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
                 }),
+
                 new KeyFrame(Duration.seconds(2), actionEvent -> {
                     JArmEmuApplication.closePreloader();
                     controller.registerLayoutChangeListener();
