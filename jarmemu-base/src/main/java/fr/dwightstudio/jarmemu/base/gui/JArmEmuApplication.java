@@ -260,7 +260,7 @@ public class JArmEmuApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         this.stage = stage;
 
         logger.info("Opening application");
@@ -269,7 +269,6 @@ public class JArmEmuApplication extends Application {
         stage.getIcons().addAll(icons);
 
         status.addListener((observable -> updateTitle()));
-        getSimulationMenuController().onStop();
 
         stage.setScene(scene);
         stage.setMinHeight(360);
