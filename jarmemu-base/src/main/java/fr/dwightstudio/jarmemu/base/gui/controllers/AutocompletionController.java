@@ -7,23 +7,15 @@ import com.sun.javafx.collections.ObservableListWrapper;
 import fr.dwightstudio.jarmemu.base.Status;
 import fr.dwightstudio.jarmemu.base.asm.Directive;
 import fr.dwightstudio.jarmemu.base.asm.Section;
-import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
-import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.Instruction;
-import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.editor.Context;
 import fr.dwightstudio.jarmemu.base.gui.editor.SubContext;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.util.Duration;
-import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
 import java.util.*;
@@ -34,7 +26,10 @@ public class AutocompletionController implements Initializable {
 
     private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()\\[\\]{}]+$");
 
-    private ObservableListWrapper<String> list;
+    private final Object LOCK = new Object();
+
+    private ArrayList<String> list;
+    private ObservableListWrapper<String> wrappedList;
     private ListView<String> listView;
     private Popover popover;
     private boolean reopened;
@@ -55,9 +50,10 @@ public class AutocompletionController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        list = new ObservableListWrapper<>(new ArrayList<>());
+        list = new ArrayList<>();
+        wrappedList = new ObservableListWrapper<>(new ArrayList<>());
 
-        listView = new ListView<>(list);
+        listView = new ListView<>(wrappedList);
         listView.setEditable(false);
         listView.getStyleClass().addAll(Styles.DENSE, Tweaks.EDGE_TO_EDGE);
         listView.setMinHeight(0);
@@ -70,7 +66,8 @@ public class AutocompletionController implements Initializable {
         listView.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case ENTER, TAB -> applyAutocomplete();
-
+                case LEFT -> editor.getCodeArea().moveTo(editor.getCodeArea().getCaretPosition() - 1);
+                case RIGHT -> editor.getCodeArea().moveTo(editor.getCodeArea().getCaretPosition() + 1);
                 case ESCAPE -> close();
             }
         });
@@ -110,7 +107,7 @@ public class AutocompletionController implements Initializable {
     }
 
     private void update() {
-        Platform.runLater(() -> {
+        synchronized (LOCK) {
             list.clear();
 
             if (editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).getText().isBlank()) {
@@ -166,7 +163,11 @@ public class AutocompletionController implements Initializable {
                             case "ShiftArgument" -> {
                                 if (subContext == SubContext.SHIFT) list.add("#");
                                 else if (subContext != SubContext.IMMEDIATE)
-                                    list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
+                                    list.add("LSL");
+                                    list.add("LSR");
+                                    list.add("ASR");
+                                    list.add("ROR");
+                                    list.add("RRX");
                             }
 
                             case "RegisterAddressArgument" -> {
@@ -230,7 +231,13 @@ public class AutocompletionController implements Initializable {
                                                 list.add("#");
                                             }
 
-                                            case TERTIARY -> list.addAll("LSL", "LSR", "ASR", "ROR", "RRX");
+                                            case TERTIARY -> {
+                                                list.add("LSL");
+                                                list.add("LSR");
+                                                list.add("ASR");
+                                                list.add("ROR");
+                                                list.add("RRX");
+                                            }
 
                                             case SHIFT -> list.add("#");
 
@@ -306,35 +313,44 @@ public class AutocompletionController implements Initializable {
             list.replaceAll(String::toLowerCase);
             list.sort(Comparator.comparingInt(String::length));
 
-            System.out.println(editor.getRealTimeParser().getCaseTranslationTable());
             editor.getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
 
-            show();
-        });
+            if (!list.isEmpty()) Platform.runLater(this::show);
+        }
     }
 
     private void show() {
         if (!list.isEmpty()) {
-            editor.getCodeArea().getCaretBounds().ifPresent(bounds -> {
-                double height = list.size() * listView.getFixedCellSize();
+            editor.getCodeArea().getCharacterBoundsOnScreen(getCurrentContextStart(), getCurrentContextEnd()).ifPresent(bounds -> {
+                wrappedList.clear();
+                wrappedList.addAll(list);
+
+                double height = wrappedList.size() * listView.getFixedCellSize();
                 listView.setPrefHeight(height);
 
-                reopened = true;
+                if (!popover.isShowing()) popover.show(editor.getCodeArea());
+
                 if (bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY()) {
                     popover.setArrowLocation(Popover.ArrowLocation.BOTTOM_LEFT);
-                    popover.show(editor.getCodeArea(), bounds.getCenterX(), bounds.getMinY() - bounds.getHeight() / 4);
+                    popover.setAnchorX(bounds.getMinX());
+                    popover.setAnchorY(bounds.getMinY() - bounds.getHeight() / 4);
                 } else {
                     popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
-                    popover.show(editor.getCodeArea(), bounds.getCenterX(), bounds.getMaxY() + bounds.getHeight() / 4);
+                    popover.setAnchorX(bounds.getMinX());
+                    popover.setAnchorY(bounds.getMaxY() + bounds.getHeight() / 4);
                 }
 
                 listView.requestFocus();
                 listView.getSelectionModel().selectFirst();
                 listView.scrollTo(0);
+                reopened = true;
             });
         } else if (popover.isShowing()) popover.hide();
     }
 
+    /**
+     * @return the current context string
+     */
     private String getCurrentContext() {
         int start = editor.getCodeArea().getCaretColumn() - contextLength;
         int stop = editor.getCodeArea().getCaretColumn();
@@ -342,17 +358,30 @@ public class AutocompletionController implements Initializable {
         return editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).substring(start, stop);
     }
 
-    private void selectCurrentWord() {
+    /**
+     * @return current context starting pos
+     */
+    private int getCurrentContextStart() {
         int start = editor.getCodeArea().getCaretColumn() - currentWord.length();
-        int stop = editor.getCodeArea().getCaretColumn();
-
-        if (start < 0 || stop - start <= 0) {
-            int pos = editor.getCodeArea().getCaretPosition();
-            editor.getCodeArea().selectRange(pos, pos);
+        if (start < 0) {
+            return editor.getCodeArea().getCaretPosition();
         } else {
-            int line = editor.getCodeArea().getCurrentParagraph();
-            editor.getCodeArea().selectRange(editor.getCodeArea().getAbsolutePosition(line, start), editor.getCodeArea().getAbsolutePosition(line, stop));
+            return editor.getCodeArea().getAbsolutePosition(line, start);
         }
+    }
+
+    /**
+     * @return current context ending pos
+     */
+    private int getCurrentContextEnd() {
+        return editor.getCodeArea().getAbsolutePosition(line, editor.getCodeArea().getCaretColumn());
+    }
+
+    /**
+     * Selects current context/word
+     */
+    private void selectCurrentWord() {
+        editor.getCodeArea().selectRange(getCurrentContextStart(), getCurrentContextEnd());
     }
 
     /**
@@ -375,12 +404,14 @@ public class AutocompletionController implements Initializable {
      * Updates autocompletion popover when moving caret
      */
     public void caretMoved() {
-        if (editor == null) return;
-        if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line)
-            close();
+        synchronized (LOCK) {
+            if (editor == null) return;
+            //if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line)
+            //    close();
 
-        if (!reopened) close();
-        else reopened = false;
+            if (!reopened) close();
+            else reopened = false;
+        }
     }
 
     /**
@@ -403,11 +434,12 @@ public class AutocompletionController implements Initializable {
         };
 
         if (!newChar.isEmpty()) {
-            editor.getRealTimeParser().cancelLine(line);
-            reopened = true;
-            editor.getCodeArea().insertText(pos, newChar);
-            reopened = true;
-            editor.getCodeArea().moveTo(pos);
+            synchronized (LOCK) {
+                editor.getRealTimeParser().cancelLine(line);
+                editor.getCodeArea().insertText(pos, newChar);
+                editor.getCodeArea().moveTo(pos);
+                reopened = true;
+            }
         }
     }
 
