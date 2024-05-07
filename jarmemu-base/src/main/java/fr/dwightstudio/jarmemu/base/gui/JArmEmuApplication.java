@@ -120,7 +120,6 @@ public class JArmEmuApplication extends Application {
     public List<Image> icons;
 
     // Others
-    private static ShortcutHandler shortcutHandler;
     private static SourceParser sourceParser;
     private static CodeInterpreter codeInterpreter;
     private static ExecutionWorker executionWorker;
@@ -144,7 +143,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux
     // TODO: Enregistrer la position de la fenêtre en fullscreen/pas en fullscreen
-    // TODO: Corriger le bug des raccourcis d'exécution qui sautent des lignes
 
     @Override
     public void init() {
@@ -190,7 +188,6 @@ public class JArmEmuApplication extends Application {
         }
 
         // Autres
-        shortcutHandler = new ShortcutHandler();
         codeInterpreter = new CodeInterpreter();
         executionWorker = new ExecutionWorker();
 
@@ -208,8 +205,6 @@ public class JArmEmuApplication extends Application {
         updateUserAgentStyle(getSettingsController().getThemeVariation(), getSettingsController().getThemeFamily());
         scene.getStylesheets().add(getResource("jarmemu-style.css").toExternalForm());
         scene.setCursor(Cursor.WAIT);
-
-        scene.setOnKeyPressed(shortcutHandler::handle);
 
         icons = List.of(
                 new Image(getMediaAsStream("images/favicon@16.png")),

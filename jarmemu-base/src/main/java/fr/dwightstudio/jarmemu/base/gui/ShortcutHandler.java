@@ -29,34 +29,6 @@ import javafx.scene.input.KeyEvent;
 public class ShortcutHandler {
 
     public void handle(KeyEvent event) {
-        try {
-            if (event.isShortcutDown()) {
-                if (event.isShiftDown()) {
-                    switch (event.getCode()) {
-                        case S -> JArmEmuApplication.getMainMenuController().onSaveAll();
-                        case R -> JArmEmuApplication.getMainMenuController().onReloadAll();
-                    }
-                } else {
-                    switch (event.getCode()) {
-                        case S -> JArmEmuApplication.getMainMenuController().onSave();
-                        case O -> JArmEmuApplication.getMainMenuController().onOpen();
-                        case R -> JArmEmuApplication.getMainMenuController().onReload();
-                        case N -> JArmEmuApplication.getMainMenuController().onNewFile();
-                        case B -> JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
-                        case F -> JArmEmuApplication.getEditorController().currentFileEditor().toggleFindAndReplace();
-                    }
-                }
-            } else {
-                switch (event.getCode()) {
-                    case F2 -> JArmEmuApplication.getSimulationMenuController().onSimulate();
-                    case F3 -> JArmEmuApplication.getSimulationMenuController().onStepInto();
-                    case F4 -> JArmEmuApplication.getSimulationMenuController().onStepOver();
-                    case F5 -> JArmEmuApplication.getSimulationMenuController().onContinue();
-                    case F6 -> JArmEmuApplication.getSimulationMenuController().onPause();
-                    case F7 -> JArmEmuApplication.getSimulationMenuController().onStop();
-                    case F8 -> JArmEmuApplication.getSimulationMenuController().onRestart();
-                }
-            }
-        } catch (IndexOutOfBoundsException | NullPointerException ignored) {}
+        //
     }
 }

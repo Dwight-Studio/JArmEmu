@@ -448,6 +448,6 @@ public class JArmEmuController implements Initializable {
     }
 
     @FXML void onFindAndReplace() {
-        JArmEmuApplication.getEditorController().currentFileEditor().openFindAndReplace();
+        JArmEmuApplication.getEditorController().currentFileEditor().toggleFindAndReplace();
     }
 }

@@ -38,6 +38,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onSimulate() {
+        logger.info("Triggered simulation");
         if (JArmEmuApplication.getController().menuSimulate.isDisable()) return;
 
         JArmEmuApplication.getController().toolSimulate.setDisable(true);
@@ -134,6 +135,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onStepInto() {
+        logger.info("Triggered step into");
         if (JArmEmuApplication.getController().menuStepInto.isDisable()) return;
         JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().stepInto();
@@ -143,6 +145,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onStepOver() {
+        logger.info("Triggered step over");
         if (JArmEmuApplication.getController().menuStepOver.isDisable()) return;
         JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().stepOver();
@@ -164,6 +167,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onContinue() {
+        logger.info("Triggered continue");
         if (JArmEmuApplication.getController().menuContinue.isDisable()) return;
         JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().conti();
@@ -186,6 +190,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onPause() {
+        logger.info("Triggered pause");
         if (JArmEmuApplication.getController().menuPause.isDisable()) return;
         JArmEmuApplication.getExecutionWorker().pause();
         JArmEmuApplication.getController().toolStepInto.setDisable(false);
@@ -207,6 +212,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onStop() {
+        logger.info("Triggered stop");
         if (JArmEmuApplication.getController().menuStop.isDisable()) return;
         JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getExecutionWorker().pause();
@@ -249,6 +255,7 @@ public class SimulationMenuController {
      * Méthode invoquée par JavaFX
      */
     public void onRestart() {
+        logger.info("Triggered restart");
         if (JArmEmuApplication.getController().menuRestart.isDisable()) return;
         JArmEmuApplication.getEditorController().clearNotifications();
         JArmEmuApplication.getEditorController().clearAllLineMarkings();

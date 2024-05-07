@@ -122,12 +122,12 @@
                                         <FontIcon iconLiteral="mdsal-delete"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem fx:id="findAndReplace" mnemonicParsing="false" onAction="#onFindAndReplace" text="%menu.edit.findAndReplace">
+                                <MenuItem fx:id="findAndReplace" mnemonicParsing="false" onAction="#onFindAndReplace" text="%menu.edit.findAndReplace" accelerator="Shortcut+F">
                                     <graphic>
                                         <FontIcon iconLiteral="mdoal-find_replace"/>
                                     </graphic>
                                 </MenuItem>
-                                <MenuItem mnemonicParsing="false" onAction="#onToggleBreakpoint" text="%menu.edit.breakpoint">
+                                <MenuItem mnemonicParsing="false" onAction="#onToggleBreakpoint" text="%menu.edit.breakpoint" accelerator="Shortcut+B">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsmz-stop_circle"/>
                                     </graphic>
