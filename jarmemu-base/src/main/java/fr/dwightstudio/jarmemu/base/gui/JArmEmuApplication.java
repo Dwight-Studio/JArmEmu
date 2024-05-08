@@ -232,6 +232,8 @@ public class JArmEmuApplication extends Application {
 
                                 downloadURL = release.getHtmlUrl();
                                 newVersion = latestVersion;
+                            } else {
+                                logger.info("JArmEmu is up to date");
                             }
                         } catch (IOException exception) {
                             logger.warning("Can't verify version information (" + exception.getMessage() + ")");
