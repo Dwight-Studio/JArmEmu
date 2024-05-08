@@ -189,8 +189,8 @@ public class JArmEmuController implements Initializable {
                 }
             });
 
-            JArmEmuApplication.getInstance().stage.widthProperty().addListener(obs -> notifyLayoutChange());
-            JArmEmuApplication.getInstance().stage.heightProperty().addListener(obs -> notifyLayoutChange());
+            JArmEmuApplication.getStage().widthProperty().addListener(obs -> notifyLayoutChange());
+            JArmEmuApplication.getStage().heightProperty().addListener(obs -> notifyLayoutChange());
 
             mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
             leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
@@ -218,7 +218,7 @@ public class JArmEmuController implements Initializable {
     public String getLayoutJSON() {
         HashMap<String, Object> layout = new HashMap<>();
 
-        layout.put(WINDOW_SIZE_KEY, new JSONArray(new double[]{JArmEmuApplication.getInstance().stage.getWidth(), JArmEmuApplication.getInstance().stage.getHeight()}));
+        layout.put(WINDOW_SIZE_KEY, new JSONArray(new double[]{JArmEmuApplication.getStage().getWidth(), JArmEmuApplication.getStage().getHeight()}));
 
         HashMap<String, JSONArray> splitPanes = new HashMap<>();
         splitPanes.put(MAIN_SPLIT_PANE_KEY, new JSONArray(mainSplitPane.getDividerPositions()));
@@ -250,8 +250,8 @@ public class JArmEmuController implements Initializable {
             JSONObject layout = new JSONObject(json);
 
             JSONArray windowSize = layout.getJSONArray(WINDOW_SIZE_KEY);
-            JArmEmuApplication.getInstance().stage.setWidth(windowSize.getDouble(0));
-            JArmEmuApplication.getInstance().stage.setHeight(windowSize.getDouble(1));
+            JArmEmuApplication.getStage().setWidth(windowSize.getDouble(0));
+            JArmEmuApplication.getStage().setHeight(windowSize.getDouble(1));
 
             JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
 

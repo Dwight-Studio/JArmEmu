@@ -592,7 +592,7 @@ public class FileEditor {
         if (FileUtils.exists(path)) {
             fileChooser.setInitialDirectory(path.isDirectory() ? path : path.getParentFile());
         }
-        File file = fileChooser.showSaveDialog(JArmEmuApplication.getInstance().stage);
+        File file = fileChooser.showSaveDialog(JArmEmuApplication.getStage());
         if (file != null && !file.isDirectory()) {
             try {
                 if (!file.getAbsolutePath().endsWith(".s")) file = new File(file.getAbsolutePath() + ".s");

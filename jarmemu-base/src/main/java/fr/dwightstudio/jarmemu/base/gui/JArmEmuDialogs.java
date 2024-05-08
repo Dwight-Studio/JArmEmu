@@ -119,7 +119,7 @@ public class JArmEmuDialogs {
         });
 
         JArmEmuApplication.getController().openDialogFront(dialog);
-        JArmEmuApplication.getInstance().stage.requestFocus();
+        JArmEmuApplication.getStage().requestFocus();
 
         return rtn;
     }

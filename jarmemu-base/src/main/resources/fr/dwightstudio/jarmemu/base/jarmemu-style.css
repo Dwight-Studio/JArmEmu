@@ -25,6 +25,12 @@
     -fx-font-family: Cantarell;
 }
 
+.autocomplete {
+    -fx-font-family: "Source Code Pro";
+    -fx-font-size: 14px;
+    -color-cell-bg: -color-neutral-subtle;
+}
+
 .data-address {
     -fx-font-family: "Source Code Pro";
     -fx-font-size: 14px;

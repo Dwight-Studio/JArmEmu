@@ -35,7 +35,6 @@ import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
@@ -59,7 +58,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -381,6 +379,10 @@ public class JArmEmuApplication extends Application {
 
     public static JArmEmuApplication getInstance() {
         return instance;
+    }
+
+    public static Stage getStage() {
+        return instance.stage;
     }
 
     public static Status getStatus() {

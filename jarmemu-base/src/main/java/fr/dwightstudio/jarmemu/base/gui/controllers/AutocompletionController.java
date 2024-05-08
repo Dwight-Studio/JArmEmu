@@ -15,11 +15,17 @@ import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
+import javafx.scene.control.PopupControl;
 import javafx.scene.control.SelectionMode;
+import javafx.stage.PopupWindow;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.TwoDimensional;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,14 +34,16 @@ public class AutocompletionController implements Initializable {
     private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()\\[\\]{}]+$");
 
     private final Object LOCK = new Object();
+    private final Logger logger = Logger.getLogger(AutocompletionController.class.getSimpleName());
 
     private ArrayList<String> list;
     private ObservableListWrapper<String> wrappedList;
     private ListView<String> listView;
-    private Popover popover;
+    private PopupControl popup;
     private boolean reopened;
     private String currentWord;
     private boolean considerWord;
+    private double lastHeight;
 
     // Data
     private FileEditor editor;
@@ -55,6 +63,7 @@ public class AutocompletionController implements Initializable {
         wrappedList = new ObservableListWrapper<>(new ArrayList<>());
 
         listView = new ListView<>(wrappedList);
+        listView.getStyleClass().add("autocomplete");
         listView.setEditable(false);
         listView.getStyleClass().addAll(Styles.DENSE, Tweaks.EDGE_TO_EDGE);
         listView.setMinHeight(0);
@@ -79,15 +88,13 @@ public class AutocompletionController implements Initializable {
             }
         });
 
-        popover = new Popover();
-        popover.setTitle(JArmEmuApplication.formatMessage("%pop.autocomplete.title"));
-        popover.setContentNode(listView);
-        popover.setHeaderAlwaysVisible(false);
-        popover.setDetachable(false);
-        popover.setAnimated(true);
-        popover.setArrowSize(0);
-        popover.setHideOnEscape(true);
-        popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
+        popup = new PopupControl();
+        popup.getScene().setRoot(listView);
+        popup.setHideOnEscape(true);
+        popup.setAutoFix(false);
+        popup.setAutoHide(true);
+
+        lastHeight = 0;
     }
 
     public void update(FileEditor editor, int line, Section section, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
@@ -335,26 +342,24 @@ public class AutocompletionController implements Initializable {
                 double height = wrappedList.size() * listView.getFixedCellSize();
                 listView.setPrefHeight(height);
 
-                boolean up = bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY();
-
-                if (!popover.isShowing()) {
-                    if (up) {
-                        popover.setArrowLocation(Popover.ArrowLocation.BOTTOM_LEFT);
-                        popover.show(editor.getCodeArea(), bounds.getMinX(), bounds.getMinY() - bounds.getHeight() / 4);
-                    } else {
-                        popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
-                        popover.show(editor.getCodeArea(), bounds.getMinX(), bounds.getMaxY() + bounds.getHeight() / 4);
-                    }
+                if (bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY()) {
+                    popup.setAnchorLocation(PopupWindow.AnchorLocation.CONTENT_BOTTOM_LEFT);
+                    if (!popup.isShowing()) popup.show(JArmEmuApplication.getStage());
+                    popup.setAnchorY(bounds.getMinY());
                 } else {
-                    if (up) popover.setAnchorY(bounds.getMinY() - Math.min(height, 200) - bounds.getHeight() * 1.35);
+                    popup.setAnchorLocation(PopupWindow.AnchorLocation.CONTENT_TOP_LEFT);
+                    if (!popup.isShowing()) popup.show(JArmEmuApplication.getStage());
+                    popup.setAnchorY(bounds.getMaxY());
                 }
+
+                popup.setAnchorX(bounds.getMinX() - 6);
 
                 listView.requestFocus();
                 listView.getSelectionModel().selectFirst();
                 listView.scrollTo(0);
                 reopened = true;
             });
-        } else if (popover.isShowing()) popover.hide();
+        } else if (popup.isShowing()) popup.hide();
     }
 
     /**
@@ -405,7 +410,7 @@ public class AutocompletionController implements Initializable {
      */
     public void close() {
         Platform.runLater(() -> {
-            if (popover.isShowing()) popover.hide();
+            if (popup.isShowing()) popup.hide();
         });
     }
 

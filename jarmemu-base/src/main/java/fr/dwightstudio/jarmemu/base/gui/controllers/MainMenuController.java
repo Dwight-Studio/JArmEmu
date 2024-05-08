@@ -65,7 +65,7 @@ public class MainMenuController {
         if (FileUtils.exists(lastFile)) {
             fileChooser.setInitialDirectory(lastFile.isDirectory() ? lastFile : lastFile.getParentFile());
         }
-        List<File> files = fileChooser.showOpenMultipleDialog(JArmEmuApplication.getInstance().stage);
+        List<File> files = fileChooser.showOpenMultipleDialog(JArmEmuApplication.getStage());
         if (files != null && !files.isEmpty()){
             for (File file:files) {
                 if (FileUtils.isValidFile(file)) {
