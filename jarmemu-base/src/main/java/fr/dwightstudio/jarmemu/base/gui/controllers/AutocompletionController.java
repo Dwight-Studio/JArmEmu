@@ -310,12 +310,11 @@ public class AutocompletionController implements Initializable {
             //System.out.println(list);
 
             switch (currentWord) {
-                case "" -> {
-                }
+                case "" -> {}
                 case "{", "[" -> currentWord = "";
                 default -> {
                     final String finalCurrentWord = currentWord;
-                    list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()));
+                    list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()) || s.isBlank());
                     list.removeIf(s -> s.equalsIgnoreCase(finalCurrentWord));
                 }
             }
