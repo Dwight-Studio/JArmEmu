@@ -16,6 +16,7 @@ import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
 import java.util.*;
@@ -125,7 +126,7 @@ public class AutocompletionController implements Initializable {
                             case "RegisterArgument" -> {
                                 if (subContext != SubContext.REGISTER) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
-                                        list.add(value.name());
+                                        if (!value.isSpecial()) list.add(value.name());
                                     }
                                 }
                             }
@@ -133,8 +134,10 @@ public class AutocompletionController implements Initializable {
                             case "RegisterWithUpdateArgument" -> {
                                 if (subContext != SubContext.REGISTER) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
-                                        list.add(value.name());
-                                        list.add(value.name() + "!");
+                                        if (!value.isSpecial()) {
+                                            list.add(value.name());
+                                            list.add(value.name() + "!");
+                                        }
                                     }
                                 }
                             }
@@ -316,28 +319,34 @@ public class AutocompletionController implements Initializable {
             editor.getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
 
             if (!list.isEmpty()) Platform.runLater(this::show);
+            else close();
         }
     }
 
     private void show() {
         if (!list.isEmpty()) {
-            editor.getCodeArea().getCharacterBoundsOnScreen(getCurrentContextStart(), getCurrentContextEnd()).ifPresent(bounds -> {
+            int start = getCurrentContextStart();
+            int end = getCurrentContextEnd();
+
+            (start != end ? editor.getCodeArea().getCharacterBoundsOnScreen(start, end) : editor.getCodeArea().getCaretBounds()).ifPresent(bounds -> {
                 wrappedList.clear();
                 wrappedList.addAll(list);
 
                 double height = wrappedList.size() * listView.getFixedCellSize();
                 listView.setPrefHeight(height);
 
-                if (!popover.isShowing()) popover.show(editor.getCodeArea());
+                boolean up = bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY();
 
-                if (bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY()) {
-                    popover.setArrowLocation(Popover.ArrowLocation.BOTTOM_LEFT);
-                    popover.setAnchorX(bounds.getMinX());
-                    popover.setAnchorY(bounds.getMinY() - bounds.getHeight() / 4);
+                if (!popover.isShowing()) {
+                    if (up) {
+                        popover.setArrowLocation(Popover.ArrowLocation.BOTTOM_LEFT);
+                        popover.show(editor.getCodeArea(), bounds.getMinX(), bounds.getMinY() - bounds.getHeight() / 4);
+                    } else {
+                        popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
+                        popover.show(editor.getCodeArea(), bounds.getMinX(), bounds.getMaxY() + bounds.getHeight() / 4);
+                    }
                 } else {
-                    popover.setArrowLocation(Popover.ArrowLocation.TOP_LEFT);
-                    popover.setAnchorX(bounds.getMinX());
-                    popover.setAnchorY(bounds.getMaxY() + bounds.getHeight() / 4);
+                    if (up) popover.setAnchorY(bounds.getMinY() - Math.min(height, 200) - bounds.getHeight() * 1.35);
                 }
 
                 listView.requestFocus();
@@ -406,8 +415,8 @@ public class AutocompletionController implements Initializable {
     public void caretMoved() {
         synchronized (LOCK) {
             if (editor == null) return;
-            //if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line)
-            //    close();
+            if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line)
+                close();
 
             if (!reopened) close();
             else reopened = false;

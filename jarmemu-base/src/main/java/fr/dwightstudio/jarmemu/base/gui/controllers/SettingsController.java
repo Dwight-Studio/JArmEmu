@@ -72,8 +72,8 @@ public class SettingsController implements Initializable {
     public static final int DEFAULT_MAX_NOTIFICATION = 4;
 
     public static final boolean DEFAULT_MAXIMIZED = false;
-    public static final String DEFAULT_LAYOUT = "{\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"maximized\":true,\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
-
+    public static final String DEFAULT_MAXIMIZED_LAYOUT = "{\"windowSize\":[1920,1051],\"splitPanes\":{\"mainSplitPane\":[0.15,0.7],\"leftSplitPane\":[0.5]},\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
+    public static final String DEFAULT_MINIMIZED_LAYOUT = "{\"windowSize\":[1440,788],\"splitPanes\":{\"mainSplitPane\":[0.2,0.75],\"leftSplitPane\":[0.5]},\"memoryColumns\":{\"memoryDetails\":[true,true,false,true,true,true,true],\"memoryOverview\":[true,false,true,true,true,true]}}";
 
     // Clés
     public static final String VERSION_KEY = "version";
@@ -283,7 +283,8 @@ public class SettingsController implements Initializable {
         setThemeFamily(DEFAULT_THEME_FAMILY);
         setThemeVariation(DEFAULT_THEME_VARIATION);
         setMaxNotification(DEFAULT_MAX_NOTIFICATION);
-        setLayout(DEFAULT_LAYOUT);
+        setMaximized(DEFAULT_MAXIMIZED);
+        setLayout(DEFAULT_MAXIMIZED ? DEFAULT_MAXIMIZED_LAYOUT : DEFAULT_MINIMIZED_LAYOUT);
     }
 
     /**
@@ -478,8 +479,8 @@ public class SettingsController implements Initializable {
     }
 
     public String getLayout() {
-        if (getMaximized()) return preferences.get(MAXIMIZED_LAYOUT_KEY, DEFAULT_LAYOUT);
-        else return preferences.get(MINIMIZED_LAYOUT_KEY, DEFAULT_LAYOUT);
+        if (getMaximized()) return preferences.get(MAXIMIZED_LAYOUT_KEY, DEFAULT_MAXIMIZED_LAYOUT);
+        else return preferences.get(MINIMIZED_LAYOUT_KEY, DEFAULT_MINIMIZED_LAYOUT);
     }
 
     public void setLayout(String s) {
