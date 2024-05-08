@@ -30,7 +30,7 @@
     <name>JArmEmu</name>
     <groupId>fr.dwightstudio.jarmemu</groupId>
     <artifactId>jarmemu</artifactId>
-    <version>0.2.1</version>
+    <version>0.2.2</version>
     <packaging>pom</packaging>
 
     <modules>
