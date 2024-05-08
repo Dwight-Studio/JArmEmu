@@ -32,24 +32,25 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class BKPTInstruction extends ParsedInstruction<ImmediateOrRegisterArgument.RegisterOrImmediate, Object, Object, Object> {
+public class BKPTInstruction extends ParsedInstruction<RegisterOrImmediate, Object, Object, Object> {
     public BKPTInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public BKPTInstruction(Modifier modifier, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+    public BKPTInstruction(Modifier modifier, ParsedArgument<RegisterOrImmediate> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg1Class() {
+    public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg1Class() {
         return ImmediateOrRegisterArgument.class;
     }
 
@@ -88,12 +89,12 @@ public class BKPTInstruction extends ParsedInstruction<ImmediateOrRegisterArgume
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, ImmediateOrRegisterArgument.RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
         if (!ignoreExceptions) throw new BreakpointASMException(arg1.intValue());
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, ImmediateOrRegisterArgument.RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) {
+    protected void verify(StateContainer stateContainer, RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) {
 
     }
 }

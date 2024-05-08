@@ -28,12 +28,12 @@ import fr.dwightstudio.jarmemu.base.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.sim.entity.UpdatableRegister;
 
 import java.util.function.Supplier;
 
-public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdateArgument.UpdatableRegister> {
+public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister> {
 
     boolean update;
     RegisterArgument argument;
@@ -72,46 +72,4 @@ public class RegisterWithUpdateArgument extends ParsedArgument<RegisterWithUpdat
         super.verify(stateSupplier);
     }
 
-    public static final class UpdatableRegister extends Register {
-        private final Register register;
-        private boolean update;
-
-        public UpdatableRegister(Register register, boolean update) {
-            this.register = register;
-            this.update = update;
-        }
-
-        @Override
-        public int getData() {
-            return register.getData();
-        }
-
-        @Override
-        public void setData(int data) throws IllegalArgumentException {
-            register.setData(data);
-        }
-
-        @Override
-        public boolean get(int index) throws IllegalArgumentException {
-            return register.get(index);
-        }
-
-        @Override
-        public void set(int index, boolean value) {
-            register.set(index, value);
-        }
-
-        @Override
-        public void add(int value) {
-            register.add(value);
-        }
-
-        /**
-         * Met à jour le registre en fonction du nombre de registres de l'argument RegisterArray
-         */
-        public void update(int value) {
-            if (update) register.add(value);
-            update = false;
-        }
-    }
 }

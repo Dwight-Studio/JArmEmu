@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PopupControl;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.Pane;
 import javafx.stage.PopupWindow;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.TwoDimensional;
@@ -43,7 +44,6 @@ public class AutocompletionController implements Initializable {
     private boolean reopened;
     private String currentWord;
     private boolean considerWord;
-    private double lastHeight;
 
     // Data
     private FileEditor editor;
@@ -63,7 +63,6 @@ public class AutocompletionController implements Initializable {
         wrappedList = new ObservableListWrapper<>(new ArrayList<>());
 
         listView = new ListView<>(wrappedList);
-        listView.getStyleClass().add("autocomplete");
         listView.setEditable(false);
         listView.getStyleClass().addAll(Styles.DENSE, Tweaks.EDGE_TO_EDGE);
         listView.setMinHeight(0);
@@ -88,13 +87,14 @@ public class AutocompletionController implements Initializable {
             }
         });
 
+        Pane listContainer = new Pane(listView);
+        listContainer.getStyleClass().add("autocomplete");
+
         popup = new PopupControl();
-        popup.getScene().setRoot(listView);
+        popup.getScene().setRoot(listContainer);
         popup.setHideOnEscape(true);
         popup.setAutoFix(false);
         popup.setAutoHide(true);
-
-        lastHeight = 0;
     }
 
     public void update(FileEditor editor, int line, Section section, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
@@ -339,7 +339,7 @@ public class AutocompletionController implements Initializable {
                 wrappedList.clear();
                 wrappedList.addAll(list);
 
-                double height = wrappedList.size() * listView.getFixedCellSize();
+                double height = wrappedList.size() * listView.getFixedCellSize() + 20;
                 listView.setPrefHeight(height);
 
                 if (bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY()) {
@@ -352,7 +352,7 @@ public class AutocompletionController implements Initializable {
                     popup.setAnchorY(bounds.getMaxY());
                 }
 
-                popup.setAnchorX(bounds.getMinX() - 6);
+                popup.setAnchorX(bounds.getMinX() - 16);
 
                 listView.requestFocus();
                 listView.getSelectionModel().selectFirst();

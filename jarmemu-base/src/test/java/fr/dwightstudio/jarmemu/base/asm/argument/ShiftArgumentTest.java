@@ -1,11 +1,12 @@
 package fr.dwightstudio.jarmemu.base.asm.argument;
 
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ShiftArgumentTest extends ArgumentTest<ShiftArgument.ShiftFunction> {
+class ShiftArgumentTest extends ArgumentTest<ShiftFunction> {
     public ShiftArgumentTest() {
         super(ShiftArgument.class);
     }
@@ -15,7 +16,7 @@ class ShiftArgumentTest extends ArgumentTest<ShiftArgument.ShiftFunction> {
         int data = 0b00000000000000000000000000000001;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
         stateContainer.getLR().setData(0b00000000000000000000000000000100);
-        ShiftArgument.ShiftFunction f;
+        ShiftFunction f;
 
         f = parse("LSL#5");
         assertEquals(0b00000000000000000000000000100000, f.apply(data));
@@ -32,7 +33,7 @@ class ShiftArgumentTest extends ArgumentTest<ShiftArgument.ShiftFunction> {
         int data = 0b10000000000000000000000000000000;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
         stateContainer.getLR().setData(0b00000000000000000000000000000100);
-        ShiftArgument.ShiftFunction f;
+        ShiftFunction f;
 
         f = parse("LSR#5");
         assertEquals(0b00000100000000000000000000000000, f.apply(data));
@@ -49,7 +50,7 @@ class ShiftArgumentTest extends ArgumentTest<ShiftArgument.ShiftFunction> {
         int data = 0b10000000000000000000000000000000;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
         stateContainer.getLR().setData(0b00000000000000000000000000000100);
-        ShiftArgument.ShiftFunction f;
+        ShiftFunction f;
 
         f = parse("ASR#5");
         assertEquals(0b11111100000000000000000000000000, f.apply(data));
@@ -77,7 +78,7 @@ class ShiftArgumentTest extends ArgumentTest<ShiftArgument.ShiftFunction> {
         int data = 0b00000000000000000000000000001000;
         stateContainer.getRegister(0).setData(0b0000000000000000000000000000010);
         stateContainer.getLR().setData(0b00000000000000000000000000000100);
-        ShiftArgument.ShiftFunction f;
+        ShiftFunction f;
 
         f = parse("ROR#5");
         assertEquals(0b01000000000000000000000000000000, f.apply(data));
@@ -92,7 +93,7 @@ class ShiftArgumentTest extends ArgumentTest<ShiftArgument.ShiftFunction> {
     @Test
     public void RRXTest() throws ASMException {
         int data;
-        ShiftArgument.ShiftFunction f = parse("RRX");
+        ShiftFunction f = parse("RRX");
 
         data = 0b00000000000000000000000000001000;
         stateContainer.getCPSR().setC(false);

@@ -89,7 +89,7 @@ public class LegacySourceParserTest extends JArmEmuTest {
         ins = new Object[3];
         ins[0] = new ParsedSection(Section.TEXT);
         ins[1] = new SUBInstruction(new Modifier(Condition.AL, false, null, null), "r2", "r0", "r1", null);
-        ins[2] = new SUBInstruction(new Modifier(Condition.AL, false, null, null), "r0", "r1", null, null);
+        ins[2] = new SUBInstruction(new Modifier(Condition.AL, false, null, null), "r0", "r0", "r1", null);
 
         test("/subLine.s");
     }

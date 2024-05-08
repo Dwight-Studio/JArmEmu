@@ -34,6 +34,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
+import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -56,7 +57,7 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
         stateContainerBis = new StateContainer();
     }
 
-    protected ShiftArgument.ShiftFunction shift() {
+    protected ShiftFunction shift() {
         try {
             return new ShiftArgument(null).getValue(stateContainer);
         } catch (ExecutionASMException | SyntaxASMException e) {
@@ -64,7 +65,7 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
         }
     }
 
-    protected ShiftArgument.ShiftFunction shift(StateContainer c, String s) {
+    protected ShiftFunction shift(StateContainer c, String s) {
         try {
             ShiftArgument arg = new ShiftArgument(s);
             arg.contextualize(c);

@@ -285,6 +285,17 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
     }
 
+    @Test
+    public void countTest() {
+        parser = new RegexSourceParser();
+        loadUnique("/complete/count.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/count-memory.d");
+    }
+
 
     @Test
     public void factorialLegacyTest() {
@@ -377,5 +388,16 @@ public class CompleteTest extends JArmEmuTest {
         execute();
 
         assertEqualsMemory("/complete/graph/GraphesMain-memory.d");
+    }
+
+    @Test
+    public void countLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/count.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/count-memory.d");
     }
 }

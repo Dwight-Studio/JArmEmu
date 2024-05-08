@@ -32,18 +32,20 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateFlags;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
+import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
+import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class MVNInstruction extends ParsedInstruction<Register, ImmediateOrRegisterArgument.RegisterOrImmediate, ShiftArgument.ShiftFunction, Object> {
+public class MVNInstruction extends ParsedInstruction<Register, RegisterOrImmediate, ShiftFunction, Object> {
     public MVNInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
-    public MVNInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate> arg2, ParsedArgument<ShiftArgument.ShiftFunction> arg3, ParsedArgument<Object> arg4) {
+    public MVNInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<RegisterOrImmediate> arg2, ParsedArgument<ShiftFunction> arg3, ParsedArgument<Object> arg4) {
         super(modifier,  arg1, arg2, arg3, arg4);
     }
 
@@ -55,13 +57,13 @@ public class MVNInstruction extends ParsedInstruction<Register, ImmediateOrRegis
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<ImmediateOrRegisterArgument.RegisterOrImmediate>> getParsedArg2Class() {
+    public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg2Class() {
         return RotatedImmediateOrRegisterArgument.class;
     }
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<ShiftArgument.ShiftFunction>> getParsedArg3Class() {
+    public Class<? extends ParsedArgument<ShiftFunction>> getParsedArg3Class() {
         return ShiftArgument.class;
     }
 
@@ -88,7 +90,7 @@ public class MVNInstruction extends ParsedInstruction<Register, ImmediateOrRegis
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, ImmediateOrRegisterArgument.RegisterOrImmediate arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws ExecutionASMException {
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, RegisterOrImmediate arg2, ShiftFunction arg3, Object arg4) throws ExecutionASMException {
         int i1 = arg3.apply(arg2);
 
         arg1.setData(~i1); // arg1 = ~(arg3 SHIFT arg2)
@@ -100,7 +102,7 @@ public class MVNInstruction extends ParsedInstruction<Register, ImmediateOrRegis
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, ImmediateOrRegisterArgument.RegisterOrImmediate arg2, ShiftArgument.ShiftFunction arg3, Object arg4) throws SyntaxASMException {
+    protected void verify(StateContainer stateContainer, Register arg1, RegisterOrImmediate arg2, ShiftFunction arg3, Object arg4) throws SyntaxASMException {
         arg3.check(arg2);
     }
 }

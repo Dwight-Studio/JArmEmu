@@ -26,9 +26,14 @@
 }
 
 .autocomplete {
+    -fx-opacity: 100;
     -fx-font-family: "Source Code Pro";
-    -fx-font-size: 14px;
-    -color-cell-bg: -color-neutral-subtle;
+    -fx-background-color: -color-neutral-subtle;
+    -fx-background-radius: 10;
+}
+
+.autocomplete .list-view {
+    -fx-padding: 10;
 }
 
 .data-address {

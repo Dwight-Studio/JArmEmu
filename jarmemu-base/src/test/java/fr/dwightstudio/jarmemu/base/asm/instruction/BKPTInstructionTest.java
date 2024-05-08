@@ -23,13 +23,13 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.BreakpointASMException;
+import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class BKPTInstructionTest extends InstructionTest<ImmediateOrRegisterArgument.RegisterOrImmediate, Object, Object, Object> {
+class BKPTInstructionTest extends InstructionTest<RegisterOrImmediate, Object, Object, Object> {
 
     protected BKPTInstructionTest() {
         super(BKPTInstruction.class);
@@ -37,6 +37,6 @@ class BKPTInstructionTest extends InstructionTest<ImmediateOrRegisterArgument.Re
 
     @Test
     public void simpleBkptTest() {
-        Assertions.assertThrows(BreakpointASMException.class, () -> legacyExecute(new StateContainer(), false, false, null, null, new ImmediateOrRegisterArgument.RegisterOrImmediate(1), null, null, null));
+        Assertions.assertThrows(BreakpointASMException.class, () -> legacyExecute(new StateContainer(), false, false, null, null, new RegisterOrImmediate(1), null, null, null));
     }
 }
