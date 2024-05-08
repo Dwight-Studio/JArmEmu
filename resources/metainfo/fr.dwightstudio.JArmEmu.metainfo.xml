@@ -77,6 +77,37 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-05-08" version="0.2.1">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.2.1</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Added &quot;Add breakpoint&quot; context option</li>
+                    <li>Added Find &amp; Replace menu in code editor</li>
+                    <li>Added shortcut for simulation control</li>
+                    <li>Added autocompletion system</li>
+                    <li>Added unintentation (Shift+Tab)</li>
+                    <li>Added version auto-checking</li>
+                    <li>Improved splash screen</li>
+                    <li>Improved code highlighting (real time parsing)</li>
+                    <li>Improved notifications layout</li>
+                    <li>Improved instruction modifiers handling</li>
+                    <li>Added BLXNS instruction</li>
+                    <li>Added BXNS instruction</li>
+                    <li>Added PUSH instruction</li>
+                    <li>Added POP instruction</li>
+                    <li>Added switch in settings to ignore unimplemented/deprecated instructions</li>
+                    <li>Fixed BLX instruction not being able to use labels</li>
+                    <li>Fixed STM/LDM instruction not detecting the lack of update mode</li>
+                    <li>Fixed LDM update mode effects</li>
+                    <li>Fixed labels/symbols validation</li>
+                    <li>Fixed editor behaviour when simulation with no opened files</li>
+                    <li>Fixed shift argument syntax (only usable with registers)</li>
+                    <li>Fixed instruction (with working register) behaviour</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-04-13" version="0.2.0">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.2.0</url>
             <description>
