@@ -90,8 +90,11 @@ public class AutocompletionController implements Initializable {
         Pane listContainer = new Pane(listView);
         listContainer.getStyleClass().add("autocomplete");
 
+        Pane back = new Pane(listContainer);
+        back.getStyleClass().add("popup");
+
         popup = new PopupControl();
-        popup.getScene().setRoot(listContainer);
+        popup.getScene().setRoot(back);
         popup.setHideOnEscape(true);
         popup.setAutoFix(false);
         popup.setAutoHide(true);

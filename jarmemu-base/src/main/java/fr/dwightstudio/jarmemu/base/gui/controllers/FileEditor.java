@@ -270,7 +270,7 @@ public class FileEditor {
         HBox back = new HBox(findContainer);
         HBox.setHgrow(findContainer, Priority.ALWAYS);
         back.setMaxWidth(Double.MAX_VALUE);
-        back.getStyleClass().addAll("findAndReplace-back");
+        back.getStyleClass().addAll("popup");
 
         AnchorPane.setBottomAnchor(back, 20d);
         AnchorPane.setLeftAnchor(back, 20d);
