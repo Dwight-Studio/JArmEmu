@@ -1,6 +1,9 @@
 package fr.dwightstudio.jarmemu.base.util;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
+import java.util.SequencedSet;
 
 public class SequencedSetUtils {
 

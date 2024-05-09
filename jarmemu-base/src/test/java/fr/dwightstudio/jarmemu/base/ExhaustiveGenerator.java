@@ -7,7 +7,8 @@ import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 

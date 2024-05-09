@@ -23,7 +23,10 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.*;
+import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.RotatedImmediateOrRegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;

@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.base.util;
 
-import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.RequiredModifierParameter;

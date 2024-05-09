@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.base.sim;
 
-import atlantafx.base.theme.Theme;
 import fr.dwightstudio.jarmemu.base.JArmEmuTest;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.StuckExecutionASMException;

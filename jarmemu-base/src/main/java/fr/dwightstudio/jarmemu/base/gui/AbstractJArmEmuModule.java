@@ -27,7 +27,6 @@ import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.gui.controllers.*;
 import fr.dwightstudio.jarmemu.base.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;
-import fr.dwightstudio.jarmemu.base.gui.controllers.*;
 import javafx.fxml.Initializable;
 
 import java.net.URL;

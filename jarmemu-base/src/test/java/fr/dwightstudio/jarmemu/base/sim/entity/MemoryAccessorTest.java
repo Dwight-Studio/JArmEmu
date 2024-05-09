@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.base.sim.entity;
 
-import fr.dwightstudio.jarmemu.base.sim.entity.MemoryAccessor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

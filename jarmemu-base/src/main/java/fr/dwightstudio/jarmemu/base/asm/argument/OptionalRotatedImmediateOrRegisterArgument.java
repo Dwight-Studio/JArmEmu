@@ -1,10 +1,8 @@
 package fr.dwightstudio.jarmemu.base.asm.argument;
 
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
-import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 

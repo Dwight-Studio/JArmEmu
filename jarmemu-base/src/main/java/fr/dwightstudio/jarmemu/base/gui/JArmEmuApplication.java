@@ -29,7 +29,6 @@ import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.base.gui.controllers.*;
-import fr.dwightstudio.jarmemu.base.gui.controllers.AutocompletionController;
 import fr.dwightstudio.jarmemu.base.sim.CodeInterpreter;
 import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;
 import javafx.animation.KeyFrame;

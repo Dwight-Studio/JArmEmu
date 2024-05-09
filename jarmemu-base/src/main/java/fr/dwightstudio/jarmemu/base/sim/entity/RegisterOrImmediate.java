@@ -1,7 +1,5 @@
 package fr.dwightstudio.jarmemu.base.sim.entity;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
-
 import java.util.Objects;
 
 public class RegisterOrImmediate extends Number {

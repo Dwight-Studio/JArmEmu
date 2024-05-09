@@ -1,6 +1,5 @@
 package fr.dwightstudio.jarmemu.base.gui.controllers;
 
-import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
@@ -19,11 +18,8 @@ import javafx.scene.control.PopupControl;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.PopupWindow;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.TwoDimensional;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Logger;

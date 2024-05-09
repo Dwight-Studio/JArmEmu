@@ -24,16 +24,16 @@
 package fr.dwightstudio.jarmemu.base.gui.editor;
 
 import fr.dwightstudio.jarmemu.base.asm.Directive;
+import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
-import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.base.util.CaseIndependentEntry;
-import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import fr.dwightstudio.jarmemu.base.util.EnumUtils;
+import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpansBuilder;

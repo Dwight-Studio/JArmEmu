@@ -24,8 +24,6 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.NotImplementedASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 

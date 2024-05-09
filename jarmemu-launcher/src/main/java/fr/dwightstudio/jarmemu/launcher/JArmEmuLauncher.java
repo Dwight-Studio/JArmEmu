@@ -23,12 +23,12 @@
 
 package fr.dwightstudio.jarmemu.launcher;
 
+import com.sun.javafx.application.LauncherImpl;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
+
 import java.io.IOException;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import com.sun.javafx.application.LauncherImpl;
-import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 
 public class JArmEmuLauncher {
 
