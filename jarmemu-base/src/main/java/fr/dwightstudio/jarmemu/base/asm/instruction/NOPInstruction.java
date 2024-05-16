@@ -63,7 +63,7 @@ public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Ob
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class);
+        return SequencedSetUtils.of();
     }
 
     @Override

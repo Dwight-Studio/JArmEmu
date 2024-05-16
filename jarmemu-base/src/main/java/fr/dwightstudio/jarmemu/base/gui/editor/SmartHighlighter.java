@@ -88,6 +88,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     private int line;
     private int cancelLine;
+    private int preventLine;
 
     private static final Object LOCK = new Object();
     private static HashSet<CaseIndependentEntry> caseTranslationTable;
@@ -201,7 +202,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                         if (cursorPos <= 0) {
                             cursorPos = Integer.MAX_VALUE;
-                            JArmEmuApplication.getAutocompletionController().update(editor, line, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
+                            if (line != preventLine) JArmEmuApplication.getAutocompletionController().update(editor, line, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
                         }
 
                         if (text.isEmpty()) break;
@@ -1126,5 +1127,11 @@ public class SmartHighlighter extends RealTimeParser {
     public void cancelLine(int cancelLine) {
         queue.remove(cancelLine);
         this.cancelLine = cancelLine;
+    }
+
+    @Override
+    public void preventAutocomplete(int preventLine) {
+        cancelLine(preventLine);
+        this.preventLine = preventLine;
     }
 }

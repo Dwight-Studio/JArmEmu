@@ -342,6 +342,7 @@ public class FileEditor {
             }
 
             Find f = previousFind.get(selectedFind);
+            realTimeParser.preventAutocomplete(codeArea.offsetToPosition(f.start(), TwoDimensional.Bias.Forward).getMajor());
             codeArea.moveTo(f.start());
             codeArea.requestFollowCaret();
             codeArea.selectRange(f.start(), f.end());
@@ -356,6 +357,7 @@ public class FileEditor {
 
             int offset = 0;
             for (Find f : previousFind) {
+                realTimeParser.preventAutocomplete(codeArea.offsetToPosition(f.start(), TwoDimensional.Bias.Forward).getMajor());
                 codeArea.moveTo(offset + f.start());
                 codeArea.requestFollowCaret();
                 codeArea.selectRange(offset + f.start(), offset + f.end());

@@ -2,6 +2,7 @@
 
 - Fixed autocompletion popup transparency
 - Fixed maximized screen size
+- Fixed autocompletion compatibility with find & replace
 
 0.2.0 -> 0.2.1
 

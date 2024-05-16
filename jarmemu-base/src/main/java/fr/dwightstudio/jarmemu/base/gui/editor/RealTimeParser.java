@@ -51,4 +51,10 @@ public abstract class RealTimeParser extends Thread {
      * @param cancelLine the line to cancel
      */
     public abstract void cancelLine(int cancelLine);
+
+    /**
+     * Prevents autocomplete when processing line
+     * @param line the line to prevents
+     */
+    public abstract void preventAutocomplete(int line);
 }

@@ -200,4 +200,9 @@ public class KeywordHighlighter extends RealTimeParser {
         queue.remove(cancelLine);
         this.cancelLine = cancelLine;
     }
+
+    @Override
+    public void preventAutocomplete(int line) {
+
+    }
 }
