@@ -249,9 +249,11 @@ public class JArmEmuController implements Initializable {
         try {
             JSONObject layout = new JSONObject(json);
 
-            JSONArray windowSize = layout.getJSONArray(WINDOW_SIZE_KEY);
-            JArmEmuApplication.getStage().setWidth(windowSize.getDouble(0));
-            JArmEmuApplication.getStage().setHeight(windowSize.getDouble(1));
+            if (!JArmEmuApplication.getStage().isMaximized()) {
+                JSONArray windowSize = layout.getJSONArray(WINDOW_SIZE_KEY);
+                JArmEmuApplication.getStage().setWidth(windowSize.getDouble(0));
+                JArmEmuApplication.getStage().setHeight(windowSize.getDouble(1));
+            }
 
             JSONObject splitPanes = layout.getJSONObject(SPLIT_PANES_KEY);
 
