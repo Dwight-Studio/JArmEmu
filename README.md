@@ -76,9 +76,10 @@ yay -S jarmemu
 [![Linux Mint](https://img.shields.io/badge/Linux_Mint-87CF3E?style=for-the-badge&logo=linux-mint&logoColor=white)](#debian)
 [![Kali Linux](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kali-linux&logoColor=white)](#debian)
 
-JArmEmu is not yet available in an APT repository (soon in the Dwight Studio repository!).
-
-Meanwhile, you can download and install the DEB packages if available (or the portable version) from the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest).
+JArmEmu is available on the Dwight Studio repository:
+```bash
+sudo wget -O - https://deb.dwightstudio.fr/install-repository.sh | sudo bash
+```
 
 ## Licence
 This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (independent
