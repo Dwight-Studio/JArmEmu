@@ -79,7 +79,7 @@ yay -S jarmemu
 JArmEmu is available on the Dwight Studio repository:
 ```bash
 sudo wget -O - https://deb.dwightstudio.fr/install-repository.sh | sudo bash
-sudo apt update && apt install jarmemu
+sudo apt update && sudo apt install jarmemu
 ```
 
 ## Licence
