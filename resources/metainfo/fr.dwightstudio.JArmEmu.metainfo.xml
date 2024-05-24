@@ -77,6 +77,18 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-05-24" version="0.2.2">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.2.2</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Fixed autocompletion popup background transparency</li>
+                    <li>Fixed bug that prevented the window from being maximized on certain configurations</li>
+                    <li>Fixed autocompletion compatibility with find &amp; replace</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-05-08" version="0.2.1">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.2.1</url>
             <description>

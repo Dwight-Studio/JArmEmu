@@ -1,7 +1,7 @@
 0.2.1 -> 0.2.2
 
-- Fixed autocompletion popup transparency
-- Fixed maximized screen size
+- Fixed autocompletion popup background transparency
+- Fixed bug that prevented the window from being maximized on certain configurations
 - Fixed autocompletion compatibility with find & replace
 
 0.2.0 -> 0.2.1
