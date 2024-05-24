@@ -135,8 +135,7 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
-    // TODO: Ajouter le support des directives pour l'autocomplétion
-    // TODO: Ajouter un switch pour l'autocomplétion/smart highlighter
+    // TODO: Ajouter le support de plus de directives pour l'autocomplétion
     // TODO: Ajouter une detection des boucles infinies
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux
@@ -464,7 +463,7 @@ public class JArmEmuApplication extends Application {
     }
 
     public void newSourceParser() {
-        if (getSettingsController().getSourceParserSetting() == 1) {
+        if (getSettingsController().getSourceParser() == 1) {
             sourceParser = new LegacySourceParser();
         } else {
             sourceParser = new RegexSourceParser();

@@ -398,4 +398,12 @@ public class EditorController implements Initializable {
         JArmEmuApplication.getController().menuSimulate.setDisable(true);
         JArmEmuApplication.getController().toolSimulate.setDisable(true);
     }
+
+    /**
+     * Reinitialize all real time parsers
+     */
+    public void reinitializeRealTimeParsers() {
+        getFileEditors().forEach(FileEditor::initializeRealTimeParser);
+        getFileEditors().forEach(FileEditor::forceRefreshRealTimeParser);
+    }
 }

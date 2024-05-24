@@ -34,6 +34,7 @@ import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
 import fr.dwightstudio.jarmemu.base.util.CaseIndependentEntry;
 import fr.dwightstudio.jarmemu.base.util.EnumUtils;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
+import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
@@ -111,8 +112,6 @@ public class KeywordHighlighter extends RealTimeParser {
         });
 
         cancelLine = -1;
-
-        this.start();
     }
 
     @Override
@@ -147,7 +146,7 @@ public class KeywordHighlighter extends RealTimeParser {
 
                 cancelLine = -1;
 
-                if (lastKwEnd != 0) editor.getCodeArea().setStyleSpans(line, 0, spansBuilder.create());
+                if (lastKwEnd != 0) Platform.runLater(() -> editor.getCodeArea().setStyleSpans(line, 0, spansBuilder.create()));
             } catch (InterruptedException e) {
                 this.interrupt();
             }

@@ -7,6 +7,8 @@ import java.util.Set;
 
 public abstract class RealTimeParser extends Thread {
 
+    public static final int DEFAULT_REAL_TIME_PARSER = 0;
+
     public RealTimeParser(@NotNull String name) {
         super(name);
     }

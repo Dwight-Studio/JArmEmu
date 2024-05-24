@@ -27,10 +27,7 @@ import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.base.Status;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.base.gui.editor.EditorContextMenu;
-import fr.dwightstudio.jarmemu.base.gui.editor.Find;
-import fr.dwightstudio.jarmemu.base.gui.editor.RealTimeParser;
-import fr.dwightstudio.jarmemu.base.gui.editor.SmartHighlighter;
+import fr.dwightstudio.jarmemu.base.gui.editor.*;
 import fr.dwightstudio.jarmemu.base.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.util.FileUtils;
@@ -86,7 +83,7 @@ public class FileEditor {
     private final ToggleButton regex;
     private final Button closeFind;
 
-    private final SmartHighlighter realTimeParser;
+    private RealTimeParser realTimeParser;
     private final EditorContextMenu contextMenu;
     private final JArmEmuLineFactory lineFactory;
 
@@ -100,10 +97,11 @@ public class FileEditor {
 
     public FileEditor(String fileName, String content) {
         codeArea = new CodeArea();
-        this.realTimeParser = new SmartHighlighter(this);
         editorScroll = new VirtualizedScrollPane<>(codeArea);
         stackPane = new StackPane(editorScroll);
         fileTab = new Tab(fileName, stackPane);
+
+        initializeRealTimeParser();
 
         Separator separator = new Separator(Orientation.VERTICAL);
         separator.setMouseTransparent(true);
@@ -621,7 +619,7 @@ public class FileEditor {
             try {
                 String fileContent = new SourceScanner(path, JArmEmuApplication.getEditorController().getFileIndex(this)).exportCode();
                 setSaved(fileContent);
-                this.codeArea.replaceText("");
+                this.codeArea.clear();
                 this.codeArea.replaceText(fileContent);
                 logger.info("File reloaded: " + path.getAbsolutePath());
             } catch (Exception exception) {
@@ -645,7 +643,6 @@ public class FileEditor {
      * @apiNote Used to manage the '*' in the file title name
      */
     private void setSaved(@NotNull String text) {
-        logger.info("Set saved: " + text);
         saved = true;
         lastSaveContent = text;
         fileTab.setText(getFileName());
@@ -655,8 +652,6 @@ public class FileEditor {
      * Met à jour l'état de sauvegarde
      */
     public void updateSaveState() {
-        logger.info("\"" + codeArea.getText() + "\"");
-        logger.info("\"" + lastSaveContent + "\"");
         saved = codeArea.getText().equals(lastSaveContent);
 
         if (saved) {
@@ -672,7 +667,7 @@ public class FileEditor {
     }
 
     /**
-     * @return un nouveau SourceScanner du fichier modifié
+     * @return a new SourceScanner of the modified file
      */
     public SourceScanner getSourceScanner() {
         return new SourceScanner(codeArea.getText(), path == null ? JArmEmuApplication.formatMessage("%menu.file.newFile") : path.getName(), JArmEmuApplication.getEditorController().getFileIndex(this));
@@ -697,6 +692,34 @@ public class FileEditor {
      */
     public int getRealIndex() {
         return JArmEmuApplication.getEditorController().getFileIndex(this);
+    }
+
+    /**
+     * Initializes a new real time parser corresponding to the current configs
+     */
+    public void initializeRealTimeParser() {
+        if (realTimeParser != null && realTimeParser.isAlive()) {
+            realTimeParser.interrupt();
+        }
+        if (JArmEmuApplication.getSettingsController().getRealTimeParser() == 0) {
+            logger.info("Initializing Smart Highlighter in " + getFileName());
+            realTimeParser = new SmartHighlighter(this);
+        } else {
+            logger.info("Initializing Keyword Highlighter in " + getFileName());
+            realTimeParser = new KeywordHighlighter(this);
+        }
+    }
+
+    /**
+     * Force-refreshes the real time parser
+     */
+    public void forceRefreshRealTimeParser() {
+        logger.info("Refreshing real time parser in " + getFileName());
+        codeArea.clearStyle(0, codeArea.getLength());
+        if (!realTimeParser.isAlive() && !realTimeParser.isInterrupted()) {
+            realTimeParser.start();
+        }
+        realTimeParser.markDirty(0, codeArea.getParagraphs().size());
     }
 
     public RealTimeParser getRealTimeParser() {

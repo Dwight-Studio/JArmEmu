@@ -35,7 +35,7 @@ public class SimulationMenuController {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onSimulate() {
         logger.info("Triggered simulation");
@@ -132,7 +132,7 @@ public class SimulationMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onStepInto() {
         logger.info("Triggered step into");
@@ -142,7 +142,7 @@ public class SimulationMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onStepOver() {
         logger.info("Triggered step over");
@@ -164,7 +164,7 @@ public class SimulationMenuController {
         JArmEmuApplication.getEditorController().onContinueOrStepOver();}
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onContinue() {
         logger.info("Triggered continue");
@@ -187,7 +187,7 @@ public class SimulationMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onPause() {
         logger.info("Triggered pause");
@@ -209,7 +209,7 @@ public class SimulationMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onStop() {
         logger.info("Triggered stop");
@@ -245,14 +245,14 @@ public class SimulationMenuController {
         JArmEmuApplication.getController().labelsPane.setDisable(true);
         JArmEmuApplication.getController().symbolsPane.setDisable(true);
         JArmEmuApplication.getController().stackPane.setDisable(true);
-        JArmEmuApplication.getController().findAndReplace.setDisable(true);
+        JArmEmuApplication.getController().findAndReplace.setDisable(false);
 
         JArmEmuApplication.setStatus(Status.EDITING);
         JArmEmuApplication.getExecutionWorker().updateGUI();
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onRestart() {
         logger.info("Triggered restart");

@@ -108,6 +108,9 @@ public class JArmEmuController implements Initializable {
     @FXML protected CustomTextField memoryOverviewAddressField;
 
     @FXML protected AnchorPane settingsPane;
+    @FXML protected ToggleButton settingsSmart;
+    @FXML protected ToggleButton settingsSimple;
+    @FXML protected ToggleSwitch autoCompletionSwitch;
     @FXML protected Spinner<Integer> settingsSimInterval;
     @FXML protected ToggleButton settingsRegex;
     @FXML protected ToggleButton settingsLegacy;
@@ -411,6 +414,16 @@ public class JArmEmuController implements Initializable {
 
     @FXML
     protected void onAbout() {JArmEmuApplication.getMainMenuController().onAbout();}
+
+    @FXML
+    public void onSettingsSmart() {
+        JArmEmuApplication.getSettingsController().onSettingsSmart();
+    }
+
+    @FXML
+    public void onSettingsSimple() {
+        JArmEmuApplication.getSettingsController().onSettingsSimple();
+    }
 
     @FXML
     public void onSettingsRegex() {

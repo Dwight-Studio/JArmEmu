@@ -31,7 +31,6 @@ public class AutocompletionController implements Initializable {
     private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()\\[\\]{}]+$");
 
     private final Object LOCK = new Object();
-    private final Logger logger = Logger.getLogger(AutocompletionController.class.getSimpleName());
 
     private ArrayList<String> list;
     private ObservableListWrapper<String> wrappedList;
@@ -108,7 +107,7 @@ public class AutocompletionController implements Initializable {
         this.bracket = bracket;
         this.brace = brace;
 
-        if (JArmEmuApplication.getStatus() == Status.EDITING) {
+        if (JArmEmuApplication.getStatus() == Status.EDITING && JArmEmuApplication.getSettingsController().getAutoCompletion()) {
             update();
         }
     }

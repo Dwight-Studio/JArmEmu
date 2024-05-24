@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.base.gui.editor.RealTimeParser;
 import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.converters.SpinnerAddressConverter;
@@ -51,6 +52,8 @@ public class SettingsController implements Initializable {
     };
 
     // Valeurs par défaut
+    public static final boolean DEFAULT_AUTO_COMPLETION = true;
+
     public static final boolean DEFAULT_IGNORE_UNIMPLEMENTED = false;
     public static final boolean DEFAULT_IGNORE_DEPRECATED = false;
 
@@ -79,6 +82,9 @@ public class SettingsController implements Initializable {
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
     public static final String IGNORE_VERSION_KEY = "ignoreVersion";
+
+    public static final String REAL_TIME_PARSER_KEY = "realTimeParser";
+    public static final String AUTO_COMPLETION_KEY = "autoCompletion";
 
     public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
     public static final String SOURCE_PARSER_KEY = "sourceParser";
@@ -127,9 +133,11 @@ public class SettingsController implements Initializable {
     private SpinnerValueFactory<Integer> maxNotificationValue;
 
     // ToggleGroup
+    private ToggleGroup realTimeParserGroup;
     private ToggleGroup parserGroup;
     private ToggleGroup themeGroup;
 
+    private ToggleButton[] realTimeParserToggles;
     private ToggleButton[] parserToggles;
     private ToggleButton[] themeToggles;
 
@@ -153,19 +161,24 @@ public class SettingsController implements Initializable {
         JArmEmuApplication.getController().settingsMaxNotification.setValueFactory(maxNotificationValue);
 
         // Gestion des ToggleGroups
+        realTimeParserGroup = new ToggleGroup();
         parserGroup = new ToggleGroup();
         themeGroup = new ToggleGroup();
 
+        realTimeParserToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsSmart, JArmEmuApplication.getController().settingsSimple};
         parserToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsRegex, JArmEmuApplication.getController().settingsLegacy};
         themeToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsDark, JArmEmuApplication.getController().settingsLight};
 
+        realTimeParserGroup.getToggles().addAll(realTimeParserToggles);
         parserGroup.getToggles().addAll(Arrays.asList(parserToggles));
         themeGroup.getToggles().addAll(Arrays.asList(themeToggles));
 
+        realTimeParserGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
         parserGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
         themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
         // Gestion des ToggleSwitches
+        JArmEmuApplication.getController().autoCompletionSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setAutoCompletion(newVal));
         JArmEmuApplication.getController().notImplementedSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setIgnoreUnimplemented(newVal));
         JArmEmuApplication.getController().deprecatedSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setIgnoreDeprecated(newVal));
         JArmEmuApplication.getController().manualBreakSwitch.selectedProperty().addListener((obs, oldVal, newVal) -> setManualBreak(newVal));
@@ -229,10 +242,14 @@ public class SettingsController implements Initializable {
         maxNotificationValue.setValue(getMaxNotification());
 
         // Toggles
-        parserGroup.selectToggle(parserToggles[getSourceParserSetting()]);
+        realTimeParserGroup.selectToggle(realTimeParserToggles[getRealTimeParser()]);
+        parserGroup.selectToggle(parserToggles[getSourceParser()]);
         themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
         // ToggleSwitches
+        JArmEmuApplication.getController().autoCompletionSwitch.setDisable(getRealTimeParser() != 0);
+
+        JArmEmuApplication.getController().autoCompletionSwitch.setSelected(getAutoCompletion());
         JArmEmuApplication.getController().notImplementedSwitch.setSelected(getIgnoreUnimplemented());
         JArmEmuApplication.getController().deprecatedSwitch.setSelected(getIgnoreDeprecated());
         JArmEmuApplication.getController().manualBreakSwitch.setSelected(getManualBreak());
@@ -261,10 +278,13 @@ public class SettingsController implements Initializable {
         preferences.put(LAST_SAVE_PATH_KEY, "");
         preferences.put(IGNORE_VERSION_KEY, "");
 
+        setRealTimeParser(RealTimeParser.DEFAULT_REAL_TIME_PARSER);
+        setAutoCompletion(DEFAULT_AUTO_COMPLETION);
+
         setSimulationInterval(ExecutionWorker.FALLBACK_UPDATE_INTERVAL);
         setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
-        setIgnoreUnimplemented(false);
-        setIgnoreDeprecated(false);
+        setIgnoreUnimplemented(DEFAULT_IGNORE_UNIMPLEMENTED);
+        setIgnoreDeprecated(DEFAULT_IGNORE_DEPRECATED);
 
         setManualBreak(DEFAULT_MANUAL_BREAK);
         setCodeBreak(DEFAULT_CODE_BREAK);
@@ -288,34 +308,67 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
+     */
+    protected void onSettingsSmart() {
+        setRealTimeParser(0);
+    }
+
+    /**
+     * Invoked by JavaFX
+     */
+    protected void onSettingsSimple() {
+        setRealTimeParser(1);
+    }
+
+    /**
+     * Invoked by JavaFX
      */
     protected void onSettingsRegex() {
         setSourceParser(0);
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     protected void onSettingsLegacy() {
         setSourceParser(1);
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onSettingsDark() {
         setThemeVariation(0);
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     protected void onSettingsLight() {
         setThemeVariation(1);
     }
 
-    private void setSimulationInterval(int nb) {
+    public void setRealTimeParser(int nb) {
+        JArmEmuApplication.getController().autoCompletionSwitch.setDisable(nb != 0);
+        preferences.putInt(REAL_TIME_PARSER_KEY, nb);
+
+        JArmEmuApplication.getEditorController().reinitializeRealTimeParsers();
+    }
+
+    public int getRealTimeParser() {
+        return Math.min(Math.max(preferences.getInt(REAL_TIME_PARSER_KEY, RealTimeParser.DEFAULT_REAL_TIME_PARSER), 0), 1);
+    }
+
+    public void setAutoCompletion(boolean autoCompletion) {
+        preferences.putBoolean(AUTO_COMPLETION_KEY, autoCompletion);
+    }
+
+    public boolean getAutoCompletion() {
+        return preferences.getBoolean(AUTO_COMPLETION_KEY, DEFAULT_AUTO_COMPLETION);
+    }
+
+    public void setSimulationInterval(int nb) {
         if (nb < ExecutionWorker.UPDATE_THRESHOLD) {
             JArmEmuApplication.getDialogs().warningAlert(JArmEmuApplication.formatMessage("%dialog.simulationInterval.message", ExecutionWorker.UPDATE_THRESHOLD));
         }
@@ -331,7 +384,7 @@ public class SettingsController implements Initializable {
         JArmEmuApplication.getInstance().newSourceParser();
     }
 
-    public int getSourceParserSetting() {
+    public int getSourceParser() {
         return Math.min(Math.max(preferences.getInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER), 0), 1);
     }
 

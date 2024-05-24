@@ -83,10 +83,12 @@
                 <p>Stable release of JArmEmu</p>
                 <p>Changelog:</p>
                 <ul>
+                    <li>Added switch for Real Time Parser (color highlighting) and Auto-completion in settings</li>
                     <li>Fixed autocompletion popup background transparency</li>
                     <li>Fixed bug that prevented the window from being maximized on certain configurations</li>
                     <li>Fixed autocompletion compatibility with find &amp; replace</li>
                     <li>Fixed a bug that flagged a file as &#39;modified&#39; when just opened</li>
+                    <li>Fixed a bug that prevented from using find &amp; replace after simulation</li>
                 </ul>
             </description>
         </release>

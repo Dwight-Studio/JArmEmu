@@ -54,7 +54,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onOpen() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -79,7 +79,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onSaveAll() {
         JArmEmuApplication.getEditorController().saveAll();
@@ -87,7 +87,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onSave() {
         JArmEmuApplication.getEditorController().currentFileEditor().save();
@@ -95,7 +95,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onSaveAs() {
         JArmEmuApplication.getEditorController().currentFileEditor().saveAs();
@@ -103,7 +103,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onReloadAll() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -131,7 +131,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onReload() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -139,7 +139,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onCloseAll() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -166,7 +166,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onClose() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -195,7 +195,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onExit() {
         if (JArmEmuApplication.getEditorController().getSaveState()) {
@@ -231,7 +231,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onResetSettings() {
         JArmEmuApplication.getSettingsController().setToDefaults();
@@ -294,7 +294,7 @@ public class MainMenuController {
     }
 
     /**
-     * Méthode invoquée par JavaFX
+     * Invoked by JavaFX
      */
     public void onAbout() {
         JArmEmuApplication.getDialogs().about();
