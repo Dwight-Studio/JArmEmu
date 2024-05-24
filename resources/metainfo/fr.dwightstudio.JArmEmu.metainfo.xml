@@ -86,6 +86,7 @@
                     <li>Fixed autocompletion popup background transparency</li>
                     <li>Fixed bug that prevented the window from being maximized on certain configurations</li>
                     <li>Fixed autocompletion compatibility with find &amp; replace</li>
+                    <li>Fixed a bug that flagged a file as &#39;modified&#39; when just opened</li>
                 </ul>
             </description>
         </release>

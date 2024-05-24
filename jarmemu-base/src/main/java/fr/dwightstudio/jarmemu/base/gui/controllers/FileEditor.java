@@ -68,6 +68,7 @@ public class FileEditor {
 
     private Logger logger = Logger.getLogger(getClass().getSimpleName());
 
+
     // GUI
     private final CodeArea codeArea;
     private final VirtualizedScrollPane<CodeArea> editorScroll;
@@ -140,6 +141,7 @@ public class FileEditor {
             }
         });
 
+        setSaved(content);
         codeArea.replaceText(content);
         codeArea.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
@@ -380,7 +382,6 @@ public class FileEditor {
         word.setOnAction(actionEvent -> updateAllSearches());
         caseSensitivity.setOnAction(actionEvent -> updateAllSearches());
 
-        setSaved();
         this.realTimeParser.start();
         closed = false;
     }
@@ -574,7 +575,7 @@ public class FileEditor {
             try {
                 logger.info("Saving file...");
                 getSourceScanner().exportCodeToFile(path);
-                setSaved();
+                setSaved(getSourceScanner().exportCode());
                 logger.info("Saved at: " + path.getAbsolutePath());
             } catch (Exception exception) {
                 new ExceptionDialog(exception).show();
@@ -602,7 +603,7 @@ public class FileEditor {
                 path = file;
                 logger.info("Saving file...");
                 getSourceScanner().exportCodeToFile(path);
-                setSaved();
+                setSaved(getSourceScanner().exportCode());
                 logger.info("Saved at: " + path.getAbsolutePath());
             } catch (Exception exception) {
                 new ExceptionDialog(exception).show();
@@ -618,10 +619,10 @@ public class FileEditor {
         logger.info("Reloading file from disk");
         if (FileUtils.isValidFile(path)) {
             try {
-                SourceScanner scanner = new SourceScanner(path, JArmEmuApplication.getEditorController().getFileIndex(this));
+                String fileContent = new SourceScanner(path, JArmEmuApplication.getEditorController().getFileIndex(this)).exportCode();
+                setSaved(fileContent);
                 this.codeArea.replaceText("");
-                this.codeArea.replaceText(scanner.exportCode());
-                setSaved();
+                this.codeArea.replaceText(fileContent);
                 logger.info("File reloaded: " + path.getAbsolutePath());
             } catch (Exception exception) {
                 Platform.runLater(() -> new ExceptionDialog(exception).show());
@@ -638,13 +639,15 @@ public class FileEditor {
     }
 
     /**
-     * Défini le contenu de la dernière sauvegarde
+     * Define the file as "Saved" with a specified content
      *
-     * @apiNote Sert à déterminer l'état actuel de la sauvegarde ('*' dans le titre)
+     * @param text the content which was saved
+     * @apiNote Used to manage the '*' in the file title name
      */
-    private void setSaved() {
+    private void setSaved(@NotNull String text) {
+        logger.info("Set saved: " + text);
         saved = true;
-        lastSaveContent = String.valueOf(codeArea.getText());
+        lastSaveContent = text;
         fileTab.setText(getFileName());
     }
 
@@ -652,6 +655,8 @@ public class FileEditor {
      * Met à jour l'état de sauvegarde
      */
     public void updateSaveState() {
+        logger.info("\"" + codeArea.getText() + "\"");
+        logger.info("\"" + lastSaveContent + "\"");
         saved = codeArea.getText().equals(lastSaveContent);
 
         if (saved) {
@@ -659,7 +664,6 @@ public class FileEditor {
         } else {
             Platform.runLater(() -> fileTab.setText(getFileName() + "*"));
         }
-
     }
 
     public boolean getSaveState() {

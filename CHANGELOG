@@ -3,6 +3,7 @@
 - Fixed autocompletion popup background transparency
 - Fixed bug that prevented the window from being maximized on certain configurations
 - Fixed autocompletion compatibility with find & replace
+- Fixed a bug that flagged a file as 'modified' when just opened
 
 0.2.0 -> 0.2.1
 
