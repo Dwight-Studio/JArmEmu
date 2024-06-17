@@ -29,7 +29,7 @@ You can download an installer for JArmEmu (or the portable version) from the [re
 JArmEmu is also available on Chocolatey (but the repository is not actively maintained at this time):
 
 ```bash
-choco install fr.dwightstudio.jarmemu --pre 
+choco install jarmemu
 ```
 
 ## FlatPak
