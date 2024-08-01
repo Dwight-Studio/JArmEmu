@@ -38,23 +38,23 @@ public abstract class PreparationTask<T> {
     }
 
     /**
-     * Contextualise chaque élément du stream respectant les contraintes de filtrage
+     * Contextualize each element according to filters
      *
-     * @param container le conteneur servant de contexte
+     * @param container the state container used to contextualize
      */
     public abstract PreparationStream contextualize(StateContainer container) throws ASMException;
 
     /**
-     * Vérifie chaque élément du stream respectant les contraintes de filtrage
+     * Verify each element according to filters
      *
-     * @param stateSupplier le fournisseur de conteneur servant de contexte
+     * @param stateSupplier a state container supplier to contextualize the tests
      */
     public abstract PreparationStream verify(Supplier<StateContainer> stateSupplier) throws ASMException;
 
     /**
-     * Applique sur chaque élément du stream respectant les contraintes de filtrage
+     * Perform an operation on each element according to filters
      *
-     * @param consumer la fonction à appliquer
+     * @param consumer the operation to perform
      */
     public abstract PreparationStream perform(Consumer<T> consumer);
 }

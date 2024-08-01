@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
 public class StateContainer {
 
     public static final int DEFAULT_STACK_ADDRESS = 65536;
-    public static final int DEFAULT_SYMBOLS_ADDRESS = 0;
+    public static final int DEFAULT_PROGRAM_ADDRESS = 0;
     public static final int MAX_NESTING_COUNT = 1024;
     private static final Pattern SPECIAL_VALUE_PATTERN = Pattern.compile(
             "(?i)"
@@ -58,9 +58,10 @@ public class StateContainer {
     private final ArrayList<HashMap<String, Integer>> labels; // Indice de fichier -> Label -> Position dans la mémoire
     private final HashMap<String, Integer> globals; // Symbols globaux -> Indice de fichier
     private int nestingCount;
-    private int lastAddressROData;
-    private int firstAddressPseudoInstruction;
-    private FilePos currentfilePos; // Position dans la mémoire et fichier en cours de lecture
+    private int symbolAddress;
+    private int writableDataAddress;
+    private int pseudoInstructionAddress;
+    private FilePos memoryPos; // Position dans la mémoire et fichier en cours de lecture
     private Integer addressRegisterUpdateValue;
 
     // Registers
@@ -72,11 +73,11 @@ public class StateContainer {
     // Memory
     private final MemoryAccessor memory;
     private final int stackAddress;
-    private final int symbolsAddress;
+    private final int programAddress;
 
-    public StateContainer(int stackAddress, int symbolsAddress) {
+    public StateContainer(int stackAddress, int programAddress) {
         this.stackAddress = stackAddress;
-        this.symbolsAddress = symbolsAddress;
+        this.programAddress = programAddress;
 
         // ASM
         labels = new ArrayList<>();
@@ -85,10 +86,11 @@ public class StateContainer {
         globals = new HashMap<>();
 
         nestingCount = 0;
-        lastAddressROData = 0;
-        firstAddressPseudoInstruction = 0;
+        symbolAddress = 0;
+        writableDataAddress = 0;
+        pseudoInstructionAddress = 0;
         addressRegisterUpdateValue = null;
-        currentfilePos = new FilePos(0, symbolsAddress);
+        memoryPos = new FilePos(0, programAddress);
 
         // Initializing registers
         cpsr = new ProgramStatusRegister();
@@ -103,11 +105,11 @@ public class StateContainer {
     }
 
     public StateContainer() {
-        this(DEFAULT_STACK_ADDRESS, DEFAULT_SYMBOLS_ADDRESS);
+        this(DEFAULT_STACK_ADDRESS, DEFAULT_PROGRAM_ADDRESS);
     }
 
     public StateContainer(StateContainer stateContainer) {
-        this(stateContainer.getStackAddress(), stateContainer.getSymbolsAddress());
+        this(stateContainer.getStackAddress(), stateContainer.getProgramAddress());
 
         clearAndInitFiles(0);
         
@@ -117,10 +119,11 @@ public class StateContainer {
         this.globals.putAll(stateContainer.globals);
 
         this.nestingCount = stateContainer.nestingCount;
-        this.lastAddressROData = stateContainer.lastAddressROData;
-        this.firstAddressPseudoInstruction = stateContainer.firstAddressPseudoInstruction;
+        this.symbolAddress = stateContainer.symbolAddress;
+        this.writableDataAddress = stateContainer.writableDataAddress;
+        this.pseudoInstructionAddress = stateContainer.pseudoInstructionAddress;
         this.addressRegisterUpdateValue = stateContainer.addressRegisterUpdateValue;
-        this.currentfilePos = new FilePos(stateContainer.currentfilePos);
+        this.memoryPos = new FilePos(stateContainer.memoryPos);
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
             registers[i].setData(stateContainer.getRegister(i).getData());
@@ -132,6 +135,9 @@ public class StateContainer {
         this.memory.putAll(stateContainer.memory);
     }
 
+    /**
+     * Clear all registers
+     */
     public void clearRegisters() {
         for (int i = 0; i < REGISTER_NUMBER; i++) {
             if (registers[i] != null) {
@@ -149,15 +155,22 @@ public class StateContainer {
         spsr.setData(0);
     }
 
+    /**
+     * Evaluate math expression using the context of this state container restricted to accessible constants (in the current file)
+     *
+     * @param expString the math expression
+     * @return the computed value
+     * @throws SyntaxASMException when the math expression is malformed
+     */
     public int evalWithAccessibleConsts(String expString) throws SyntaxASMException {
         try {
-            ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
+            ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
             consts.forEach(map -> builder.variables(map.keySet()));
 
             Expression exp = builder.build();
 
-            for (Map.Entry<String, Integer> entry : consts.get(currentfilePos.getFileIndex()).entrySet()) {
+            for (Map.Entry<String, Integer> entry : consts.get(memoryPos.getFileIndex()).entrySet()) {
                 exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
@@ -167,9 +180,16 @@ public class StateContainer {
         }
     }
 
+    /**
+     * Evaluate math expression using the context of this state container
+     *
+     * @param expString the math expression
+     * @return the computed value
+     * @throws SyntaxASMException when the math expression is malformed
+     */
     public int evalWithAll(String expString) throws SyntaxASMException {
         try {
-            ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
+            ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
             consts.forEach(map -> builder.variables(map.keySet()));
             data.forEach(map -> builder.variables(map.keySet()));
@@ -192,9 +212,16 @@ public class StateContainer {
         }
     }
 
+    /**
+     * Evaluate math expression using the context of this state container restricted to accessible variables (in the current file)
+     *
+     * @param expString the math expression
+     * @return the computed value
+     * @throws SyntaxASMException when the math expression is malformed
+     */
     public int evalWithAccessible(String expString) throws SyntaxASMException {
         try {
-            ExpressionBuilder builder = new ExpressionBuilder(preEval(expString));
+            ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
             builder.variables(getAccessibleConsts().keySet());
             builder.variables(getAccessibleData().keySet());
@@ -215,8 +242,12 @@ public class StateContainer {
         }
     }
 
-    private String preEval(String s) {
-
+    /**
+     * Format math expression before evaluation
+     * @param s the math expression
+     * @return the formatted math expression
+     */
+    private String preEvaluationFormat(String s) {
         if (s.startsWith("=") || s.startsWith("#")) s = s.substring(1);
 
         return SPECIAL_VALUE_PATTERN.matcher(s).replaceAll(matchResult -> {
@@ -245,30 +276,30 @@ public class StateContainer {
         return stackAddress;
     }
 
-    public int getSymbolsAddress() {
-        return symbolsAddress;
+    public int getProgramAddress() {
+        return programAddress;
     }
 
     /**
-     * @return une liste non modifiable des variables globales.
+     * @return an unmodifiable list of the global variables
      */
     public List<String> getGlobals() {
         return globals.keySet().stream().toList();
     }
 
     /**
-     * Ajoute une variable globale.
+     * Add a global variable
      *
-     * @param global la variable globale
-     * @param fileIndex l'indice du fichier de la variable globale
+     * @param global the name of the variable
+     * @param fileIndex the file index of the global variable
      */
     public void addGlobal(String global, int fileIndex) {
         this.globals.put(global, fileIndex);
     }
 
     /**
-     * @param global le nom de la variable globale
-     * @return l'indice du fichier de la variable globale
+     * @param global the name of the variable
+     * @return the file index of the global variable
      */
     public int getGlobal(String global) {
         return globals.get(global);
@@ -302,102 +333,122 @@ public class StateContainer {
     }
 
     /**
-     * @return le nombre de branches actives
+     * @return active branches count
      */
     public int getNestingCount() {
         return nestingCount;
     }
 
     /**
-     * Met à jour le compteur de branche en ajoutant 1
+     * Update branch counter when branching (increase by one)
      */
     public void branch() {
         this.nestingCount++;
     }
 
     /**
-     * Met à jour le compteur de branche en retirant 1
+     * Update branch counter when merging branch (decrease by one)
      */
     public void merge() {
         this.nestingCount--;
         if (this.nestingCount < 0) this.nestingCount = 0;
     }
 
-    public int getLastAddressRORange() {
-        return lastAddressROData;
-    }
-
     /**
-     * Fixe la dernière adresse de la plage de lecture seule à partir de la position courante
+     * @return the address of the symbol range in memory (end of the instruction range)
      */
-    public void closeReadOnlyRange() {
-        this.lastAddressROData = currentfilePos.getPos();
-    }
-
-    public int getFirstAddressPIRange() {
-        return firstAddressPseudoInstruction;
+    public int getSymbolAddress() {
+        return symbolAddress;
     }
 
     /**
-     * Fixe la première adresse de la plage d'allocation pour les pseudo-instructions à partir de la position courante
+     * @return the address of the pseudo instruction range in memory (end of the RO range)
+     */
+    public int getPseudoInstructionAddress() {
+        return pseudoInstructionAddress;
+    }
+
+    /**
+     * @return the address of the writable data range in memory (end of pseudo instruction range)
+     */
+    public int getWritableDataAddress() {
+        return writableDataAddress;
+    }
+
+    /**
+     * Set the first address of the symbol range in memory (end of the instruction range) using current position
+     */
+    public void startSymbolRange() {
+        this.symbolAddress = memoryPos.getPos();
+    }
+
+    /**
+     * Set the first address of the address of the pseudo instruction range in memory (end of the RO range) using current position
      */
     public void startPseudoInstructionRange() {
-        this.firstAddressPseudoInstruction = currentfilePos.getPos();
+        this.pseudoInstructionAddress = memoryPos.getPos();
     }
 
     /**
-     * @return les constantes accessibles dans le fichier actuel
+     * Set the first address of the writable data range in memory (end of the RO range) using current position
+     */
+    public void startWritableData() {
+        this.writableDataAddress = memoryPos.getPos();
+    }
+
+    /**
+     * @return the constants accessible within the current file
      */
     public AccessibleValueMap getAccessibleConsts() {
-        return new AccessibleValueMap(consts, globals, currentfilePos.getFileIndex());
+        return new AccessibleValueMap(consts, globals, memoryPos.getFileIndex());
     }
 
     /**
-     * @return les données accessibles dans le fichier actuel
+     * @return the data accessible within the current file
      */
     public AccessibleValueMap getAccessibleData() {
-        return new AccessibleValueMap(data, globals, currentfilePos.getFileIndex());
+        return new AccessibleValueMap(data, globals, memoryPos.getFileIndex());
     }
 
     /**
-     * @return les données définies dans le fichier actuel (exclusion des globals)
+     * @return the data defined in the current file (excluding globals)
      */
     public HashMap<String, Integer> getRestrainedData() {
-        return data.get(currentfilePos.getFileIndex());
+        return data.get(memoryPos.getFileIndex());
     }
 
     /**
-     * @return les labels accessibles dans le fichier actuel
+     * @return the labels accessible in the current file
      */
     public AccessibleValueMap getAccessibleLabels() {
-        return new AccessibleValueMap(labels, globals, currentfilePos.getFileIndex());
+        return new AccessibleValueMap(labels, globals, memoryPos.getFileIndex());
     }
 
     /**
-     * @return les labels définis dans le fichier actuel (exclusion des globals)
+     * @return the labels defined in the current file (excluding globals)
      */
     public HashMap<String, Integer> getRestrainedLabels() {
-        return labels.get(currentfilePos.getFileIndex());
+        return labels.get(memoryPos.getFileIndex());
     }
 
     /**
-     * @return les labels répartis dans les fichiers
+     * @return all the labels with the index of the file in which they're defined
      */
     public ArrayList<HashMap<String, Integer>> getLabelsInFiles() {
         return labels;
     }
 
     /**
-     * @return tous les labels (tous fichiers confondus)
+     * @return all the labels
      */
     public MultiValuedMap<String, FilePos> getAllLabels() {
         return new AllLabelsMap(labels);
     }
 
     /**
-     * Initialise les variables pour un nombre de fichiers spécifique.
+     * Initialize the variables for a specific number of files
      *
-     * @param size le nombre de fichiers
+     * @param size the number of files
      */
     public void clearAndInitFiles(int size) {
         labels.clear();
@@ -412,22 +463,22 @@ public class StateContainer {
     }
 
     /**
-     * Retourne la position courante (indice de fichier / adresse mémoire), utilisé lors de la construction du conteneur d'état
+     * Return the current position (file index / memory address) which used to setup memory during initialization
      *
-     * @return la position courante
+     * @return current position
      */
-    public FilePos getCurrentFilePos() {
-        return currentfilePos;
+    public FilePos getCurrentMemoryPos() {
+        return memoryPos;
     }
 
     /**
-     * Réinitialise la position courante (indice de fichier / adresse mémoire), utilisé lors de la construction du conteneur d'état
+     * Reinitialize the current position (file index / memory address) which used to setup memory during initialization
      *
-     * @return la position courante
+     * @return current position
      */
-    public FilePos resetFilePos() {
-        currentfilePos.setPos(getSymbolsAddress());
-        return currentfilePos;
+    public FilePos resetMemoryPos() {
+        memoryPos.setPos(getProgramAddress());
+        return memoryPos;
     }
 
     public Register getRegister(int i) {

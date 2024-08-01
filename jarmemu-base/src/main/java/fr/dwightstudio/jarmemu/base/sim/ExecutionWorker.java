@@ -558,7 +558,7 @@ public class ExecutionWorker {
                 if (errors1.length == 0) {
                     ASMException[] errors2 = JArmEmuApplication.getCodeInterpreter().initiate(
                             JArmEmuApplication.getSettingsController().getStackAddress(),
-                            JArmEmuApplication.getSettingsController().getSymbolsAddress()
+                            JArmEmuApplication.getSettingsController().getProgramAddress()
                     );
 
                     if (errors2.length == 0) {

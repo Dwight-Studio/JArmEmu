@@ -98,14 +98,14 @@ public class FillDirective extends ParsedDirective {
 
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
-        for (int i = stateContainer.getCurrentFilePos().getPos() ; i < stateContainer.getCurrentFilePos().getPos() + totalNum ; i++) {
-            stateContainer.getMemory().putByte(stateContainer.getCurrentFilePos().getPos() + i, bytes[i % valueSize]);
+        for (int i = stateContainer.getCurrentMemoryPos().getPos(); i < stateContainer.getCurrentMemoryPos().getPos() + totalNum ; i++) {
+            stateContainer.getMemory().putByte(stateContainer.getCurrentMemoryPos().getPos() + i, bytes[i % valueSize]);
         }
     }
 
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        stateContainer.getCurrentFilePos().incrementPos(totalNum);
+        stateContainer.getCurrentMemoryPos().incrementPos(totalNum);
     }
 
     @Override

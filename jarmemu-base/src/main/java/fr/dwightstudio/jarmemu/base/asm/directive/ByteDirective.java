@@ -70,7 +70,7 @@ public class ByteDirective extends ParsedDirective {
 
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
-        FilePos tempPos = stateContainer.getCurrentFilePos().clone();
+        FilePos tempPos = stateContainer.getCurrentMemoryPos().clone();
         for (byte b : byteArray) {
             stateContainer.getMemory().putByte(tempPos.getPos(), b);
             tempPos.incrementPos();
@@ -79,8 +79,8 @@ public class ByteDirective extends ParsedDirective {
 
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        if (args.isBlank()) stateContainer.getCurrentFilePos().incrementPos();
-        stateContainer.getCurrentFilePos().incrementPos(arg.length);
+        if (args.isBlank()) stateContainer.getCurrentMemoryPos().incrementPos();
+        stateContainer.getCurrentMemoryPos().incrementPos(arg.length);
     }
 
     @Override

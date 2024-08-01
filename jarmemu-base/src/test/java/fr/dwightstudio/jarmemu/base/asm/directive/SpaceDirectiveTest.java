@@ -46,7 +46,7 @@ class SpaceDirectiveTest extends DirectiveTest {
 
             int r = Math.abs(random.nextInt());
             execute(container, Section.DATA,"" + r);
-            assertEquals(r, container.getCurrentFilePos().getPos());
+            assertEquals(r, container.getCurrentMemoryPos().getPos());
         }
     }
 

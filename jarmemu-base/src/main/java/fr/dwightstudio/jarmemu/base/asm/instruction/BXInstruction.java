@@ -84,8 +84,13 @@ public class BXInstruction extends ParsedInstruction<Register, Object, Object, O
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override

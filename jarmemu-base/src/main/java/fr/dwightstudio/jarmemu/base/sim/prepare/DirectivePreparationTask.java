@@ -58,7 +58,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
     @Override
     public PreparationStream contextualize(StateContainer container) throws ASMException {
         logger.info("Contextualizing directives" + getDescription());
-        container.getCurrentFilePos().setFileIndex(0);
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof ParsedDirective dir) {
@@ -68,63 +68,63 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
                     }
                 }
             }
-            container.getCurrentFilePos().incrementFileIndex();
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
     }
 
     /**
-     * Exécute toutes les directives
+     * Execute all directive and offset memory
      *
-     * @param container le conteneur d'état sur lequel effectuer l'opération
+     * @param container the state container on which perform the action
      */
     public PreparationStream execute(StateContainer container) throws ASMException {
         logger.info("Executing directives" + getDescription());
-        container.getCurrentFilePos().setFileIndex(0);
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof ParsedDirective dir) {
                     if (test(dir)) {
-                        logger.info("Executing " + dir + " (" + container.getCurrentFilePos() + " in memory)");
+                        logger.info("Executing " + dir + " (" + container.getCurrentMemoryPos() + " in memory)");
                         dir.execute(container);
                         dir.offsetMemory(container);
                     }
                 }
             }
-            container.getCurrentFilePos().incrementFileIndex();
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
     }
 
     /**
-     * Exécute toutes les directives et enregistre les labels
+     * Register all label by offsetting memory based on instructions and directives allocation
      *
-     * @param container le conteneur d'état sur lequel effectuer l'opération
+     * @param container the state container on which perform the action
      */
     public PreparationStream registerLabels(StateContainer container) throws ASMException {
         logger.info("Registering directive labels" + getDescription());
-        container.getCurrentFilePos().setFileIndex(0);
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof ParsedLabel label) {
                     if (label.getSection() == Section.TEXT) continue;
                     if (test(label)) {
-                        logger.info("Registering " + label + " (" + container.getCurrentFilePos() + " in memory)");
-                        label.register(container, container.getCurrentFilePos());
+                        logger.info("Registering " + label + " (" + container.getCurrentMemoryPos() + " in memory)");
+                        label.register(container, container.getCurrentMemoryPos());
                     }
                 }
                 if (obj instanceof ParsedDirective dir) {
                     if (dir.getSection() == Section.TEXT) continue;
                     if (test(dir)) {
-                        FilePos lastPos = container.getCurrentFilePos().freeze();
+                        FilePos lastPos = container.getCurrentMemoryPos().freeze();
                         dir.offsetMemory(container);
-                        logger.info("Allocated memory for " + dir + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
+                        logger.info("Allocated memory for " + dir + " (" + lastPos + "->" + container.getCurrentMemoryPos() + ")");
                     }
                 }
             }
-            container.getCurrentFilePos().incrementFileIndex();
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -142,7 +142,7 @@ public class DirectivePreparationTask extends PreparationTask<ParsedDirective> {
                         int finalFi = fi;
                         dir.verify(() -> {
                             StateContainer container = stateSupplier.get();
-                            container.getCurrentFilePos().setFileIndex(finalFi);
+                            container.getCurrentMemoryPos().setFileIndex(finalFi);
                             return container;
                         });
                     }

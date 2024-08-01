@@ -43,18 +43,18 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
 
     public PreparationStream allocate(StateContainer container) throws ASMException {
         logger.info("Allocating for Pseudo-Instructions" + getDescription());
-        container.getCurrentFilePos().setFileIndex(0);
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof PseudoInstruction ins) {
                     if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
-                        FilePos lastPos = container.getCurrentFilePos().freeze();
+                        FilePos lastPos = container.getCurrentMemoryPos().freeze();
                         ins.allocate(container);
-                        logger.info("Allocated memory for " + ins + " (" + lastPos + "->" + container.getCurrentFilePos() + ")");
+                        logger.info("Allocated memory for " + ins + " (" + lastPos + "->" + container.getCurrentMemoryPos() + ")");
                     }
                 }
             }
-            container.getCurrentFilePos().incrementFileIndex();
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -62,7 +62,7 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
 
     public PreparationStream generate(StateContainer container) throws ASMException {
         logger.info("Generating Pseudo-Instructions" + getDescription());
-        container.getCurrentFilePos().setFileIndex(0);
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             ArrayList<ParsedObject> objects = new ArrayList<>();
             for (ParsedObject obj : file) {
@@ -75,7 +75,7 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
                 }
             }
             file.addAll(objects);
-            container.getCurrentFilePos().incrementFileIndex();
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;

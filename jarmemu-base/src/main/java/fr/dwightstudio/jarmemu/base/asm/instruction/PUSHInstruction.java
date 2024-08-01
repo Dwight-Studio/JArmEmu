@@ -73,8 +73,13 @@ public class PUSHInstruction extends ParsedInstruction<Register[], Object, Objec
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override

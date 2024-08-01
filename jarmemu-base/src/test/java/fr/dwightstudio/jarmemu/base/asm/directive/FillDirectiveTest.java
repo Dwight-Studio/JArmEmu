@@ -45,7 +45,7 @@ class FillDirectiveTest extends DirectiveTest {
             container.getMemory().putWord(i, -1);
         }
 
-        container.getCurrentFilePos().setPos(0);
+        container.getCurrentMemoryPos().setPos(0);
     }
 
     @Test

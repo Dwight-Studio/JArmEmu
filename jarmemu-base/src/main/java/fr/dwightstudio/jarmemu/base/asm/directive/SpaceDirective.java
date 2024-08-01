@@ -58,7 +58,7 @@ public class SpaceDirective extends ParsedDirective {
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
         try {
-            stateContainer.getCurrentFilePos().incrementPos(value);
+            stateContainer.getCurrentMemoryPos().incrementPos(value);
         } catch (Exception ignored) {}
     }
 

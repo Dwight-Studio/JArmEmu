@@ -54,7 +54,7 @@ public class AlignDirective extends ParsedDirective {
 
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        stateContainer.getCurrentFilePos().incrementPos((offset - (stateContainer.getCurrentFilePos().getPos() % offset)) % offset);
+        stateContainer.getCurrentMemoryPos().incrementPos((offset - (stateContainer.getCurrentMemoryPos().getPos() % offset)) % offset);
     }
 
     @Override

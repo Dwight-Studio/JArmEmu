@@ -59,12 +59,17 @@ public class SourceScanner {
         return this.lineNumber < this.code.size() - 1;
     }
 
+    /**
+     * Move the pointer to a specific line
+     */
     public void goTo(int lineNb) {
         this.lineNumber = lineNb;
     }
 
     /**
-     * Déplace le curseur de lecture à la ligne spécifiée. Attention, invalide le comptage d'instruction !
+     * Move the pointer to a specific line
+     *
+     * @return the line of code
      */
     public String goToValue(int lineNb) {
         this.lineNumber = lineNb;
@@ -75,11 +80,21 @@ public class SourceScanner {
         return this.lineNumber;
     }
 
+    /**
+     * Export the code as a string
+     *
+     * @return the code as a string
+     */
     public String exportCode() {
         return String.join("\n",code.toArray(String[]::new));
     }
 
-    public void exportCodeToFile(File savePath) throws FileNotFoundException {
+    /**
+     * Export the code to a file
+     *
+     * @param savePath the file path
+     */
+    public void exportCode(File savePath) throws FileNotFoundException {
         PrintWriter printWriter = new PrintWriter(savePath);
         String last = "";
         for (String string : code) {

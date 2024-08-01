@@ -64,41 +64,6 @@ public class MapUtils {
         };
     }
 
-    public static Map.Entry<String, Integer> extractPosToBytes(Map.Entry<String, FilePos> entry) {
-        return new Map.Entry<>() {
-            @Override
-            public String getKey() {
-                return entry.getKey();
-            }
-
-            @Override
-            public Integer getValue() {
-                return entry.getValue().toByteValue();
-            }
-
-            @Override
-            public Integer setValue(Integer value) {
-                Integer old = entry.getValue().getPos();
-                entry.getValue().setPos(value/4);
-                return old;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (o instanceof Map.Entry<?, ?> entry) {
-                    return entry.getValue().equals(getValue()) && entry.getKey().equals(getKey());
-                } else {
-                    return false;
-                }
-            }
-
-            @Override
-            public int hashCode() {
-                return getKey().hashCode();
-            }
-        };
-    }
-
     public static Map.Entry<String, Integer> entry(String key, Integer value) {
         return new Map.Entry<>() {
             @Override

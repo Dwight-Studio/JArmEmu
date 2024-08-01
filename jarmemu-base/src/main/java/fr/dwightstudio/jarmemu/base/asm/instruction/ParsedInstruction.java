@@ -43,6 +43,8 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
     private static final Logger logger = Logger.getLogger(ParsedInstruction.class.getSimpleName());
 
+    private boolean usingWorkingRegister = false;
+
     protected final Modifier modifier;
     protected final ParsedArgument<A> arg1;
     protected final ParsedArgument<B> arg2;
@@ -72,7 +74,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
                 arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
                 arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
             } catch (InvocationTargetException exception) {
-                if (hasWorkingRegister()) {
+                if (isWorkingRegisterCompatible()) {
                     arg4 = arg3;
                     arg3 = arg2;
                     arg2 = arg1;
@@ -81,6 +83,8 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
                     arg2Temp = getParsedArg2Class().getDeclaredConstructor(String.class).newInstance(arg2);
                     arg3Temp = getParsedArg3Class().getDeclaredConstructor(String.class).newInstance(arg3);
                     arg4Temp = getParsedArg4Class().getDeclaredConstructor(String.class).newInstance(arg4);
+
+                    usingWorkingRegister = true;
                 } else {
                     if (exception.getCause() instanceof ASMException ex) throw ex;
                     throw new RuntimeException(exception.getTargetException());
@@ -114,11 +118,11 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     public abstract SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses();
 
     /**
-     * Exécute l'instruction sur le conteneur d'état
+     * Execute the instruction on the state container
      *
-     * @param stateContainer le conteneur d'état courant
-     * @param forceExecution pour forcer l'exécution
-     * @throws ExecutionASMException en cas d'erreur
+     * @param stateContainer the current state container
+     * @param forceExecution true if you want to force execution (ignore execution exception)
+     * @throws ExecutionASMException when the execution generate an exception
      */
     public final void execute(StateContainer stateContainer, boolean forceExecution) throws ExecutionASMException {
         if (modifier.condition().eval(stateContainer)) {
@@ -136,19 +140,25 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     }
 
     /**
-     * @return vrai si l'instruction modifie le PC
+     * @return true if the instruction modifies the PC (i.e. perform a jump)
+     * @implNote if true, prevents the emulator from automatically incrementing the PC (the implement should handle it)
      */
     public abstract boolean doModifyPC();
 
     /**
-     * @return vrai si l'instruction possède un registre de travail (un registre utilisé comme destination et comme source)
+     * @return true if the instruction can use a working register
+     * @implNote if true and when the instruction lacks an argument, the emulator will try to duplicate the first one
      */
-    public abstract boolean hasWorkingRegister();
+    public abstract boolean isWorkingRegisterCompatible();
+
+    public boolean isUsingWorkingRegister() {
+        return usingWorkingRegister;
+    }
 
     /**
-     * Contextualise l'instruction dans le conteneur d'état initial, après définition des constantes.
+     * Contextualize the instruction in the initial state container (with the constants)
      *
-     * @param stateContainer le conteneur d'état initial
+     * @param stateContainer the state container used to contextualize
      */
     public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
@@ -160,6 +170,13 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
             throw exception.with(getLineNumber()).with(this).with(getFile());
         }
     }
+
+    /**
+     * @param stateContainer the state container used to contextualize
+     * @return a 32 bit value representing the instruction in program memory
+     * @apiNote this value is for education purpose, it is not actually used by the emulator
+     */
+    public abstract int getMemoryCode(StateContainer stateContainer);
 
     protected abstract void execute(StateContainer stateContainer, boolean ignoreExceptions, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
 

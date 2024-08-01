@@ -38,14 +38,14 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-public class CodePreparatorTest extends JArmEmuTest {
+public class StateInitializerTest extends JArmEmuTest {
 
-    CodePreparator codePreparator;
+    StateInitializer stateInitializer;
     StateContainer stateContainer;
 
     @BeforeEach
     public void setup() {
-        codePreparator = new CodePreparator();
+        stateInitializer = new StateInitializer();
         stateContainer = new StateContainer();
         stateContainer.clearAndInitFiles(1);
     }
@@ -59,9 +59,9 @@ public class CodePreparatorTest extends JArmEmuTest {
         // MOVInstruction movShift = new MOVInstruction(Condition.AL, true, null, null, "r1", "r0", "LSL#5", null);
         LSLInstruction shift = new LSLInstruction(new Modifier(Condition.AL, true, null, null), "r1", "r0", "#5", null);
 
-        Assertions.assertEquals(0, codePreparator.load(new RegexSourceParser(), List.of(sourceScanner)).length);
-        Assertions.assertEquals(0, codePreparator.initiate(new StateContainer()).length);
-        Assertions.assertArrayEquals(new Object[]{add, mov, shift}, codePreparator.getInstructionMemory().toArray());
+        Assertions.assertEquals(0, stateInitializer.load(new RegexSourceParser(), List.of(sourceScanner)).length);
+        Assertions.assertEquals(0, stateInitializer.initiate(new StateContainer()).length);
+        Assertions.assertArrayEquals(new Object[]{add, mov, shift}, stateInitializer.getInstructionMemory().toArray());
     }
 
 }

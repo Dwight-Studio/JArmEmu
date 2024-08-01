@@ -43,11 +43,11 @@ public class AlignDirectiveTest extends DirectiveTest {
         Random random = new Random();
 
         for (int i = 0 ; i < 32 ; i++) {
-            container.getCurrentFilePos().setPos(random.nextInt());
+            container.getCurrentMemoryPos().setPos(random.nextInt());
 
             execute(container, Section.DATA, "");
 
-            assertEquals(0, container.getCurrentFilePos().getPos() % 4);
+            assertEquals(0, container.getCurrentMemoryPos().getPos() % 4);
         }
     }
 

@@ -89,8 +89,13 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override

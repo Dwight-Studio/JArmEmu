@@ -765,7 +765,7 @@
                                                                                 </VBox.margin>
                                                                             </AnchorPane>
                                                                             <Text layoutX="10.0" layoutY="10.0"
-                                                                                  text="%settings.dataManagement.symbolsAddress">
+                                                                                  text="%settings.dataManagement.programAddress">
                                                                                 <VBox.margin>
                                                                                     <Insets bottom="2.0"
                                                                                             left="5.0"/>
@@ -774,7 +774,7 @@
                                                                             <AnchorPane>
                                                                                 <children>
                                                                                     <Spinner
-                                                                                            fx:id="settingsSymbolsAddress"
+                                                                                            fx:id="settingsProgramAddress"
                                                                                             editable="true"
                                                                                             styleClass="arrows-on-right-horizontal"
                                                                                             AnchorPane.leftAnchor="0.0"

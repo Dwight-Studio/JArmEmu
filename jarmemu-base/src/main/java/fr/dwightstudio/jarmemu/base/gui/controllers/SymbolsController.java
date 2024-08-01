@@ -132,13 +132,13 @@ public class SymbolsController implements Initializable {
         if (stateContainer != null) {
 
             for (int i = 0 ; i < stateContainer.getLabelsInFiles().size() ; i++) {
-                stateContainer.getCurrentFilePos().setFileIndex(i);
+                stateContainer.getCurrentMemoryPos().setFileIndex(i);
                 for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleConsts().entrySet()) {
-                    views.add(new SymbolView(entry,  stateContainer.getCurrentFilePos().getFileIndex()));
+                    views.add(new SymbolView(entry,  stateContainer.getCurrentMemoryPos().getFileIndex()));
                 }
 
                 for (Map.Entry<String, Integer> entry : stateContainer.getAccessibleData().entrySet()) {
-                    views.add(new SymbolView(entry,  stateContainer.getCurrentFilePos().getFileIndex()));
+                    views.add(new SymbolView(entry,  stateContainer.getCurrentMemoryPos().getFileIndex()));
                 }
             }
 

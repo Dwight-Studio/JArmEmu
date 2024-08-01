@@ -142,7 +142,7 @@ public enum Instruction {
                 arg2Type = instruction.getParsedArg2Class().getSimpleName();
                 arg3Type = instruction.getParsedArg3Class().getSimpleName();
                 arg4Type = instruction.getParsedArg4Class().getSimpleName();
-                workingRegister = instruction.hasWorkingRegister();
+                workingRegister = instruction.isWorkingRegisterCompatible();
                 parameters = instruction.getModifierParameterClasses();
 
                 valid = true;

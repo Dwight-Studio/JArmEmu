@@ -78,16 +78,16 @@ public class FilePos implements Comparable<FilePos> {
         file = i;
     }
 
-    public int toByteValue() {
-        return pos * 4;
-    }
-
     public FilePos freeze(int offset) {
         return new FrozenFilePos(this, offset);
     }
 
     public FilePos freeze() {
         return new FrozenFilePos(this, 0);
+    }
+
+    public FilePos freezeWithPos(int pos) {
+        return new FrozenFilePos(new FilePos(file, pos), 0);
     }
 
     @Override
@@ -123,7 +123,6 @@ public class FilePos implements Comparable<FilePos> {
 
         private final int offset;
 
-
         public FrozenFilePos(FilePos filePos, int offset) {
             super(filePos.file, filePos.pos);
             this.offset = offset;
@@ -157,11 +156,6 @@ public class FilePos implements Comparable<FilePos> {
         @Override
         public void setFileIndex(int i) {
             throw new UnsupportedOperationException(ERROR_MESSAGE);
-        }
-
-        @Override
-        public int toByteValue() {
-            return getPos() * 4;
         }
 
         @Override

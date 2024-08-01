@@ -67,7 +67,7 @@ public class WordDirective extends ParsedDirective {
 
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
-        tempPos = stateContainer.getCurrentFilePos().clone();
+        tempPos = stateContainer.getCurrentMemoryPos().clone();
         lastPos = tempPos.freeze();
         for (int i : intArray) {
             stateContainer.getMemory().putWord(tempPos.getPos(), i);
@@ -77,8 +77,8 @@ public class WordDirective extends ParsedDirective {
 
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        if (args.isBlank()) stateContainer.getCurrentFilePos().incrementPos(4);
-        stateContainer.getCurrentFilePos().incrementPos(arg.length * 4);
+        if (args.isBlank()) stateContainer.getCurrentMemoryPos().incrementPos(4);
+        stateContainer.getCurrentMemoryPos().incrementPos(arg.length * 4);
     }
 
     @Override

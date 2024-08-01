@@ -101,7 +101,7 @@ public class SettingsController implements Initializable {
     public static final String READ_ONLY_WRITING_BREAK_KEY = "readOnlyDataOverwrittenBreakpoint";
 
     public static final String STACK_ADDRESS_KEY = "stackAddress";
-    public static final String SYMBOLS_ADDRESS_KEY = "symbolsAddress";
+    public static final String PROGRAM_ADDRESS_KEY = "programAddress";
     public static final String DATA_FORMAT_KEY = "dataFormat";
     public static final String FOLLOW_SP_KEY = "followSP";
     public static final String HIGHLIGHT_UPDATES_KEY = "highlightUpdates";
@@ -129,7 +129,7 @@ public class SettingsController implements Initializable {
     // Spinners
     private SpinnerValueFactory<Integer> simIntervalValue;
     private SpinnerValueFactory<Integer> stackAddressValue;
-    private SpinnerValueFactory<Integer> symbolsAddressValue;
+    private SpinnerValueFactory<Integer> programAddressValue;
     private SpinnerValueFactory<Integer> maxNotificationValue;
 
     // ToggleGroup
@@ -147,17 +147,17 @@ public class SettingsController implements Initializable {
         // Gestion des spinners
         simIntervalValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 10000, ExecutionWorker.FALLBACK_UPDATE_INTERVAL, ExecutionWorker.UPDATE_THRESHOLD);
         stackAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_STACK_ADDRESS, 4);
-        symbolsAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_SYMBOLS_ADDRESS, 4);
+        programAddressValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(Integer.MIN_VALUE, Integer.MAX_VALUE, StateContainer.DEFAULT_PROGRAM_ADDRESS, 4);
         maxNotificationValue = new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 20, DEFAULT_MAX_NOTIFICATION, 1);
 
         simIntervalValue.setConverter(new SpinnerStringConverter(simIntervalValue));
         stackAddressValue.setConverter(new SpinnerAddressConverter(stackAddressValue));
-        symbolsAddressValue.setConverter(new SpinnerAddressConverter(symbolsAddressValue));
+        programAddressValue.setConverter(new SpinnerAddressConverter(programAddressValue));
         maxNotificationValue.setConverter(new SpinnerStringConverter(maxNotificationValue));
 
         JArmEmuApplication.getController().settingsSimInterval.setValueFactory(simIntervalValue);
         JArmEmuApplication.getController().settingsStackAddress.setValueFactory(stackAddressValue);
-        JArmEmuApplication.getController().settingsSymbolsAddress.setValueFactory(symbolsAddressValue);
+        JArmEmuApplication.getController().settingsProgramAddress.setValueFactory(programAddressValue);
         JArmEmuApplication.getController().settingsMaxNotification.setValueFactory(maxNotificationValue);
 
         // Gestion des ToggleGroups
@@ -225,7 +225,7 @@ public class SettingsController implements Initializable {
         // Listeners pour les spinners
         simIntervalValue.valueProperty().addListener((obs, oldVal, newVal) -> setSimulationInterval(newVal));
         stackAddressValue.valueProperty().addListener((obs, oldVal, newVal) -> setStackAddress(newVal));
-        symbolsAddressValue.valueProperty().addListener((obs, oldVal, newVal) -> setSymbolsAddress(newVal));
+        programAddressValue.valueProperty().addListener((obs, oldVal, newVal) -> setProgramAddress(newVal));
         maxNotificationValue.valueProperty().addListener((obs, oldVal, newVal) -> setMaxNotification(newVal));
 
         initiated = true;
@@ -238,7 +238,7 @@ public class SettingsController implements Initializable {
         // Spinners
         simIntervalValue.setValue(getSimulationInterval());
         stackAddressValue.setValue(getStackAddress());
-        symbolsAddressValue.setValue(getSymbolsAddress());
+        programAddressValue.setValue(getProgramAddress());
         maxNotificationValue.setValue(getMaxNotification());
 
         // Toggles
@@ -296,7 +296,7 @@ public class SettingsController implements Initializable {
         setReadOnlyWritingBreak(DEFAULT_READ_ONLY_WRITING_BREAK);
 
         setStackAddress(StateContainer.DEFAULT_STACK_ADDRESS);
-        setSymbolsAddress(StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+        setProgramAddress(StateContainer.DEFAULT_PROGRAM_ADDRESS);
         setDataFormat(DEFAULT_DATA_FORMAT);
         setFollowSPSetting(DEFAULT_FOLLOW_SP);
 
@@ -396,12 +396,12 @@ public class SettingsController implements Initializable {
         return preferences.getInt(STACK_ADDRESS_KEY, StateContainer.DEFAULT_STACK_ADDRESS);
     }
 
-    public void setSymbolsAddress(int nb) {
-        preferences.putInt(SYMBOLS_ADDRESS_KEY, nb);
+    public void setProgramAddress(int nb) {
+        preferences.putInt(PROGRAM_ADDRESS_KEY, nb);
     }
 
-    public int getSymbolsAddress() {
-        return preferences.getInt(SYMBOLS_ADDRESS_KEY, StateContainer.DEFAULT_SYMBOLS_ADDRESS);
+    public int getProgramAddress() {
+        return preferences.getInt(PROGRAM_ADDRESS_KEY, StateContainer.DEFAULT_PROGRAM_ADDRESS);
     }
 
     public String getLastSavePath() {

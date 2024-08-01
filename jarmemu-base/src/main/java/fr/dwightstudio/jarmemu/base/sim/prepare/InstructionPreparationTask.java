@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.base.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     @Override
     public PreparationStream contextualize(StateContainer container) throws ASMException {
         logger.info("Contextualizing instructions" + getDescription());
-        container.getCurrentFilePos().setFileIndex(0);
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
@@ -64,7 +65,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
                     }
                 }
             }
-            container.getCurrentFilePos().incrementFileIndex();
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
@@ -82,7 +83,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
                         logger.info("Verifying " + ins);
                         ins.verify(() -> {
                             StateContainer container = stateSupplier.get();
-                            container.getCurrentFilePos().setFileIndex(finalFi);
+                            container.getCurrentMemoryPos().setFileIndex(finalFi);
                             return container;
                         });
                     }
@@ -111,10 +112,34 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         return stream;
     }
 
+    /**
+     * Write each instruction at its address in memory
+     *
+     * @param container the state container on which writing
+     * @param positionProvider the function used to translate from line to memory address
+     */
+    public PreparationStream write(StateContainer container, Function<ParsedInstruction<?, ?, ?, ?>, Integer> positionProvider) {
+        logger.info("Writing instructions" + getDescription());
+
+        for (ParsedFile file : stream.files) {
+            for (ParsedObject obj : file) {
+                if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
+                    if (test(ins)) {
+                        int pos = positionProvider.apply(ins);
+                        logger.info("Writing " + ins +" (" + pos + " in memory)");
+                        container.getMemory().putWord(pos, ins.getMemoryCode(container));
+                    }
+                }
+            }
+        }
+        logger.info("Done!");
+        return stream;
+    }
+
     protected boolean test(ParsedInstruction<?, ?, ?, ?> ins) {
         if (modifyPC != null && ins.doModifyPC() != modifyPC) return false;
 
-        if (workingRegister != null && ins.hasWorkingRegister() != workingRegister) return false;
+        if (workingRegister != null && ins.isWorkingRegisterCompatible() != workingRegister) return false;
 
         if (generated != null && ins.isGenerated() != generated) return false;
 

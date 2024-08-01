@@ -39,7 +39,7 @@ public class CodeInterpreter {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     // ParsedObjects
-    protected CodePreparator codePreparator;
+    protected StateInitializer stateInitializer;
 
     // Simulation
     protected StateContainer initialState;
@@ -50,17 +50,17 @@ public class CodeInterpreter {
     }
 
     /**
-     * Charge des instructions parsées dans l'exécuteur
+     * Load parsed objects into the interpreter
      *
-     * @param sourceParser le parseur de source utilisé
+     * @param sourceParser the source parser used
      */
     public ASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
-        this.codePreparator = new CodePreparator();
-        return this.codePreparator.load(sourceParser, fileSources);
+        this.stateInitializer = new StateInitializer();
+        return this.stateInitializer.load(sourceParser, fileSources);
     }
 
     /**
-     * Execute le code se trouvant sur la ligne courante
+     * Executes the code at the current line
      *
      * @param forceExecution ignore les erreurs d'exécution non bloquantes
      */
@@ -70,13 +70,13 @@ public class CodeInterpreter {
         stateContainer.resetAddressRegisterUpdateValue();
 
         ExecutionASMException executionException = null;
-        List<ParsedInstruction<?, ?, ?, ?>> instructions = codePreparator.getInstructionMemory();
+        List<ParsedInstruction<?, ?, ?, ?>> instructions = stateInitializer.getInstructionMemory();
 
         if (getPC().getData() % 4 == 0 && getPC().getData() >= 0 && (getPC().getData() / 4) < instructions.size()) {
             ParsedInstruction<?, ?, ?, ?> instruction = instructions.get(getPC().getData() / 4);
 
             // Mise à jour de l'indice du fichier
-            stateContainer.getCurrentFilePos().setFileIndex(instruction.getFile().getIndex());
+            stateContainer.getCurrentMemoryPos().setFileIndex(instruction.getFile().getIndex());
 
             try {
                 instruction.execute(stateContainer, forceExecution);
@@ -97,14 +97,14 @@ public class CodeInterpreter {
     }
 
     /**
-     * Revient à la première ligne
+     * Go back to the first line
      */
     public void restart() {
         stateContainer = new StateContainer(initialState);
 
         try {
             int fileIndex = stateContainer.getGlobal("_START");
-            stateContainer.getCurrentFilePos().setFileIndex(fileIndex);
+            stateContainer.getCurrentMemoryPos().setFileIndex(fileIndex);
             stateContainer.getPC().setData(stateContainer.getLabelsInFiles().get(fileIndex).get("_START"));
             logger.warning("Setting PC to address of label '_START' positioned at " + stateContainer.getPC().getData());
         } catch (Exception e) {
@@ -114,19 +114,17 @@ public class CodeInterpreter {
     }
 
     /**
-     * Vérifie que l'instruction suivante existe.
-     *
-     * @return vrai s'il y a une ligne, faux sinon
+     * @return true if the next instruction exists (the instruction at the current PC address)
      */
     public boolean hasNext() {
         return getPC().getData() / 4 < getInstructionCount();
     }
 
     /**
-     * @return le nombre de lignes
+     * @return the number of lines
      */
     public int getInstructionCount() {
-        return codePreparator.getInstructionMemory().size();
+        return stateInitializer.getInstructionMemory().size();
     }
 
     public StateContainer getStateContainer() {
@@ -134,27 +132,27 @@ public class CodeInterpreter {
     }
 
     /**
-     * Initialise le conteneur d'état à l'aide du préparateur de code
+     * Initialize the initial state container
      *
-     * @param stackAddress l'adresse de la pile
-     * @param symbolsAddress l'adresse des symboles
-     * @return les erreurs
+     * @param stackAddress stack address
+     * @param programAddress program address
+     * @return the exceptions
      */
-    public ASMException[] initiate(int stackAddress, int symbolsAddress) {
+    public ASMException[] initiate(int stackAddress, int programAddress) {
         logger.info("Initiating state container");
-        initialState = new StateContainer(stackAddress, symbolsAddress);
-        return codePreparator.initiate(initialState);
+        initialState = new StateContainer(stackAddress, programAddress);
+        return stateInitializer.initiate(initialState);
     }
 
     /**
-     * Initialise le conteneur d'état à l'aide du préparateur de code
+     * Initialize the initial state container
      *
-     * @return les erreurs
+     * @return the exceptions
      */
     public ASMException[] initiate() {
         logger.info("Initiating state container");
         initialState = new StateContainer();
-        return codePreparator.initiate(initialState);
+        return stateInitializer.initiate(initialState);
     }
 
     private Register getPC() {
@@ -166,7 +164,7 @@ public class CodeInterpreter {
     }
 
     public FilePos getCurrentLine() {
-        FilePos pos = codePreparator.getLineNumber(getCurrentPosition());
+        FilePos pos = stateInitializer.getLineNumber(getCurrentPosition());
         return pos == null ? null : pos.freeze();
     }
 
@@ -175,11 +173,11 @@ public class CodeInterpreter {
     }
 
     public FilePos getLineNumber(int pos) {
-        return codePreparator.getLineNumber(pos);
+        return stateInitializer.getLineNumber(pos);
     }
 
     public int getPosition(FilePos line) {
-        return codePreparator.getPosition(line);
+        return stateInitializer.getPosition(line);
     }
 
     public int getCurrentPosition() {

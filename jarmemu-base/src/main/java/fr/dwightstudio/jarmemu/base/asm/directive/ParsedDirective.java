@@ -47,26 +47,28 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
     }
 
     /**
-     * Contextualise la directive dans le conteneur d'état initial, après définition des constantes.
+     * Contextualize the directive in initial state container (with the constants already defined if it doesn't build context)
      *
-     * @param stateContainer le conteneur d'état initial
+     * @param stateContainer the initial state container
      */
     public abstract void contextualize(StateContainer stateContainer) throws ASMException;
 
     /**
-     * @param stateContainer le conteneur d'état sur lequel appliquer la directive
+     * Execute the directive
+     *
+     * @param stateContainer the state container on which applying the directive
      */
     public abstract void execute(StateContainer stateContainer) throws ASMException;
 
     /**
-     * Alloue la place nécessaire dans la mémoire, en fonction des données analysées.
+     * Offset memory to allocate space according to parsed data.
      *
-     * @param stateContainer le conteneur d'état sur lequel appliquer la directive
+     * @param stateContainer the state container on which applying the directive
      */
     public abstract void offsetMemory(StateContainer stateContainer) throws ASMException;
 
     /**
-     * @return vrai si la directive est responsable de la construction du contexte.
+     * @return true if the directive is responsible for building context (i.e. defines constants)
      */
     public abstract boolean isContextBuilder();
 

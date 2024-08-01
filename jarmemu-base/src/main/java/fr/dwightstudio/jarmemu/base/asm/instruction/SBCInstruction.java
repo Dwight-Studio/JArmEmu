@@ -89,8 +89,13 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Regist
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return true;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override

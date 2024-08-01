@@ -1,3 +1,7 @@
+0.2.2 -> 0.2.3
+- Added instruction code in memory
+- Improved readability in memory views
+
 0.2.1 -> 0.2.2
 
 - Added switch for Real Time Parser (color highlighting) and Auto-completion in settings
@@ -6,6 +10,7 @@
 - Fixed autocompletion compatibility with find & replace
 - Fixed a bug that flagged a file as 'modified' when just opened
 - Fixed a bug that prevented from using find & replace after simulation
+
 
 0.2.0 -> 0.2.1
 

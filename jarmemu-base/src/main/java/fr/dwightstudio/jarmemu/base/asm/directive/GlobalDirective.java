@@ -39,7 +39,7 @@ public class GlobalDirective extends ParsedDirective {
     public void contextualize(StateContainer stateContainer) throws ASMException {
         String name = args.toUpperCase().strip();
         if (stateContainer.getRestrainedData().containsKey(name) || stateContainer.getRestrainedLabels().containsKey(name)) {
-            stateContainer.addGlobal(name, stateContainer.getCurrentFilePos().getFileIndex());
+            stateContainer.addGlobal(name, stateContainer.getCurrentMemoryPos().getFileIndex());
         } else {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Global"));
         }

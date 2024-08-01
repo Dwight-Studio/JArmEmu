@@ -45,7 +45,7 @@ class EquivalentDirectiveTest extends DirectiveTest {
         Random random = new Random();
         FilePos posZ = FilePos.ZERO.clone();
 
-        container.getCurrentFilePos().setPos(0);
+        container.getCurrentMemoryPos().setPos(0);
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
@@ -55,7 +55,7 @@ class EquivalentDirectiveTest extends DirectiveTest {
             assertEquals(r, container.getAccessibleConsts().get(s));
         }
 
-        assertEquals(0, container.getCurrentFilePos().getPos());
+        assertEquals(0, container.getCurrentMemoryPos().getPos());
     }
 
     @Test

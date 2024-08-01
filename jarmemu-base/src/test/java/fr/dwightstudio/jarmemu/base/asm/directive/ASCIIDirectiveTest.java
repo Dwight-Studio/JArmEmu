@@ -39,7 +39,7 @@ class ASCIIDirectiveTest extends DirectiveTest {
 
     @Test
     void normalTest() throws ASMException {
-        container.getCurrentFilePos().setPos(0);
+        container.getCurrentMemoryPos().setPos(0);
         for (int i = 0 ; i < 32 ; i++) {
             String string = RandomStringUtils.randomAlphanumeric(32);
             

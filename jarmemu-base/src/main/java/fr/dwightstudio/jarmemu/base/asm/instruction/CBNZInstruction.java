@@ -62,8 +62,13 @@ public class CBNZInstruction extends ParsedInstruction<Register, Integer, Object
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override

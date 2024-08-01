@@ -44,7 +44,7 @@ public class DirectiveTest extends JArmEmuTest {
     @BeforeEach
     void setUp() {
         container = new StateContainer();
-        container.getCurrentFilePos().setPos(0);
+        container.getCurrentMemoryPos().setPos(0);
     }
 
     protected void execute(StateContainer container, Section section, String args) throws ASMException {

@@ -70,7 +70,7 @@ public class HalfDirective extends ParsedDirective {
 
     @Override
     public void execute(StateContainer stateContainer) throws ASMException {
-        FilePos tempPos = stateContainer.getCurrentFilePos().clone();
+        FilePos tempPos = stateContainer.getCurrentMemoryPos().clone();
         for (short s : shortArray) {
             stateContainer.getMemory().putHalf(tempPos.getPos(), s);
             tempPos.incrementPos(2);
@@ -79,8 +79,8 @@ public class HalfDirective extends ParsedDirective {
 
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        if (args.isBlank()) stateContainer.getCurrentFilePos().incrementPos(2);
-        stateContainer.getCurrentFilePos().incrementPos(arg.length * 2);
+        if (args.isBlank()) stateContainer.getCurrentMemoryPos().incrementPos(2);
+        stateContainer.getCurrentMemoryPos().incrementPos(arg.length * 2);
     }
 
     @Override

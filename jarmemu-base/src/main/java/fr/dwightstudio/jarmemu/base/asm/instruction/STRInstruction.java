@@ -83,8 +83,13 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override
@@ -102,7 +107,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
             }
 
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
-            if (address < stateContainer.getLastAddressRORange() && address >= stateContainer.getSymbolsAddress()) throw new IllegalDataWritingASMException();
+            if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) throw new IllegalDataWritingASMException();
         }
 
         switch (modifier.dataMode()){

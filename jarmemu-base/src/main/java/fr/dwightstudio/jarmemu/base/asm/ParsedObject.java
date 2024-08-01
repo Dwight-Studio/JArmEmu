@@ -31,17 +31,17 @@ import java.util.function.Supplier;
 
 public abstract class ParsedObject {
 
-    protected static final boolean VERBOSE = true;
+    protected static final boolean VERBOSE = false;
 
     private ParsedFile file;
     private int lineNumber;
     private boolean generated;
 
     /**
-     * Effectue un test pour vérifier la capacité d'exécution
+     * Test the execution capacity
      *
-     * @param stateSupplier le fournisseur d'état de base (état pré-exécution)
-     * @throws ASMException lorsque une erreur est détectée
+     * @param stateSupplier the initial state container (pre-execution state)
+     * @throws ASMException when an error is detected during the test
      */
     public abstract void verify(Supplier<StateContainer> stateSupplier) throws ASMException;
 
@@ -62,21 +62,21 @@ public abstract class ParsedObject {
     }
 
     /**
-     * @return la position dans le programme (fichier et ligne)
+     * @return the position in the program (file and line)
      */
     public FilePos getFilePos() {
         return new FilePos(file == null ? -1 : file.getIndex(), lineNumber).freeze();
     }
 
     /**
-     * @return vrai si l'objet a été généré
+     * @return true if the object was generated (not directly included in the source code)
      */
     public boolean isGenerated() {
         return generated;
     }
 
     /**
-     * Définie l'objet comme généré
+     * Define the object as generated (not directly included in the source code)
      */
     public void setGenerated() {
         this.generated = true;

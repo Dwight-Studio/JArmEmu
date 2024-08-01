@@ -56,7 +56,7 @@ public class ParsedLabel extends ParsedObject {
             stateContainer.getAccessibleData().put(name, pos.getPos());
         } else {
             this.memoryPos = pos.freeze();
-            if (stateContainer.getAccessibleLabels().put(name, this.memoryPos.toByteValue()) != null)
+            if (stateContainer.getAccessibleLabels().put(name, this.memoryPos.getPos()) != null)
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.labelAlreadyDefined", this.name)).with(this);
         }
     }
@@ -67,7 +67,7 @@ public class ParsedLabel extends ParsedObject {
 
         if (container.getRestrainedLabels().get(this.name) == null) {
             throw new IllegalStateException("Unable to verify label " + name + " (incorrectly registered in the StateContainer)");
-        } else if (container.getRestrainedLabels().get(this.name) != this.memoryPos.toByteValue()) {
+        } else if (container.getRestrainedLabels().get(this.name) != this.memoryPos.getPos()) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.labelAlreadyDefined", this.name)).with(this);
         }
     }
@@ -87,7 +87,7 @@ public class ParsedLabel extends ParsedObject {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "  (" + name + ") at " + getFilePos();
+        return getClass().getSimpleName() + " (" + name + ") at " + getFilePos();
     }
 
     @Override

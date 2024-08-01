@@ -572,7 +572,7 @@ public class FileEditor {
         } else {
             try {
                 logger.info("Saving file...");
-                getSourceScanner().exportCodeToFile(path);
+                getSourceScanner().exportCode(path);
                 setSaved(getSourceScanner().exportCode());
                 logger.info("Saved at: " + path.getAbsolutePath());
             } catch (Exception exception) {
@@ -600,7 +600,7 @@ public class FileEditor {
                 logger.info("File located: " + file.getAbsolutePath());
                 path = file;
                 logger.info("Saving file...");
-                getSourceScanner().exportCodeToFile(path);
+                getSourceScanner().exportCode(path);
                 setSaved(getSourceScanner().exportCode());
                 logger.info("Saved at: " + path.getAbsolutePath());
             } catch (Exception exception) {

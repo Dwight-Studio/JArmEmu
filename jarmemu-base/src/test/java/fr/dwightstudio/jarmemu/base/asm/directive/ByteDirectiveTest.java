@@ -45,7 +45,7 @@ class ByteDirectiveTest extends DirectiveTest {
             for (int j = 0; j < 32; j++) {
                 byte[] b = new byte[1];
                 random.nextBytes(b);
-                container.getCurrentFilePos().setPos(j);
+                container.getCurrentMemoryPos().setPos(j);
                 execute(container, Section.DATA, "" + (b[0] & 0xFF));
                 assertEquals(b[0], container.getMemory().getByte(j));
             }

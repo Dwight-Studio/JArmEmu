@@ -41,24 +41,24 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class CodePreparator {
+public class StateInitializer {
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
     private final ArrayList<ParsedFile> parsedFiles;
     private ArrayList<ParsedInstruction<?, ?, ?, ?>> instructionMemory;
-    private ArrayList<FilePos> instructionPosition;
+    private ArrayList<FilePos> instructionPosInFile;
 
-    public CodePreparator() {
+    public StateInitializer() {
         this.parsedFiles = new ArrayList<>();
         this.instructionMemory = new ArrayList<>();
-        this.instructionPosition = new ArrayList<>();
+        this.instructionPosInFile = new ArrayList<>();
     }
 
     /**
-     * Charge un nouveau programme dans le préparateur d'état
+     * Load a new program in the state initializer
      *
-     * @param sourceParser l'analyseur de source
-     * @param fileSources  les scanneurs de sources
+     * @param sourceParser the source parser
+     * @param fileSources the source scanner of each file
      */
     public ASMException[] load(SourceParser sourceParser, List<SourceScanner> fileSources) {
         ArrayList<ASMException> exceptions = new ArrayList<>();
@@ -76,17 +76,25 @@ public class CodePreparator {
         return exceptions.toArray(new ASMException[0]);
     }
 
+    /**
+     * Launch state initiation
+     *
+     * @param stateContainer the state container to initialize
+     * @return all the thrown exceptions
+     */
     public ASMException[] initiate(StateContainer stateContainer) {
         ArrayList<ASMException> exceptions = new ArrayList<>();
 
-        // Constitution de la mémoire de programme
+        // Instruction memory initialisation
+        // Instruction memory is a virtual memory used to simplify emulation (it is not the program memory)
         instructionMemory = new ArrayList<>();
-        instructionPosition = new ArrayList<>();
+        instructionPosInFile = new ArrayList<>();
 
         stateContainer.clearAndInitFiles(parsedFiles.size());
 
-        int lastMem = 0;
-        stateContainer.getCurrentFilePos().setFileIndex(0);
+        // Reading all instructions
+        stateContainer.getCurrentMemoryPos().setFileIndex(0);
+        stateContainer.resetMemoryPos();
         for (ParsedFile file : parsedFiles) {
             for (ParsedObject obj : file) {
                 try {
@@ -97,60 +105,65 @@ public class CodePreparator {
                     }
                     if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                         instructionMemory.add(ins);
-                        lastMem = instructionMemory.size();
-                        instructionPosition.add(new FilePos(file.getIndex(), ins.getLineNumber()).freeze());
+                        stateContainer.getCurrentMemoryPos().incrementPos(4);
+                        instructionPosInFile.add(new FilePos(file.getIndex(), ins.getLineNumber()).freeze());
                     } else if (obj instanceof ParsedLabel label) {
                         if (label.getSection() == Section.TEXT) {
-                            label.register(stateContainer, new FilePos(file.getIndex(), lastMem).freeze());
+                            label.register(stateContainer, stateContainer.getCurrentMemoryPos().freeze());
                         }
                     }
                 } catch (ASMException e) {
                     exceptions.add(e);
                 }
             }
-            stateContainer.getCurrentFilePos().incrementFileIndex();
+            stateContainer.getCurrentMemoryPos().incrementFileIndex();
         }
+        stateContainer.startSymbolRange();
 
-        stateContainer.getCurrentFilePos().setFileIndex(0);
+        logger.info("Setting Data Range opening address to " + stateContainer.getSymbolAddress());
+
+        // Program memory initialization
+        // Program memory is the memory used to store instruction code (32 bit value) and data
+        stateContainer.getCurrentMemoryPos().setFileIndex(0);
         try {
             new PreparationStream(parsedFiles)
-                    // Construction du contexte
+
+                    // Building context
+                    .goToSymbolRange(stateContainer)
                     .forDirectives().isContextBuilder(true).contextualize(stateContainer)
-
                     .forDirectives().inSection(Section.RODATA).registerLabels(stateContainer)
-
-                    .forPseudoInstructions().allocate(stateContainer)
-
-                    .forDirectives().inSection(Section.DATA).registerLabels(stateContainer)
-
-                    .forDirectives().inSection(Section.BSS).registerLabels(stateContainer)
-
-                    .resetPos(stateContainer)
-
-                    // Exécution des directives
-                    .forDirectives().isContextBuilder(false).contextualize(stateContainer)
-
-                    .forDirectives().inSection(Section.RODATA).execute(stateContainer)
 
                     .startPseudoInstructionRange(stateContainer)
                     .forPseudoInstructions().allocate(stateContainer)
-                    .closeReadOnlyRange(stateContainer)
 
+                    .startWritableDataRange(stateContainer)
+                    .forDirectives().inSection(Section.DATA).registerLabels(stateContainer)
+                    .forDirectives().inSection(Section.BSS).registerLabels(stateContainer)
+
+
+                    // Executing directives
+                    .goToSymbolRange(stateContainer)
+                    .forDirectives().isContextBuilder(false).contextualize(stateContainer)
+                    .forDirectives().inSection(Section.RODATA).execute(stateContainer)
+
+                    .goToWritableDataRange(stateContainer)
                     .forDirectives().inSection(Section.DATA).execute(stateContainer)
-
                     .forDirectives().inSection(Section.BSS).execute(stateContainer)
 
-                    // Préparation et exécution des Pseudo-Instructions
+
+                    // Preparation and execution of pseudo instructions
                     .forPseudoInstructions().generate(stateContainer)
 
-                    .goToPseudoInstructionPos(stateContainer)
-
+                    .goToPseudoInstructionRange(stateContainer)
                     .forDirectives().isGenerated(true).contextualize(stateContainer)
                     .forDirectives().isGenerated(true).execute(stateContainer)
 
-                    // Préparation et vérification des instructions
+
+                    // Preparation and verification of instructions
+                    .resetPos(stateContainer)
                     .forInstructions().contextualize(stateContainer)
-                    .forInstructions().verify(() -> new StateContainer(stateContainer));
+                    .forInstructions().verify(() -> new StateContainer(stateContainer))
+                    .forInstructions().write(stateContainer, this::getPosition);
         } catch (ASMException exception) {
             exceptions.add(exception);
         }
@@ -164,44 +177,60 @@ public class CodePreparator {
 
         // Ajout du label _END
         if (!stateContainer.getGlobals().contains("_END")) {
-            FilePos lastInstruction = new FilePos(parsedFiles.size() - 1, lastMem);
-            stateContainer.getLabelsInFiles().getLast().put("_END", lastInstruction.toByteValue());
+            stateContainer.getLabelsInFiles().getLast().put("_END", stateContainer.getSymbolAddress());
             stateContainer.addGlobal("_END", parsedFiles.size() - 1);
-            logger.info("Can't find label '_END', setting one at 0:" + lastInstruction.toByteValue());
+            logger.info("Can't find label '_END', setting one at 0:" + stateContainer.getSymbolAddress());
         }
 
         return exceptions.toArray(new ASMException[0]);
     }
 
-    public void clearFiles() {
-        this.parsedFiles.clear();
-    }
-
     /**
-     * @return une vue de la liste des instructions
+     * @return a view of the instruction memory
      */
     public List<ParsedInstruction<?, ?, ?, ?>> getInstructionMemory() {
         return Collections.unmodifiableList(instructionMemory);
     }
 
     /**
-     * @param pos la position dans la mémoire
-     * @return le numéro de ligne de l'instruction
+     * @param pos the address in memory
+     * @return the instruction's line
      */
     public @Nullable FilePos getLineNumber(int pos) {
         if (pos % 4 != 0 || pos < 0 || pos / 4 >= instructionMemory.size()) return null;
-        return instructionPosition.get(pos / 4);
+        return instructionPosInFile.get(pos / 4);
     }
 
     /**
-     * @param filePos le numéro de la ligne
-     * @return la position de la ligne
+     * @param instruction the instruction to locate
+     * @return the instruction's line
+     */
+    public @Nullable FilePos getLineNumber(ParsedInstruction<?, ?, ?, ?> instruction) {
+        return getLineNumber(getPosition(instruction));
+    }
+
+    /**
+     * @param filePos the line number
+     * @return the address in memory
      */
     public int getPosition(FilePos filePos) {
-        return instructionPosition.indexOf(filePos) * 4;
+        return instructionPosInFile.indexOf(filePos) * 4;
+    }
+
+    /**
+     * @param instruction the instruction to locate
+     * @return the position in memory of the instruction
+     */
+    public int getPosition(ParsedInstruction<?, ?, ?, ?> instruction) {
+        int i = instructionMemory.indexOf(instruction);
+        return i == -1 ? i : i * 4;
     }
 
     public ArrayList<ParsedFile> getParsedFiles() {
         return parsedFiles;
+    }
+
+    public void clearFiles() {
+        this.parsedFiles.clear();
     }
 }

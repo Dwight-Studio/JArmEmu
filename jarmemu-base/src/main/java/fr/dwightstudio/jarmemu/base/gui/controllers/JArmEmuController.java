@@ -129,7 +129,7 @@ public class JArmEmuController implements Initializable {
     @FXML protected ToggleSwitch followSPSwitch;
     @FXML protected ToggleSwitch updateSwitch;
     @FXML protected Spinner<Integer> settingsStackAddress;
-    @FXML protected Spinner<Integer> settingsSymbolsAddress;
+    @FXML protected Spinner<Integer> settingsProgramAddress;
 
     @FXML protected ChoiceBox<String> settingsFormat;
     @FXML protected ChoiceBox<String> settingsFamily;

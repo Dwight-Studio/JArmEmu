@@ -85,8 +85,13 @@ public class CMPInstruction extends ParsedInstruction<Register, RegisterOrImmedi
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override

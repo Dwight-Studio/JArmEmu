@@ -95,8 +95,13 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    public boolean hasWorkingRegister() {
+    public boolean isWorkingRegisterCompatible() {
         return false;
+    }
+
+    @Override
+    public int getMemoryCode(StateContainer stateContainer) {
+        return 0;
     }
 
     @Override
@@ -137,7 +142,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     public void allocate(StateContainer container) {
-        container.getCurrentFilePos().incrementPos(4);
+        container.getCurrentMemoryPos().incrementPos(4);
     }
 
     @Override

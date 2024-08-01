@@ -48,7 +48,7 @@ class GlobalDirectiveTest extends DirectiveTest {
     void normalTest() throws ASMException {
         execute(container, Section.DATA, "ExEMpLE");
         assertEquals("EXEMPLE", container.getGlobals().getFirst());
-        assertEquals(0, container.getCurrentFilePos().getPos());
+        assertEquals(0, container.getCurrentMemoryPos().getPos());
     }
 
     @Test

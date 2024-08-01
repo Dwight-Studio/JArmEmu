@@ -51,27 +51,39 @@ public class PreparationStream {
         return new PseudoInstructionPreparationTask(this);
     }
 
-    public PreparationStream closeReadOnlyRange(StateContainer stateContainer) {
-        logger.info("Setting read only range ending address to " + stateContainer.getCurrentFilePos());
-        stateContainer.closeReadOnlyRange();
-        return this;
-    }
-
     public PreparationStream startPseudoInstructionRange(StateContainer stateContainer) {
-        logger.info("Setting Pseudo-Instruction range starting address to " + stateContainer.getCurrentFilePos());
+        logger.info("Setting Pseudo-Instruction range address to " + stateContainer.getCurrentMemoryPos());
         stateContainer.startPseudoInstructionRange();
         return this;
     }
 
-    public PreparationStream resetPos(StateContainer stateContainer) {
-        logger.info("Resetting state data pointer");
-        stateContainer.resetFilePos();
+    public PreparationStream startWritableDataRange(StateContainer stateContainer) {
+        logger.info("Setting Writable Data range address to " + stateContainer.getCurrentMemoryPos());
+        stateContainer.startWritableData();
         return this;
     }
 
-    public PreparationStream goToPseudoInstructionPos(StateContainer stateContainer) {
-        logger.info("Setting state data pointer to Pseudo-Instruction range starting address");
-        stateContainer.getCurrentFilePos().setPos(stateContainer.getFirstAddressPIRange());
+    public PreparationStream resetPos(StateContainer stateContainer) {
+        logger.info("Resetting state memory pointer");
+        stateContainer.resetMemoryPos();
+        return this;
+    }
+
+    public PreparationStream goToSymbolRange(StateContainer stateContainer) {
+        logger.info("Setting state data pointer to symbol range address (" + stateContainer.getSymbolAddress() + ")");
+        stateContainer.getCurrentMemoryPos().setPos(stateContainer.getSymbolAddress());
+        return this;
+    }
+
+    public PreparationStream goToPseudoInstructionRange(StateContainer stateContainer) {
+        logger.info("Setting state data pointer to pseudo-instruction range address (" + stateContainer.getPseudoInstructionAddress() + ")");
+        stateContainer.getCurrentMemoryPos().setPos(stateContainer.getPseudoInstructionAddress());
+        return this;
+    }
+
+    public PreparationStream goToWritableDataRange(StateContainer stateContainer) {
+        logger.info("Setting state data pointer writable data range address (" + stateContainer.getWritableDataAddress() + ")");
+        stateContainer.getCurrentMemoryPos().setPos(stateContainer.getWritableDataAddress());
         return this;
     }
 }
