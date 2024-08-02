@@ -19,6 +19,7 @@ module fr.dwightstudio.jarmemu.base {
     requires org.apache.commons.collections4;
     requires org.json;
     requires org.kohsuke.github.api;
+    requires org.kordamp.ikonli.core;
 
     exports fr.dwightstudio.jarmemu.base;
     exports fr.dwightstudio.jarmemu.base.gui;

@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.base.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.RegisterView;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -60,32 +61,17 @@ public class RegistersController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.register"));
-        col0.setGraphic(new FontIcon(Material2OutlinedMZ.MEMORY));
-        col0.setSortable(false);
-        col0.setEditable(false);
-        col0.setReorderable(false);
-        col0.setMinWidth(80);
-        col0.setPrefWidth(80);
-        col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col0, Material2OutlinedMZ.MEMORY, 80, false, true, false);
         col0.setCellValueFactory(c -> c.getValue().getNameProperty());
         col0.setCellFactory(TextFieldTableCell.forTableColumn());
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.value"));
-        col1.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
-        col1.setSortable(false);
-        col1.setReorderable(false);
-        col1.setMinWidth(80);
-        col1.setPrefWidth(80);
-        col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col1, Material2OutlinedMZ.MONEY, 80, true, true, false);
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
         col1.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.flags"));
-        col2.setGraphic(new FontIcon(Material2OutlinedAL.FLAG));
-        col2.setSortable(false);
-        col2.setEditable(false);
-        col2.setReorderable(false);
-        col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col2, Material2OutlinedAL.FLAG, 80, false, true, false);
         col2.setCellValueFactory(c -> c.getValue().getRegisterObservable());
         col2.setCellFactory(FlagTableCell.factory());
 

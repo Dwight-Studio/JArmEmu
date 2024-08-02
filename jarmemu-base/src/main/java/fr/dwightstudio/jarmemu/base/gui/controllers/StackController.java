@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.base.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.MemoryWordView;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -62,36 +63,21 @@ public class StackController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
         col0 = new TableColumn<>();
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.LOCATION_SEARCHING));
-        col0.setSortable(false);
-        col0.setEditable(false);
-        col0.setReorderable(false);
-        col0.setMinWidth(35);
-        col0.setMaxWidth(35);
-        col0.setPrefWidth(35);
-        col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col0, Material2OutlinedAL.LOCATION_SEARCHING, 35, false, false, false);
         col0.setCellValueFactory(c -> c.getValue().getCursorProperty());
         col0.setCellFactory(CursorTableCell.factory());
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.stack.address"));
+        TableViewUtils.setupColumn(col1, Material2OutlinedAL.ALTERNATE_EMAIL, 80, false, true, false);
         col1.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
-        col0.setEditable(false);
-        col1.setReorderable(false);
-        col1.setMinWidth(80);
-        col1.setPrefWidth(80);
-        col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col1.setCellFactory(AddressTableCell.factory());
         col1.setSortType(TableColumn.SortType.ASCENDING);
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.stack.value"));
-        col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
-        col2.setSortable(false);
-        col2.setReorderable(false);
-        col2.setMinWidth(80);
-        col2.setPrefWidth(80);
-        col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col2, Material2OutlinedMZ.MONEY, 80, true, true, false);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
@@ -173,14 +159,14 @@ public class StackController implements Initializable {
             stackValues.addAll(getHigherValues(stateContainer));
             stackValues.add(stateContainer.getStackAddress());
 
-            views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.getSP());
-            views.forEach(view -> stackValues.remove((Integer) view.getAddressProperty().get()));
-
-            for (int address : stackValues) {
-                views.add(new MemoryWordView(stateContainer.getMemory(), address, sp));
-            }
-
             Platform.runLater(() -> {
+                views.removeIf(view -> !stackValues.contains(view.getAddressProperty().get()) || view.getSP() != stateContainer.getSP());
+                views.forEach(view -> stackValues.remove((Integer) view.getAddressProperty().get()));
+
+                for (int address : stackValues) {
+                    views.add(new MemoryWordView(stateContainer.getMemory(), address, sp));
+                }
+
                 col1.setSortable(true);
                 stackTable.sort();
                 col1.setSortable(false);
@@ -193,6 +179,10 @@ public class StackController implements Initializable {
                             break;
                         }
                     }
+                } else if (!stackTable.getSelectionModel().isEmpty()) {
+                    int i = stackTable.getSelectionModel().getSelectedIndex();
+                    stackTable.scrollTo(i);
+                    stackTable.getFocusModel().focus(i);
                 }
             });
         }

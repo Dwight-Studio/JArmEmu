@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.base.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.MemoryChunkView;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
@@ -92,64 +93,33 @@ public class MemoryOverviewController implements Initializable {
         hintPop.setArrowLocation(Popover.ArrowLocation.RIGHT_CENTER);
 
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.address"));
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
-        col0.setSortable(false);
-        col0.setEditable(false);
-        col0.setReorderable(false);
-        col0.setMinWidth(80);
-        col0.setPrefWidth(80);
-        col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col0, Material2OutlinedAL.ALTERNATE_EMAIL, 80, false, true, false);
         col0.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col0.setCellFactory(AddressTableCell.factory());
 
         col1 = new TableColumn<>("ASCII");
-        col1.setGraphic(new FontIcon(Material2OutlinedMZ.SHORT_TEXT));
-        col1.setSortable(false);
-        col1.setReorderable(false);
-        col1.setMinWidth(80);
-        col1.setPrefWidth(80);
-        col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col1, Material2OutlinedMZ.SHORT_TEXT, 80, false, true, false);
         col1.setCellValueFactory(c -> c.getValue().getASCIIProperty());
         col1.setCellFactory(ValueTableCell.factoryStaticString());
         col1.setVisible(false);
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 0));
-        col2.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
-        col2.setSortable(false);
-        col2.setReorderable(false);
-        col2.setMinWidth(80);
-        col2.setPrefWidth(80);
-        col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col2, Material2OutlinedMZ.MONEY, 80, true, true, false);
         col2.setCellValueFactory(c -> c.getValue().getValue0Property());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col3 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 1));
-        col3.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
-        col3.setSortable(false);
-        col3.setReorderable(false);
-        col3.setMinWidth(80);
-        col3.setPrefWidth(80);
-        col3.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col3, Material2OutlinedMZ.MONEY, 80, true, true, false);
         col3.setCellValueFactory(c -> c.getValue().getValue1Property());
         col3.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col4 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 2));
-        col4.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
-        col4.setSortable(false);
-        col4.setReorderable(false);
-        col4.setMinWidth(80);
-        col4.setPrefWidth(80);
-        col4.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col4, Material2OutlinedMZ.MONEY, 80, true, true, false);
         col4.setCellValueFactory(c -> c.getValue().getValue2Property());
         col4.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col5 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 3));
-        col5.setGraphic(new FontIcon(Material2OutlinedMZ.MONEY));
-        col5.setSortable(false);
-        col5.setReorderable(false);
-        col5.setMinWidth(80);
-        col5.setPrefWidth(80);
-        col5.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col5, Material2OutlinedMZ.MONEY, 80, true, true, false);
         col5.setCellValueFactory(c -> c.getValue().getValue3Property());
         col5.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
@@ -260,7 +230,7 @@ public class MemoryOverviewController implements Initializable {
         if (doSearchQuery) {
             Platform.runLater(() -> {
                 int firstAdd = ((JArmEmuApplication.getController().memoryOverviewPage.getCurrentPageIndex() - PAGE_OFFSET) * LINES_PER_PAGE) * ADDRESS_PER_LINE;
-                int relativePos = Math.floorDiv(searchQuery - firstAdd, 4);
+                int relativePos = Math.floorDiv(searchQuery - firstAdd, ADDRESS_PER_LINE);
 
                 memoryTable.scrollTo(relativePos);
                 memoryTable.getFocusModel().focus(relativePos);

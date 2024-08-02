@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.base.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.SymbolView;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import fr.dwightstudio.jarmemu.base.util.converters.FileNameStringConverter;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -43,6 +44,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
+import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 import java.net.URL;
 import java.util.Map;
@@ -63,36 +65,18 @@ public class LabelsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.file"));
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.INSERT_DRIVE_FILE));
-        col0.setSortable(false);
-        col0.setEditable(false);
-        col0.setReorderable(false);
-        col0.setMinWidth(80);
-        col0.setPrefWidth(80);
-        col0.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col0, Material2OutlinedAL.INSERT_DRIVE_FILE, 80, false, true, true);
         col0.setCellValueFactory(c -> c.getValue().getFileIndexProperty());
         col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter()));
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.name"));
-        col1.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
-        col1.setEditable(false);
-        col1.setReorderable(false);
-        col1.setSortable(false);
-        col1.setMinWidth(80);
-        col1.setPrefWidth(80);
-        col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col1, Material2OutlinedAL.LABEL, 80, false, true, true);
         col1.setCellValueFactory(c -> c.getValue().getNameProperty());
         col1.setCellFactory(TextFieldTableCell.forTableColumn());
         col1.setSortType(TableColumn.SortType.ASCENDING);
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.labels.address"));
-        col2.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
-        col2.setEditable(false);
-        col2.setReorderable(false);
-        col2.setSortable(false);
-        col2.setMinWidth(80);
-        col2.setPrefWidth(80);
-        col2.getStyleClass().add(Tweaks.ALIGN_CENTER);
+        TableViewUtils.setupColumn(col2, Material2OutlinedAL.ALTERNATE_EMAIL, 80, false, true, true);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
