@@ -42,11 +42,11 @@ import java.util.SequencedSet;
 
 public class BFIInstruction extends ParsedInstruction<Register, Register, Integer, Integer> {
     public BFIInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     public BFIInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Integer> arg4) {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     @Override

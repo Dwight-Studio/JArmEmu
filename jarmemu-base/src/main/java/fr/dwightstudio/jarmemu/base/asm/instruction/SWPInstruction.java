@@ -43,12 +43,12 @@ import java.util.SequencedSet;
 
 public class SWPInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
     public SWPInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
         throw new DeprecatedASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
     public SWPInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
         throw new DeprecatedASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 

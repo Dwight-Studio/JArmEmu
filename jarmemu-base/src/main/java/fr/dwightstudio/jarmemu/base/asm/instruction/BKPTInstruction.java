@@ -41,11 +41,11 @@ import java.util.SequencedSet;
 
 public class BKPTInstruction extends ParsedInstruction<RegisterOrImmediate, Object, Object, Object> {
     public BKPTInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     public BKPTInstruction(Modifier modifier, ParsedArgument<RegisterOrImmediate> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     @Override

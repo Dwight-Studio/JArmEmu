@@ -17,12 +17,12 @@ import java.util.SequencedSet;
 
 public class CLREXInstruction extends ParsedInstruction<Object, Object, Object, Object> {
     public CLREXInstruction(Modifier modifier, ParsedArgument<Object> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
         throw new NotImplementedASMException(JArmEmuApplication.formatMessage("%exception.instruction.notImplemented", "CLREX"));
     }
 
     public CLREXInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
         throw new NotImplementedASMException(JArmEmuApplication.formatMessage("%exception.instruction.notImplemented", "CLREX"));
     }
 

@@ -40,11 +40,11 @@ import java.util.SequencedSet;
 
 public class BLInstruction extends ParsedInstruction<Integer, Object, Object, Object> {
     public BLInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     public BLInstruction(Modifier modifier, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     @Override

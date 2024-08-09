@@ -43,11 +43,11 @@ import java.util.SequencedSet;
 
 public class STMInstruction extends ParsedInstruction<UpdatableRegister, Register[], Object, Object> {
     public STMInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     public STMInstruction(Modifier modifier, ParsedArgument<UpdatableRegister> arg1, ParsedArgument<Register[]> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     @Override

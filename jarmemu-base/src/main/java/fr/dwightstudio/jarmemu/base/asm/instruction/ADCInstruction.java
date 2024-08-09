@@ -23,10 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RotatedImmediateOrRegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ShiftArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
@@ -46,11 +43,11 @@ import java.util.SequencedSet;
 
 public class ADCInstruction extends ParsedInstruction<Register, Register, RegisterOrImmediate, ShiftFunction> {
     public ADCInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     public ADCInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<RegisterOrImmediate> arg3, ParsedArgument<ShiftFunction> arg4) {
-        super(modifier,  arg1, arg2, arg3, arg4);
+        super(modifier, arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -95,7 +92,33 @@ public class ADCInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int isImmediateOp = 0;
+        int Rn = 0;
+        int Rd = 0;
+        int Op2 = 0;
+        try {
+            //fixme: for now shifts are not being accounted for
+            if (this.arg3.getValue(stateContainer).isRegister()) {
+                // Op2 is a register
+                Op2 = ((RotatedImmediateOrRegisterArgument) this.arg3).getRegisterNumber();
+            } else {
+                // Op2 is an immediate
+                isImmediateOp = 1;
+
+            }
+
+            Rn = ((RegisterArgument) this.arg2).getRegisterNumber();
+            Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        } catch (ExecutionASMException ignored) {}
+
+        int updateFlags = this.modifier.doUpdateFlags() ? 1 : 0;
+
+        int result = (cond << 28) + (isImmediateOp << 25) + (0b0101 << 21) + (updateFlags << 20) + (Rn << 16) + (Rd << 12) + Op2;
+        System.out.println(result);
+        return result;
+        
     }
 
     @Override
