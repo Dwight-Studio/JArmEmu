@@ -2,6 +2,7 @@
 - Added instruction code in memory
 - Improved readability in memory views
 - Fixed memory edition in GUI
+- Fixed CPSR/SPSR being usable as common registers
 
 
 0.2.1 -> 0.2.2

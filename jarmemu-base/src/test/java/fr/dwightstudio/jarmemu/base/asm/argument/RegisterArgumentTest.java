@@ -22,8 +22,9 @@ class RegisterArgumentTest extends ArgumentTest<Register> {
         assertEquals(stateContainer.getRegister(13), parse("SP"));
         assertEquals(stateContainer.getLR(), parse("LR"));
         assertEquals(stateContainer.getPC(), parse("PC"));
-        assertEquals(stateContainer.getCPSR(), parse("CPSR"));
-        assertEquals(stateContainer.getSPSR(), parse("SPSR"));
+
+        assertThrows(SyntaxASMException.class, () -> parse("CPSR"));
+        assertThrows(SyntaxASMException.class, () -> parse("SPSR"));
 
         assertThrows(SyntaxASMException.class, () -> parse("DAF"));
         assertThrows(SyntaxASMException.class, () -> parse("R16"));

@@ -49,8 +49,8 @@ class ImmediateOrRegisterArgumentTest extends ArgumentTest<RegisterOrImmediate> 
         assertEquals(new RegisterOrImmediate(stateContainer.getLR()), parse( "LR"));
         assertEquals(new RegisterOrImmediate(stateContainer.getPC()), parse( "PC"));
 
-        assertEquals(new RegisterOrImmediate(stateContainer.getCPSR()), parse( "CPSR"));
-        assertEquals(new RegisterOrImmediate(stateContainer.getSPSR()), parse( "SPSR"));
+        assertThrows(SyntaxASMException.class, () -> parse( "CPSR"));
+        assertThrows(SyntaxASMException.class, () -> parse( "SPSR"));
 
         assertThrows(SyntaxASMException.class, () -> parse( "R16"));
         assertThrows(SyntaxASMException.class, () -> parse( "48"));
