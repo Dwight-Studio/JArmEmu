@@ -72,4 +72,11 @@ public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister
         super.verify(stateSupplier);
     }
 
+    public int getRegisterNumber() {
+        return argument.getRegisterNumber();
+    }
+
+    public boolean doesUpdate() {
+        return update;
+    }
 }

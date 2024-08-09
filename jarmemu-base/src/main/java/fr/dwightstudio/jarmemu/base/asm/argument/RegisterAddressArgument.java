@@ -65,4 +65,8 @@ public class RegisterAddressArgument extends ParsedArgument<Integer> {
 
         super.verify(stateSupplier);
     }
+
+    public int getRegisterNumber() {
+        return argument.getRegisterNumber();
+    }
 }

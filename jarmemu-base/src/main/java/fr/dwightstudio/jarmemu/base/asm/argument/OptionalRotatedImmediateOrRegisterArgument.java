@@ -66,4 +66,12 @@ public class OptionalRotatedImmediateOrRegisterArgument extends ParsedArgument<R
             super.verify(stateSupplier);
         }
     }
+
+    public boolean isRegister() {
+        return !immediate;
+    }
+
+    public int getRegisterNumber() {
+        return immediate ? -1 : registerArgument.getRegisterNumber();
+    }
 }

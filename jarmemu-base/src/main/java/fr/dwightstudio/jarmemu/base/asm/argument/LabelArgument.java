@@ -57,8 +57,12 @@ public class LabelArgument extends ParsedArgument<Integer> {
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        if (stateSupplier.get().getAccessibleLabels().get(cleanString) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
+        if (this.getAddress(stateSupplier.get()) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
 
         super.verify(stateSupplier);
+    }
+
+    public Integer getAddress(StateContainer stateContainer) {
+        return stateContainer.getAccessibleLabels().get(cleanString);
     }
 }

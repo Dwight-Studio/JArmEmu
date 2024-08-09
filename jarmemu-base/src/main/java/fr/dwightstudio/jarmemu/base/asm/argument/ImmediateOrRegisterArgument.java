@@ -32,6 +32,7 @@ public class ImmediateOrRegisterArgument extends OptionalImmediateOrRegisterArgu
     public ImmediateOrRegisterArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
-        if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegisterOrImmediate"));
+        if (originalString == null)
+            throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingRegisterOrImmediate"));
     }
 }

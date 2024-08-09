@@ -64,4 +64,12 @@ public class OptionalImmediateOrRegisterArgument extends ParsedArgument<Register
             super.verify(stateSupplier);
         }
     }
+
+    public boolean isRegister() {
+        return !immediate;
+    }
+
+    public int getRegisterNumber() {
+        return immediate ? -1 : registerArgument.getRegisterNumber();
+    }
 }

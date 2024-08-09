@@ -71,4 +71,12 @@ public class LabelOrRegisterArgument extends ParsedArgument<Integer> {
 
         super.verify(stateSupplier);
     }
+
+    public boolean isRegister() {
+        return register != null;
+    }
+
+    public int getRegisterNumber() {
+        return register == null ? -1 : register.getRegisterNumber();
+    }
 }

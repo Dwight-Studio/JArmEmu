@@ -29,32 +29,35 @@ import java.util.function.Function;
 
 public enum Condition implements ModifierParameter {
 
-    AL((state) -> true),
-    EQ((state) -> state.getCPSR().getZ()),
-    NE((state) -> !state.getCPSR().getZ()),
-    CS((state) -> state.getCPSR().getC()),
-    CC((state) -> !state.getCPSR().getC()),
-    MI((state) -> state.getCPSR().getN()),
-    PL((state) -> !state.getCPSR().getN()),
-    VS((state) -> state.getCPSR().getV()),
-    VC((state) -> !state.getCPSR().getV()),
-    HS((state) -> state.getCPSR().getC()),
-    LO((state) -> !state.getCPSR().getC()),
-    HI((state) -> state.getCPSR().getC() && !state.getCPSR().getZ()),
-    LS((state) -> !state.getCPSR().getC() || state.getCPSR().getZ()),
-    GE((state) -> state.getCPSR().getN() == state.getCPSR().getV()),
-    LT((state) -> state.getCPSR().getN() != state.getCPSR().getV()),
-    GT((state) -> !state.getCPSR().getZ() && (state.getCPSR().getN() == state.getCPSR().getV())),
-    LE((state) -> state.getCPSR().getZ() || (state.getCPSR().getN() != state.getCPSR().getV()));
+    EQ((state) -> state.getCPSR().getZ(), 0b0000),
+    NE((state) -> !state.getCPSR().getZ(), 0b0001),
+    CS((state) -> state.getCPSR().getC(), 0b0010), HS((state) -> state.getCPSR().getC(), 0b0010),
+    CC((state) -> !state.getCPSR().getC(), 0b0011), LO((state) -> !state.getCPSR().getC(), 0b0011),
+    MI((state) -> state.getCPSR().getN(), 0b0100),
+    PL((state) -> !state.getCPSR().getN(), 0b0101),
+    VS((state) -> state.getCPSR().getV(), 0b0110),
+    VC((state) -> !state.getCPSR().getV(), 0b0111),
+    HI((state) -> state.getCPSR().getC() && !state.getCPSR().getZ(), 0b1000),
+    LS((state) -> !state.getCPSR().getC() || state.getCPSR().getZ(), 0b1001),
+    GE((state) -> state.getCPSR().getN() == state.getCPSR().getV(), 0b1010),
+    LT((state) -> state.getCPSR().getN() != state.getCPSR().getV(), 0b1011),
+    GT((state) -> !state.getCPSR().getZ() && (state.getCPSR().getN() == state.getCPSR().getV()), 0b1100),
+    LE((state) -> state.getCPSR().getZ() || (state.getCPSR().getN() != state.getCPSR().getV()), 0b1101),
+    AL((state) -> true, 0b1110);
 
-    private final Function<StateContainer, Boolean> tester;
+    private final Function<StateContainer, Boolean> conditionFunction;
+    private final int code;
 
-    Condition(Function<StateContainer, Boolean> tester) {
-        this.tester = tester;
+    Condition(Function<StateContainer, Boolean> conditionFunction, int code) {
+        this.conditionFunction = conditionFunction;
+        this.code = code;
     }
 
     public boolean eval(StateContainer stateContainer) {
-        return tester.apply(stateContainer);
+        return conditionFunction.apply(stateContainer);
     }
 
+    public int getCode() {
+        return code;
+    }
 }

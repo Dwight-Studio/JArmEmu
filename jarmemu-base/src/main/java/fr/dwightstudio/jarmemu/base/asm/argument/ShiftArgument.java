@@ -36,7 +36,7 @@ import java.util.function.Supplier;
 public class ShiftArgument extends ParsedArgument<ShiftFunction> {
 
     private BiFunction<StateContainer, Integer, Integer> func;
-    private String type;
+    private Shift type;
     private String shift;
     private boolean rrx;
     private ImmediateOrRegisterArgument argument;
@@ -49,7 +49,7 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
         if (originalString != null) {
             cleanString = originalString.toUpperCase();
             try {
-                type = cleanString.substring(0, 3);
+                type = Shift.valueOf(cleanString.substring(0, 3));
                 shift = cleanString.substring(3).strip();
 
                 if (cleanString.length() == 3) {
@@ -76,7 +76,7 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
                     argument = new ImmediateOrRegisterArgument(shift);
                 }
 
-            } catch (IndexOutOfBoundsException | SyntaxASMException exception) {
+            } catch (IndexOutOfBoundsException | IllegalArgumentException | SyntaxASMException exception) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
             }
         }
@@ -91,22 +91,22 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
                     int value = argument.getValue(stateContainer).intValue();
 
                     func = switch (type) {
-                        case "LSL" -> {
+                        case LSL -> {
                             if (value < 0 || value > 31)
                                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift0to31", shift));
                             yield ((container, i) -> i << value);
                         }
-                        case "LSR" -> {
+                        case LSR -> {
                             if (value < 1 || value > 32)
                                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
                             yield ((container, i) -> i >>> value);
                         }
-                        case "ASR" -> {
+                        case ASR -> {
                             if (value < 1 || value > 32)
                                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
                             yield ((container, i) -> i >> value);
                         }
-                        case "ROR" -> {
+                        case ROR -> {
                             if (value < 1 || value > 31)
                                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
                             yield ((container, i) -> Integer.rotateRight(i, value));
@@ -138,5 +138,9 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
 
             super.verify(stateSupplier);
         }
+    }
+
+    public Shift getType() {
+        return type;
     }
 }
