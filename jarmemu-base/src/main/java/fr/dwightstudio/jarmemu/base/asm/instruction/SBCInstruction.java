@@ -95,7 +95,7 @@ public class SBCInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.getDataProcessingCode(stateContainer, this, 0b0110);
     }
 
     @Override

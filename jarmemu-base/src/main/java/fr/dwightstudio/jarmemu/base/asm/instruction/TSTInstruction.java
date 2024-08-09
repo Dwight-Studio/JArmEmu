@@ -90,7 +90,7 @@ public class TSTInstruction extends ParsedInstruction<Register, RegisterOrImmedi
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.getDataProcessingCodeAlternative(stateContainer, this, 0b1000, 1, true);
     }
 
     @Override

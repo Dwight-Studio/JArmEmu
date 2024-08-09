@@ -94,7 +94,7 @@ public class EORInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.getDataProcessingCode(stateContainer, this, 0b0001);
     }
 
     @Override
