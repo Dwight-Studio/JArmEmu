@@ -92,35 +92,7 @@ public class ADCInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        int cond = this.modifier.condition().getCode();
-
-        int isImmediateOp = 0;
-        int Rn = 0;
-        int Rd = 0;
-        int Op2 = 0;
-        try {
-            if (this.arg3.getValue(stateContainer).isRegister()) {
-                // Op2 is a register
-                Op2 = ((RotatedImmediateOrRegisterArgument) this.arg3).getRegisterNumber();
-                Op2 += ((ShiftArgument) this.arg4).getType().getCode() << 5;
-                if (((ShiftArgument) this.arg4).getArgument().isRegister()) {
-                    Op2 += 1 << 4;
-                    Op2 += ((ShiftArgument) this.arg4).getArgument().getRegisterNumber() << 8;
-                } else {
-                    Op2 += ((ShiftArgument) this.arg4).getArgument().getValue(stateContainer).intValue() << 7;
-                }
-            } else {
-                // Op2 is an immediate
-                isImmediateOp = 1;
-                Op2 = ((((RotatedImmediateOrRegisterArgument) this.arg3).getRotationValue() / 2) << 8) + ((RotatedImmediateOrRegisterArgument) this.arg3).getOriginalValue();
-            }
-            Rn = ((RegisterArgument) this.arg2).getRegisterNumber();
-            Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
-        } catch (ExecutionASMException ignored) {}
-
-        int updateFlags = this.modifier.doUpdateFlags() ? 1 : 0;
-
-        return (cond << 28) + (isImmediateOp << 25) + (0b0101 << 21) + (updateFlags << 20) + (Rn << 16) + (Rd << 12) + Op2;
+        return InstructionCodeUtils.getDataProcessingCode(stateContainer, this, 0b0101);
     }
 
     @Override
