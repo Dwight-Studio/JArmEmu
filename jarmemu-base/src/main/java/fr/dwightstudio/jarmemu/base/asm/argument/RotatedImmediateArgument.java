@@ -33,6 +33,8 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 public class RotatedImmediateArgument extends ParsedArgument<Integer> {
 
     private int value;
+    private int originalValue;
+    private int rotatedValue;
 
     public RotatedImmediateArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
@@ -68,14 +70,23 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
         boolean valid = false;
 
         for (int i = 0 ; i < 32 ; i += 2) {
-            int original = Integer.rotateLeft(value, i);
+            originalValue = Integer.rotateLeft(value, i);
 
-            if (Integer.numberOfLeadingZeros(original) >= 24) {
+            if (Integer.numberOfLeadingZeros(originalValue) >= 24) {
                 valid = true;
+                rotatedValue = i;
                 break;
             }
         }
 
         if (!valid) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingRotatedValue", string));
+    }
+
+    public int getOriginalValue() {
+        return originalValue;
+    }
+
+    public int getRotatedValue() {
+        return rotatedValue;
     }
 }
