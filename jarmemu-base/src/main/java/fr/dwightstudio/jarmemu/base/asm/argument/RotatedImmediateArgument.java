@@ -34,7 +34,7 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
 
     private int value;
     private int originalValue;
-    private int rotatedValue;
+    private int rotationValue;
 
     public RotatedImmediateArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
@@ -74,7 +74,7 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
 
             if (Integer.numberOfLeadingZeros(originalValue) >= 24) {
                 valid = true;
-                rotatedValue = i;
+                rotationValue = i;
                 break;
             }
         }
@@ -86,7 +86,7 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
         return originalValue;
     }
 
-    public int getRotatedValue() {
-        return rotatedValue;
+    public int getRotationValue() {
+        return rotationValue;
     }
 }
