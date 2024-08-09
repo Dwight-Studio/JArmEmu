@@ -143,4 +143,8 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
     public Shift getType() {
         return type;
     }
+
+    public ImmediateOrRegisterArgument getArgument() {
+        return argument;
+    }
 }

@@ -295,6 +295,17 @@ public class CompleteTest extends JArmEmuTest {
         assertEqualsMemory("/complete/count-memory.d");
     }
 
+    @Test
+    public void shiftTest() {
+        parser = new RegexSourceParser();
+        loadUnique("/complete/shift.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/shift-memory.d");
+    }
+
 
     @Test
     public void factorialLegacyTest() {
@@ -398,5 +409,16 @@ public class CompleteTest extends JArmEmuTest {
         execute();
 
         assertEqualsMemory("/complete/count-memory.d");
+    }
+
+    @Test
+    public void shiftLegacyTest() {
+        parser = new LegacySourceParser();
+        loadUnique("/complete/shift.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/complete/shift-memory.d");
     }
 }
