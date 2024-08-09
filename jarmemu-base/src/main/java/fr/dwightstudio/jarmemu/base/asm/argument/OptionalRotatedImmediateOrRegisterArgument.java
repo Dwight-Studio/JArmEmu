@@ -74,4 +74,8 @@ public class OptionalRotatedImmediateOrRegisterArgument extends ParsedArgument<R
     public int getRegisterNumber() {
         return immediate ? -1 : registerArgument.getRegisterNumber();
     }
+
+    public int getRotationValue() {
+        return immediate ? immediateArgument.getRotationValue() : -1;
+    }
 }
