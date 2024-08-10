@@ -85,4 +85,19 @@ public class InstructionCodeUtils {
         int shifting = isRn ? 16 : 12;
         return (cond << 28) + (isImmediateOp << 25) + (opcode << 21) + (updateFlags << 20) + (R << shifting) + Op2;
     }
+
+    public static int getMultiplyLong(ParsedInstruction<Register, Register, Register, Register> parsedInstruction, boolean doAccumulate, boolean isSigned) {
+        int cond = parsedInstruction.modifier.condition().getCode();
+
+        int RdLo = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
+        int RdHi = ((RegisterArgument) parsedInstruction.arg2).getRegisterNumber();
+        int Rn = ((RegisterArgument) parsedInstruction.arg3).getRegisterNumber();
+        int Rm = ((RegisterArgument) parsedInstruction.arg4).getRegisterNumber();
+
+        int signed = isSigned ? 1 : 0;
+        int accumulate = doAccumulate ? 1 : 0;
+        int updateFlags = parsedInstruction.modifier.doUpdateFlags() ? 1 : 0;
+
+        return (cond << 28) + (1 << 23) + (signed << 22) + (accumulate << 21) + (updateFlags << 20) + (RdHi << 16) + (RdLo << 12) + (Rm << 8) + (0b1001 << 4) + Rn;
+    }
 }

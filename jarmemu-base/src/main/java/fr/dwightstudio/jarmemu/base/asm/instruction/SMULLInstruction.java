@@ -89,7 +89,7 @@ public class SMULLInstruction extends ParsedInstruction<Register, Register, Regi
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.getMultiplyLong(this, false, true);
     }
 
     @Override
