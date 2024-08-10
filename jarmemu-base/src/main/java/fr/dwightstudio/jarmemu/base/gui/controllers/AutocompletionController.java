@@ -169,13 +169,20 @@ public class AutocompletionController implements Initializable {
                             }
 
                             case "ShiftArgument" -> {
-                                if (subContext == SubContext.SHIFT) list.add("#");
-                                else if (subContext != SubContext.IMMEDIATE)
+                                if (subContext == SubContext.SHIFT) {
+                                    for (RegisterUtils value : RegisterUtils.values()) {
+                                        if (!value.isSpecial()) list.add(value.name());
+                                    }
+
+                                    list.add("#");
+                                }
+                                else if (subContext != SubContext.IMMEDIATE && subContext != SubContext.REGISTER) {
                                     list.add("LSL");
                                     list.add("LSR");
                                     list.add("ASR");
                                     list.add("ROR");
                                     list.add("RRX");
+                                }
                             }
 
                             case "RegisterAddressArgument" -> {
@@ -268,7 +275,7 @@ public class AutocompletionController implements Initializable {
                 }
             }
 
-            if (section.isDataRelatedSection() || section == Section.NONE || section == Section.TEXT) {
+            if (section.isDataRelatedSection() || section == Section.TEXT || section == Section.NONE) {
                 switch (context) {
                     case NONE, LABEL -> {
                         for (Directive directive : Directive.values()) {

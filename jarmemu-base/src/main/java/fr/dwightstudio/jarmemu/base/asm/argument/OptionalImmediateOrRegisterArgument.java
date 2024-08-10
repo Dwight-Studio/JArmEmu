@@ -40,7 +40,7 @@ public class OptionalImmediateOrRegisterArgument extends ParsedArgument<Register
     }
 
     @Override
-    public RegisterOrImmediate getValue(StateContainer stateContainer) throws ExecutionASMException {
+    public RegisterOrImmediate getValue(StateContainer stateContainer) {
         if (originalString != null) {
             if (immediate) {
                 return new RegisterOrImmediate(immediateArgument.getValue(stateContainer));

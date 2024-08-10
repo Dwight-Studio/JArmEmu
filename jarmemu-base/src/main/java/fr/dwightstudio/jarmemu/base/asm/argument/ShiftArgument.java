@@ -88,31 +88,47 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
             try {
                 if (!rrx) {
                     argument.contextualize(stateContainer);
-                    int value = argument.getValue(stateContainer).intValue();
 
-                    func = switch (type) {
-                        case LSL -> {
-                            if (value < 0 || value > 31)
-                                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift0to31", shift));
-                            yield ((container, i) -> i << value);
-                        }
-                        case LSR -> {
-                            if (value < 1 || value > 32)
-                                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
-                            yield ((container, i) -> i >>> value);
-                        }
-                        case ASR -> {
-                            if (value < 1 || value > 32)
-                                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
-                            yield ((container, i) -> i >> value);
-                        }
-                        case ROR -> {
-                            if (value < 1 || value > 31)
-                                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
-                            yield ((container, i) -> Integer.rotateRight(i, value));
-                        }
-                        default -> throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
-                    };
+                    if (argument.isRegister()) {
+                        func = switch (type) {
+                            case LSL -> (container, i) -> i << (argument.getValue(container).intValue() & 0b1111);
+                            case LSR -> (container, i) -> i >>> (argument.getValue(container).intValue() & 0b1111);
+                            case ASR -> (container, i) -> i >> (argument.getValue(container).intValue() & 0b1111);
+                            case ROR ->
+                                    (container, i) -> Integer.rotateRight(i, argument.getValue(container).intValue() & 0b1111);
+                            default ->
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
+                        };
+                    } else {
+                        int value = argument.getValue(stateContainer).intValue();
+
+                        func = switch (type) {
+                            case LSL -> {
+                                if (value < 0 || value > 31)
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift0to31", shift));
+                                yield ((container, i) -> i << value);
+                            }
+                            case LSR -> {
+                                if (value < 1 || value > 32)
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                                yield ((container, i) -> i >>> value);
+                            }
+                            case ASR -> {
+                                if (value < 1 || value > 32)
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                                yield ((container, i) -> i >> value);
+                            }
+                            case ROR -> {
+                                if (value < 1 || value > 31)
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                                yield ((container, i) -> Integer.rotateRight(i, value));
+                            }
+                            default ->
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));
+                        };
+                    }
+                } else {
+                    type = Shift.RRX;
                 }
             } catch (IndexOutOfBoundsException exception) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", originalString));

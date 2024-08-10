@@ -195,14 +195,18 @@ public class SmartHighlighter extends RealTimeParser {
 
                     int iter;
                     for (iter = 0; cancelLine != line && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        //System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
 
                         if (cursorPos <= 0) {
                             cursorPos = Integer.MAX_VALUE;
-                            if (line != preventLine) JArmEmuApplication.getAutocompletionController().update(editor, line, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
+                            if (line != preventLine) {
+                                JArmEmuApplication.getAutocompletionController().update(editor, line, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
+                            } else {
+                                preventLine = -1;
+                            }
                         }
 
                         if (text.isEmpty()) break;
@@ -530,7 +534,7 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private boolean matchShift() {
-        if (subContext == SubContext.SHIFT) return matchImmediate();
+        if (subContext == SubContext.SHIFT) return matchImmediateOrRegister();
 
         Matcher matcher = SHIFT_PATTERN.matcher(text);
 

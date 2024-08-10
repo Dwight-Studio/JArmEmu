@@ -60,7 +60,7 @@ public class RegisterArgument extends ParsedArgument<Register> {
     }
 
     @Override
-    public Register getValue(StateContainer stateContainer) throws ExecutionASMException {
+    public Register getValue(StateContainer stateContainer) {
         return stateContainer.getRegister(register.getN());
     }
 

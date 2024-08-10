@@ -62,7 +62,7 @@ public class ImmediateArgument extends ParsedArgument<Integer> {
     }
 
     @Override
-    public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
+    public Integer getValue(StateContainer stateContainer) {
         return value;
     }
 }
