@@ -195,7 +195,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                     int iter;
                     for (iter = 0; cancelLine != line && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        //System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
