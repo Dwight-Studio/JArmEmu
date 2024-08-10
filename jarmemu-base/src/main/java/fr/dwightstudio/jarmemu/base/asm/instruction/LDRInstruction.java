@@ -101,7 +101,13 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int B = (this.modifier.dataMode() == DataMode.B) ? 1 : 0;
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int Offset = 0;
+
+        return (cond << 28) + (1 << 26) + (B << 22) + (1 << 20) + (Rd << 12) + Offset;
     }
 
     @Override

@@ -16,8 +16,8 @@ public class InstructionCodeUtils {
         int cond = parsedInstruction.modifier.condition().getCode();
 
         int isImmediateOp = 0;
-        int Rn = 0;
-        int Rd = 0;
+        int Rn = ((RegisterArgument) parsedInstruction.arg2).getRegisterNumber();
+        int Rd = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
         int Op2 = 0;
         try {
             if (parsedInstruction.arg3.getValue(stateContainer).isRegister()) {
@@ -41,8 +41,6 @@ public class InstructionCodeUtils {
                 isImmediateOp = 1;
                 Op2 = ((((RotatedImmediateOrRegisterArgument) parsedInstruction.arg3).getRotationValue() / 2) << 8) + ((RotatedImmediateOrRegisterArgument) parsedInstruction.arg3).getOriginalValue();
             }
-            Rn = ((RegisterArgument) parsedInstruction.arg2).getRegisterNumber();
-            Rd = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
         } catch (ExecutionASMException ignored) {}
 
         int updateFlags = parsedInstruction.modifier.doUpdateFlags() ? 1 : 0;
@@ -54,7 +52,7 @@ public class InstructionCodeUtils {
         int cond = parsedInstruction.modifier.condition().getCode();
 
         int isImmediateOp = 0;
-        int R = 0;
+        int R = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
         int Op2 = 0;
         try {
             if (parsedInstruction.arg2.getValue(stateContainer).isRegister()) {
@@ -78,7 +76,6 @@ public class InstructionCodeUtils {
                 isImmediateOp = 1;
                 Op2 = ((((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getRotationValue() / 2) << 8) + ((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getOriginalValue();
             }
-            R = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
         } catch (ExecutionASMException ignored) {}
 
         int updateFlags = (parsedInstruction.modifier.doUpdateFlags() ? 1 : 0) | updateFlag;
