@@ -23,9 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
@@ -90,7 +88,15 @@ public class MULInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int Rn = ((RegisterArgument) this.arg2).getRegisterNumber();
+        int Rm = ((RegisterArgument) this.arg3).getRegisterNumber();
+
+        int updateFlags = this.modifier.doUpdateFlags() ? 1 : 0;
+
+        return (cond << 28) + (updateFlags << 20) + (Rd << 16) + (Rm << 8) + (0b1001 << 4) + Rn;
     }
 
     @Override
