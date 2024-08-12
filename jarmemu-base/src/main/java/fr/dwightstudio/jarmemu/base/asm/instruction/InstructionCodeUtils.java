@@ -97,4 +97,16 @@ public class InstructionCodeUtils {
 
         return (cond << 28) + (1 << 23) + (signed << 22) + (accumulate << 21) + (updateFlags << 20) + (RdHi << 16) + (RdLo << 12) + (Rm << 8) + (0b1001 << 4) + Rn;
     }
+
+    public static int getBranch(StateContainer stateContainer, ParsedInstruction<Integer, Object, Object, Object> parsedInstruction, boolean doLink) {
+        int cond = parsedInstruction.modifier.condition().getCode();
+        int link = doLink ? 1 : 0;
+        int offset = 0;
+        //fixme: crashes when uncommented
+        /*try {
+            offset = parsedInstruction.arg1.getValue(stateContainer);
+        } catch (ExecutionASMException ignored) {}*/
+
+        return (cond << 28) + (0b101 << 25) + (link << 24) + offset;
+    }
 }

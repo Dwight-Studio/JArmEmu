@@ -89,7 +89,7 @@ public class BLInstruction extends ParsedInstruction<Integer, Object, Object, Ob
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.getBranch(stateContainer, this, true);
     }
 
     @Override
