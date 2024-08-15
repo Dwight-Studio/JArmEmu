@@ -102,10 +102,9 @@ public class InstructionCodeUtils {
         int cond = parsedInstruction.modifier.condition().getCode();
         int link = doLink ? 1 : 0;
         int offset = 0;
-        //fixme: crashes when uncommented
-        /*try {
+        try {
             offset = parsedInstruction.arg1.getValue(stateContainer);
-        } catch (ExecutionASMException ignored) {}*/
+        } catch (ExecutionASMException ignored) {}
 
         return (cond << 28) + (0b101 << 25) + (link << 24) + offset;
     }

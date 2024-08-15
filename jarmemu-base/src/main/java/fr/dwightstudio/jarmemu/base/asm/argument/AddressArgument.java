@@ -36,12 +36,12 @@ import java.util.function.Supplier;
 
 public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInteger> {
 
-    private final int mode;
+    private final AddressType mode;
     private boolean updateNow;
-    private RegisterArgument registerArgument1;
+    private RegisterArgument addressRegisterArgument;
 
-    private ImmediateArgument immediateArgument;
-    private RegisterArgument registerArgument2;
+    private ImmediateArgument shiftImmediateArgument;
+    private RegisterArgument shiftRegisterArgument;
     private ShiftArgument shiftArgument;
 
     public AddressArgument(String originalString) throws SyntaxASMException {
@@ -51,7 +51,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             String string = originalString;
 
             if (originalString.startsWith("=")) {
-                mode = 1;
+                mode = AddressType.PSEUDO_INSTRUCTION;
                 return;
             } else if (!originalString.startsWith("[")) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
@@ -67,24 +67,24 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
                 mems = Arrays.stream(mems).map(String::strip).toArray(String[]::new);
 
-                registerArgument1 = new RegisterArgument(mems[0]);
+                addressRegisterArgument = new RegisterArgument(mems[0]);
 
                 if (mems.length == 1) {
-                    mode = 2;
+                    mode = AddressType.SIMPLE_REGISTER;
 
                 } else if (mems.length == 2) {
                     if (mems[1].startsWith("#")) {
-                        immediateArgument = new ImmediateArgument(mems[1]);
-                        mode = 3;
+                        shiftImmediateArgument = new ImmediateArgument(mems[1]);
+                        mode = AddressType.IMMEDIATE_OFFSET;
                     } else {
-                        registerArgument2 = new RegisterArgument(mems[1]);
-                        mode = 4;
+                        shiftRegisterArgument = new RegisterArgument(mems[1]);
+                        mode = AddressType.REGISTER_OFFSET;
                     }
 
                 } else if (mems.length == 3) {
                     shiftArgument = new ShiftArgument(mems[2]);
-                    registerArgument2 = new RegisterArgument(mems[1]);
-                    mode = 5;
+                    shiftRegisterArgument = new RegisterArgument(mems[1]);
+                    mode = AddressType.SHIFTED_REGISTER_OFFSET;
                 } else {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
                 }
@@ -99,15 +99,15 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        if (mode != 1) {
-            registerArgument1.contextualize(stateContainer);
+        if (mode != AddressType.PSEUDO_INSTRUCTION) {
+            addressRegisterArgument.contextualize(stateContainer);
 
-            if (immediateArgument != null) {
-                immediateArgument.contextualize(stateContainer);
+            if (shiftImmediateArgument != null) {
+                shiftImmediateArgument.contextualize(stateContainer);
             }
 
-            if (registerArgument2 != null) {
-                registerArgument2.contextualize(stateContainer);
+            if (shiftRegisterArgument != null) {
+                shiftRegisterArgument.contextualize(stateContainer);
             }
 
             if (shiftArgument != null) {
@@ -119,40 +119,40 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     @Override
     public AddressArgument.UpdatableInteger getValue(StateContainer stateContainer) throws ExecutionASMException {
         switch (mode) {
-            case 1 -> {
+            case PSEUDO_INSTRUCTION -> {
                 return null; // On retourne null car c'est une pseudo-instruction, l'adresse est ignorée
             }
 
-            case 2 -> {
-                return new UpdatableInteger(registerArgument1.getValue(stateContainer).getData(),
+            case SIMPLE_REGISTER -> {
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData(),
                                             stateContainer,
                                             true,
                                             updateNow,
-                                            registerArgument1.getValue(stateContainer));
+                                            addressRegisterArgument.getValue(stateContainer));
             }
 
-            case 3 -> {
-                return new UpdatableInteger(registerArgument1.getValue(stateContainer).getData() + immediateArgument.getValue(stateContainer),
+            case IMMEDIATE_OFFSET -> {
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftImmediateArgument.getValue(stateContainer),
                                             stateContainer,
                                             false,
                                             updateNow,
-                                            registerArgument1.getValue(stateContainer));
+                                            addressRegisterArgument.getValue(stateContainer));
             }
 
-            case 4 -> {
-                return new UpdatableInteger(registerArgument1.getValue(stateContainer).getData() + registerArgument2.getValue(stateContainer).getData(),
+            case REGISTER_OFFSET -> {
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftRegisterArgument.getValue(stateContainer).getData(),
                                             stateContainer,
                                             false,
                                             updateNow,
-                                            registerArgument1.getValue(stateContainer));
+                                            addressRegisterArgument.getValue(stateContainer));
             }
 
-            case 5 -> {
-                return new UpdatableInteger(registerArgument1.getValue(stateContainer).getData() + shiftArgument.getValue(stateContainer).apply(registerArgument2.getValue(stateContainer).getData()),
+            case SHIFTED_REGISTER_OFFSET -> {
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftArgument.getValue(stateContainer).apply(shiftRegisterArgument.getValue(stateContainer).getData()),
                                             stateContainer,
                                             false,
                                             updateNow,
-                                            registerArgument1.getValue(stateContainer));
+                                            addressRegisterArgument.getValue(stateContainer));
             }
 
             default -> {
@@ -163,15 +163,15 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        if (mode != 1) {
-            registerArgument1.verify(stateSupplier);
+        if (mode != AddressType.PSEUDO_INSTRUCTION) {
+            addressRegisterArgument.verify(stateSupplier);
 
-            if (immediateArgument != null) {
-                immediateArgument.verify(stateSupplier);
+            if (shiftImmediateArgument != null) {
+                shiftImmediateArgument.verify(stateSupplier);
             }
 
-            if (registerArgument2 != null) {
-                registerArgument2.verify(stateSupplier);
+            if (shiftRegisterArgument != null) {
+                shiftRegisterArgument.verify(stateSupplier);
             }
 
             if (shiftArgument != null) {
@@ -221,6 +221,30 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     }
 
     public boolean isPseudoInstruction() {
-        return mode == 1;
+        return mode == AddressType.PSEUDO_INSTRUCTION;
+    }
+
+    public AddressType getMode() {
+        return mode;
+    }
+
+    public boolean isUpdateNow() {
+        return updateNow;
+    }
+
+    public RegisterArgument getAddressRegisterArgument() {
+        return addressRegisterArgument;
+    }
+
+    public ImmediateArgument getShiftImmediateArgument() {
+        return shiftImmediateArgument;
+    }
+
+    public RegisterArgument getShiftRegisterArgument() {
+        return shiftRegisterArgument;
+    }
+
+    public ShiftArgument getShiftArgument() {
+        return shiftArgument;
     }
 }

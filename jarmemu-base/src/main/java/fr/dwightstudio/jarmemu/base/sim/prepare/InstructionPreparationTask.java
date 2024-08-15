@@ -121,6 +121,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     public PreparationStream write(StateContainer container, Function<ParsedInstruction<?, ?, ?, ?>, Integer> positionProvider) {
         logger.info("Writing instructions" + getDescription());
 
+        container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
@@ -131,6 +132,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
                     }
                 }
             }
+            container.getCurrentMemoryPos().incrementFileIndex();
         }
         logger.info("Done!");
         return stream;
