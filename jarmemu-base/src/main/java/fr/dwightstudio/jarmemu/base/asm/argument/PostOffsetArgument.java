@@ -6,15 +6,14 @@ import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
-import java.util.function.Supplier;
-
-public class OptionalImmediateOrRegisterArgument extends ParsedArgument<RegisterOrImmediate> {
+public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
 
     private boolean immediate;
+    private boolean negative;
     private ImmediateArgument immediateArgument;
     private RegisterArgument registerArgument;
 
-    public OptionalImmediateOrRegisterArgument(String originalString) throws SyntaxASMException {
+    public PostOffsetArgument(String originalString) throws SyntaxASMException {
         super(originalString);
 
         if (originalString != null) {
@@ -23,7 +22,19 @@ public class OptionalImmediateOrRegisterArgument extends ParsedArgument<Register
             if (immediate) {
                 immediateArgument = new ImmediateArgument(originalString);
             } else {
-                registerArgument = new RegisterArgument(originalString);
+                String valueString = originalString;
+
+                if (valueString.startsWith("-")) {
+                    negative = true;
+                    valueString = valueString.substring(1);
+                } else if (valueString.startsWith("+")) {
+                    negative = false;
+                    valueString = valueString.substring(1);
+                } else {
+                    negative = false;
+                }
+
+                registerArgument = new RegisterArgument(valueString);
             }
         }
     }
@@ -40,36 +51,15 @@ public class OptionalImmediateOrRegisterArgument extends ParsedArgument<Register
     }
 
     @Override
-    public RegisterOrImmediate getValue(StateContainer stateContainer) {
+    public RegisterOrImmediate getValue(StateContainer stateContainer) throws ExecutionASMException {
         if (originalString != null) {
             if (immediate) {
                 return new RegisterOrImmediate(immediateArgument.getValue(stateContainer));
             } else {
-                return new RegisterOrImmediate(registerArgument.getValue(stateContainer), false);
+                return new RegisterOrImmediate(registerArgument.getValue(stateContainer), negative);
             }
         } else {
             return new RegisterOrImmediate(0);
         }
-    }
-
-    @Override
-    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        if (originalString != null) {
-            if (immediate) {
-                immediateArgument.verify(stateSupplier);
-            } else {
-                registerArgument.verify(stateSupplier);
-            }
-
-            super.verify(stateSupplier);
-        }
-    }
-
-    public boolean isRegister() {
-        return !immediate;
-    }
-
-    public int getRegisterNumber() {
-        return immediate ? -1 : registerArgument.getRegisterNumber();
     }
 }

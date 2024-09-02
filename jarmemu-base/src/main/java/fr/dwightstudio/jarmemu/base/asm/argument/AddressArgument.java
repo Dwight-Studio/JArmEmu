@@ -40,8 +40,8 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     private boolean updateNow;
     private RegisterArgument addressRegisterArgument;
 
-    private ImmediateArgument shiftImmediateArgument;
-    private RegisterArgument shiftRegisterArgument;
+    private ImmediateArgument offsetImmediateArgument;
+    private RegisterArgument offsetRegisterArgument;
     private ShiftArgument shiftArgument;
 
     public AddressArgument(String originalString) throws SyntaxASMException {
@@ -74,16 +74,16 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
                 } else if (mems.length == 2) {
                     if (mems[1].startsWith("#")) {
-                        shiftImmediateArgument = new ImmediateArgument(mems[1]);
+                        offsetImmediateArgument = new ImmediateArgument(mems[1]);
                         mode = AddressType.IMMEDIATE_OFFSET;
                     } else {
-                        shiftRegisterArgument = new RegisterArgument(mems[1]);
+                        offsetRegisterArgument = new RegisterArgument(mems[1]);
                         mode = AddressType.REGISTER_OFFSET;
                     }
 
                 } else if (mems.length == 3) {
                     shiftArgument = new ShiftArgument(mems[2]);
-                    shiftRegisterArgument = new RegisterArgument(mems[1]);
+                    offsetRegisterArgument = new RegisterArgument(mems[1]);
                     mode = AddressType.SHIFTED_REGISTER_OFFSET;
                 } else {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
@@ -102,12 +102,12 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         if (mode != AddressType.PSEUDO_INSTRUCTION) {
             addressRegisterArgument.contextualize(stateContainer);
 
-            if (shiftImmediateArgument != null) {
-                shiftImmediateArgument.contextualize(stateContainer);
+            if (offsetImmediateArgument != null) {
+                offsetImmediateArgument.contextualize(stateContainer);
             }
 
-            if (shiftRegisterArgument != null) {
-                shiftRegisterArgument.contextualize(stateContainer);
+            if (offsetRegisterArgument != null) {
+                offsetRegisterArgument.contextualize(stateContainer);
             }
 
             if (shiftArgument != null) {
@@ -132,7 +132,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             }
 
             case IMMEDIATE_OFFSET -> {
-                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftImmediateArgument.getValue(stateContainer),
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + offsetImmediateArgument.getValue(stateContainer),
                                             stateContainer,
                                             false,
                                             updateNow,
@@ -140,7 +140,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             }
 
             case REGISTER_OFFSET -> {
-                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftRegisterArgument.getValue(stateContainer).getData(),
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + offsetRegisterArgument.getValue(stateContainer).getData(),
                                             stateContainer,
                                             false,
                                             updateNow,
@@ -148,7 +148,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             }
 
             case SHIFTED_REGISTER_OFFSET -> {
-                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftArgument.getValue(stateContainer).apply(shiftRegisterArgument.getValue(stateContainer).getData()),
+                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftArgument.getValue(stateContainer).apply(offsetRegisterArgument.getValue(stateContainer).getData()),
                                             stateContainer,
                                             false,
                                             updateNow,
@@ -166,12 +166,12 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         if (mode != AddressType.PSEUDO_INSTRUCTION) {
             addressRegisterArgument.verify(stateSupplier);
 
-            if (shiftImmediateArgument != null) {
-                shiftImmediateArgument.verify(stateSupplier);
+            if (offsetImmediateArgument != null) {
+                offsetImmediateArgument.verify(stateSupplier);
             }
 
-            if (shiftRegisterArgument != null) {
-                shiftRegisterArgument.verify(stateSupplier);
+            if (offsetRegisterArgument != null) {
+                offsetRegisterArgument.verify(stateSupplier);
             }
 
             if (shiftArgument != null) {
@@ -215,8 +215,12 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         public void update() {
             if (register == null) return;
             if (update && stateContainer.hasAddressRegisterUpdate())
-                register.setData(stateContainer.getAddressRegisterUpdateValue());
+                register.add(stateContainer.getAddressRegisterUpdateValue());
             update = false;
+        }
+
+        public boolean canUpdate() {
+            return update;
         }
     }
 
@@ -228,7 +232,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         return mode;
     }
 
-    public boolean isUpdateNow() {
+    public boolean doesUpdateNow() {
         return updateNow;
     }
 
@@ -236,12 +240,12 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         return addressRegisterArgument;
     }
 
-    public ImmediateArgument getShiftImmediateArgument() {
-        return shiftImmediateArgument;
+    public ImmediateArgument getOffsetImmediateArgument() {
+        return offsetImmediateArgument;
     }
 
-    public RegisterArgument getShiftRegisterArgument() {
-        return shiftRegisterArgument;
+    public RegisterArgument getOffsetRegisterArgument() {
+        return offsetRegisterArgument;
     }
 
     public ShiftArgument getShiftArgument() {

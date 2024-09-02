@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
@@ -74,7 +75,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     @Override
     @NotNull
     public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg3Class() {
-        return OptionalImmediateOrRegisterArgument.class;
+        return PostOffsetArgument.class;
     }
 
     @Override
@@ -112,8 +113,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, AddressArgument.UpdatableInteger arg2, RegisterOrImmediate arg3, ShiftFunction arg4) throws ExecutionASMException {
-        int i1 = arg4.apply(arg3);
-        int address = isPseudoInstruction() ? dir.getLastPos().getPos() : arg2.toInt() + i1;
+        arg4.apply(arg3);
+        int address = isPseudoInstruction() ? dir.getLastPos().getPos() : arg2.toInt();
 
         if (!ignoreExceptions) {
             int dataLength;
@@ -139,6 +140,10 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     @Override
     protected void verify(StateContainer stateContainer, Register arg1, AddressArgument.UpdatableInteger arg2, RegisterOrImmediate arg3, ShiftFunction arg4) throws SyntaxASMException {
         arg4.check(arg3);
+
+        if (arg3.intValue() != 0 && !arg2.canUpdate()) {
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.indexing"));
+        }
     }
 
     @Override

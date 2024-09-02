@@ -5,15 +5,18 @@ import java.util.Objects;
 public class RegisterOrImmediate extends Number {
     private final Integer immediate;
     private final Register register;
+    private boolean negative;
 
     public RegisterOrImmediate(int immediate) {
         this.immediate = immediate;
         this.register = null;
+        this.negative = false;
     }
 
-    public RegisterOrImmediate(Register register) {
+    public RegisterOrImmediate(Register register, boolean negative) {
         this.immediate = null;
         this.register = register;
+        this.negative = negative;
     }
 
     public boolean isRegister() {
@@ -22,7 +25,7 @@ public class RegisterOrImmediate extends Number {
 
     private int getValue() {
         if (isRegister()) {
-            return register.getData();
+            return negative ? (-register.getData()) : register.getData();
         } else {
             return immediate;
         }

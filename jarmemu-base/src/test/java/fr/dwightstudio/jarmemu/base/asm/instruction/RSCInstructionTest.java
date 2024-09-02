@@ -45,23 +45,23 @@ class RSCInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         r1.setData(20);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(5);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2), shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2, false), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainer.getRegister(0).setData(0b01111111111111111111111111111110);
         r1.setData(1);
         r2.setData(0b10000000000000000000000000000000);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2), shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2, false), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainerBis.getCPSR().setC(true);
         r1.setData(20);
         r2.setData(5);
         stateContainer.getRegister(0).setData(-15);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2), shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2, false), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
         stateContainer.getRegister(0).setData(0b01111111111111111111111111111111);
         r1.setData(1);
         r2.setData(0b10000000000000000000000000000000);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2), shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2, false), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -72,7 +72,7 @@ class RSCInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         Register r2 = stateContainer.getRegister(2);
         r0.setData(1);
         r1.setData(0b10000000000000000000000000000000);
-        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1, false), shift());
         assertEquals(0b01111111111111111111111111111110, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -80,7 +80,7 @@ class RSCInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1, false), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
@@ -88,7 +88,7 @@ class RSCInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         assertFalse(stateContainer.getCPSR().getV());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b01111111111111111111111111111111);
-        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1, false), shift());
         assertEquals(0b10000000000000000000000000000000, r2.getData());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
@@ -96,7 +96,7 @@ class RSCInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         assertTrue(stateContainer.getCPSR().getV());
         r0.setData(-2);
         r1.setData(0b11111111111111111111111111111111);
-        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r0, new RegisterOrImmediate(r1, false), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());

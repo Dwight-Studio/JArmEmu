@@ -43,7 +43,7 @@ class MVNInstructionTest extends InstructionTest<Register, RegisterOrImmediate, 
         Register r2 = stateContainer.getRegister(2);
         legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(Integer.MIN_VALUE), shift(), null);
         assertEquals(Integer.MAX_VALUE, r0.getData());
-        legacyExecute(stateContainer, false, false, null, null, r1, new RegisterOrImmediate(r0), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r1, new RegisterOrImmediate(r0, false), shift(), null);
         assertEquals(Integer.MIN_VALUE, r1.getData());
         legacyExecute(stateContainer, false, false, null, null, r2, new RegisterOrImmediate(0b10101010101010101010010001000001), shift(), null);
         assertEquals(~0b10101010101010101010010001000001, r2.getData());
@@ -61,7 +61,7 @@ class MVNInstructionTest extends InstructionTest<Register, RegisterOrImmediate, 
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(-1);
-        legacyExecute(stateContainer, false, true, null, null, r2, new RegisterOrImmediate(r1), shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r2, new RegisterOrImmediate(r1, false), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
     }

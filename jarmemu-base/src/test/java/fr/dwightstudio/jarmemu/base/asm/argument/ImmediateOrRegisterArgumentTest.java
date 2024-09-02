@@ -42,12 +42,12 @@ class ImmediateOrRegisterArgumentTest extends ArgumentTest<RegisterOrImmediate> 
     @Test
     public void registerTest() throws ASMException {
         for (int i = 0 ; i < 16 ; i++) {
-            assertEquals(new RegisterOrImmediate(stateContainer.getRegister(i)), parse( "R" + i));
+            assertEquals(new RegisterOrImmediate(stateContainer.getRegister(i), false), parse( "R" + i));
         }
 
-        assertEquals(new RegisterOrImmediate(stateContainer.getSP()), parse( "SP"));
-        assertEquals(new RegisterOrImmediate(stateContainer.getLR()), parse( "LR"));
-        assertEquals(new RegisterOrImmediate(stateContainer.getPC()), parse( "PC"));
+        assertEquals(new RegisterOrImmediate(stateContainer.getSP(), false), parse( "SP"));
+        assertEquals(new RegisterOrImmediate(stateContainer.getLR(), false), parse( "LR"));
+        assertEquals(new RegisterOrImmediate(stateContainer.getPC(), false), parse( "PC"));
 
         assertThrows(SyntaxASMException.class, () -> parse( "CPSR"));
         assertThrows(SyntaxASMException.class, () -> parse( "SPSR"));

@@ -42,9 +42,9 @@ class MOVInstructionTest extends InstructionTest<Register, RegisterOrImmediate, 
         Register r1 = stateContainer.getRegister(1);
         Register r2 = stateContainer.getRegister(2);
         legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(5), shift(), null);
-        legacyExecute(stateContainer, false, false, null, null, r1, new RegisterOrImmediate(r0), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r1, new RegisterOrImmediate(r0, false), shift(), null);
         r1.setData(r1.getData()+1);
-        legacyExecute(stateContainer, false, false, null, null, r2, new RegisterOrImmediate(r1), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r2, new RegisterOrImmediate(r1, false), shift(), null);
         assertEquals(5, r0.getData());
         assertEquals(6, r1.getData());
         assertEquals(6, r2.getData());
@@ -62,7 +62,7 @@ class MOVInstructionTest extends InstructionTest<Register, RegisterOrImmediate, 
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r1.setData(4);
-        legacyExecute(stateContainer, false, true, null, null, r2, new RegisterOrImmediate(r1), shift(), null);
+        legacyExecute(stateContainer, false, true, null, null, r2, new RegisterOrImmediate(r1, false), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
     }

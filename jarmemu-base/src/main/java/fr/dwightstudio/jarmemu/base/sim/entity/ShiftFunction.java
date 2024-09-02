@@ -19,9 +19,9 @@ public class ShiftFunction {
         this.called = false;
     }
 
-    public ShiftFunction() {
+    public ShiftFunction(StateContainer stateContainer) {
         this.identity = true;
-        this.stateContainer = null;
+        this.stateContainer = stateContainer;
         this.shift = null;
         this.called = false;
     }
@@ -40,8 +40,8 @@ public class ShiftFunction {
         if (!identity) {
             if (!i.isRegister()) throw new IllegalStateException("Immediate can't be shifted");
             rtn = this.shift.apply(stateContainer, rtn);
-            if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
         }
+        if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
         called = true;
         return rtn;
     }
@@ -51,8 +51,8 @@ public class ShiftFunction {
         int rtn = i;
         if (!identity) {
             rtn = this.shift.apply(stateContainer, rtn);
-            if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
         }
+        if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
         called = true;
         return rtn;
     }

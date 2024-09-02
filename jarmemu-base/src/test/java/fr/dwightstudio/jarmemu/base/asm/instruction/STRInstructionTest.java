@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.AddressArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
@@ -32,6 +33,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class STRInstructionTest extends InstructionTest<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> {
     STRInstructionTest() {
@@ -54,5 +56,6 @@ class STRInstructionTest extends InstructionTest<Register, AddressArgument.Updat
         assertEquals(54, stateContainer.getMemory().getHalf(104));
         legacyExecute(stateContainer, false, false, DataMode.B, null, r3, new AddressArgument.UpdatableInteger(r2.getData(), stateContainer, false, false, null), new RegisterOrImmediate(0), shift());
         assertEquals(54, stateContainer.getMemory().getByte(106));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r3, new AddressArgument.UpdatableInteger(r2.getData(), stateContainer, false, false, null), new RegisterOrImmediate(5), shift()));
     }
 }

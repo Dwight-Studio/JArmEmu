@@ -47,7 +47,7 @@ public class OptionalRotatedImmediateOrRegisterArgument extends ParsedArgument<R
                 return new RegisterOrImmediate(immediateArgument.getValue(stateContainer));
             } else {
                 stateContainer.setAddressRegisterUpdateValue(registerArgument.getValue(stateContainer).getData());
-                return new RegisterOrImmediate(registerArgument.getValue(stateContainer));
+                return new RegisterOrImmediate(registerArgument.getValue(stateContainer), false);
             }
         } else {
             return new RegisterOrImmediate(0);

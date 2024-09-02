@@ -5,6 +5,7 @@
 - Fixed CPSR/SPSR being usable as common registers
 - Fixed broken shift argument (with register)
 - Fixed broken shift highlighting/autocompletion
+- Fixed incorrect pre/post indexing behaviour and syntax
 
 
 0.2.1 -> 0.2.2

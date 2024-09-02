@@ -141,7 +141,7 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
         if (originalString != null) {
             return new ShiftFunction(stateContainer, func);
         } else {
-            return new ShiftFunction();
+            return new ShiftFunction(stateContainer);
         }
     }
 

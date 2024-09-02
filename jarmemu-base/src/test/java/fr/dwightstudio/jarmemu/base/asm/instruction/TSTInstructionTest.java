@@ -43,17 +43,17 @@ class TSTInstructionTest extends InstructionTest<Register, RegisterOrImmediate, 
         Register r1 = stateContainer.getRegister(1);
         r0.setData(0b110101);
         r1.setData(0b110101);
-        legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(r1), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(r1, false), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r0.setData(0b0011);
         r1.setData(0b1100);
-        legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(r1), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(r1, false), shift(), null);
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
         r0.setData(0b11111111111111111111111111111111);
         r1.setData(0b11111111111111111111111111111111);
-        legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(r1), shift(), null);
+        legacyExecute(stateContainer, false, false, null, null, r0, new RegisterOrImmediate(r1, false), shift(), null);
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
     }

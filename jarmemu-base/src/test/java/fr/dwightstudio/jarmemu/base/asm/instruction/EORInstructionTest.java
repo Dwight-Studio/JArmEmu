@@ -45,7 +45,7 @@ class EORInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         r1.setData(0b00000000000000000000000011010111);
         Register r2 = stateContainerBis.getRegister(2);
         r2.setData(0b00000000000000000000000001101011);
-        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2), shift());
+        legacyExecute(stateContainerBis, false, false, null, null, r0, r1, new RegisterOrImmediate(r2, false), shift());
         assertEquals(stateContainer.getRegister(0).getData(), r0.getData());
     }
 
@@ -56,13 +56,13 @@ class EORInstructionTest extends InstructionTest<Register, Register, RegisterOrI
         Register r2 = stateContainer.getRegister(2);
         r0.setData(0b00000000000000111111111111111111);
         r1.setData(0b11111111111111110000000000000000);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1, new RegisterOrImmediate(r0), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r1, new RegisterOrImmediate(r0, false), shift());
         assertEquals(0b11111111111111001111111111111111, r2.getData());
         assertTrue(stateContainer.getCPSR().getN());
         assertFalse(stateContainer.getCPSR().getZ());
         r0.setData(0b10111111111111111111111111111110);
         r1.setData(0b10111111111111111111111111111110);
-        legacyExecute(stateContainer, false, true, null, null, r2, r1, new RegisterOrImmediate(r0), shift());
+        legacyExecute(stateContainer, false, true, null, null, r2, r1, new RegisterOrImmediate(r0, false), shift());
         assertEquals(0, r2.getData());
         assertFalse(stateContainer.getCPSR().getN());
         assertTrue(stateContainer.getCPSR().getZ());
