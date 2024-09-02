@@ -197,6 +197,11 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="%menu.help.title">
                             <items>
+                                <MenuItem mnemonicParsing="false" onAction="#onInstructionList" text="%menu.help.instructionList">
+                                    <graphic>
+                                        <FontIcon iconLiteral="mdral-ballot" />
+                                    </graphic>
+                                </MenuItem>
                                 <MenuItem mnemonicParsing="false" onAction="#onAbout" text="%menu.help.about">
                                     <graphic>
                                         <FontIcon iconLiteral="mdsal-info"/>

@@ -24,15 +24,28 @@
 package fr.dwightstudio.jarmemu.base.gui;
 
 import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
+import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
+import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
+import fr.dwightstudio.jarmemu.base.gui.factory.InstructionDetailTableCell;
+import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -235,4 +248,75 @@ public class JArmEmuDialogs {
 
         JArmEmuApplication.getController().openDialogMiddle(dialog);
     }
+
+    public void instructionList() {
+        Text title = new Text(JArmEmuApplication.formatMessage("%instructionList.title"));
+        title.setStyle("-fx-font-family: 'Inter Black';");
+        title.getStyleClass().addAll(Styles.TITLE_1);
+
+        TableColumn<Instruction, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.name"));
+        TableViewUtils.setupColumn(col0, Material2OutlinedAL.LABEL, 80, false, false, true);
+        col0.setCellValueFactory(i -> new ReadOnlyStringWrapper(i.getValue().toString()));
+        col0.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        TableColumn<Instruction, Instruction> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.usage"));
+        TableViewUtils.setupColumn(col1, Material2OutlinedAL.DESCRIPTION, 80, false, true, false);
+        col1.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(i.getValue()));
+        col1.setCellFactory(InstructionUsageTableCell.factory());
+
+        TableColumn<Instruction, Instruction> col2 = new TableColumn<>();
+        TableViewUtils.setupColumn(col2, Material2OutlinedAL.INFO, 35, false, false, false);
+        col2.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(i.getValue()));
+        col2.setCellFactory(InstructionDetailTableCell.factory());
+
+        TableView<Instruction> instructionTable = new TableView<>();
+        ObservableList<Instruction> instructions = instructionTable.getItems();
+
+        instructionTable.getColumns().setAll(col0, col1, col2);
+        instructionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        instructionTable.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
+        instructionTable.setEditable(false);
+        instructionTable.setMaxWidth(Double.POSITIVE_INFINITY);
+        instructionTable.setMaxHeight(Double.POSITIVE_INFINITY);
+        instructionTable.setMinWidth(500);
+        instructionTable.setMinHeight(500);
+
+        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        HBox placeHolder = new HBox(5, icon);
+
+        icon.getStyleClass().add("medium-icon");
+        placeHolder.setAlignment(Pos.CENTER);
+        instructionTable.setPlaceholder(placeHolder);
+
+        AnchorPane.setRightAnchor(instructionTable, 0d);
+        AnchorPane.setBottomAnchor(instructionTable, 0d);
+        AnchorPane.setLeftAnchor(instructionTable, 0d);
+        AnchorPane.setTopAnchor(instructionTable, 0d);
+
+        VBox vBox = new VBox(title, instructionTable);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(10));
+        vBox.setPrefWidth(VBox.USE_PREF_SIZE);
+        vBox.setPrefHeight(VBox.USE_PREF_SIZE);
+        vBox.setFillWidth(true);
+        VBox.setMargin(instructionTable, new Insets(10, 10, 10, 10));
+
+        ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
+
+        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
+
+        JArmEmuApplication.getController().openDialogMiddle(dialog);
+
+        for (Instruction i : Instruction.values()) {
+            if (i.isValid()) {
+                instructions.add(i);
+                System.out.println("instructionList.description." + i.toString().toLowerCase());
+            }
+        }
+    }
+
+    public void instructionDetail(Instruction instruction) {
+
+    }
+
 }

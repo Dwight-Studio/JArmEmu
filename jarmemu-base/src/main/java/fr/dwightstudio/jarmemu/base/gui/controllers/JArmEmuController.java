@@ -413,7 +413,14 @@ public class JArmEmuController implements Initializable {
     }
 
     @FXML
-    protected void onAbout() {JArmEmuApplication.getMainMenuController().onAbout();}
+    protected void onInstructionList() {
+        JArmEmuApplication.getMainMenuController().onInstructionList();
+    }
+
+    @FXML
+    protected void onAbout() {
+        JArmEmuApplication.getMainMenuController().onAbout();
+    }
 
     @FXML
     public void onSettingsSmart() {

@@ -296,6 +296,13 @@ public class MainMenuController {
     /**
      * Invoked by JavaFX
      */
+    public void onInstructionList() {
+        JArmEmuApplication.getDialogs().instructionList();
+    }
+
+    /**
+     * Invoked by JavaFX
+     */
     public void onAbout() {
         JArmEmuApplication.getDialogs().about();
     }

@@ -140,6 +140,8 @@ public class JArmEmuApplication extends Application {
     // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
     // TODO: Ajouter un enregistrement du layout des tableaux
     // TODO: Detect and warn from program overwriting
+    // FIXME: <URGENT> Fix +/- shifting on memory
+    // FIXME: <URGENT> Fix Label argument(+Code argument) accepting number/variable without #
 
     @Override
     public void init() {
