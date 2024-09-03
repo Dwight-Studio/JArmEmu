@@ -70,7 +70,7 @@ public class SmartHighlighter extends RealTimeParser {
     public static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
     public static final Pattern RANGE_SEPARATOR = Pattern.compile("^-");
     public static final Pattern BRACE_PATTERN = Pattern.compile("^(\\{|\\})");
-    public static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\])");
+    public static final Pattern BRACKET_PATTERN = Pattern.compile("^(\\[|\\]!|\\])");
     public static final Pattern STRING_PATTERN = Pattern.compile("^\"([^\"\\\\@]|\\\\.)*\"|\'([^\'\\\\@]|\\\\.)*\'");
     public static final Pattern IMMEDIATE_PATTERN = Pattern.compile("^#[^\n\\]@,]*");
     public static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n@]*");
@@ -653,7 +653,7 @@ public class SmartHighlighter extends RealTimeParser {
                     }
                 }
 
-                case "]" -> {
+                case "]", "]!" -> {
                     if (!bracket) yield false;
                     else {
                         tag("bracket", matcher);
