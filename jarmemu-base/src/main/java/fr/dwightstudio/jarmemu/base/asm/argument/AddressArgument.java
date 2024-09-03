@@ -266,4 +266,8 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     public ShiftArgument getShiftArgument() {
         return shiftArgument;
     }
+
+    public boolean isNegative()  {
+        return negative;
+    }
 }

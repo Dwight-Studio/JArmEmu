@@ -62,4 +62,12 @@ public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
             return new RegisterOrImmediate(0);
         }
     }
+
+    public RegisterArgument getRegisterArgument() {
+        return registerArgument;
+    }
+
+    public boolean isNegative() {
+        return negative;
+    }
 }
