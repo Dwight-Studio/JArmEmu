@@ -48,12 +48,12 @@ class LDRInstructionTest extends InstructionTest<Register, AddressArgument.Updat
         stateContainer.getMemory().putWord(100, 54);
         stateContainer.getMemory().putHalf(104, (short) 54);
         stateContainer.getMemory().putByte(106, (byte) 54);
-        legacyExecute(stateContainer, false, false, null, null, r0, new AddressArgument.UpdatableInteger(100, stateContainer, false, false, null), new RegisterOrImmediate(0), shift());
+        legacyExecute(stateContainer, false, false, null, null, r0, new AddressArgument.UpdatableInteger(100, false, false, null), new RegisterOrImmediate(0), shift());
         assertEquals(54, r0.getData());
-        legacyExecute(stateContainer, false, false, DataMode.H, null, r1, new AddressArgument.UpdatableInteger(104, stateContainer, false, false, null), new RegisterOrImmediate(0), shift());
+        legacyExecute(stateContainer, false, false, DataMode.H, null, r1, new AddressArgument.UpdatableInteger(104, false, false, null), new RegisterOrImmediate(0), shift());
         assertEquals(54, r1.getData());
-        legacyExecute(stateContainer, false, false, DataMode.B, null, r2, new AddressArgument.UpdatableInteger(106, stateContainer, false, false, null), new RegisterOrImmediate(0), shift());
+        legacyExecute(stateContainer, false, false, DataMode.B, null, r2, new AddressArgument.UpdatableInteger(106, false, false, null), new RegisterOrImmediate(0), shift());
         assertEquals(54, r2.getData());
-        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r2, new AddressArgument.UpdatableInteger(r2.getData(), stateContainer, false, false, null), new RegisterOrImmediate(5), shift()));
+        assertThrows(SyntaxASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r2, new AddressArgument.UpdatableInteger(r2.getData(), false, false, null), new RegisterOrImmediate(5), shift()));
     }
 }

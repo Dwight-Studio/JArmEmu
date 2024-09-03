@@ -41,7 +41,6 @@ public class ShiftFunction {
             if (!i.isRegister()) throw new IllegalStateException("Immediate can't be shifted");
             rtn = this.shift.apply(stateContainer, rtn);
         }
-        if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
         called = true;
         return rtn;
     }
@@ -52,7 +51,6 @@ public class ShiftFunction {
         if (!identity) {
             rtn = this.shift.apply(stateContainer, rtn);
         }
-        if (stateContainer != null) stateContainer.setAddressRegisterUpdateValue(rtn);
         called = true;
         return rtn;
     }

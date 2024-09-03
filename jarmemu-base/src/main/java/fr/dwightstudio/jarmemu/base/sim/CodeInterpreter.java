@@ -66,9 +66,6 @@ public class CodeInterpreter {
      */
     public synchronized void executeCurrentLine(boolean forceExecution) throws ExecutionASMException {
 
-        // Remise à zéro des drapeaux de ligne des parseurs
-        stateContainer.resetAddressRegisterUpdateValue();
-
         ExecutionASMException executionException = null;
         List<ParsedInstruction<?, ?, ?, ?>> instructions = stateInitializer.getInstructionMemory();
 

@@ -20,5 +20,5 @@ _start:
 	mov r3, #3
 	adc r0, r1, r2, lsl r3
 	str r0, [r5], -r2
-	str r5, [r6]
+	str r5, [r6, +r1]
 

@@ -38,6 +38,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
     private final AddressType mode;
     private boolean updateNow;
+    private boolean negative;
     private RegisterArgument addressRegisterArgument;
 
     private ImmediateArgument offsetImmediateArgument;
@@ -77,13 +78,37 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
                         offsetImmediateArgument = new ImmediateArgument(mems[1]);
                         mode = AddressType.IMMEDIATE_OFFSET;
                     } else {
-                        offsetRegisterArgument = new RegisterArgument(mems[1]);
+                        String rgString = mems[1];
+
+                        if (rgString.startsWith("+")) {
+                            rgString = rgString.substring(1);
+                            negative = false;
+                        }
+
+                        if (rgString.startsWith("-")) {
+                            rgString = rgString.substring(1);
+                            negative = true;
+                        }
+
+                        offsetRegisterArgument = new RegisterArgument(rgString);
                         mode = AddressType.REGISTER_OFFSET;
                     }
 
                 } else if (mems.length == 3) {
                     shiftArgument = new ShiftArgument(mems[2]);
-                    offsetRegisterArgument = new RegisterArgument(mems[1]);
+                    String rgString = mems[1];
+
+                    if (rgString.startsWith("+")) {
+                        rgString = rgString.substring(1);
+                        negative = false;
+                    }
+
+                    if (rgString.startsWith("-")) {
+                        rgString = rgString.substring(1);
+                        negative = true;
+                    }
+
+                    offsetRegisterArgument = new RegisterArgument(rgString);
                     mode = AddressType.SHIFTED_REGISTER_OFFSET;
                 } else {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidAddress", originalString));
@@ -125,39 +150,33 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
             case SIMPLE_REGISTER -> {
                 return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData(),
-                                            stateContainer,
-                                            true,
-                                            updateNow,
-                                            addressRegisterArgument.getValue(stateContainer));
+                        true,
+                        updateNow,
+                        addressRegisterArgument.getValue(stateContainer));
             }
 
             case IMMEDIATE_OFFSET -> {
                 return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + offsetImmediateArgument.getValue(stateContainer),
-                                            stateContainer,
-                                            false,
-                                            updateNow,
-                                            addressRegisterArgument.getValue(stateContainer));
+                        false,
+                        updateNow,
+                        addressRegisterArgument.getValue(stateContainer));
             }
 
             case REGISTER_OFFSET -> {
-                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + offsetRegisterArgument.getValue(stateContainer).getData(),
-                                            stateContainer,
-                                            false,
-                                            updateNow,
-                                            addressRegisterArgument.getValue(stateContainer));
+                return new UpdatableInteger((addressRegisterArgument.getValue(stateContainer).getData() + offsetRegisterArgument.getValue(stateContainer).getData()) * (negative ? -1 : 1),
+                        false,
+                        updateNow,
+                        addressRegisterArgument.getValue(stateContainer));
             }
 
             case SHIFTED_REGISTER_OFFSET -> {
-                return new UpdatableInteger(addressRegisterArgument.getValue(stateContainer).getData() + shiftArgument.getValue(stateContainer).apply(offsetRegisterArgument.getValue(stateContainer).getData()),
-                                            stateContainer,
-                                            false,
-                                            updateNow,
-                                            addressRegisterArgument.getValue(stateContainer));
+                return new UpdatableInteger((addressRegisterArgument.getValue(stateContainer).getData() + shiftArgument.getValue(stateContainer).apply(offsetRegisterArgument.getValue(stateContainer).getData())* (negative ? -1 : 1)),
+                        false,
+                        updateNow,
+                        addressRegisterArgument.getValue(stateContainer));
             }
 
-            default -> {
-                throw new RuntimeException("Invalide state: Illegal mode (" + mode + ")");
-            }
+            default -> throw new RuntimeException("Invalide state: Illegal mode (" + mode + ")");
         }
     }
 
@@ -188,22 +207,19 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     public static final class UpdatableInteger {
 
         private final int integer;
-        private final StateContainer stateContainer;
         private final Register register;
         private boolean update;
 
         /**
-         * @param integer        la valeur actuelle
-         * @param stateContainer le conteneur sur lequel effectué la mise à jour le cas échéant
-         * @param update         vrai si on autorise la mise à jour du registre lors de l'appel de update()
-         * @param updateNow      vrai si on veut effectuer la mise à jour instantanément (quelque soit la valeur du paramètre précédant)
-         * @param register       le registre à mettre à jour
+         * @param integer   la valeur actuelle
+         * @param update    vrai si on autorise la mise à jour du registre lors de l'appel de update()
+         * @param updateNow vrai si on veut effectuer la mise à jour instantanément (quelque soit la valeur du paramètre précédant)
+         * @param register  le registre à mettre à jour
          */
-        public UpdatableInteger(int integer, StateContainer stateContainer, boolean update, boolean updateNow, Register register) {
+        public UpdatableInteger(int integer, boolean update, boolean updateNow, Register register) {
             this.integer = integer;
             this.register = register;
             this.update = update;
-            this.stateContainer = stateContainer;
 
             if (updateNow) register.setData(integer);
         }
@@ -212,10 +228,9 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             return integer;
         }
 
-        public void update() {
+        public void update(int offset) {
             if (register == null) return;
-            if (update && stateContainer.hasAddressRegisterUpdate())
-                register.add(stateContainer.getAddressRegisterUpdateValue());
+            if (update) register.add(offset);
             update = false;
         }
 

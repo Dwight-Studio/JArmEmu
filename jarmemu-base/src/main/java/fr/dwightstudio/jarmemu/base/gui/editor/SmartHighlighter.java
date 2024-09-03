@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.gui.editor;
 import fr.dwightstudio.jarmemu.base.asm.Directive;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.Section;
+import fr.dwightstudio.jarmemu.base.asm.argument.PostOffsetArgument;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
@@ -75,6 +76,7 @@ public class SmartHighlighter extends RealTimeParser {
     public static final Pattern DIRECTIVE_VALUE_PATTERN = Pattern.compile("^[^\n@]*");
     public static final Pattern PSEUDO_INSTRUCTION_PATTERN = Pattern.compile("^=[^\n@]*");
     public static final Pattern REGISTER_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", REGISTERS) + ")\\b(?-i)(!|)");
+    public static final Pattern REGISTER_SIGN_PATTERN = Pattern.compile("^(\\+|-|)");
     public static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
     public static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_]+[A-Za-z_0-9]*");
 
@@ -509,6 +511,7 @@ public class SmartHighlighter extends RealTimeParser {
             case "RegisterArrayArgument" -> matchRegisterArray();
             case "LabelArgument" -> matchLabelArgument();
             case "LabelOrRegisterArgument" -> matchLabelOrRegister();
+            case "PostOffsetArgument" -> matchPostOffset();
             default -> false;
         };
 
@@ -562,6 +565,18 @@ public class SmartHighlighter extends RealTimeParser {
     private boolean matchImmediateOrRegister() {
         if (matchImmediate()) return true;
         else return matchRegister();
+    }
+
+    private boolean matchPostOffset() {
+        if (matchImmediate()) return true;
+        else  {
+            Matcher matcher = REGISTER_SIGN_PATTERN.matcher(text);
+
+            if (matcher.find()) {
+                tag("shift", matcher);
+            }
+            return matchRegister();
+        }
     }
 
     private boolean matchPseudoInstruction() {
@@ -684,9 +699,10 @@ public class SmartHighlighter extends RealTimeParser {
                 }
 
                 case PRIMARY -> {
-                    if (matchRegister()) {
+                    if (matchPostOffset()) {
                         subContext = SubContext.SECONDARY;
-                    } else if (!matchImmediate()) return false;
+                        return true;
+                    }
                 }
 
                 case SECONDARY -> {

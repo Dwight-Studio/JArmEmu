@@ -162,7 +162,7 @@ public class StateInitializer {
                     // Preparation and verification of instructions
                     .resetPos(stateContainer)
                     .forInstructions().contextualize(stateContainer)
-                    .forInstructions().verify(() -> new StateContainer(stateContainer))
+                    .forInstructions().verify(() -> new StateContainer(stateContainer).withTestingRegister())
                     .forInstructions().write(stateContainer, this::getPosition);
         } catch (ASMException exception) {
             exceptions.add(exception);

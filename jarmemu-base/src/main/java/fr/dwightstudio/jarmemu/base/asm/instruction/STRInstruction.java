@@ -95,7 +95,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, AddressArgument.UpdatableInteger arg2, RegisterOrImmediate arg3, ShiftFunction arg4) throws ExecutionASMException {
-        arg4.apply(arg3);
+        int i1 = arg4.apply(arg3);
         int address = arg2.toInt();
 
         if (!ignoreExceptions) {
@@ -117,7 +117,7 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
             case B -> stateContainer.getMemory().putByte(address, (byte) arg1.getData());
         }
 
-        arg2.update();
+        arg2.update(i1);
     }
 
     @Override

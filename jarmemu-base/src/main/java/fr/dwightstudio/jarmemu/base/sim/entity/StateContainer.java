@@ -62,7 +62,6 @@ public class StateContainer {
     private int writableDataAddress;
     private int pseudoInstructionAddress;
     private FilePos memoryPos; // Position dans la mémoire et fichier en cours de lecture
-    private Integer addressRegisterUpdateValue;
 
     // Registers
     public static final int REGISTER_NUMBER = 16;
@@ -89,7 +88,6 @@ public class StateContainer {
         symbolAddress = 0;
         writableDataAddress = 0;
         pseudoInstructionAddress = 0;
-        addressRegisterUpdateValue = null;
         memoryPos = new FilePos(0, programAddress);
 
         // Initializing registers
@@ -122,7 +120,6 @@ public class StateContainer {
         this.symbolAddress = stateContainer.symbolAddress;
         this.writableDataAddress = stateContainer.writableDataAddress;
         this.pseudoInstructionAddress = stateContainer.pseudoInstructionAddress;
-        this.addressRegisterUpdateValue = stateContainer.addressRegisterUpdateValue;
         this.memoryPos = new FilePos(stateContainer.memoryPos);
 
         for (int i = 0; i < REGISTER_NUMBER; i++) {
@@ -485,6 +482,18 @@ public class StateContainer {
         return registers[i];
     }
 
+    /**
+     * Sets all register to non-null value
+     *
+     * @return this
+     */
+    public StateContainer withTestingRegister() {
+        for (int i = 0; i < registers.length; i++) {
+            registers[i].setData(i + 1);
+        }
+        return this;
+    }
+
     public Register getFP() {
         return registers[RegisterUtils.FP.getN()];
     }
@@ -519,23 +528,5 @@ public class StateContainer {
 
     public Register[] getRegisters() {
         return registers;
-    }
-
-    public Integer getAddressRegisterUpdateValue() {
-        int rtn = addressRegisterUpdateValue;
-        addressRegisterUpdateValue = null;
-        return rtn;
-    }
-
-    public void setAddressRegisterUpdateValue(int addressRegisterUpdateValue) {
-        this.addressRegisterUpdateValue = addressRegisterUpdateValue;
-    }
-
-    public void resetAddressRegisterUpdateValue() {
-        addressRegisterUpdateValue = null;
-    }
-
-    public boolean hasAddressRegisterUpdate() {
-        return this.addressRegisterUpdateValue != null;
     }
 }
