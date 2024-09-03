@@ -136,6 +136,7 @@ public class JArmEmuApplication extends Application {
     }
 
     // Before the release:
+    // FIXME: Duplicate instruction are not encoded
     // TODO: Add infinite loop detection
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
     // TODO: Add Instruction list
