@@ -78,6 +78,7 @@ public class InstructionTest<A, B, C, D> extends JArmEmuTest {
     protected Integer label(StateContainer c, String s) {
         try {
             LabelArgument arg = new LabelArgument(s);
+            c.getCurrentMemoryPos().setPos(c.getPC().getData());
             arg.contextualize(c);
             return arg.getValue(stateContainer);
         } catch (ASMException e) {

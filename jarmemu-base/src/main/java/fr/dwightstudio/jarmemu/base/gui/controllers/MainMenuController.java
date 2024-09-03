@@ -127,6 +127,7 @@ public class MainMenuController {
                     }
                 });
             }
+            setLastSave();
         }
     }
 
@@ -136,6 +137,7 @@ public class MainMenuController {
     public void onReload() {
         JArmEmuApplication.getSimulationMenuController().onStop();
         JArmEmuApplication.getEditorController().currentFileEditor().reload();
+        setLastSave();
     }
 
     /**
@@ -162,6 +164,7 @@ public class MainMenuController {
                     }
                 });
             }
+            setLastSave();
         }
     }
 
@@ -191,6 +194,7 @@ public class MainMenuController {
                     }
                 });
             }
+            setLastSave();
         }
     }
 
@@ -223,6 +227,8 @@ public class MainMenuController {
      */
     public void exit() {
         logger.info("Exiting JArmEmu...");
+
+        setLastSave();
 
         JArmEmuApplication.getExecutionWorker().stop();
         JArmEmuApplication.getEditorController().closeAll();

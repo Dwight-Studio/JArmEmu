@@ -79,6 +79,7 @@ public class SmartHighlighter extends RealTimeParser {
     public static final Pattern REGISTER_SIGN_PATTERN = Pattern.compile("^(\\+|-|)");
     public static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
     public static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_]+[A-Za-z_0-9]*");
+    public static final Pattern LABEL_ARGUMENT_BIS_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*(@|$)");
 
     public static final Pattern NOTE_PATTERN = Pattern.compile("^[^\n]+");
 
@@ -503,7 +504,6 @@ public class SmartHighlighter extends RealTimeParser {
         boolean rtn = switch (argType) {
             case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
             case "ImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
-            case "CodeArgument" -> matchCodeArgument();
             case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> matchImmediateOrRegister();
             case "ShiftArgument" -> matchShift();
             case "AddressArgument" -> matchAddress();
@@ -585,18 +585,6 @@ public class SmartHighlighter extends RealTimeParser {
         if (matcher.find()) {
             tag("pseudo-instruction", matcher);
             subContext = SubContext.PSEUDO;
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean matchCodeArgument() {
-        Matcher matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
-
-        if (matcher.find()) {
-            subContext = SubContext.IMMEDIATE;
-            tag("immediate", matcher);
             return true;
         }
 
@@ -782,11 +770,13 @@ public class SmartHighlighter extends RealTimeParser {
 
     private boolean matchLabelArgument() {
         if (subContext == SubContext.LABEL_REF) return false;
-        Matcher matcher = LABEL_ARGUMENT_PATTERN.matcher(text);
+        Matcher matcher = LABEL_ARGUMENT_BIS_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            matcher = LABEL_ARGUMENT_PATTERN.matcher(matcher.group("LABEL"));
+            matcher.find();
             subContext = SubContext.LABEL_REF;
-            String label = matcher.group().toUpperCase();
+            String label = matcher.group().toUpperCase().strip();
 
             addReferences.add(label);
 
@@ -798,6 +788,13 @@ public class SmartHighlighter extends RealTimeParser {
             }
 
             return true;
+        } else {
+            matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
+
+            if (matcher.find()) {
+                tag("immediate", matcher);
+                return true;
+            }
         }
 
         return false;

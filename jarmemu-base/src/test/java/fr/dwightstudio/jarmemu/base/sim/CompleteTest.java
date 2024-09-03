@@ -165,8 +165,8 @@ public class CompleteTest extends JArmEmuTest {
                 parser,
                 sources
         ));
+        assertArrayEquals(new SyntaxASMException[0], codeInterpreter.initiate());
 
-        codeInterpreter.initiate();
         codeInterpreter.restart();
 
         // Execution

@@ -41,26 +41,10 @@ import javafx.util.StringConverter;
 
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
-    // RIP l'animation
-    /*
-    private final Animation UPDATE_ANIMATION = new Transition() {
-
-        {
-            setCycleDuration(Duration.seconds(10));
-            setInterpolator(Interpolator.EASE_OUT);
-        }
-
-        @Override
-        protected void interpolate(double frac) {
-            int percentage = (int) Math.floor(frac * 100);
-            setStyle("-fx-background-color: ladder(derive(black, " + percentage + "%), -color-warning-muted, transparent 50%);");
-        }
-    };
-    */
-
     private final ChangeListener<Number> CHANGE_LISTENER;
 
     private ObservableValue<Number> obs;
+    private boolean changed;
 
     private ValueTableCell(StringConverter<Number> converter) {
         super(converter);
@@ -68,15 +52,17 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         this.setAlignment(Pos.CENTER);
 
         CHANGE_LISTENER = (obs, oldVal, newVal) -> {
-        /*
-        Platform.runLater(UPDATE_ANIMATION::stop);
-        Platform.runLater(UPDATE_ANIMATION::play);
-         */
             if (JArmEmuApplication.getSettingsController().getHighlightUpdates())
-                Platform.runLater(() -> setStyle("-fx-background-color: -color-warning-muted"));
+                Platform.runLater(() -> {
+                    setStyle("-fx-background-color: -color-warning-muted");
+                    changed = true;
+                });
         };
 
-        JArmEmuApplication.getExecutionWorker().addStepListener((pos) -> setStyle("-fx-background-color: transparent"));
+        JArmEmuApplication.getExecutionWorker().addStepListener((pos) -> {
+            if (changed) setStyle("-fx-background-color: transparent");
+            changed = false;
+        });
     }
 
     private ValueTableCell() {
@@ -90,6 +76,7 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
         if (getTableColumn() != null && getTableColumn().getCellObservableValue(getIndex()) != null) {
             if (obs != getTableColumn().getCellObservableValue(getIndex())) {
                 if (obs != null) obs.removeListener(CHANGE_LISTENER);
+                setStyle("-fx-background-color: transparent");
                 obs = getTableColumn().getCellObservableValue(getIndex());
                 obs.addListener(CHANGE_LISTENER);
             }

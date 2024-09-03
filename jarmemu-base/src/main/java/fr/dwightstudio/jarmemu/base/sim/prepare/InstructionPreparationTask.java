@@ -56,12 +56,14 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     public PreparationStream contextualize(StateContainer container) throws ASMException {
         logger.info("Contextualizing instructions" + getDescription());
         container.getCurrentMemoryPos().setFileIndex(0);
+        container.getCurrentMemoryPos().setPos(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                     if (test(ins)) {
                         logger.info("Contextualizing " + ins);
                         ins.contextualize(container);
+                        container.getCurrentMemoryPos().incrementPos(4);
                     }
                 }
             }

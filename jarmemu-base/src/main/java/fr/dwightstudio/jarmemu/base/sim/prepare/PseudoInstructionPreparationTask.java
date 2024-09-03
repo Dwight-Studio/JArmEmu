@@ -70,7 +70,7 @@ public class PseudoInstructionPreparationTask extends InstructionPreparationTask
                     if (test((ParsedInstruction<?, ?, ?, ?>) ins) && ins.isPseudoInstruction()) {
                         logger.info("Generating for " + ins);
                         ParsedObject gen = ins.generate(container);
-                        objects.add(gen);
+                        if (gen != null) objects.add(gen);
                     }
                 }
             }

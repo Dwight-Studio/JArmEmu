@@ -114,6 +114,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     @Override
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, AddressArgument.UpdatableInteger arg2, RegisterOrImmediate arg3, ShiftFunction arg4) throws ExecutionASMException {
         int i1 = arg4.apply(arg3);
+
         int address = isPseudoInstruction() ? dir.getLastPos().getPos() : arg2.toInt();
 
         if (!ignoreExceptions) {

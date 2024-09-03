@@ -177,6 +177,26 @@ public class StateContainer {
         }
     }
 
+    public int evalBranch(String expString) throws SyntaxASMException {
+        try {
+            ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
+
+            getAccessibleConsts().forEach((key, val) -> builder.variables(key));
+            getAccessibleData().forEach((key, val) -> builder.variables(key));
+            getAccessibleLabels().forEach((key, val) -> builder.variables(key));
+
+            Expression exp = builder.build();
+
+            getAccessibleConsts().forEach((key, val) -> exp.setVariable(key, (double) val));
+            getAccessibleData().forEach((key, val) -> exp.setVariable(key, (double) val));;
+            getAccessibleLabels().forEach((key, val) -> exp.setVariable(key, val - this.memoryPos.getPos()));
+
+            return (int) exp.evaluate();
+        } catch (IllegalArgumentException exception) {
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", expString, exception.getMessage()));
+        }
+    }
+
     /**
      * Evaluate math expression using the context of this state container
      *
@@ -220,18 +240,15 @@ public class StateContainer {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
-            builder.variables(getAccessibleConsts().keySet());
-            builder.variables(getAccessibleData().keySet());
+            getAccessibleConsts().forEach((key, val) -> builder.variables(key));
+            getAccessibleData().forEach((key, val) -> builder.variables(key));
+            getAccessibleLabels().forEach((key, val) -> builder.variables(key));
 
             Expression exp = builder.build();
 
-            for (Map.Entry<String, Integer> entry : getAccessibleConsts().entrySet()) {
-                exp.setVariable(entry.getKey(), (double) entry.getValue());
-            }
-
-            for (Map.Entry<String, Integer> entry : getAccessibleData().entrySet()) {
-                exp.setVariable(entry.getKey(), (double) entry.getValue());
-            }
+            getAccessibleConsts().forEach((key, val) -> exp.setVariable(key, (double) val));
+            getAccessibleData().forEach((key, val) -> exp.setVariable(key, (double) val));;
+            getAccessibleLabels().forEach((key, val) -> exp.setVariable(key, val - this.memoryPos.getPos()));
 
             return (int) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {

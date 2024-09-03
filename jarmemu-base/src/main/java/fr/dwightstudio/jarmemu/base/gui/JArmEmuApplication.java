@@ -136,7 +136,6 @@ public class JArmEmuApplication extends Application {
     }
 
     // Before the release:
-    // FIXME: <URGENT> Fix Label argument(+Code argument) accepting number/variable without #
     // TODO: Add infinite loop detection
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
     // TODO: Add Instruction list
@@ -145,6 +144,7 @@ public class JArmEmuApplication extends Application {
     // Maybe:
     // TODO: Ajouter le support de plus de directives pour l'autocomplétion
     // TODO: Ajouter un enregistrement du layout des tableaux
+    // FIXME: Highlighting accepts shift on immediate (mem)
 
     @Override
     public void init() {

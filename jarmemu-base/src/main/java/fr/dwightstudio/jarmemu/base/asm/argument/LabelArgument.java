@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.base.asm.argument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
@@ -35,6 +34,7 @@ import java.util.function.Supplier;
 public class LabelArgument extends ParsedArgument<Integer> {
 
     private final String cleanString;
+    private int value;
 
     public LabelArgument(String originalString) throws BadArgumentASMException {
         super(originalString);
@@ -42,27 +42,30 @@ public class LabelArgument extends ParsedArgument<Integer> {
         if (originalString == null) throw new BadArgumentASMException(JArmEmuApplication.formatMessage("%exception.argument.missingLabel"));
 
         cleanString = originalString.strip().toUpperCase();
-
     }
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-
+        value = stateContainer.evalBranch(originalString);
     }
 
     @Override
     public Integer getValue(StateContainer stateContainer) throws ExecutionASMException {
-        return stateContainer.getAccessibleLabels().get(cleanString);
+        return value + stateContainer.getPC().getData();
     }
 
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
-        if (this.getAddress(stateSupplier.get()) == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", originalString));
+        getValue(stateSupplier.get());
 
         super.verify(stateSupplier);
     }
 
     public Integer getAddress(StateContainer stateContainer) {
         return stateContainer.getAccessibleLabels().get(cleanString);
+    }
+
+    public int getValue() {
+        return value;
     }
 }

@@ -46,7 +46,7 @@ public class ImmediateArgument extends ParsedArgument<Integer> {
             if (originalString.startsWith("#")) {
                 String valueString = originalString.substring(1).strip();
 
-                value = stateContainer.evalWithAccessibleConsts(valueString);
+                value = stateContainer.evalWithAccessible(valueString);
 
                 if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21 && value != -2048)
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));

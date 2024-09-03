@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.CodeArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
@@ -50,7 +50,7 @@ public class SWIInstruction extends ParsedInstruction<Integer, Object, Object, O
     @Override
     @NotNull
     public Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
-        return CodeArgument.class;
+        return LabelArgument.class;
     }
 
     @Override

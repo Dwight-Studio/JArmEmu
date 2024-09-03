@@ -16,6 +16,7 @@ public class ShiftFunction {
         this.identity = false;
         this.stateContainer = stateContainer;
         this.shift = shift;
+        if (shift == null) throw new IllegalArgumentException("shift function requires a non-null state");
         this.called = false;
     }
 

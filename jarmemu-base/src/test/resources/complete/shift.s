@@ -13,8 +13,9 @@ _start:
 	@ Beginning of the program
 	LDR r5, =VAL
 	LDR r6, =VAL2
-	
 	mov r0, #0
+	b 8
+	mov r0, #4
 	mov r1, #4
 	mov r2, #2
 	mov r3, #3
