@@ -135,12 +135,16 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
-    // TODO: Ajouter le support de plus de directives pour l'autocomplétion
-    // TODO: Ajouter une detection des boucles infinies
-    // TODO: Ajouter des hints pour les nouveaux utilisateurs (par exemple pour les breakpoints, double cliques sur symbols...)
-    // TODO: Ajouter un enregistrement du layout des tableaux
-    // TODO: Detect and warn from program overwriting
+    // Before the release:
     // FIXME: <URGENT> Fix Label argument(+Code argument) accepting number/variable without #
+    // TODO: Add infinite loop detection
+    // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
+    // TODO: Add Instruction list
+    // TODO: Detect and warn from program overwriting
+
+    // Maybe:
+    // TODO: Ajouter le support de plus de directives pour l'autocomplétion
+    // TODO: Ajouter un enregistrement du layout des tableaux
 
     @Override
     public void init() {

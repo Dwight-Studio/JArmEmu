@@ -124,7 +124,6 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     protected void verify(StateContainer stateContainer, Register arg1, AddressArgument.UpdatableInteger arg2, RegisterOrImmediate arg3, ShiftFunction arg4) throws SyntaxASMException {
         arg4.check(arg3);
 
-        // FIXME: Verification is not correct
         if (arg3.intValue() != 0 && !arg2.canUpdate()) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.indexing"));
         }
