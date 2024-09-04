@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.base.gui.factory.JArmEmuLineFactory;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.util.FileUtils;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.*;
 import javafx.scene.control.Button;
@@ -121,12 +122,14 @@ public class FileEditor {
                             save();
                             close();
                             JArmEmuApplication.getEditorController().cleanClosedEditors();
+                            JArmEmuApplication.getMainMenuController().setLastSave();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
                             JArmEmuApplication.getSimulationMenuController().onStop();
                             close();
                             JArmEmuApplication.getEditorController().cleanClosedEditors();
+                            JArmEmuApplication.getMainMenuController().setLastSave();
                         }
 
                         default -> {}
@@ -136,6 +139,7 @@ public class FileEditor {
                 JArmEmuApplication.getSimulationMenuController().onStop();
                 close();
                 JArmEmuApplication.getEditorController().cleanClosedEditors();
+                JArmEmuApplication.getMainMenuController().setLastSave();
             }
         });
 
@@ -537,6 +541,10 @@ public class FileEditor {
      */
     public void clearLastExecuted() {
         this.lineFactory.clearLastExecuted();
+    }
+
+    public void requestClose() {
+        this.fileTab.getOnCloseRequest().handle(new Event(fileTab, null, null));
     }
 
     /**

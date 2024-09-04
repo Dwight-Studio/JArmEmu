@@ -222,8 +222,12 @@ public class StateInitializer {
      * @return the position in memory of the instruction
      */
     public int getPosition(ParsedInstruction<?, ?, ?, ?> instruction) {
-        int i = instructionMemory.indexOf(instruction);
-        return i == -1 ? i : i * 4;
+        for (int i = 0; i < instructionMemory.size(); i++) {
+            if (instructionMemory.get(i) == instruction) {
+                return i * 4;
+            };
+        }
+        return -1;
     }
 
     public ArrayList<ParsedFile> getParsedFiles() {

@@ -154,17 +154,18 @@ public class MainMenuController {
                         case SAVE_AND_CONTINUE -> {
                             onSaveAll();
                             JArmEmuApplication.getEditorController().closeAll();
+                            JArmEmuApplication.getMainMenuController().setLastSave();
                         }
 
                         case DISCARD_AND_CONTINUE -> {
                             JArmEmuApplication.getEditorController().closeAll();
+                            JArmEmuApplication.getMainMenuController().setLastSave();
                         }
 
                         default -> {}
                     }
                 });
             }
-            setLastSave();
         }
     }
 
@@ -172,30 +173,7 @@ public class MainMenuController {
      * Invoked by JavaFX
      */
     public void onClose() {
-        JArmEmuApplication.getSimulationMenuController().onStop();
-        if (JArmEmuApplication.getEditorController().currentFileEditor().getSaveState()) {
-            if (JArmEmuApplication.getEditorController().getSaveState()) {
-                JArmEmuApplication.getEditorController().currentFileEditor().close();
-            } else {
-                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
-                    switch (rtn) {
-                        case SAVE_AND_CONTINUE -> {
-                            onSaveAll();
-                            JArmEmuApplication.getEditorController().currentFileEditor().close();
-                            JArmEmuApplication.getEditorController().cleanClosedEditors();
-                        }
-
-                        case DISCARD_AND_CONTINUE -> {
-                            JArmEmuApplication.getEditorController().currentFileEditor().close();
-                            JArmEmuApplication.getEditorController().cleanClosedEditors();
-                        }
-
-                        default -> {}
-                    }
-                });
-            }
-            setLastSave();
-        }
+        JArmEmuApplication.getEditorController().currentFileEditor().requestClose();
     }
 
     /**

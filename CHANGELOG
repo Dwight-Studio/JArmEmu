@@ -7,6 +7,7 @@
 - Fixed broken shift highlighting/autocompletion
 - Fixed incorrect pre/post indexing behaviour, syntax and highlighting
 - Fixed incorrect syntax of 'label' arguments
+- Fixed incorrect instruction memory position when fetching from StateInitializer (instruction comparison)
 
 
 0.2.1 -> 0.2.2
