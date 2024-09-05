@@ -29,7 +29,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class BKPTInstructionTest extends InstructionTest<RegisterOrImmediate, Object, Object, Object> {
+class BKPTInstructionTest extends InstructionTest<Integer, Object, Object, Object> {
 
     protected BKPTInstructionTest() {
         super(BKPTInstruction.class);
@@ -37,6 +37,6 @@ class BKPTInstructionTest extends InstructionTest<RegisterOrImmediate, Object, O
 
     @Test
     public void simpleBkptTest() {
-        Assertions.assertThrows(BreakpointASMException.class, () -> legacyExecute(new StateContainer(), false, false, null, null, new RegisterOrImmediate(1), null, null, null));
+        Assertions.assertThrows(BreakpointASMException.class, () -> legacyExecute(new StateContainer(), false, false, null, null, 1, null, null, null));
     }
 }

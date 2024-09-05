@@ -241,6 +241,7 @@ public class SmartHighlighter extends RealTimeParser {
                                     if (matchBlank()) {
                                         context = offsetArgument ? Context.INSTRUCTION_ARGUMENT_2 : Context.INSTRUCTION_ARGUMENT_1;
                                         argType = instruction.getArgumentType(context.getIndex());
+                                        if (argType != null) argType = argType.replaceFirst("Optional", "");
                                         continue;
                                     }
                                 }
@@ -504,7 +505,7 @@ public class SmartHighlighter extends RealTimeParser {
 
         boolean rtn = switch (argType) {
             case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
-            case "ImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
+            case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
             case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> matchImmediateOrRegister();
             case "ShiftArgument" -> matchShift();
             case "AddressArgument" -> matchAddress();

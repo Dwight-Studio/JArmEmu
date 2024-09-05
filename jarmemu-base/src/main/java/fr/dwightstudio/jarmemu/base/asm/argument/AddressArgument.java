@@ -187,6 +187,9 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
             if (offsetImmediateArgument != null) {
                 offsetImmediateArgument.verify(stateSupplier);
+                if (Integer.numberOfLeadingZeros(Math.abs(offsetImmediateArgument.getValue(stateSupplier.get()))) < 25) {
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
+                }
             }
 
             if (offsetRegisterArgument != null) {

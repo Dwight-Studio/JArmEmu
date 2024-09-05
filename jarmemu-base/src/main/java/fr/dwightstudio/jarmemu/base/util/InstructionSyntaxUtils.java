@@ -99,6 +99,8 @@ public class InstructionSyntaxUtils {
 
             case "ImmediateArgument" -> List.of(getText("#imm12", "immediate"));
 
+            case "SmallImmediateArgument" -> List.of(getText("#imm8", "immediate"));
+
             case "LongImmediateArgument" -> List.of(getText("#imm16", "immediate"));
 
             case "OptionalImmediateOrRegisterArgument", "ImmediateOrRegisterArgument" -> List.of(getText("#imm12", "immediate"), new Text("/"), getText("regv", "register"));
@@ -109,7 +111,7 @@ public class InstructionSyntaxUtils {
 
             case "LabelOrRegisterArgument" -> List.of(getText("lbl", "label-ref"), new Text("/"), getText("imm24", "immediate"), new Text("/"), getText("regb", "register"));
 
-            case "PostOffsetArgument" -> List.of(getText("#imm16", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("regi", "register"));
+            case "PostOffsetArgument" -> List.of(getText("#imm9", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("regi", "register"));
 
             case "RegisterAddressArgument" -> List.of(getText("rega", "register"));
 
@@ -119,7 +121,7 @@ public class InstructionSyntaxUtils {
 
             case "RegisterWithUpdateArgument" -> List.of(getText("reg" + regNum, "register"), new Text("<"), getText("!", "register"), new Text(">"));
 
-            case "RotatedImmediateArgument" -> List.of(getText("#imm8", "immediate"));
+            case "RotatedImmediateArgument" -> List.of(getText("#rimm8", "immediate"));
 
             case "OptionalRotatedImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> List.of(getText("#imm8", "immediate"), new Text("/"), getText("regv", "register"));
 

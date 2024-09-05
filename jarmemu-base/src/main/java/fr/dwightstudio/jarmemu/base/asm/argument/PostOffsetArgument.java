@@ -3,8 +3,11 @@ package fr.dwightstudio.jarmemu.base.asm.argument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+
+import java.util.function.Supplier;
 
 public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
 
@@ -46,6 +49,21 @@ public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
                 immediateArgument.contextualize(stateContainer);
             } else {
                 registerArgument.contextualize(stateContainer);
+            }
+        }
+    }
+
+    @Override
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        if (originalString != null) {
+            if (immediate) {
+                immediateArgument.verify(stateSupplier);
+
+                if (Integer.numberOfLeadingZeros(Math.abs(immediateArgument.getValue(stateSupplier.get()))) < 25) {
+                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
+                }
+            } else {
+                registerArgument.verify(stateSupplier);
             }
         }
     }

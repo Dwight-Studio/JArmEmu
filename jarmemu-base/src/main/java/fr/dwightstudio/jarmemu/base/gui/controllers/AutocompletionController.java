@@ -127,7 +127,7 @@ public class AutocompletionController implements Initializable {
 
                     case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
                          INSTRUCTION_ARGUMENT_4 -> {
-                        switch (argType.replaceFirst("Optional", "")) {
+                        switch (argType) {
                             case "RegisterArgument" -> {
                                 if (subContext != SubContext.REGISTER) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
@@ -147,7 +147,7 @@ public class AutocompletionController implements Initializable {
                                 }
                             }
 
-                            case "ImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" -> {
+                            case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" -> {
                                 if (subContext != SubContext.IMMEDIATE) list.add("#");
                                 else {
                                     list.addAll(editor.getRealTimeParser().getSymbols());

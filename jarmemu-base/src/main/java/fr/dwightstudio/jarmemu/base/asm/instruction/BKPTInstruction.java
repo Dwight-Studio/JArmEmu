@@ -23,9 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.BreakpointASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
@@ -39,19 +37,19 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.SequencedSet;
 
-public class BKPTInstruction extends ParsedInstruction<RegisterOrImmediate, Object, Object, Object> {
+public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, Object> {
     public BKPTInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier, arg1, arg2, arg3, arg4);
     }
 
-    public BKPTInstruction(Modifier modifier, ParsedArgument<RegisterOrImmediate> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
+    public BKPTInstruction(Modifier modifier, ParsedArgument<Integer> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) {
         super(modifier, arg1, arg2, arg3, arg4);
     }
 
     @Override
     @NotNull
-    public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg1Class() {
-        return ImmediateOrRegisterArgument.class;
+    public Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
+        return SmallImmediateArgument.class;
     }
 
     @Override
@@ -75,7 +73,7 @@ public class BKPTInstruction extends ParsedInstruction<RegisterOrImmediate, Obje
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class);
+        return SequencedSetUtils.of();
     }
 
     @Override
@@ -94,12 +92,12 @@ public class BKPTInstruction extends ParsedInstruction<RegisterOrImmediate, Obje
     }
 
     @Override
-    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
-        if (!ignoreExceptions) throw new BreakpointASMException(arg1.intValue());
+    protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
+        if (!ignoreExceptions) throw new BreakpointASMException(arg1);
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, RegisterOrImmediate arg1, Object arg2, Object arg3, Object arg4) {
+    protected void verify(StateContainer stateContainer, Integer arg1, Object arg2, Object arg3, Object arg4) {
 
     }
 }
