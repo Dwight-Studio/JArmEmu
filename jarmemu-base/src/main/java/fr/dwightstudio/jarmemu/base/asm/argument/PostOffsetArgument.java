@@ -10,7 +10,7 @@ public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
 
     private boolean immediate;
     private boolean negative;
-    private LongImmediateArgument immediateArgument;
+    private ImmediateArgument immediateArgument;
     private RegisterArgument registerArgument;
 
     public PostOffsetArgument(String originalString) throws SyntaxASMException {
@@ -20,7 +20,7 @@ public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
             immediate = originalString.startsWith("#") || originalString.startsWith("=") || originalString.startsWith("*");
 
             if (immediate) {
-                immediateArgument = new LongImmediateArgument(originalString);
+                immediateArgument = new ImmediateArgument(originalString);
             } else {
                 String valueString = originalString;
 

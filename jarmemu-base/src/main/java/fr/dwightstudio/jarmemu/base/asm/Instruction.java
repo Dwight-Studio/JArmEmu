@@ -81,7 +81,7 @@ public enum Instruction {
     // Data movement
     MOV(MOVInstruction.class),
     MVN(MVNInstruction.class),
-    SWI(SWIInstruction.class),
+    SVC(SWIInstruction.class),
     BXJ(BXJInstruction.class),
 
     // Memory access
