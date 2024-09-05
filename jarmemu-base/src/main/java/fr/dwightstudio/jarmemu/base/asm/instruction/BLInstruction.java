@@ -88,7 +88,7 @@ public class BLInstruction extends ParsedInstruction<Integer, Object, Object, Ob
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return InstructionCodeUtils.getBranch(this, true);
     }
 

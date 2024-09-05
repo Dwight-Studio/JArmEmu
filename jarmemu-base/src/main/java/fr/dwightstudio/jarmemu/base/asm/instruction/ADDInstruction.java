@@ -94,7 +94,7 @@ public class ADDInstruction extends ParsedInstruction<Register, Register, Regist
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return InstructionCodeUtils.getDataProcessingCode(stateContainer, this, 0b0100);
     }
 

@@ -88,7 +88,7 @@ public class UMLALInstruction extends ParsedInstruction<Register, Register, Regi
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return InstructionCodeUtils.getMultiplyLong(this, true, false);
     }
 

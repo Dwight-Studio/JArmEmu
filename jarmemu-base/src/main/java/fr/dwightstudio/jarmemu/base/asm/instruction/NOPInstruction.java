@@ -3,7 +3,6 @@ package fr.dwightstudio.jarmemu.base.asm.instruction;
 import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
@@ -77,7 +76,7 @@ public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Ob
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return 0;
     }
 

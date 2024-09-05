@@ -78,7 +78,7 @@ public class PUSHInstruction extends ParsedInstruction<Register[], Object, Objec
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return InstructionCodeUtils.blockDataTransfer(this.stmInstruction, false);
     }
 

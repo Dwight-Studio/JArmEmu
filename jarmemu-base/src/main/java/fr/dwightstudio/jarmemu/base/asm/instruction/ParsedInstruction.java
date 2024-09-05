@@ -173,10 +173,11 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
     /**
      * @param stateContainer the state container used to contextualize
+     * @param pos
      * @return a 32 bit value representing the instruction in program memory
      * @apiNote this value is for education purpose, it is not actually used by the emulator
      */
-    public abstract int getMemoryCode(StateContainer stateContainer);
+    public abstract int getMemoryCode(StateContainer stateContainer, int pos);
 
     protected abstract void execute(StateContainer stateContainer, boolean ignoreExceptions, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
 

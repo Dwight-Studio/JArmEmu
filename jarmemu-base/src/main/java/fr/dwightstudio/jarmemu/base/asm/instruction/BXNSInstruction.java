@@ -69,7 +69,7 @@ public class BXNSInstruction extends ParsedInstruction<Register, Object, Object,
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return 0;
     }
 

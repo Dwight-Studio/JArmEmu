@@ -78,7 +78,7 @@ public class DBGInstruction extends ParsedInstruction<String, Object, Object, Ob
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return 0;
     }
 

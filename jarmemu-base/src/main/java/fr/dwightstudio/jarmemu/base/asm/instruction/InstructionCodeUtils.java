@@ -1,6 +1,7 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.*;
+import fr.dwightstudio.jarmemu.base.asm.directive.WordDirective;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
@@ -104,8 +105,8 @@ public class InstructionCodeUtils {
         return (cond << 28) + (0b101 << 25) + (link << 24) + offset;
     }
 
-    public static int singleMemoryAccess(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr) {
-        // TODO: faire pseudo-instructions et half-word ldr/str et le signage
+    public static int singleMemoryAccess(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr, WordDirective dir, int pos) {
+        // TODO: faire half-word ldr/str et le signage
         int cond = parsedInstruction.modifier.condition().getCode();
 
         int I = 0;
@@ -167,7 +168,12 @@ public class InstructionCodeUtils {
                 Offset += ((AddressArgument) parsedInstruction.arg2).getShiftArgument().getType().getCode() << 5;
                 Offset += ((AddressArgument) parsedInstruction.arg2).getShiftArgument().getArgument().getValue(stateContainer).intValue() << 7;
             }
-            case PSEUDO_INSTRUCTION -> {}
+            case PSEUDO_INSTRUCTION -> {
+                P = 1;
+                U = 1;
+                Rn = 0b1111;
+                Offset = (dir.getLastPos().getPos() - 4 * 2) - pos;
+            }
         }
 
         return (cond << 28) + (notH << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (H << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + (Offset & 0xFFF) + (H << 7) + (H << 5) + (H << 4);

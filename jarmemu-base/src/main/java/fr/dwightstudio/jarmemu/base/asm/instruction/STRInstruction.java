@@ -89,8 +89,8 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
-        return InstructionCodeUtils.singleMemoryAccess(stateContainer, this, true);
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
+        return InstructionCodeUtils.singleMemoryAccess(stateContainer, this, true, null, pos);
     }
 
     @Override

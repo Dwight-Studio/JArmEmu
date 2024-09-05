@@ -101,8 +101,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
-        return InstructionCodeUtils.singleMemoryAccess(stateContainer, this, false);
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
+        return InstructionCodeUtils.singleMemoryAccess(stateContainer, this, false, dir, pos);
     }
 
     @Override

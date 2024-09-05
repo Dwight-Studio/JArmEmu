@@ -130,7 +130,7 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
                     if (test(ins)) {
                         int pos = positionProvider.apply(ins);
                         logger.info("Writing " + ins +" (" + pos + " in memory)");
-                        container.getMemory().putWord(pos, ins.getMemoryCode(container));
+                        container.getMemory().putWord(pos, ins.getMemoryCode(container, pos));
                     }
                 }
             }

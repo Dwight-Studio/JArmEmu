@@ -28,7 +28,6 @@ import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterAddressArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
@@ -41,7 +40,6 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
 import java.util.SequencedSet;
 
 public class SWPInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
@@ -94,7 +92,7 @@ public class SWPInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         int cond = this.modifier.condition().getCode();
         int B = (this.modifier.dataMode() == DataMode.B) ? 1 : 0;
         int Rn = ((RegisterAddressArgument) this.arg3).getRegisterNumber();

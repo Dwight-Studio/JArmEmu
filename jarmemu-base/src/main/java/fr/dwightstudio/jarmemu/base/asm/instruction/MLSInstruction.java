@@ -88,7 +88,7 @@ public class MLSInstruction extends ParsedInstruction<Register, Register, Regist
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return 0;
     }
 

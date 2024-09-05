@@ -88,7 +88,7 @@ public class SWIInstruction extends ParsedInstruction<Integer, Object, Object, O
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return (this.modifier.condition().getCode() << 28) + (0b1111 << 24);
     }
 

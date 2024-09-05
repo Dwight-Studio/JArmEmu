@@ -90,7 +90,7 @@ public class BFIInstruction extends ParsedInstruction<Register, Register, Intege
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         return 0;
     }
 

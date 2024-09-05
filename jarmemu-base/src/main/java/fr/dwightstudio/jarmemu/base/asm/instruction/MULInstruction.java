@@ -87,7 +87,7 @@ public class MULInstruction extends ParsedInstruction<Register, Register, Regist
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer) {
+    public int getMemoryCode(StateContainer stateContainer, int pos) {
         int cond = this.modifier.condition().getCode();
 
         int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
