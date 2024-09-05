@@ -30,6 +30,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SWPInstructionTest extends InstructionTest<Register, Register, Integer, Object> {
+    //TODO: Faire les tests de SWP
+
     SWPInstructionTest() {
         super(SWPInstruction.class);
     }

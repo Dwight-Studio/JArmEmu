@@ -30,7 +30,9 @@ import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
@@ -39,17 +41,16 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.SequencedSet;
 
 public class SWPInstruction extends ParsedInstruction<Register, Register, Integer, Object> {
     public SWPInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier, arg1, arg2, arg3, arg4);
-        throw new DeprecatedASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
     public SWPInstruction(Modifier modifier, ParsedArgument<Register> arg1, ParsedArgument<Register> arg2, ParsedArgument<Integer> arg3, ParsedArgument<Object> arg4) throws ASMException {
         super(modifier, arg1, arg2, arg3, arg4);
-        throw new DeprecatedASMException(JArmEmuApplication.formatMessage("%exception.instruction.deprecated", "SWP"));
     }
 
     @Override
@@ -94,16 +95,30 @@ public class SWPInstruction extends ParsedInstruction<Register, Register, Intege
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+        int B = (this.modifier.dataMode() == DataMode.B) ? 1 : 0;
+        int Rn = ((RegisterAddressArgument) this.arg3).getRegisterNumber();
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int Rm = ((RegisterArgument) this.arg2).getRegisterNumber();
+        return (cond << 28) + (0b0001 << 24) + (B << 22) + (Rn << 16) + (Rd << 12) + (0b1001 << 4) + Rm;
     }
 
     @Override
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Integer arg3, Object arg4) throws ExecutionASMException {
+        if (modifier.dataMode() == DataMode.B) {
+            arg1.setData(stateContainer.getMemory().getByte(arg3));
+            stateContainer.getMemory().putByte(arg3, (byte) arg2.getData());
+        } else {
+            arg1.setData(stateContainer.getMemory().getWord(arg3));
+            stateContainer.getMemory().putWord(arg3, arg2.getData());
+        }
 
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Integer arg3, Object arg4) {
-
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, Integer arg3, Object arg4) throws SyntaxASMException {
+        if (modifier.dataMode() == DataMode.H) {
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.halfword"));
+        }
     }
 }
