@@ -107,7 +107,7 @@ public class InstructionCodeUtils {
     }
 
     public static int singleMemoryAccess(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr) {
-        // TODO: faire pseudo-instructions et half-word ldr/str
+        // TODO: faire pseudo-instructions et half-word ldr/str et le signage
         int cond = parsedInstruction.modifier.condition().getCode();
 
         int I = 0;
