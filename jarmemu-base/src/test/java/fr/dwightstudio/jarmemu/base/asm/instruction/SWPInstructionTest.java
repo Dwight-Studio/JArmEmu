@@ -23,22 +23,40 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.exception.DeprecatedASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SWPInstructionTest extends InstructionTest<Register, Register, Integer, Object> {
-    //TODO: Faire les tests de SWP
 
     SWPInstructionTest() {
         super(SWPInstruction.class);
     }
 
     @Test
-    public void simpleSwpTest() {
+    public void simpleSwpTest() throws ASMException {
         Register r0 = stateContainer.getRegister(0);
-        assertThrows(DeprecatedASMException.class, () -> legacyExecute(stateContainer, false, false, null, null, r0, null, null, null));
+        Register r1 = stateContainer.getRegister(1);
+        Register r2 = stateContainer.getRegister(2);
+        Register r3 = stateContainer.getRegister(3);
+        r1.setData(10);
+        r2.setData(20);
+        r3.setData(200);
+        stateContainer.getMemory().putWord(100, 25);
+        stateContainer.getMemory().putWord(200, 50);
+        stateContainer.getMemory().putWord(300, 75);
+        assertEquals(10, r1.getData());
+        legacyExecute(stateContainer, false, false, null, null, r1, r2, r3.getData(), null);
+        assertEquals(50, r1.getData());
+        assertEquals(20, stateContainer.getMemory().getWord(200));
+        stateContainer.getMemory().putByte(0x9000, (byte) 0xAB);
+        r0.setData(0x9000);
+        r1.setData(0x56783412);
+        legacyExecute(stateContainer, false, false, DataMode.B, null, r1, r1, r0.getData(), null);
+        assertEquals(0x9000, r0.getData());
+        assertEquals((byte) 0xAB, r1.getData());
     }
 }
