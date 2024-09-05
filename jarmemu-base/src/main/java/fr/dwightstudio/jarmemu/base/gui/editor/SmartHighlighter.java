@@ -80,6 +80,7 @@ public class SmartHighlighter extends RealTimeParser {
     public static final Pattern SHIFT_PATTERN = Pattern.compile("^(?i)\\b(" + String.join("|", SHIFTS) + ")\\b(?-i)");
     public static final Pattern LABEL_ARGUMENT_PATTERN = Pattern.compile("^[A-Za-z_]+[A-Za-z_0-9]*");
     public static final Pattern LABEL_ARGUMENT_BIS_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*(@|$)");
+    public static final Pattern IGNORED_ARGUMENT = Pattern.compile("^[^,\n@]+");
 
     public static final Pattern NOTE_PATTERN = Pattern.compile("^[^\n]+");
 
@@ -512,6 +513,7 @@ public class SmartHighlighter extends RealTimeParser {
             case "LabelArgument" -> matchLabelArgument();
             case "LabelOrRegisterArgument" -> matchLabelOrRegister();
             case "PostOffsetArgument" -> matchPostOffset();
+            case "IgnoredArgument" -> matchIgnored();
             default -> false;
         };
 
@@ -522,6 +524,17 @@ public class SmartHighlighter extends RealTimeParser {
         }
 
         return rtn;
+    }
+
+    private boolean matchIgnored() {
+        Matcher matcher = IGNORED_ARGUMENT.matcher(text);
+
+        if (matcher.find()) {
+            tag("invalid-instruction", matcher);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean matchRegister() {
@@ -573,7 +586,7 @@ public class SmartHighlighter extends RealTimeParser {
             Matcher matcher = REGISTER_SIGN_PATTERN.matcher(text);
 
             if (matcher.find()) {
-                tag("shift", matcher);
+                tag("immediate", matcher);
             }
             return matchRegister();
         }

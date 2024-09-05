@@ -37,101 +37,101 @@
     -fx-fill: -color-fg-default;
 }
 
-.code-area .main-selection {
+.main-selection {
     -fx-fill: -color-accent-emphasis;
 }
 
-.code-area .lineno {
+.lineno {
     -fx-font-family: Monospaced;
     -fx-fill: -color-fg-muted;
     -fx-background-color: -color-bg-overlay;
 }
 
-.code-area .lineno-over {
+.lineno-over {
     -fx-font-family: Monospaced;
     -fx-fill: -color-danger-subtle;
     -fx-background-color: -color-bg-subtle;
 }
 
-.code-area .breakpoint {
+.breakpoint {
     -fx-font-family: Monospaced;
     -fx-fill: -color-danger-emphasis;
     -fx-background-color: -color-bg-overlay;
 }
 
-.code-area .text.bracket {
+.text.bracket {
     -fx-fill: #611811;
     -fx-font-weight: bold;
 }
-.code-area .text.brace {
+.text.brace {
     -fx-fill: #d9a544;
     -fx-font-weight: bold;
 }
-.code-area .text.invalid-instruction {
+.text.invalid-instruction {
     -fx-fill: #cda4df;
     -fx-font-style: italic;
 }
-.code-area .text.instruction {
+.text.instruction {
     -fx-fill: #ab44d9;
     -fx-font-weight: bold;
 }
-.code-area .text.modifier {
+.text.modifier {
     -fx-fill: #7e329f;
 }
-.code-area .text.section {
+.text.section {
     -fx-fill: #44b6d9;
     -fx-font-weight: 900;
     -fx-underline: true;
 }
-.code-area .text.directive {
+.text.directive {
     -fx-fill: #44b6d9;
     -fx-font-weight: bold;
 }
-.code-area .text.directive-argument {
+.text.directive-argument {
     -fx-fill: #1b4d5c;
     -fx-font-weight: bold;
 }
-.code-area .text.string {
+.text.string {
     -fx-fill: #32409d;
 }
-.code-area .text.label {
+.text.label {
     -fx-fill: #569d32;
     -fx-font-weight: bold;
 }
-.code-area .text.comment {
+.text.comment {
     -fx-fill: cadetblue;
 }
-.code-area .text.register {
+.text.register {
     -fx-fill: #6444d9;
 }
-.code-area .text.immediate {
+.text.immediate {
     -fx-fill: #329d61;
 }
-.code-area .text.pseudo-instruction {
+.text.pseudo-instruction {
     -fx-fill: #329d61;
     -fx-font-style: italic
 }
-.code-area .text.shift {
+.text.shift {
     -fx-fill: #9d3257;
 }
-.code-area .text.label-ref {
+.text.label-ref {
     -fx-fill: #80a36e;
     -fx-font-style: italic
 }
-.code-area .text.error {
+.text.error {
     -fx-fill: #d9534f;
     -rtfx-underline-color: red;
     -rtfx-underline-dash-array: 2 2;
     -rtfx-underline-width: 1;
     -rtfx-underline-cap: butt;
 }
-.code-area .text.error-secondary {
+.text.error-secondary {
     -rtfx-underline-color: red;
     -rtfx-underline-dash-array: 2 2;
     -rtfx-underline-width: 1;
     -rtfx-underline-cap: butt;
 }
-.code-area .text.find {
+.text.find {
     -rtfx-background-color: -color-accent-muted;
 }
 

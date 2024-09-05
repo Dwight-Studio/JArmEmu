@@ -110,12 +110,6 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
         }
 
         switch (modifier.updateMode()) {
-            case FD, IA -> {
-                for (int i = 0; i < length; i++) {
-                    arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() + 4 * i));
-                }
-                value = 4 * length;
-            }
             case FA, DA -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * i));
@@ -134,11 +128,17 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
                 }
                 value = - 4 * length;
             }
+            default -> {
+                for (int i = 0; i < length; i++) {
+                    arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() + 4 * i));
+                }
+                value = 4 * length;
+            }
         }
         arg1.update(value);
     }
 
     protected void verify(StateContainer stateContainer, UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws SyntaxASMException {
-        if (modifier.updateMode() == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.missingUpdateMode"));
+
     }
 }

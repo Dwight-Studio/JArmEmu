@@ -21,70 +21,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-.root {
-    -fx-font-family: Cantarell;
-}
+package fr.dwightstudio.jarmemu.base.gui.view;
 
-.autocomplete {
-    -fx-opacity: 100;
-    -fx-font-family: "Source Code Pro";
-    -fx-background-color: -color-neutral-subtle;
-    -fx-background-radius: 10;
-}
+import javafx.scene.text.Text;
 
-.autocomplete .list-view {
-    -fx-padding: 10;
-}
+import java.util.List;
 
-.data-address {
-    -fx-font-family: "Source Code Pro";
-    -fx-font-size: 14px;
-}
-
-.data-value {
-    -fx-font-family: "Source Code Pro";
-    -fx-font-size: 14px;
-    -fx-text-fill: -color-fg-subtle;
-}
-
-.data-value-update {
-    -fx-background-color: -color-warning-muted;
-}
-
-.big-icon {
-    -fx-icon-size: 48;
-}
-
-.medium-icon {
-    -fx-icon-size: 32;
-}
-
-.medium-icon {
-    -fx-icon-size: 32;
-}
-
-.findAndReplace {
-    -fx-opacity: 100;
-    -fx-background-color: -color-neutral-subtle;
-    -fx-background-radius: 10;
-}
-
-.popup {
-    -fx-background-color: -color-bg-default;
-    -fx-background-radius: 10;
-}
-
-.usage {
-    -fx-font-family: "Source Code Pro";
-    -fx-font-size: 14px;
-}
-
-.medium-usage {
-    -fx-font-family: "Source Code Pro";
-    -fx-font-size: 18px;
-}
-
-.big-usage {
-    -fx-font-family: "Source Code Pro";
-    -fx-font-size: 24px;
-}
+public record SyntaxView(List<Text> symbol, List<Text> description) {}

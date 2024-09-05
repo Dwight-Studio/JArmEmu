@@ -6,7 +6,7 @@ import org.kordamp.ikonli.Ikon;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class TableViewUtils {
-    public static void setupColumn(TableColumn<?,?> col, Ikon icon, int width, boolean editable, boolean resizable, boolean sortable) {
+    public static void setupColumn(TableColumn<?,?> col, Ikon icon, double width, boolean editable, boolean resizable, boolean sortable) {
         if (icon != null) col.setGraphic(new FontIcon(icon));
 
         col.setMinWidth(width);

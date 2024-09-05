@@ -29,12 +29,15 @@ import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionDetailTableCell;
+import fr.dwightstudio.jarmemu.base.util.InstructionSyntaxUtils;
 import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableColumn;
@@ -46,13 +49,16 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -261,6 +267,7 @@ public class JArmEmuDialogs {
 
         TableColumn<Instruction, Instruction> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.usage"));
         TableViewUtils.setupColumn(col1, Material2OutlinedAL.DESCRIPTION, 80, false, true, false);
+        col1.setMinWidth(Region.USE_PREF_SIZE);
         col1.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(i.getValue()));
         col1.setCellFactory(InstructionUsageTableCell.factory());
 
@@ -278,8 +285,10 @@ public class JArmEmuDialogs {
         instructionTable.setEditable(false);
         instructionTable.setMaxWidth(Double.POSITIVE_INFINITY);
         instructionTable.setMaxHeight(Double.POSITIVE_INFINITY);
-        instructionTable.setMinWidth(500);
+        instructionTable.setMinWidth(690);
         instructionTable.setMinHeight(500);
+
+        instructionTable.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
         FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
@@ -288,35 +297,56 @@ public class JArmEmuDialogs {
         placeHolder.setAlignment(Pos.CENTER);
         instructionTable.setPlaceholder(placeHolder);
 
-        AnchorPane.setRightAnchor(instructionTable, 0d);
-        AnchorPane.setBottomAnchor(instructionTable, 0d);
-        AnchorPane.setLeftAnchor(instructionTable, 0d);
-        AnchorPane.setTopAnchor(instructionTable, 0d);
-
         VBox vBox = new VBox(title, instructionTable);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));
         vBox.setPrefWidth(VBox.USE_PREF_SIZE);
         vBox.setPrefHeight(VBox.USE_PREF_SIZE);
         vBox.setFillWidth(true);
-        VBox.setMargin(instructionTable, new Insets(10, 10, 10, 10));
+        VBox.setMargin(instructionTable, new Insets(10));
+
+        ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
+
+        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
+
+        JArmEmuApplication.getController().openDialogBack(dialog);
+
+        for (Instruction i : Instruction.values()) {
+            if (i.isValid()) {
+                instructions.add(i);
+                System.out.println("instructionList.description." + i.toString().toLowerCase());
+                System.out.println("instructionList.example." + i.toString().toLowerCase());
+            }
+        }
+    }
+
+    public void instructionDetail(Instruction instruction) {
+        Text title = new Text(JArmEmuApplication.formatMessage("%instructionList.detail.title", instruction.toString().toUpperCase()));
+        title.setStyle("-fx-font-family: 'Inter Black';");
+        title.getStyleClass().addAll(Styles.TITLE_1);
+
+        TextFlow usage = new TextFlow();
+        usage.getChildren().addAll(InstructionSyntaxUtils.getUsage(instruction));
+        usage.getStyleClass().add("big-usage");
+        usage.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+        usage.setMinWidth(Region.USE_PREF_SIZE);
+
+        TextFlow description = new TextFlow(new Text(JArmEmuApplication.formatMessage("instructionList.description." + instruction.toString().toLowerCase())));
+
+        VBox vBox = new VBox(title, usage, description);
+        vBox.setSpacing(20);
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setPadding(new Insets(10));
+        vBox.setPrefWidth(VBox.USE_PREF_SIZE);
+        vBox.setPrefHeight(VBox.USE_PREF_SIZE);
+        vBox.setFillWidth(true);
+        VBox.setMargin(usage, new Insets(10));
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
 
         dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
 
         JArmEmuApplication.getController().openDialogMiddle(dialog);
-
-        for (Instruction i : Instruction.values()) {
-            if (i.isValid()) {
-                instructions.add(i);
-                System.out.println("instructionList.description." + i.toString().toLowerCase());
-            }
-        }
-    }
-
-    public void instructionDetail(Instruction instruction) {
-
     }
 
 }

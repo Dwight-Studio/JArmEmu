@@ -71,6 +71,10 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
                 }
             }
 
+            if (arguments.size() > 16) {
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowArgumentRegisterArray", originalString));
+            }
+
             if (arguments.isEmpty()) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.emptyArgumentRegisterArray", originalString));
             }

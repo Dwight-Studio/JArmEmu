@@ -131,7 +131,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
                 }
                 value = - 4 * length;
             }
-            case EA, IA -> {
+            default -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * i;
                     stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
@@ -145,6 +145,6 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
 
     @Override
     protected void verify(StateContainer stateContainer, UpdatableRegister arg1, Register[] arg2, Object arg3, Object arg4) throws SyntaxASMException {
-        if (modifier.updateMode() == null) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.missingUpdateMode"));
+
     }
 }

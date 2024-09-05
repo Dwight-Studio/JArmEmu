@@ -1,5 +1,6 @@
 0.2.2 -> 0.2.3
 - Added instruction code in memory
+- Added instruction list (documentation)
 - Improved readability in memory views
 - Fixed memory edition in GUI
 - Fixed CPSR/SPSR being usable as common registers
@@ -8,6 +9,7 @@
 - Fixed incorrect pre/post indexing behaviour, syntax and highlighting
 - Fixed incorrect syntax of 'label' arguments
 - Fixed incorrect instruction memory position when fetching from StateInitializer (instruction comparison)
+- Fixed LDM and STM default update mode
 
 
 0.2.1 -> 0.2.2
