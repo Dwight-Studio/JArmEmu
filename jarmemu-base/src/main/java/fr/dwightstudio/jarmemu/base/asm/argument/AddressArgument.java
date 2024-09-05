@@ -41,7 +41,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     private boolean negative;
     private RegisterArgument addressRegisterArgument;
 
-    private ImmediateArgument offsetImmediateArgument;
+    private LongImmediateArgument offsetImmediateArgument;
     private RegisterArgument offsetRegisterArgument;
     private ShiftArgument shiftArgument;
 
@@ -75,7 +75,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
                 } else if (mems.length == 2) {
                     if (mems[1].startsWith("#")) {
-                        offsetImmediateArgument = new ImmediateArgument(mems[1]);
+                        offsetImmediateArgument = new LongImmediateArgument(mems[1]);
                         mode = AddressType.IMMEDIATE_OFFSET;
                     } else {
                         String rgString = mems[1];
@@ -255,7 +255,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         return addressRegisterArgument;
     }
 
-    public ImmediateArgument getOffsetImmediateArgument() {
+    public LongImmediateArgument getOffsetImmediateArgument() {
         return offsetImmediateArgument;
     }
 

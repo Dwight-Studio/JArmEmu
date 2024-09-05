@@ -80,8 +80,6 @@ public class AddressArgumentTest extends ArgumentTest<AddressArgument.UpdatableI
 
             Assertions.assertEquals(testFunc.apply(i), integer.toInt());
 
-            System.out.println(postOffsetArgument.originalString + " " + postOffsetArgument.getValue(stateContainer));
-
             integer.update(shift.getValue(stateContainer).apply(postOffsetArgument.getValue(stateContainer)));
             afterFunc.accept(i, integer);
         }
@@ -160,9 +158,6 @@ public class AddressArgumentTest extends ArgumentTest<AddressArgument.UpdatableI
                 i -> "[R" + i + "],#-1",
                 i -> i,
                 (i, in) -> {
-                    System.out.println(i);
-                    System.out.println(stateContainer.getRegister(i).getData());
-                    System.out.println(in.toInt());
                     assertTrue(stateContainer.getRegister(i).getData() == i - 1 && in.toInt() == i);
                 });
     }

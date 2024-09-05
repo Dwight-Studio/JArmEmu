@@ -314,8 +314,6 @@ public class JArmEmuDialogs {
         for (Instruction i : Instruction.values()) {
             if (i.isValid()) {
                 instructions.add(i);
-                System.out.println("instructionList.description." + i.toString().toLowerCase());
-                System.out.println("instructionList.example." + i.toString().toLowerCase());
             }
         }
     }

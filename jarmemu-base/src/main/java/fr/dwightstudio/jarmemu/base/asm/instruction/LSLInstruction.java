@@ -23,16 +23,15 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RotatedImmediateOrRegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateFlags;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
@@ -65,7 +64,7 @@ public class LSLInstruction extends ParsedInstruction<Register, Register, Regist
     @Override
     @NotNull
     public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg3Class() {
-        return RotatedImmediateOrRegisterArgument.class;
+        return ImmediateOrRegisterArgument.class;
     }
 
     @Override
@@ -108,7 +107,8 @@ public class LSLInstruction extends ParsedInstruction<Register, Register, Regist
     }
 
     @Override
-    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, RegisterOrImmediate arg3, Object arg4) {
-
+    protected void verify(StateContainer stateContainer, Register arg1, Register arg2, RegisterOrImmediate arg3, Object arg4) throws SyntaxASMException {
+        if (arg3.intValue() < 0 || arg3.intValue() > 31)
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift0to31", this.arg3.getOriginalString()));
     }
 }

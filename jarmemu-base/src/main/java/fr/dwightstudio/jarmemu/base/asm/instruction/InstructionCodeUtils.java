@@ -55,7 +55,7 @@ public class InstructionCodeUtils {
         try {
             if (parsedInstruction.arg2.getValue(stateContainer).isRegister()) {
                 // Op2 is a register
-                Op2 = ((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getRegisterNumber();
+                Op2 = ((OptionalRegister) parsedInstruction.arg2).getRegisterNumber();
                 if (((ShiftArgument) parsedInstruction.arg3).getType() != null) {
                     Op2 += ((ShiftArgument) parsedInstruction.arg3).getType().getCode() << 5;
                     if (((ShiftArgument) parsedInstruction.arg3).getArgument().isRegister()) {
@@ -72,6 +72,7 @@ public class InstructionCodeUtils {
             } else {
                 // Op2 is an immediate
                 isImmediateOp = 1;
+                // FIXME: It seams that the immediate in MOV is NOT a rotated?
                 Op2 = ((((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getRotationValue() / 2) << 8) + ((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getOriginalValue();
             }
         } catch (ExecutionASMException ignored) {}

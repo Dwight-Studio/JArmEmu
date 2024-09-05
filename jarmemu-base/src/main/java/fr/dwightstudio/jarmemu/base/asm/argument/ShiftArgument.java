@@ -120,7 +120,7 @@ public class ShiftArgument extends ParsedArgument<ShiftFunction> {
                             }
                             case ROR -> {
                                 if (value < 1 || value > 31)
-                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to32", shift));
+                                    throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.shift1to31", shift));
                                 yield ((container, i) -> Integer.rotateRight(i, value));
                             }
                             default ->

@@ -19,7 +19,6 @@ public class ModifierUtils {
 
         public PossibleModifierIterator(SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> classes) {
             this.classes = new ArrayList<>(classes);
-            System.out.println(String.join(" ", this.classes.toString()));
             indices = new int[classes.size()];
             finalIndices = new int[classes.size()];
             finished = false;

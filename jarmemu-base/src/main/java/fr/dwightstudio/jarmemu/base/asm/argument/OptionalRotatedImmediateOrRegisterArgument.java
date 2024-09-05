@@ -8,7 +8,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 
-public class OptionalRotatedImmediateOrRegisterArgument extends ParsedArgument<RegisterOrImmediate> {
+public class OptionalRotatedImmediateOrRegisterArgument extends ParsedArgument<RegisterOrImmediate> implements OptionalRegister {
 
     private boolean immediate;
     private RotatedImmediateArgument immediateArgument;
