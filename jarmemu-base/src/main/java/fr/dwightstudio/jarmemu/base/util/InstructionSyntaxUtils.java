@@ -57,6 +57,7 @@ public class InstructionSyntaxUtils {
 
         rtn.add(new Text(" "));
 
+        int preOpt = 0;
         int opt = 0;
         for (int i = 0; i < 4; i++) {
             String type = instruction.getArgumentType(i);
@@ -71,10 +72,11 @@ public class InstructionSyntaxUtils {
                 } else {
                     rtn.add(new Text("<"));
                     rtn.addAll(getArgumentUsage(type, i));
-                    rtn.add(new Text(">"));
+                    rtn.add(new Text(",> "));
+                    preOpt++;
                 }
             } else {
-                if (i > 0) {
+                if (i > 0 && preOpt != i) {
                     rtn.add(new Text(", "));
                     rtn.addAll(getArgumentUsage(type, i));
                 } else {
@@ -145,8 +147,8 @@ public class InstructionSyntaxUtils {
         map.put("reg2", "register");
         map.put("reg3", "register");
         map.put("regb", "register");
-        map.put("regi[ .)]", "register");
-        map.put("rega[ .)]", "register");
+        map.put("regi\\b", "register");
+        map.put("rega\\b", "register");
         map.put("regs", "register");
         map.put("regv", "register");
 
@@ -154,6 +156,8 @@ public class InstructionSyntaxUtils {
         map.put("LR", "register");
 
         map.put("NOP", "instruction");
+
+        map.put("lbl", "label-ref");
 
         return replacePlaceholderRecursive(text, map);
     }
@@ -167,12 +171,14 @@ public class InstructionSyntaxUtils {
         dict.remove(entry.getKey());
 
         boolean start = true;
-        String replacement = entry.getKey().replace("[ .)]", "");
+        String replacement = entry.getKey().replace("\\b", "");
         for (String textPart : text.split(entry.getKey())) {
             if (start) {
                 start = false;
             } else {
-                rtn.add(getText(replacement, entry.getValue()));
+                Text r = getText(replacement, entry.getValue());
+                r.getStyleClass().add("usage");
+                rtn.add(r);
             }
             rtn.addAll(replacePlaceholderRecursive(textPart, new HashMap<>(dict)));
         }
