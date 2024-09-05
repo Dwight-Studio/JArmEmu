@@ -123,7 +123,7 @@ public class InstructionSyntaxUtils {
 
             case "RotatedImmediateArgument" -> List.of(getText("#rimm8", "immediate"));
 
-            case "OptionalRotatedImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> List.of(getText("#imm8", "immediate"), new Text("/"), getText("regv", "register"));
+            case "OptionalRotatedImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> List.of(getText("#rimm8", "immediate"), new Text("/"), getText("regv", "register"));
 
             case "ShiftArgument" -> List.of(getText("sht ", "shift"), getText("#imm5", "immediate"), new Text("/"), getText("regs", "register"));
 

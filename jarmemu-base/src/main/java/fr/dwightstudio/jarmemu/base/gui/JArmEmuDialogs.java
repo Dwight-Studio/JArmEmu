@@ -329,7 +329,8 @@ public class JArmEmuDialogs {
         usage.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
         usage.setMinWidth(Region.USE_PREF_SIZE);
 
-        TextFlow description = new TextFlow(new Text(JArmEmuApplication.formatMessage("instructionList.description." + instruction.toString().toLowerCase())));
+        TextFlow description = new TextFlow(new Text(JArmEmuApplication.formatMessage("%instructionList.description." + instruction.toString().toLowerCase())));
+        description.setMinWidth(500);
 
         VBox vBox = new VBox(title, usage, description);
         vBox.setSpacing(20);

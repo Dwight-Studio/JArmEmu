@@ -65,7 +65,7 @@ public class RSBInstruction extends ParsedInstruction<Register, Register, Regist
     @Override
     @NotNull
     public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg3Class() {
-        return ImmediateOrRegisterArgument.class;
+        return RotatedImmediateOrRegisterArgument.class;
     }
 
     @Override
