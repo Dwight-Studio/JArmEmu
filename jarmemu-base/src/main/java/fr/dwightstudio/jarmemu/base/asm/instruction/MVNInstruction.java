@@ -58,7 +58,7 @@ public class MVNInstruction extends ParsedInstruction<Register, RegisterOrImmedi
     @Override
     @NotNull
     public Class<? extends ParsedArgument<RegisterOrImmediate>> getParsedArg2Class() {
-        return LongImmediateOrRegisterArgument.class;
+        return RotatedImmediateOrRegisterArgument.class;
     }
 
     @Override
