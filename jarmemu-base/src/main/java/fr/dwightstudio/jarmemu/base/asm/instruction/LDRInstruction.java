@@ -87,7 +87,7 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class, DataMode.class);
+        return SequencedSetUtils.of(DataMode.class, Condition.class);
     }
 
     @Override

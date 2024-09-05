@@ -75,7 +75,7 @@ public class UMULLInstruction extends ParsedInstruction<Register, Register, Regi
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class, UpdateFlags.class);
+        return SequencedSetUtils.of(UpdateFlags.class, Condition.class);
     }
 
     @Override

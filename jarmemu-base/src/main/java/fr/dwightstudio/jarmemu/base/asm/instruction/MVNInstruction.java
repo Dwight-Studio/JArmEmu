@@ -76,7 +76,7 @@ public class MVNInstruction extends ParsedInstruction<Register, RegisterOrImmedi
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class, UpdateFlags.class);
+        return SequencedSetUtils.of(UpdateFlags.class, Condition.class);
     }
 
     @Override

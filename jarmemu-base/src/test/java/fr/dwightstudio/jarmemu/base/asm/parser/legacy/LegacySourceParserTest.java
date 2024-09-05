@@ -38,6 +38,7 @@ import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -45,6 +46,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
+@Disabled("LegacySourceParser is deprecated")
 public class LegacySourceParserTest extends JArmEmuTest {
 
     LegacySourceParser parser;

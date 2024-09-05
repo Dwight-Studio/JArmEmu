@@ -60,9 +60,9 @@ public record Modifier(Condition condition, boolean doUpdateFlags, DataMode data
 
     @Override
     public String toString() {
-        return (condition == null ? "" : condition.toString()) +
-                (doUpdateFlags ? "S" : "") +
+        return ((doUpdateFlags ? "S" : "") +
                 (dataMode == null ? "" : dataMode.toString()) +
-                (updateMode == null ? "" : updateMode.toString());
+                (updateMode == null ? "" : updateMode.toString()) +
+                (condition == null ? "" : condition.toString()));
     }
 }

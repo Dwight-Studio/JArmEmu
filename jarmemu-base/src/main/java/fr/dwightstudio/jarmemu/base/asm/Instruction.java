@@ -34,6 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.SequencedSet;
 import java.util.Set;
 
 public enum Instruction {
@@ -127,7 +128,7 @@ public enum Instruction {
     private String arg3Type;
     private String arg4Type;
     private boolean workingRegister;
-    private Set<Class<? extends Enum<? extends ModifierParameter>>> parameters;
+    private SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> parameters;
 
     Instruction(Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass) {
 
@@ -203,7 +204,7 @@ public enum Instruction {
         return workingRegister;
     }
 
-    public Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
         return parameters;
     }
 }

@@ -10,6 +10,7 @@
 - Fixed incorrect syntax of 'label' arguments
 - Fixed incorrect instruction memory position when fetching from StateInitializer (instruction comparison)
 - Fixed LDM and STM default update mode
+- Fixed instruction modifier order (data mode, store mode, update flags etc)
 
 
 0.2.1 -> 0.2.2

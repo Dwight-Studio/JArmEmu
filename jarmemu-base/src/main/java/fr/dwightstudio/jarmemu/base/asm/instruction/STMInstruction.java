@@ -77,7 +77,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class, UpdateMode.class);
+        return SequencedSetUtils.of(UpdateMode.class, Condition.class);
     }
 
     @Override

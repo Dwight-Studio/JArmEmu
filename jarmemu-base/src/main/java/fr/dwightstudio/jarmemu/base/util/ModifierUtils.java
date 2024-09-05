@@ -4,9 +4,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.RequiredModifierParameter;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ModifierUtils {
 
@@ -14,13 +12,14 @@ public class ModifierUtils {
      * Iterator used to iterate over all possible combination of modifier parameters
      */
     public static class PossibleModifierIterator implements Iterator<Modifier> {
-        private final List<Class<? extends Enum<? extends ModifierParameter>>> classes;
+        private final ArrayList<Class<? extends Enum<? extends ModifierParameter>>> classes;
         private final int[] indices;
         private final int[] finalIndices;
         private boolean finished;
 
-        public PossibleModifierIterator(Set<Class<? extends Enum<? extends ModifierParameter>>> classes) {
-            this.classes = classes.stream().toList();
+        public PossibleModifierIterator(SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> classes) {
+            this.classes = new ArrayList<>(classes);
+            System.out.println(String.join(" ", this.classes.toString()));
             indices = new int[classes.size()];
             finalIndices = new int[classes.size()];
             finished = false;

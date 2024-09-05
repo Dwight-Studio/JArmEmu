@@ -75,7 +75,7 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
     @Override
     @NotNull
     public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class, UpdateFlags.class);
+        return SequencedSetUtils.of(UpdateFlags.class, Condition.class);
     }
 
     @Override

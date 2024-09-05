@@ -136,6 +136,9 @@ public class JArmEmuApplication extends Application {
     }
 
     // Before the release:
+    // FIXME: Highlighting accepts shift on immediate (mem)
+    // FIXME: Branch + Pseudo Instruction immediate behaviour
+    // TODO: Add search in instruction list
     // TODO: Add infinite loop detection
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
     // TODO: Add Instruction list
@@ -144,7 +147,6 @@ public class JArmEmuApplication extends Application {
     // Maybe:
     // TODO: Ajouter le support de plus de directives pour l'autocomplétion
     // TODO: Ajouter un enregistrement du layout des tableaux
-    // FIXME: Highlighting accepts shift on immediate (mem)
 
     @Override
     public void init() {
