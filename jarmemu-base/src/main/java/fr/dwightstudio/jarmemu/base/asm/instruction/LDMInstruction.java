@@ -95,7 +95,7 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.blockDataTransfer(this, true);
     }
 
     @Override

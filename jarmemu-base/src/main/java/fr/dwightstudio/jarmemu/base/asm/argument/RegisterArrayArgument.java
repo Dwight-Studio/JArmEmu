@@ -111,4 +111,8 @@ public class RegisterArrayArgument extends ParsedArgument<Register[]> {
 
         super.verify(stateSupplier);
     }
+
+    public ArrayList<RegisterArgument> getArguments() {
+        return arguments;
+    }
 }

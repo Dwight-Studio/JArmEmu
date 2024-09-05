@@ -4,10 +4,8 @@ import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
-import fr.dwightstudio.jarmemu.base.sim.entity.Register;
-import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
-import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
-import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
+import fr.dwightstudio.jarmemu.base.sim.entity.*;
 
 public class InstructionCodeUtils {
 
@@ -173,6 +171,31 @@ public class InstructionCodeUtils {
         }
 
         return (cond << 28) + (notH << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (H << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + (Offset & 0xFFF) + (H << 7) + (H << 5) + (H << 4);
+    }
 
+    public static int blockDataTransfer(ParsedInstruction<UpdatableRegister, Register[], Object, Object> parsedInstruction, boolean doLoad) {
+        int cond = parsedInstruction.modifier.condition().getCode();
+
+        int P = 0, U;
+        if (parsedInstruction.modifier.updateMode() == null) {
+            U = 1;
+        } else {
+            if (!doLoad) {
+                P = (parsedInstruction.modifier.updateMode() == UpdateMode.DB) || (UpdateMode.IB == parsedInstruction.modifier.updateMode()) || (parsedInstruction.modifier.updateMode() == UpdateMode.FD) || (UpdateMode.FA == parsedInstruction.modifier.updateMode()) ? 1 : 0;
+                U = (parsedInstruction.modifier.updateMode() == UpdateMode.IA) || (UpdateMode.IB == parsedInstruction.modifier.updateMode()) || (parsedInstruction.modifier.updateMode() == UpdateMode.FA) || (UpdateMode.EA == parsedInstruction.modifier.updateMode()) ? 1 : 0;
+            } else {
+                P = (parsedInstruction.modifier.updateMode() == UpdateMode.ED) || (parsedInstruction.modifier.updateMode() == UpdateMode.EA) || (parsedInstruction.modifier.updateMode() == UpdateMode.DB) || (parsedInstruction.modifier.updateMode() == UpdateMode.IB) ? 1 : 0;
+                U = (parsedInstruction.modifier.updateMode() == UpdateMode.FD) || (parsedInstruction.modifier.updateMode() == UpdateMode.ED) || (parsedInstruction.modifier.updateMode() == UpdateMode.IA) || (parsedInstruction.modifier.updateMode() == UpdateMode.IB) ? 1 : 0;
+            }
+        }
+        int W = ((RegisterWithUpdateArgument) parsedInstruction.arg1).doesUpdate() ? 1 : 0;
+        int L = doLoad ? 1 : 0;
+        int Rn = ((RegisterWithUpdateArgument) parsedInstruction.arg1).getRegisterNumber();
+        int regList = 0;
+        for (RegisterArgument reg:((RegisterArrayArgument) parsedInstruction.arg2).getArguments()) {
+            regList += 1 << reg.getRegisterNumber();
+        }
+
+        return (cond << 28) + (1 << 27) + (P << 24) + (U << 23) + (W << 21) + (L << 20) + (Rn << 16) + regList;
     }
 }
