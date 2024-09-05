@@ -97,15 +97,15 @@ public class InstructionSyntaxUtils {
 
             case "IgnoredArgument" -> List.of(getText("ign", "invalid-instruction"));
 
-            case "ImmediateArgument" -> List.of(getText("#imm12", "immediate"));
+            case "ImmediateArgument" -> List.of(getText("#imm", "immediate"));
 
-            case "OptionalImmediateOrRegisterArgument", "ImmediateOrRegisterArgument" -> List.of(getText("#imm12", "immediate"), new Text("/"), getText("regv", "register"));
+            case "OptionalImmediateOrRegisterArgument", "ImmediateOrRegisterArgument" -> List.of(getText("#imm", "immediate"), new Text("/"), getText("regv", "register"));
 
             case "LabelArgument" -> List.of(getText("lbl", "label-ref"), new Text("/"), getText("imm24", "immediate"));
 
             case "LabelOrRegisterArgument" -> List.of(getText("lbl", "label-ref"), new Text("/"), getText("imm24", "immediate"), new Text("/"), getText("regb", "register"));
 
-            case "PostOffsetArgument" -> List.of(getText("#imm12", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("regi", "register"));
+            case "PostOffsetArgument" -> List.of(getText("#imm", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("regi", "register"));
 
             case "RegisterAddressArgument" -> List.of(getText("rega", "register"));
 

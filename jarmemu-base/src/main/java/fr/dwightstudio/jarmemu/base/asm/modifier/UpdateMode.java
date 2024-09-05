@@ -23,7 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.modifier;
 
-public enum UpdateMode implements RequiredModifierParameter {
+public enum UpdateMode implements ModifierParameter {
 
     FA, IB,
     EA, IA,

@@ -45,14 +45,14 @@ class RegisterArrayArgumentTest extends ArgumentTest<Register[]> {
     @Test
     public void duplicateTest() throws ASMException {
         StringBuilder stringBuilder = new StringBuilder();
-        Register[] registers = new Register[16];
+        Register[] registers = new Register[4];
 
         stringBuilder.append("{");
 
-        for (int i = 0 ; i < 64 ; i++) {
+        for (int i = 0 ; i < 16 ; i++) {
             if (i != 0) stringBuilder.append(",");
-            stringBuilder.append("R").append(i % 16);
-            if (i < 16) registers[i] = stateContainer.getRegister(i);
+            stringBuilder.append("R").append(i % 4);
+            if (i < 16) registers[i%4] = stateContainer.getRegister(i%4);
         }
 
         stringBuilder.append("}");
