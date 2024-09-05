@@ -27,8 +27,7 @@ import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import javafx.scene.text.Text;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class InstructionSyntaxUtils {
     public static List<Text> getUsage(Instruction instruction) {
@@ -113,7 +112,7 @@ public class InstructionSyntaxUtils {
 
             case "PostOffsetArgument" -> List.of(getText("#imm9", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("regi", "register"));
 
-            case "RegisterAddressArgument" -> List.of(getText("rega", "register"));
+            case "RegisterAddressArgument" -> List.of(getText("[rega]", "register"));
 
             case "RegisterArgument" -> List.of(getText("reg" + regNum, "register"));
 
@@ -129,6 +128,56 @@ public class InstructionSyntaxUtils {
 
             default -> List.of(new Text());
         };
+    }
+
+    public static List<Text> replacePlaceholder(String text) {
+        HashMap<String, String> map = new HashMap<>();
+
+        map.put("imm8", "immediate");
+        map.put("rimm8", "immediate");
+        map.put("imm9", "immediate");
+        map.put("imm12", "immediate");
+        map.put("imm16", "immediate");
+        map.put("imm24", "immediate");
+
+        map.put("reg0", "register");
+        map.put("reg1", "register");
+        map.put("reg2", "register");
+        map.put("reg3", "register");
+        map.put("regb", "register");
+        map.put("regi[ .)]", "register");
+        map.put("rega[ .)]", "register");
+        map.put("regs", "register");
+        map.put("regv", "register");
+
+        map.put("PC", "register");
+        map.put("LR", "register");
+
+        map.put("NOP", "instruction");
+
+        return replacePlaceholderRecursive(text, map);
+    }
+
+    private static List<Text> replacePlaceholderRecursive(String text, Map<String, String> dict) {
+        if (dict.isEmpty()) return List.of(new Text(text));
+
+        ArrayList<Text> rtn = new ArrayList<>();
+
+        Map.Entry<String, String> entry = dict.entrySet().iterator().next();
+        dict.remove(entry.getKey());
+
+        boolean start = true;
+        String replacement = entry.getKey().replace("[ .)]", "");
+        for (String textPart : text.split(entry.getKey())) {
+            if (start) {
+                start = false;
+            } else {
+                rtn.add(getText(replacement, entry.getValue()));
+            }
+            rtn.addAll(replacePlaceholderRecursive(textPart, new HashMap<>(dict)));
+        }
+
+        return rtn;
     }
 
     public static Text getText(String text, String clazz) {

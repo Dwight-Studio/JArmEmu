@@ -37,6 +37,8 @@ public class InstructionUsageTableCell extends TableCell<Instruction, Instructio
 
             setText("");
             setGraphic(textFlow);
+        } else {
+            setGraphic(null);
         }
     }
 

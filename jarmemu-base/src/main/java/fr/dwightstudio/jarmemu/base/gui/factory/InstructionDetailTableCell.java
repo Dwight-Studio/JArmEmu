@@ -28,6 +28,8 @@ public class InstructionDetailTableCell extends TableCell<Instruction, Instructi
 
             setGraphic(button);
             setText("");
+        } else {
+            setGraphic(null);
         }
     }
 

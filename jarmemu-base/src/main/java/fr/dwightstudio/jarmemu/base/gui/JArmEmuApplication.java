@@ -138,7 +138,6 @@ public class JArmEmuApplication extends Application {
     // Before the release:
     // FIXME: Highlighting accepts shift on immediate (mem)
     // FIXME: Branch + Pseudo Instruction immediate behaviour
-    // TODO: Add search in instruction list
     // TODO: Add infinite loop detection
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
     // TODO: Add Instruction list

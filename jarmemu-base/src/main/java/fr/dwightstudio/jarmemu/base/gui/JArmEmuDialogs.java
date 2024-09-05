@@ -23,8 +23,10 @@
 
 package fr.dwightstudio.jarmemu.base.gui;
 
+import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
+import com.sun.javafx.collections.ObservableListWrapper;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
@@ -35,6 +37,7 @@ import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -47,6 +50,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -58,6 +62,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
@@ -276,8 +281,12 @@ public class JArmEmuDialogs {
         col2.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(i.getValue()));
         col2.setCellFactory(InstructionDetailTableCell.factory());
 
+        ObservableList<Instruction> instructions = new ObservableListWrapper<>(new ArrayList<>());
         TableView<Instruction> instructionTable = new TableView<>();
-        ObservableList<Instruction> instructions = instructionTable.getItems();
+
+        instructions.setAll(Instruction.values());
+        instructions.removeIf(i -> !i.isValid());
+        instructionTable.setItems(instructions);
 
         instructionTable.getColumns().setAll(col0, col1, col2);
         instructionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
@@ -297,7 +306,16 @@ public class JArmEmuDialogs {
         placeHolder.setAlignment(Pos.CENTER);
         instructionTable.setPlaceholder(placeHolder);
 
-        VBox vBox = new VBox(title, instructionTable);
+        CustomTextField textField = new CustomTextField();
+        textField.setLeft(new FontIcon(Material2OutlinedMZ.SEARCH));
+        textField.setMaxWidth(200);
+        textField.setOnKeyPressed(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.ENTER) {
+                instructionTable.setItems(instructions.filtered(i -> i.isValid() && i.toString().toLowerCase().contains(textField.getText().toLowerCase())));
+            }
+        });
+
+        VBox vBox = new VBox(title, instructionTable, textField);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));
         vBox.setPrefWidth(VBox.USE_PREF_SIZE);
@@ -310,12 +328,6 @@ public class JArmEmuDialogs {
         dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
 
         JArmEmuApplication.getController().openDialogBack(dialog);
-
-        for (Instruction i : Instruction.values()) {
-            if (i.isValid()) {
-                instructions.add(i);
-            }
-        }
     }
 
     public void instructionDetail(Instruction instruction) {
@@ -329,8 +341,9 @@ public class JArmEmuDialogs {
         usage.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
         usage.setMinWidth(Region.USE_PREF_SIZE);
 
-        TextFlow description = new TextFlow(new Text(JArmEmuApplication.formatMessage("%instructionList.description." + instruction.toString().toLowerCase())));
-        description.setMinWidth(500);
+        TextFlow description = new TextFlow();
+        description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+        description.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(JArmEmuApplication.formatMessage("%instructionList.description." + instruction.toString().toLowerCase())));
 
         VBox vBox = new VBox(title, usage, description);
         vBox.setSpacing(20);
