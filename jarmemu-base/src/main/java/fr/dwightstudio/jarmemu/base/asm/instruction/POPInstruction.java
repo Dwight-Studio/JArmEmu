@@ -79,7 +79,7 @@ public class POPInstruction extends ParsedInstruction<Register[], Object, Object
 
     @Override
     public int getMemoryCode(StateContainer stateContainer) {
-        return 0;
+        return InstructionCodeUtils.blockDataTransfer(this.ldmInstruction, true);
     }
 
     @Override
