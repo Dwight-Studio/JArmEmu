@@ -89,8 +89,6 @@ public class SimulationMenuController {
                 JArmEmuApplication.getController().menuStop.setDisable(false);
                 JArmEmuApplication.getController().toolRestart.setDisable(false);
                 JArmEmuApplication.getController().menuRestart.setDisable(false);
-                JArmEmuApplication.getController().settingsRegex.setDisable(true);
-                JArmEmuApplication.getController().settingsLegacy.setDisable(true);
                 JArmEmuApplication.getController().settingsStackAddress.setDisable(true);
                 JArmEmuApplication.getController().settingsProgramAddress.setDisable(true);
                 JArmEmuApplication.getController().settingsSimInterval.setDisable(true);
@@ -233,8 +231,6 @@ public class SimulationMenuController {
         JArmEmuApplication.getController().menuRestart.setDisable(true);
         JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(true);
         JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(true);
-        JArmEmuApplication.getController().settingsRegex.setDisable(false);
-        JArmEmuApplication.getController().settingsLegacy.setDisable(false);
         JArmEmuApplication.getController().settingsStackAddress.setDisable(false);
         JArmEmuApplication.getController().settingsProgramAddress.setDisable(false);
         JArmEmuApplication.getController().settingsSimInterval.setDisable(false);

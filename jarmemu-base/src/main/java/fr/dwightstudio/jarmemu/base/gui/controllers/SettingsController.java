@@ -86,7 +86,6 @@ public class SettingsController implements Initializable {
     public static final String AUTO_COMPLETION_KEY = "autoCompletion";
 
     public static final String SIMULATION_INTERVAL_KEY = "simulationInterval";
-    public static final String SOURCE_PARSER_KEY = "sourceParser";
     public static final String IGNORE_UNIMPLEMENTED_KEY = "ignoreUnimplemented";
     public static final String IGNORE_DEPRECATED_KEY = "ignoreDeprecated";
 
@@ -133,11 +132,9 @@ public class SettingsController implements Initializable {
 
     // ToggleGroup
     private ToggleGroup realTimeParserGroup;
-    private ToggleGroup parserGroup;
     private ToggleGroup themeGroup;
 
     private ToggleButton[] realTimeParserToggles;
-    private ToggleButton[] parserToggles;
     private ToggleButton[] themeToggles;
 
     @Override
@@ -161,19 +158,15 @@ public class SettingsController implements Initializable {
 
         // Gestion des ToggleGroups
         realTimeParserGroup = new ToggleGroup();
-        parserGroup = new ToggleGroup();
         themeGroup = new ToggleGroup();
 
         realTimeParserToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsSmart, JArmEmuApplication.getController().settingsSimple};
-        parserToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsRegex, JArmEmuApplication.getController().settingsLegacy};
         themeToggles = new ToggleButton[] {JArmEmuApplication.getController().settingsDark, JArmEmuApplication.getController().settingsLight};
 
         realTimeParserGroup.getToggles().addAll(realTimeParserToggles);
-        parserGroup.getToggles().addAll(Arrays.asList(parserToggles));
         themeGroup.getToggles().addAll(Arrays.asList(themeToggles));
 
         realTimeParserGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
-        parserGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
         themeGroup.selectedToggleProperty().addListener(PREVENT_UNSELECTION);
 
         // Gestion des ToggleSwitches

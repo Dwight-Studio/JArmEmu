@@ -1,6 +1,7 @@
 0.2.2 -> 0.2.3
 - Added instruction code in memory
 - Added instruction list (documentation)
+- Removed the legacy source parser
 - Improved readability in memory views
 - Fixed memory edition in GUI
 - Fixed CPSR/SPSR being usable as common registers

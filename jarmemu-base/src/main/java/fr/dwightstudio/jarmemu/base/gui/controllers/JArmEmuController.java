@@ -112,8 +112,6 @@ public class JArmEmuController implements Initializable {
     @FXML protected ToggleButton settingsSimple;
     @FXML protected ToggleSwitch autoCompletionSwitch;
     @FXML protected Spinner<Integer> settingsSimInterval;
-    @FXML protected ToggleButton settingsRegex;
-    @FXML protected ToggleButton settingsLegacy;
     @FXML protected ToggleSwitch notImplementedSwitch;
     @FXML protected ToggleSwitch deprecatedSwitch;
 
