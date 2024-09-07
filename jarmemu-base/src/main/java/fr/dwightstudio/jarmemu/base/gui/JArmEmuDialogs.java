@@ -331,6 +331,8 @@ public class JArmEmuDialogs {
     }
 
     public void instructionDetail(Instruction instruction) {
+        String instructionString = instruction.toString().toLowerCase();
+
         Text title = new Text(JArmEmuApplication.formatMessage("%instructionList.detail.title", instruction.toString().toUpperCase()));
         title.setStyle("-fx-font-family: 'Inter Black';");
         title.getStyleClass().addAll(Styles.TITLE_1);
@@ -343,10 +345,39 @@ public class JArmEmuDialogs {
 
         TextFlow description = new TextFlow();
         description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
-        description.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(JArmEmuApplication.formatMessage("%instructionList.description." + instruction.toString().toLowerCase())));
+        description.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
         description.setMinWidth(800);
 
-        VBox vBox = new VBox(title, usage, description);
+        Button exampleButton = new Button(JArmEmuApplication.formatMessage("%instructionList.detail.example"));
+
+        exampleButton.getStyleClass().add(Styles.ACCENT);
+        exampleButton.setOnAction(event -> {
+            String rawExample = "\t" + JArmEmuApplication.formatMessage("%instructionList.example." + instructionString).replaceAll("\n","\n\t");
+
+            String formatedExample = JArmEmuApplication.formatMessage("%instructionList.detail.exampleContent", instructionString.toUpperCase(), rawExample);
+
+            String exampleContent = """
+                    .global _start
+                    .data
+                    DATA:
+                    \t.word 4
+                    
+                    .text
+                    _start:
+                    """ + formatedExample + """
+                    
+                    LOOP:
+                    \tNOP
+                    \tB LOOP""";
+
+            JArmEmuApplication.getController().closeDialogFront();
+            JArmEmuApplication.getController().closeDialogMiddle();
+            JArmEmuApplication.getController().closeDialogBack();
+
+            JArmEmuApplication.getEditorController().open(instruction + ".s", exampleContent);
+        });
+
+        VBox vBox = new VBox(title, usage, description, exampleButton);
         vBox.setSpacing(20);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));

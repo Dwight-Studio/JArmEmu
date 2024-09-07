@@ -32,6 +32,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateFlags;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
@@ -119,6 +120,10 @@ public class MOVInstruction extends ParsedInstruction<Register, RegisterOrImmedi
 
     public ParsedInstruction<?, ?, ?, ?> getShiftInstruction() throws ASMException {
         String argString = this.arg3.getOriginalString();
-        return Instruction.valueOf(argString.substring(0, 3)).create(modifier, arg1.getOriginalString(), arg2.getOriginalString(), argString.substring(3), arg4.getOriginalString()).withLineNumber(this.getLineNumber()).withFile(this.getFile());
+        try {
+            return Instruction.valueOf(argString.substring(0, 3).toUpperCase()).create(modifier, arg1.getOriginalString(), arg2.getOriginalString(), argString.substring(3), arg4.getOriginalString()).withLineNumber(this.getLineNumber()).withFile(this.getFile());
+        } catch (IllegalArgumentException e) {
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", argString));
+        }
     }
 }

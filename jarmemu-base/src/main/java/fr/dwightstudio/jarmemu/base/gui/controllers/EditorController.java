@@ -183,6 +183,7 @@ public class EditorController implements Initializable {
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(fileName, content));
         JArmEmuApplication.getEditorController().updateSimulationButtons();
+        JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
     }
 
     /**
@@ -194,6 +195,7 @@ public class EditorController implements Initializable {
         FileEditor editor = new FileEditor(path);
         fileEditors.add(editor);
         JArmEmuApplication.getEditorController().updateSimulationButtons();
+        JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
     }
 
     /**

@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.base.gui.editor;
 import fr.dwightstudio.jarmemu.base.asm.Directive;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.Section;
-import fr.dwightstudio.jarmemu.base.asm.argument.PostOffsetArgument;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.controllers.FileEditor;
@@ -513,7 +512,7 @@ public class SmartHighlighter extends RealTimeParser {
             case "RegisterArrayArgument" -> matchRegisterArray();
             case "LabelArgument" -> matchLabelArgument();
             case "LabelOrRegisterArgument" -> matchLabelOrRegister();
-            case "PostOffsetArgument" -> matchPostOffset();
+            case "PostOffsetArgument" -> matchOffset();
             case "IgnoredArgument" -> matchIgnored();
             default -> false;
         };
@@ -553,6 +552,8 @@ public class SmartHighlighter extends RealTimeParser {
     private boolean matchShift() {
         if (subContext == SubContext.SHIFT) return matchImmediateOrRegister();
 
+        if (subContext == SubContext.IMMEDIATE) return false;
+
         Matcher matcher = SHIFT_PATTERN.matcher(text);
 
         if (matcher.find()) {
@@ -581,7 +582,7 @@ public class SmartHighlighter extends RealTimeParser {
         else return matchRegister();
     }
 
-    private boolean matchPostOffset() {
+    private boolean matchOffset() {
         if (matchImmediate()) return true;
         else  {
             Matcher matcher = REGISTER_SIGN_PATTERN.matcher(text);
@@ -701,8 +702,8 @@ public class SmartHighlighter extends RealTimeParser {
                 }
 
                 case PRIMARY -> {
-                    if (matchPostOffset()) {
-                        subContext = SubContext.SECONDARY;
+                    if (matchOffset()) {
+                        subContext = subContext == SubContext.IMMEDIATE ? subContext : SubContext.SECONDARY;
                         return true;
                     }
                 }
@@ -823,7 +824,7 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = ARGUMENT_SEPARATOR.matcher(text);
 
         if (matcher.find()) {
-            subContext = SubContext.NONE;
+            subContext = subContext == SubContext.IMMEDIATE ? subContext : SubContext.NONE;
             context = context.getNext();
             argType = instruction.getArgumentType(context.getIndex());
             tagBlank(matcher);

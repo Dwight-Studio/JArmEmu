@@ -11,6 +11,8 @@
 - Fixed incorrect instruction memory position when fetching from StateInitializer (instruction comparison)
 - Fixed LDM and STM default update mode
 - Fixed instruction modifier order (data mode, store mode, update flags etc)
+- Fixed MOV behaviour
+- Fixed shift on immediate highlighting
 
 
 0.2.1 -> 0.2.2
