@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.base.gui.enums.LineStatus;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -45,6 +46,10 @@ import java.util.HashMap;
 import java.util.function.IntFunction;
 
 public class JArmEmuLineFactory implements IntFunction<Node> {
+
+    public static final PseudoClass PSEUDO_CLASS_EXECUTED = PseudoClass.getPseudoClass("executed");
+    public static final PseudoClass PSEUDO_CLASS_SCHEDULED = PseudoClass.getPseudoClass("scheduled");
+    public static final PseudoClass PSEUDO_CLASS_FLAGGED = PseudoClass.getPseudoClass("flagged");
 
     private final HashMap<Integer, LineManager> managers;
     private LineManager lastScheduled;
@@ -73,20 +78,6 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Marque une ligne.
-     *
-     * @param line le numéro de la ligne
-     * @param lineStatus le status de la ligne
-     */
-    public void markLine(int line, LineStatus lineStatus) {
-        if (managers.containsKey(line)) {
-            LineManager manager = managers.get(line);
-            manager.markLine(lineStatus);
-            if (lineStatus == LineStatus.SCHEDULED) lastScheduled = manager;
-        }
-    }
-
-    /**
      * Nettoie le marquage.
      */
     public void clearMarkings() {
@@ -99,7 +90,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     public void markExecuted() {
         if (lastScheduled != null) lastScheduled.markLine(LineStatus.EXECUTED);
 
-        if (lastExecuted != null && lastScheduled != lastExecuted) lastExecuted.markLine(LineStatus.NONE);
+        if (lastExecuted != null && lastScheduled != lastExecuted && lastExecuted.getStatus() != LineStatus.SCHEDULED) lastExecuted.markLine(LineStatus.NONE);
         lastExecuted = lastScheduled;
     }
 
@@ -111,6 +102,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     public void markForward(int line) {
         if (managers.containsKey(line)) {
             LineManager manager = managers.get(line);
+
             manager.markLine(LineStatus.SCHEDULED);
 
             markExecuted();
@@ -190,7 +182,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
 
             grid = new GridPane();
 
-            grid.getStyleClass().add("none");
+            grid.getStyleClass().add("lineno");
             grid.setMaxWidth(80);
             grid.setPrefWidth(GridPane.USE_COMPUTED_SIZE);
             grid.setMinWidth(80);
@@ -257,13 +249,9 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 this.status = status;
                 if (status == LineStatus.EXECUTED) lastScheduled = this;
 
-                grid.getStyleClass().clear();
-                switch (status) {
-                    case EXECUTED -> grid.getStyleClass().add("executed");
-                    case SCHEDULED -> grid.getStyleClass().add("scheduled");
-                    case FLAGGED -> grid.getStyleClass().add("flagged");
-                    case NONE -> grid.getStyleClass().add("none");
-                }
+                grid.pseudoClassStateChanged(PSEUDO_CLASS_EXECUTED, status == LineStatus.EXECUTED);
+                grid.pseudoClassStateChanged(PSEUDO_CLASS_SCHEDULED, status == LineStatus.SCHEDULED);
+                grid.pseudoClassStateChanged(PSEUDO_CLASS_FLAGGED, status == LineStatus.FLAGGED);
             }
         }
 

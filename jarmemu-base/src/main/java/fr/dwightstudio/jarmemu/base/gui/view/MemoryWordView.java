@@ -34,36 +34,36 @@ import java.util.ArrayList;
 public class MemoryWordView {
     private final MemoryAccessor memoryAccessor;
     private final ReadOnlyIntegerProperty addressProperty;
-    private final IntegerProperty valueProperty;
+    private final UpdatableWrapper<Number> valueProperty;
     private final BooleanProperty cursorProperty;
-    private final MemoryByteProperty byte0;
-    private final MemoryByteProperty byte1;
-    private final MemoryByteProperty byte2;
-    private final MemoryByteProperty byte3;
+    private final UpdatableWrapper<Number> byte0;
+    private final UpdatableWrapper<Number> byte1;
+    private final UpdatableWrapper<Number> byte2;
+    private final UpdatableWrapper<Number> byte3;
     private final Register sp;
 
     public MemoryWordView(MemoryAccessor memoryAccessor, int address) {
         this.memoryAccessor = memoryAccessor;
         this.addressProperty = new ReadOnlyIntegerWrapper(address);
-        this.valueProperty = memoryAccessor.getProperty(address);
+        this.valueProperty = new UpdatableWrapper<>(memoryAccessor.getProperty(address));
         this.sp = null;
-        this.byte0 = new MemoryByteProperty(0);
-        this.byte1 = new MemoryByteProperty(1);
-        this.byte2 = new MemoryByteProperty(2);
-        this.byte3 = new MemoryByteProperty(3);
+        this.byte0 = new UpdatableWrapper<>(new MemoryByteProperty(0));
+        this.byte1 = new UpdatableWrapper<>(new MemoryByteProperty(1));
+        this.byte2 = new UpdatableWrapper<>(new MemoryByteProperty(2));
+        this.byte3 = new UpdatableWrapper<>(new MemoryByteProperty(3));
         this.cursorProperty = null;
     }
 
     public MemoryWordView(MemoryAccessor memoryAccessor, int address, Register sp) {
         this.memoryAccessor = memoryAccessor;
         this.addressProperty = new ReadOnlyIntegerWrapper(address);
-        this.valueProperty = memoryAccessor.getProperty(address);
+        this.valueProperty = new UpdatableWrapper<>(memoryAccessor.getProperty(address));
         this.sp = sp;
         this.cursorProperty = new SimpleBooleanProperty(this.sp.getData() == address);
-        this.byte0 = new MemoryByteProperty(0);
-        this.byte1 = new MemoryByteProperty(1);
-        this.byte2 = new MemoryByteProperty(2);
-        this.byte3 = new MemoryByteProperty(3);
+        this.byte0 = new UpdatableWrapper<>(new MemoryByteProperty(0));
+        this.byte1 = new UpdatableWrapper<>(new MemoryByteProperty(1));
+        this.byte2 = new UpdatableWrapper<>(new MemoryByteProperty(2));
+        this.byte3 = new UpdatableWrapper<>(new MemoryByteProperty(3));
 
         this.sp.getDataProperty().addListener((obs, oldVal, newVal) -> this.cursorProperty.setValue((int) newVal == address));
     }
@@ -76,7 +76,7 @@ public class MemoryWordView {
         return addressProperty;
     }
 
-    public ReadOnlyIntegerProperty getValueProperty() {
+    public UpdatableWrapper<Number> getValueProperty() {
         return valueProperty;
     }
 
@@ -84,19 +84,19 @@ public class MemoryWordView {
         return cursorProperty;
     }
 
-    public ReadOnlyIntegerProperty getByte0Property() {
+    public UpdatableWrapper<Number> getByte0Property() {
         return byte0;
     }
 
-    public ReadOnlyIntegerProperty getByte1Property() {
+    public UpdatableWrapper<Number> getByte1Property() {
         return byte1;
     }
 
-    public ReadOnlyIntegerProperty getByte2Property() {
+    public UpdatableWrapper<Number> getByte2Property() {
         return byte2;
     }
 
-    public ReadOnlyIntegerProperty getByte3Property() {
+    public UpdatableWrapper<Number> getByte3Property() {
         return byte3;
     }
 
@@ -142,7 +142,7 @@ public class MemoryWordView {
 
         @Override
         public int get() {
-            return getFrom(valueProperty.get());
+            return getFrom(valueProperty.getValue().intValue());
         }
 
         @Override

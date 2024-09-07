@@ -47,7 +47,7 @@
     -fx-text-fill: -color-fg-subtle;
 }
 
-.data-value-update {
+:updated {
     -fx-background-color: -color-warning-muted;
 }
 

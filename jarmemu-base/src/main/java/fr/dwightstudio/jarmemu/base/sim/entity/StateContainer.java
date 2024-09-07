@@ -53,10 +53,11 @@ public class StateContainer {
     );
 
     // ASM
-    private final ArrayList<HashMap<String, Integer>> consts; // Indice de fichier -> Nom -> Constantes
-    private final ArrayList<HashMap<String, Integer>> data; // Indice de fichier -> Nom -> Données ajoutées dans la mémoire par directive
-    private final ArrayList<HashMap<String, Integer>> labels; // Indice de fichier -> Label -> Position dans la mémoire
-    private final HashMap<String, Integer> globals; // Symbols globaux -> Indice de fichier
+    private final ArrayList<HashMap<String, Integer>> consts; // File index -> Name -> Constants
+    private final ArrayList<HashMap<String, Integer>> data; // File index -> Name -> Memory data added by directives
+    private final ArrayList<HashMap<String, Integer>> labels; // File index -> Label -> Memory pos offset
+    private final HashMap<String, Integer> globals; // Global symbols -> File index
+    private final HashMap<Integer, Integer> nestingMap; // Return pos -> counter
     private int nestingCount;
     private int symbolAddress;
     private int writableDataAddress;
@@ -83,6 +84,7 @@ public class StateContainer {
         consts = new ArrayList<>();
         data = new ArrayList<>();
         globals = new HashMap<>();
+        nestingMap = new HashMap<>();
 
         nestingCount = 0;
         symbolAddress = 0;
@@ -115,6 +117,7 @@ public class StateContainer {
         stateContainer.consts.forEach(map -> this.consts.add(new HashMap<>(map)));
         stateContainer.data.forEach(map -> this.data.add(new HashMap<>(map)));
         this.globals.putAll(stateContainer.globals);
+        this.nestingMap.putAll(stateContainer.nestingMap);
 
         this.nestingCount = stateContainer.nestingCount;
         this.symbolAddress = stateContainer.symbolAddress;
@@ -347,25 +350,40 @@ public class StateContainer {
     }
 
     /**
-     * @return active branches count
+     * @return active branches with link count
      */
     public int getNestingCount() {
         return nestingCount;
     }
 
     /**
-     * Update branch counter when branching (increase by one)
+     * Update nesting counter when branching with link
+     *
+     * @param initialPos the position of the instruction (initial pos before branching)
      */
-    public void branch() {
+    public void branchWithLink(int initialPos) {
         this.nestingCount++;
+        if (nestingMap.containsKey(initialPos + 4)) {
+            nestingMap.put(initialPos + 4, nestingMap.get(initialPos + 4) + 1);
+        } else {
+            nestingMap.put(initialPos + 4, 1);
+        }
     }
 
     /**
-     * Update branch counter when merging branch (decrease by one)
+     * Update nesting counter when returning link
      */
-    public void merge() {
-        this.nestingCount--;
-        if (this.nestingCount < 0) this.nestingCount = 0;
+    public void returnLink() {
+        if (nestingMap.containsKey(getPC().getData())) {
+            if (nestingMap.get(getPC().getData()) == 1) {
+                nestingMap.remove(getPC().getData());
+            } else {
+                nestingMap.put(getPC().getData(), nestingMap.get(getPC().getData()) - 1);
+            }
+
+            this.nestingCount--;
+            if (this.nestingCount < 0) this.nestingCount = 0;
+        }
     }
 
     /**

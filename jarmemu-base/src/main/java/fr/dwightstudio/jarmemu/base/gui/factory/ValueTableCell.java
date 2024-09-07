@@ -25,6 +25,8 @@ package fr.dwightstudio.jarmemu.base.gui.factory;
 
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.view.MemoryChunkView;
+import fr.dwightstudio.jarmemu.base.gui.view.UpdatableWrapper;
+import fr.dwightstudio.jarmemu.base.sim.StepListener;
 import fr.dwightstudio.jarmemu.base.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.base.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.base.util.converters.ValueStringConverter;
@@ -32,37 +34,26 @@ import fr.dwightstudio.jarmemu.base.util.converters.WordASCIIStringConverter;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
+import javafx.scene.control.Cell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
 
+import java.util.HashMap;
+
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
-    private final ChangeListener<Number> CHANGE_LISTENER;
-
-    private ObservableValue<Number> obs;
-    private boolean changed;
+    public static final PseudoClass PSEUDO_CLASS_UPDATED = PseudoClass.getPseudoClass("updated");
 
     private ValueTableCell(StringConverter<Number> converter) {
         super(converter);
         this.getStyleClass().add("data-value");
         this.setAlignment(Pos.CENTER);
-
-        CHANGE_LISTENER = (obs, oldVal, newVal) -> {
-            if (JArmEmuApplication.getSettingsController().getHighlightUpdates())
-                Platform.runLater(() -> {
-                    setStyle("-fx-background-color: -color-warning-muted");
-                    changed = true;
-                });
-        };
-
-        JArmEmuApplication.getExecutionWorker().addStepListener((pos) -> {
-            if (changed) setStyle("-fx-background-color: transparent");
-            changed = false;
-        });
     }
 
     private ValueTableCell() {
@@ -73,17 +64,22 @@ public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
     public void updateItem(Number number, boolean empty) {
         super.updateItem(number, empty);
 
-        if (getTableColumn() != null && getTableColumn().getCellObservableValue(getIndex()) != null) {
-            if (obs != getTableColumn().getCellObservableValue(getIndex())) {
-                if (obs != null) obs.removeListener(CHANGE_LISTENER);
-                setStyle("-fx-background-color: transparent");
-                obs = getTableColumn().getCellObservableValue(getIndex());
-                obs.addListener(CHANGE_LISTENER);
+        if (!empty) {
+            if (getTableColumn() != null) {
+                ObservableValue<Number> obs = getTableColumn().getCellObservableValue(getIndex());
+                if (obs instanceof UpdatableWrapper<Number> wrapper) {
+                    this.pseudoClassStateChanged(PSEUDO_CLASS_UPDATED, wrapper.isUpdated());
+                }
             }
+        } else {
+            this.pseudoClassStateChanged(PSEUDO_CLASS_UPDATED, false);
         }
     }
 
-
+    @Override
+    protected boolean isItemChanged(Number number, Number t1) {
+        return true;
+    }
 
     public static <S> Callback<TableColumn<S, Number>, TableCell<S, Number>> factoryDynamicFormat() {
         return (val) -> new ValueTableCell<>();
