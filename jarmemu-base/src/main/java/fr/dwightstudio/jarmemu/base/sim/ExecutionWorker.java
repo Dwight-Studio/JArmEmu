@@ -27,13 +27,13 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.base.Status;
 import fr.dwightstudio.jarmemu.base.asm.exception.*;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.base.gui.view.UpdatableWrapper;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
-import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
@@ -183,14 +183,6 @@ public class ExecutionWorker {
         if (task != IDLE) logger.warning("Overriding next task (ID" + task + " with ID" + id + ")");
     }
 
-    public void addStepListener(StepListener stepListener) {
-        this.daemon.stepListeners.add(stepListener);
-    }
-
-    public void removeStepListener(StepListener stepListener) {
-        this.daemon.stepListeners.remove(stepListener);
-    }
-
     private static class ExecutionThead extends Thread {
         private final Logger logger = Logger.getLogger(getClass().getSimpleName());
         
@@ -201,15 +193,12 @@ public class ExecutionWorker {
         private FilePos line;
         private FilePos next;
         private long updateGUITimestamp;
-        private ArrayList<StepListener> stepListeners;
 
         public ExecutionThead() {
             super("CodeExecutorDeamon");
 
             logger.info("Initiating Execution Thread");
             updateGUITimestamp = System.currentTimeMillis();
-
-            stepListeners = new ArrayList<>();
 
             setDaemon(true);
             start();
@@ -258,8 +247,6 @@ public class ExecutionWorker {
 
         private void step(boolean forceExecution) {
             line = JArmEmuApplication.getCodeInterpreter().getCurrentLine();
-            Platform.runLater(() -> stepListeners.forEach(stepListener -> stepListener.step(line)));
-
             ExecutionASMException executionException = null;
 
             try {
@@ -445,8 +432,9 @@ public class ExecutionWorker {
         private void stepIntoTask() {
             nextTask.set(IDLE);
 
+            UpdatableWrapper.resetUpdatables();
             step(false);
-            updateGUI();
+            updateGUI(true);
 
             try {
                 synchronized (this) {
@@ -465,8 +453,9 @@ public class ExecutionWorker {
             int nesting = JArmEmuApplication.getCodeInterpreter().getNestingCount();
 
             while (doContinue) {
+                if (shouldUpdateGUI()) UpdatableWrapper.resetUpdatables();
                 step(false);
-                if (shouldUpdateGUI()) updateGUI();
+                if (shouldUpdateGUI()) updateGUI(true);
 
                 doContinue = doContinue && JArmEmuApplication.getCodeInterpreter().getNestingCount() > nesting;
 
@@ -481,7 +470,10 @@ public class ExecutionWorker {
                 }
             }
 
-            if (isIntervalTooShort()) updateGUI();
+            if (isIntervalTooShort()) {
+                UpdatableWrapper.resetUpdatables();
+                updateGUI(true);
+            }
 
             Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().onPause());
             logger.info("Done!");
@@ -491,12 +483,15 @@ public class ExecutionWorker {
             nextTask.set(IDLE);
             doContinue = true;
             while (doContinue) {
+                long m = System.currentTimeMillis();
+                if (shouldUpdateGUI()) UpdatableWrapper.resetUpdatables();
                 step(false);
-                if (shouldUpdateGUI()) updateGUI();
+                if (shouldUpdateGUI()) updateGUI(true);
 
                 try {
                     synchronized (this) {
-                        if (waitingPeriod != 0) wait(waitingPeriod);
+                        long p = waitingPeriod - (System.currentTimeMillis() - m);
+                        if (p > 0) wait(p);
                     }
                 } catch (InterruptedException ignored) {
                     doContinue = false;
@@ -504,14 +499,17 @@ public class ExecutionWorker {
                 }
             }
 
-            if (isIntervalTooShort()) updateGUI();
+            if (isIntervalTooShort()) {
+                UpdatableWrapper.resetUpdatables();
+                updateGUI(true);
+            }
             logger.info("Done!");
         }
 
         private void updateGUITask() {
             nextTask.set(IDLE);
 
-            updateGUI();
+            updateGUI(false);
 
             JArmEmuApplication.getMemoryDetailsController().updatePage(JArmEmuApplication.getCodeInterpreter().stateContainer);
             JArmEmuApplication.getMemoryOverviewController().updatePage(JArmEmuApplication.getCodeInterpreter().stateContainer);
@@ -519,20 +517,22 @@ public class ExecutionWorker {
             logger.info("Done!");
         }
 
-        private void updateGUI() {
+        private void updateGUI(boolean updateLine) {
             if (JArmEmuApplication.getCodeInterpreter() != null) {
 
                 JArmEmuApplication.getStackController().updateGUI(JArmEmuApplication.getCodeInterpreter().stateContainer);
 
-                if (JArmEmuApplication.getStatus() != Status.SIMULATING) {
-                    JArmEmuApplication.getEditorController().clearAllLineMarkings();
-                } else if (line != null) {
-                    Platform.runLater(() -> {
-                        if (isIntervalTooShort()) {
-                            JArmEmuApplication.getEditorController().clearAllLineMarkings();
-                        }
-                        JArmEmuApplication.getEditorController().markForward(next == null ? line : next);
-                    });
+                if (updateLine) {
+                    if (JArmEmuApplication.getStatus() != Status.SIMULATING) {
+                        JArmEmuApplication.getEditorController().clearAllLineMarkings();
+                    } else if (line != null) {
+                        Platform.runLater(() -> {
+                            if (isIntervalTooShort()) {
+                                JArmEmuApplication.getEditorController().clearAllLineMarkings();
+                            }
+                            JArmEmuApplication.getEditorController().markForward(next == null ? line : next);
+                        });
+                    }
                 }
             }
 
@@ -566,7 +566,7 @@ public class ExecutionWorker {
                         JArmEmuApplication.getCodeInterpreter().restart();
                         attachControllers();
                         JArmEmuApplication.getEditorController().prepareSimulation();
-                        updateGUI();
+                        updateGUI(true);
                         Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().launchSimulation(null));
                     } else {
                         Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().launchSimulation(errors2));
@@ -589,7 +589,7 @@ public class ExecutionWorker {
             nextTask.set(IDLE);
 
             line = next = null;
-            updateGUI();
+            updateGUI(true);
 
             attachControllers();
 

@@ -96,8 +96,9 @@ public class BLInstruction extends ParsedInstruction<Integer, Object, Object, Ob
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
         if (arg1 == stateContainer.getPC().getData()) throw new StuckExecutionASMException();
         stateContainer.getLR().setData(stateContainer.getPC().getData() + 4); // LR = PC + 4
+        int oldPC = stateContainer.getPC().getData();
         stateContainer.getPC().setData(arg1); // PC = arg1
-        stateContainer.branch();
+        stateContainer.branchWithLink(oldPC);
     }
 
     @Override

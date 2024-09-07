@@ -38,18 +38,20 @@ import java.util.ArrayList;
 public class MemoryChunkView {
     private final MemoryAccessor memoryAccessor;
     private final ReadOnlyIntegerProperty addressProperty;
-    private final IntegerProperty value0Property;
-    private final IntegerProperty value1Property;
-    private final IntegerProperty value2Property;
-    private final IntegerProperty value3Property;
+    private final UpdatableWrapper<Number> value0Property;
+    private final UpdatableWrapper<Number> value1Property;
+    private final UpdatableWrapper<Number> value2Property;
+    private final UpdatableWrapper<Number> value3Property;
+    private final UpdatableWrapper<String> chunkASCIIProperty;
 
     public MemoryChunkView(MemoryAccessor memoryAccessor, int address) {
         this.memoryAccessor = memoryAccessor;
         this.addressProperty = new ReadOnlyIntegerWrapper(address);
-        this.value0Property = memoryAccessor.getProperty(address);
-        this.value1Property = memoryAccessor.getProperty(address + 4);
-        this.value2Property = memoryAccessor.getProperty(address + 8);
-        this.value3Property = memoryAccessor.getProperty(address + 12);
+        this.value0Property = new UpdatableWrapper<>(memoryAccessor.getProperty(address));
+        this.value1Property = new UpdatableWrapper<>(memoryAccessor.getProperty(address + 4));
+        this.value2Property = new UpdatableWrapper<>(memoryAccessor.getProperty(address + 8));
+        this.value3Property = new UpdatableWrapper<>( memoryAccessor.getProperty(address + 12));
+        this.chunkASCIIProperty = new UpdatableWrapper<>(new ChunkASCIIProperty());
     }
 
     public MemoryAccessor getMemoryAccessor() {
@@ -60,24 +62,24 @@ public class MemoryChunkView {
         return addressProperty;
     }
 
-    public IntegerProperty getValue0Property() {
+    public UpdatableWrapper<Number> getValue0Property() {
         return value0Property;
     }
 
-    public IntegerProperty getValue1Property() {
+    public UpdatableWrapper<Number> getValue1Property() {
         return value1Property;
     }
 
-    public IntegerProperty getValue2Property() {
+    public UpdatableWrapper<Number> getValue2Property() {
         return value2Property;
     }
 
-    public IntegerProperty getValue3Property() {
+    public UpdatableWrapper<Number> getValue3Property() {
         return value3Property;
     }
 
-    public ObservableValue<String> getASCIIProperty() {
-        return new ChunkASCIIProperty();
+    public UpdatableWrapper<String> getASCIIProperty() {
+        return chunkASCIIProperty;
     }
 
     public class ChunkASCIIProperty extends ReadOnlyStringProperty {
@@ -85,7 +87,7 @@ public class MemoryChunkView {
         private final ArrayList<ChangeListener<? super String>> changeListeners;
         private final ArrayList<InvalidationListener> invalidationListeners;
 
-        private WordASCIIStringConverter converter;
+        private final WordASCIIStringConverter converter;
         private String lastVal;
 
         public ChunkASCIIProperty() {
@@ -124,10 +126,10 @@ public class MemoryChunkView {
 
         @Override
         public String get() {
-            return converter.toString(value0Property.get())
-                    + converter.toString(value1Property.get())
-                    + converter.toString(value2Property.get())
-                    + converter.toString(value3Property.get());
+            return converter.toString(value0Property.getValue())
+                    + converter.toString(value1Property.getValue())
+                    + converter.toString(value2Property.getValue())
+                    + converter.toString(value3Property.getValue());
         }
 
         private void notifyChange() {
@@ -137,6 +139,8 @@ public class MemoryChunkView {
 
             changeListeners.forEach(changeListener -> changeListener.changed(this, lastVal, newVal));
             invalidationListeners.forEach(invalidationListener -> invalidationListener.invalidated(this));
+
+            lastVal = get();
         }
 
         @Override

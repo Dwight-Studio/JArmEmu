@@ -136,7 +136,6 @@ public class JArmEmuApplication extends Application {
 
     // Before the release:
     // FIXME: Branch + Pseudo Instruction immediate allowed value
-    // TODO: Add infinite loop detection
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
     // TODO: Detect and warn from program overwriting
 

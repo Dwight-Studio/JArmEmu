@@ -34,19 +34,19 @@ import javafx.beans.value.ObservableValueBase;
 public class RegisterView {
     private final ObservableValue<Register> registerObservable;
     private final StringProperty nameProperty;
-    private final IntegerProperty valueProperty;
+    private final UpdatableWrapper<Number> valueProperty;
 
     public RegisterView(Register register, String name) {
         this.registerObservable = new ObservableValueRegister(register);
         this.nameProperty = new ReadOnlyStringWrapper(name);
-        this.valueProperty = register.getDataProperty();
+        this.valueProperty = new UpdatableWrapper<>(register.getDataProperty());
     }
 
     public ReadOnlyStringProperty getNameProperty() {
         return nameProperty;
     }
 
-    public IntegerProperty getValueProperty() {
+    public UpdatableWrapper<Number> getValueProperty() {
         return valueProperty;
     }
 
@@ -58,7 +58,7 @@ public class RegisterView {
         return registerObservable;
     }
 
-    public class ObservableValueRegister extends ObservableValueBase<Register> {
+    public static class ObservableValueRegister extends ObservableValueBase<Register> {
 
         final private Register register;
 
