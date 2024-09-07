@@ -22,7 +22,6 @@ import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
 import java.util.*;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

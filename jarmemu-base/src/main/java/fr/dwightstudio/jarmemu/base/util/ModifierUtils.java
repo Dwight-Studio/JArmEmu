@@ -4,7 +4,9 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.RequiredModifierParameter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.SequencedSet;
 
 public class ModifierUtils {
 

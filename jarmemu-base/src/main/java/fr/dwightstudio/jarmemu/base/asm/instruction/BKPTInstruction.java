@@ -23,14 +23,14 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.*;
+import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.SmallImmediateArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.BreakpointASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
-import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
-import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;

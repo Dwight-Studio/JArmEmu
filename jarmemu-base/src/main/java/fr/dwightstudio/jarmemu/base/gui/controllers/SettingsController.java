@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.base.gui.controllers;
 
-import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.editor.RealTimeParser;
 import fr.dwightstudio.jarmemu.base.sim.ExecutionWorker;

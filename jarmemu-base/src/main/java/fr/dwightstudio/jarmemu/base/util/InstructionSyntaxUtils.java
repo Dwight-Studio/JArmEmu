@@ -27,7 +27,10 @@ import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import javafx.scene.text.Text;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class InstructionSyntaxUtils {
     public static List<Text> getUsage(Instruction instruction) {

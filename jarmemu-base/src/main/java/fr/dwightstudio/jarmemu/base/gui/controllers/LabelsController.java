@@ -44,7 +44,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 import java.net.URL;
 import java.util.Map;
