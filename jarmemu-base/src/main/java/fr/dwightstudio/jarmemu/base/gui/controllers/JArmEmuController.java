@@ -433,16 +433,6 @@ public class JArmEmuController implements Initializable {
     }
 
     @FXML
-    public void onSettingsRegex() {
-        JArmEmuApplication.getSettingsController().onSettingsRegex();
-    }
-
-    @FXML
-    public void onSettingsLegacy() {
-        JArmEmuApplication.getSettingsController().onSettingsLegacy();
-    }
-
-    @FXML
     public void onResetSettings() {
         JArmEmuApplication.getMainMenuController().onResetSettings();
     }

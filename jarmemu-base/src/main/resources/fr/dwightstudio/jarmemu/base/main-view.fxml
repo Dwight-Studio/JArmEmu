@@ -531,50 +531,6 @@
                                                                                     <Insets bottom="20.0"/>
                                                                                 </VBox.margin>
                                                                             </AnchorPane>
-                                                                            <Text text="%settings.simulation.parser">
-                                                                                <VBox.margin>
-                                                                                    <Insets bottom="2.0"
-                                                                                            left="5.0"/>
-                                                                                </VBox.margin>
-                                                                            </Text>
-                                                                            <AnchorPane>
-                                                                                <children>
-                                                                                    <HBox AnchorPane.leftAnchor="0.0"
-                                                                                          AnchorPane.rightAnchor="0.0">
-                                                                                        <children>
-                                                                                            <AnchorPane
-                                                                                                    HBox.hgrow="ALWAYS">
-                                                                                                <children>
-                                                                                                    <ToggleButton
-                                                                                                            fx:id="settingsRegex"
-                                                                                                            mnemonicParsing="false"
-                                                                                                            onAction="#onSettingsRegex"
-                                                                                                            styleClass="left-pill"
-                                                                                                            text="Regex"
-                                                                                                            AnchorPane.leftAnchor="0.0"
-                                                                                                            AnchorPane.rightAnchor="0.0"/>
-                                                                                                </children>
-                                                                                            </AnchorPane>
-                                                                                            <AnchorPane
-                                                                                                    HBox.hgrow="ALWAYS">
-                                                                                                <children>
-                                                                                                    <ToggleButton
-                                                                                                            fx:id="settingsLegacy"
-                                                                                                            mnemonicParsing="false"
-                                                                                                            onAction="#onSettingsLegacy"
-                                                                                                            styleClass="right-pill"
-                                                                                                            text="Legacy"
-                                                                                                            AnchorPane.leftAnchor="0.0"
-                                                                                                            AnchorPane.rightAnchor="0.0"/>
-                                                                                                </children>
-                                                                                            </AnchorPane>
-                                                                                        </children>
-                                                                                    </HBox>
-                                                                                </children>
-                                                                                <VBox.margin>
-                                                                                    <Insets bottom="20.0"/>
-                                                                                </VBox.margin>
-                                                                            </AnchorPane>
                                                                             <GridPane alignment="CENTER" hgap="20.0"
                                                                                       vgap="10.0"
                                                                                       AnchorPane.leftAnchor="0.0"

@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.base.gui;
 import atlantafx.base.theme.*;
 import fr.dwightstudio.jarmemu.base.Status;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
-import fr.dwightstudio.jarmemu.base.asm.parser.legacy.LegacySourceParser;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.RegexSourceParser;
 import fr.dwightstudio.jarmemu.base.gui.controllers.*;
 import fr.dwightstudio.jarmemu.base.sim.CodeInterpreter;
@@ -469,11 +468,7 @@ public class JArmEmuApplication extends Application {
     }
 
     public void newSourceParser() {
-        if (getSettingsController().getSourceParser() == 1) {
-            sourceParser = new LegacySourceParser();
-        } else {
-            sourceParser = new RegexSourceParser();
-        }
+        sourceParser = new RegexSourceParser();
     }
 
     /**

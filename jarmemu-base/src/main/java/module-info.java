@@ -28,7 +28,6 @@ module fr.dwightstudio.jarmemu.base {
     exports fr.dwightstudio.jarmemu.base.sim.entity;
     exports fr.dwightstudio.jarmemu.base.asm;
     exports fr.dwightstudio.jarmemu.base.asm.parser.regex;
-    exports fr.dwightstudio.jarmemu.base.asm.parser.legacy;
     exports fr.dwightstudio.jarmemu.base.asm.exception;
     exports fr.dwightstudio.jarmemu.base.asm.instruction;
     exports fr.dwightstudio.jarmemu.base.asm.directive;

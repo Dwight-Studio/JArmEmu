@@ -243,7 +243,6 @@ public class SettingsController implements Initializable {
 
         // Toggles
         realTimeParserGroup.selectToggle(realTimeParserToggles[getRealTimeParser()]);
-        parserGroup.selectToggle(parserToggles[getSourceParser()]);
         themeGroup.selectToggle(themeToggles[getThemeVariation()]);
 
         // ToggleSwitches
@@ -282,7 +281,6 @@ public class SettingsController implements Initializable {
         setAutoCompletion(DEFAULT_AUTO_COMPLETION);
 
         setSimulationInterval(ExecutionWorker.FALLBACK_UPDATE_INTERVAL);
-        setSourceParser(SourceParser.DEFAULT_SOURCE_PARSER);
         setIgnoreUnimplemented(DEFAULT_IGNORE_UNIMPLEMENTED);
         setIgnoreDeprecated(DEFAULT_IGNORE_DEPRECATED);
 
@@ -319,20 +317,6 @@ public class SettingsController implements Initializable {
      */
     protected void onSettingsSimple() {
         setRealTimeParser(1);
-    }
-
-    /**
-     * Invoked by JavaFX
-     */
-    protected void onSettingsRegex() {
-        setSourceParser(0);
-    }
-
-    /**
-     * Invoked by JavaFX
-     */
-    protected void onSettingsLegacy() {
-        setSourceParser(1);
     }
 
     /**
@@ -377,15 +361,6 @@ public class SettingsController implements Initializable {
 
     public int getSimulationInterval() {
         return preferences.getInt(SIMULATION_INTERVAL_KEY, ExecutionWorker.FALLBACK_UPDATE_INTERVAL);
-    }
-
-    public void setSourceParser(int nb) {
-        preferences.putInt(SOURCE_PARSER_KEY, nb);
-        JArmEmuApplication.getInstance().newSourceParser();
-    }
-
-    public int getSourceParser() {
-        return Math.min(Math.max(preferences.getInt(SOURCE_PARSER_KEY, SourceParser.DEFAULT_SOURCE_PARSER), 0), 1);
     }
 
     public void setStackAddress(int nb) {
