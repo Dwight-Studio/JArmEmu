@@ -180,6 +180,10 @@ public class InstructionCodeUtils {
         return (cond << 28) + (notH << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (H << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + (Offset & 0xFFF) + (H << 7) + (H << 5) + (H << 4);
     }
 
+    public static int singleMemoryAccessSHB(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr) {
+        return 0;
+    }
+
     public static int blockDataTransfer(ParsedInstruction<UpdatableRegister, Register[], Object, Object> parsedInstruction, boolean doLoad) {
         int cond = parsedInstruction.modifier.condition().getCode();
 

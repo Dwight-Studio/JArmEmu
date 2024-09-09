@@ -102,7 +102,11 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return InstructionCodeUtils.singleMemoryAccess(stateContainer, this, false, dir, pos);
+        if (this.modifier.dataMode() == DataMode.H || this.modifier.doUpdateFlags()) {
+            return InstructionCodeUtils.singleMemoryAccessSHB(stateContainer, this, false);
+        } else {
+            return InstructionCodeUtils.singleMemoryAccess(stateContainer, this, false, dir, pos);
+        }
     }
 
     @Override
@@ -125,8 +129,24 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
 
         switch (modifier.dataMode()) {
             case null -> arg1.setData(stateContainer.getMemory().getWord(address));
-            case H -> arg1.setData(stateContainer.getMemory().getHalf(address));
-            case B -> arg1.setData(stateContainer.getMemory().getByte(address));
+            case H -> {
+                if (this.modifier.doUpdateFlags()) {
+                    short value = stateContainer.getMemory().getHalf(address);
+                    if (value < 0) arg1.setData((0xFFFF << 16) + value);
+                    else arg1.setData(value);
+                } else {
+                    arg1.setData(stateContainer.getMemory().getHalf(address));
+                }
+            }
+            case B -> {
+                if (this.modifier.doUpdateFlags()) {
+                    byte value = stateContainer.getMemory().getByte(address);
+                    if (value < 0) arg1.setData((0xFFFFFF << 8) + value);
+                    else arg1.setData(value);
+                } else {
+                    arg1.setData(stateContainer.getMemory().getByte(address));
+                }
+            }
         }
 
         if (!isPseudoInstruction()) arg2.update(i1);
