@@ -203,7 +203,6 @@ public class InstructionCodeUtils {
                 if (parsedInstruction.arg3.getOriginalString() != null) {
                     try {
                         if (parsedInstruction.arg3.getValue(stateContainer).isRegister()) {
-                            I = 1;
                             Offset = ((PostOffsetArgument) parsedInstruction.arg3).getRegisterArgument().getRegisterNumber();
                             U = ((PostOffsetArgument) parsedInstruction.arg3).isNegative() ? 0 : 1;
                         } else {

@@ -26,25 +26,18 @@ package fr.dwightstudio.jarmemu.base.gui.factory;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.view.MemoryChunkView;
 import fr.dwightstudio.jarmemu.base.gui.view.UpdatableWrapper;
-import fr.dwightstudio.jarmemu.base.sim.StepListener;
 import fr.dwightstudio.jarmemu.base.util.converters.BinStringConverter;
 import fr.dwightstudio.jarmemu.base.util.converters.HexStringConverter;
 import fr.dwightstudio.jarmemu.base.util.converters.ValueStringConverter;
 import fr.dwightstudio.jarmemu.base.util.converters.WordASCIIStringConverter;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.css.PseudoClass;
 import javafx.geometry.Pos;
-import javafx.scene.control.Cell;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
-
-import java.util.HashMap;
 
 public class ValueTableCell<S> extends TextFieldTableCell<S, Number> {
 
