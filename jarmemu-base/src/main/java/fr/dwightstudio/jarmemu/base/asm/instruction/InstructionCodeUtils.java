@@ -107,15 +107,12 @@ public class InstructionCodeUtils {
     }
 
     public static int singleMemoryAccess(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr, WordDirective dir, int pos) {
-        // TODO: faire half-word ldr/str et le signage
         int cond = parsedInstruction.modifier.condition().getCode();
 
         int I = 0;
         int P = 0;
         int U = 0;
         int B = (parsedInstruction.modifier.dataMode() == DataMode.B) ? 1 : 0;
-        int H = (parsedInstruction.modifier.dataMode() == DataMode.H) ? 1 : 0;
-        int notH = (parsedInstruction.modifier.dataMode() == DataMode.H) ? 0 : 1;
         int W = ((AddressArgument) parsedInstruction.arg2).doesUpdateNow() ? 1 : 0;
         int L = isStr ? 0 : 1;
         int Rn = 0;
@@ -177,10 +174,11 @@ public class InstructionCodeUtils {
             }
         }
 
-        return (cond << 28) + (notH << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (H << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + (Offset & 0xFFF) + (H << 7) + (H << 5) + (H << 4);
+        return (cond << 28) + (1 << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + (Offset & 0xFFF);
     }
 
     public static int singleMemoryAccessSHB(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr) {
+        // TODO: faire half-word ldr/str et le signage
         return 0;
     }
 
