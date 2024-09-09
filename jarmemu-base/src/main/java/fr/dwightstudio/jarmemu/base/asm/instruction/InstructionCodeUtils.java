@@ -72,7 +72,6 @@ public class InstructionCodeUtils {
             } else {
                 // Op2 is an immediate
                 isImmediateOp = 1;
-                // FIXME: It seams that the immediate in MOV is NOT a rotated?
                 Op2 = ((((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getRotationValue() / 2) << 8) + ((RotatedImmediateOrRegisterArgument) parsedInstruction.arg2).getOriginalValue();
             }
         } catch (ExecutionASMException ignored) {}
