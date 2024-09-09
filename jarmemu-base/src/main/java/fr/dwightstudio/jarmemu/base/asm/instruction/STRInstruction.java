@@ -131,5 +131,9 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
         if (arg3.intValue() != 0 && !arg2.canUpdate()) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.indexing"));
         }
+
+        if (this.modifier.dataMode() == DataMode.H && ((AddressArgument) this.arg2).getMode() == AddressType.SHIFTED_REGISTER_OFFSET) {
+            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.instruction.shifting"));
+        }
     }
 }

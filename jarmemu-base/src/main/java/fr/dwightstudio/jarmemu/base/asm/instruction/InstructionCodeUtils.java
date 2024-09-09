@@ -118,6 +118,7 @@ public class InstructionCodeUtils {
         int Rn = 0;
         int Rd = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
         int Offset = 0;
+        int Shift = 0;
 
         switch (((AddressArgument) parsedInstruction.arg2).getMode()) {
             case SIMPLE_REGISTER -> {
@@ -137,6 +138,9 @@ public class InstructionCodeUtils {
                     } catch (ExecutionASMException ignored) {}
                 } else {
                     P = 1;
+                }
+                if (parsedInstruction.arg4.getOriginalString() != null) {
+                    Shift = ((ShiftArgument) parsedInstruction.arg4).getType().getCode() + ((((ShiftArgument) parsedInstruction.arg4).getArgument().getValue(stateContainer).intValue() & 0x1F) << 2);
                 }
             }
             case IMMEDIATE_OFFSET -> {
@@ -174,11 +178,10 @@ public class InstructionCodeUtils {
             }
         }
 
-        return (cond << 28) + (1 << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + (Offset & 0xFFF);
+        return (cond << 28) + (1 << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + ((Shift & 0x7F) << 5) + (Offset & 0xFFF);
     }
 
     public static int singleMemoryAccessSHB(StateContainer stateContainer, ParsedInstruction<Register, AddressArgument.UpdatableInteger, RegisterOrImmediate, ShiftFunction> parsedInstruction, boolean isStr) {
-        // TODO: faire half-word ldr/str et le signage
         int cond = parsedInstruction.modifier.condition().getCode();
 
         int P = 0;
@@ -214,12 +217,26 @@ public class InstructionCodeUtils {
                     P = 1;
                 }
             }
-            case IMMEDIATE_OFFSET -> {}
-            case REGISTER_OFFSET -> {}
-            case SHIFTED_REGISTER_OFFSET -> {}
+            case IMMEDIATE_OFFSET -> {
+                I = 1;
+                Rn = ((AddressArgument) parsedInstruction.arg2).getAddressRegisterArgument().getRegisterNumber();
+                P = 1;
+                try {
+                    Offset = parsedInstruction.arg2.getValue(stateContainer).toInt();
+                    U = (Offset < 0) ? 0 : 1;
+                    if (U == 0) Offset = Math.abs(Offset);
+                } catch (ASMException ignored) {}
+            }
+            case REGISTER_OFFSET -> {
+                Rn = ((AddressArgument) parsedInstruction.arg2).getAddressRegisterArgument().getRegisterNumber();
+                P = 1;
+                Offset = ((AddressArgument) parsedInstruction.arg2).getOffsetRegisterArgument().getRegisterNumber();
+                U = ((AddressArgument) parsedInstruction.arg2).isNegative() ? 0 : 1;
+                if (U == 0) Offset = Math.abs(Offset);
+            }
         }
 
-        return (cond << 28) + (P << 24) + (U << 23) + (I << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + ((Offset >> 4) << 8)+ (1 << 7) + (S << 6) + (H << 5) + (1 << 4) + Offset + Rm;
+        return (cond << 28) + (P << 24) + (U << 23) + (I << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + ((Offset >> 4) << 8)+ (1 << 7) + (S << 6) + (H << 5) + (1 << 4) + (Offset & 0xF) + Rm;
     }
 
     public static int blockDataTransfer(ParsedInstruction<UpdatableRegister, Register[], Object, Object> parsedInstruction, boolean doLoad) {
