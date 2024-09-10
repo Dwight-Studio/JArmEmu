@@ -28,6 +28,7 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionDetailTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
@@ -285,11 +286,11 @@ public class JArmEmuDialogs {
 
         instructionTable.getColumns().setAll(col0, col1, col2);
         instructionTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        instructionTable.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER, Tweaks.EDGE_TO_EDGE);
+        instructionTable.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
         instructionTable.setEditable(false);
         instructionTable.setMaxWidth(Double.POSITIVE_INFINITY);
         instructionTable.setMaxHeight(Double.POSITIVE_INFINITY);
-        instructionTable.setMinWidth(690);
+        instructionTable.setMinWidth(720);
         instructionTable.setMinHeight(500);
 
         instructionTable.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
@@ -372,7 +373,7 @@ public class JArmEmuDialogs {
             JArmEmuApplication.getEditorController().open(instruction + ".s", exampleContent);
         });
 
-        VBox vBox = new VBox(title, usage, description, exampleButton);
+        VBox vBox = new VBox(title, usage, description);
         vBox.setSpacing(20);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));
@@ -380,6 +381,12 @@ public class JArmEmuDialogs {
         vBox.setPrefHeight(VBox.USE_PREF_SIZE);
         vBox.setFillWidth(true);
         VBox.setMargin(usage, new Insets(10));
+
+        if (instruction.getModifierParameterClasses().contains(Condition.class)) {
+            TableView<Condition> conditionTable = InstructionSyntaxUtils.getConditionTable();
+
+            vBox.getChildren().add(conditionTable);
+        }
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
 

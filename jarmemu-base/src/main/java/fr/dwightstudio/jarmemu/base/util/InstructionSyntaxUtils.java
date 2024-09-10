@@ -23,8 +23,18 @@
 
 package fr.dwightstudio.jarmemu.base.util;
 
+import atlantafx.base.theme.Styles;
+import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
+import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
+import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
+import fr.dwightstudio.jarmemu.base.gui.factory.SyntaxHighlightedTableCell;
+import javafx.beans.property.ReadOnlyStringProperty;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -133,6 +143,38 @@ public class InstructionSyntaxUtils {
 
             default -> List.of(new Text());
         };
+    }
+
+    public static TableView<Condition> getConditionTable() {
+        TableColumn<Condition, String> col0 = new TableColumn<>("Cd");
+        col0.setSortable(true);
+        col0.setResizable(false);
+        col0.setEditable(false);
+        col0.setCellFactory(StylizedStringTableCell.factory("condition"));
+        col0.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.toString()));
+
+        TableColumn<Condition, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
+        col1.setSortable(false);
+        col1.setResizable(true);
+        col1.setEditable(false);
+        col1.setCellFactory(SyntaxHighlightedTableCell.factory());
+        col1.setCellValueFactory(c -> new ReadOnlyStringWrapper(JArmEmuApplication.formatMessage("%instructionList.description." + c.toString().toLowerCase())));
+
+        TableView<Condition> tableView = new TableView<>();
+        tableView.getColumns().setAll(col0, col1);
+        tableView.getItems().setAll(Condition.values());
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
+        tableView.setEditable(false);
+        tableView.setMaxWidth(Double.POSITIVE_INFINITY);
+        tableView.setMaxHeight(Double.POSITIVE_INFINITY);
+        tableView.setMinHeight(100);
+
+        for (Condition value : Condition.values()) {
+            System.out.println("%instructionList.description." + value.toString().toLowerCase());
+        }
+
+        return tableView;
     }
 
     public static List<Text> replacePlaceholder(String text) {
