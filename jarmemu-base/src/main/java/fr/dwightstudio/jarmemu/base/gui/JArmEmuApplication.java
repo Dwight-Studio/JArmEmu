@@ -138,7 +138,6 @@ public class JArmEmuApplication extends Application {
     // TODO: Add tests for encoding
     // FIXME: Branch + Pseudo Instruction immediate allowed value
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
-    // TODO: Detect and warn from program overwriting
 
     // Maybe:
     // TODO: Ajouter le support de plus de directives pour l'autocomplétion

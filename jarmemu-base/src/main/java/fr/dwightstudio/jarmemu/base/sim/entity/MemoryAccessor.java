@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.sim.entity;
 
+import fr.dwightstudio.jarmemu.base.asm.exception.IllegalDataWritingASMException;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
@@ -33,12 +34,14 @@ import java.util.HashSet;
 
 public class MemoryAccessor {
 
+    private final StateContainer stateContainer;
     private final HashMap<Integer, IntegerProperty> memory;
     private final HashSet<Integer> initiationSet;
 
-    public MemoryAccessor() {
-        memory = new HashMap<>();
-        initiationSet = new HashSet<>();
+    public MemoryAccessor(StateContainer stateContainer) {
+        this.stateContainer = stateContainer;
+        this.memory = new HashMap<>();
+        this.initiationSet = new HashSet<>();
     }
 
     public byte getByte(int add) {
@@ -63,6 +66,13 @@ public class MemoryAccessor {
         byte[] bytes = new byte[]{getByte(add), getByte(add + 1), getByte(add + 2), getByte(add + 3)};
         return ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).getInt();
     }
+
+    public void checkAddress(int add) throws IllegalDataWritingASMException {
+        if (add >= stateContainer.getProgramAddress() && add < stateContainer.getWritableDataAddress()) {
+            throw new IllegalDataWritingASMException();
+        }
+    }
+
     public void putByte(int add, byte b) {
         int aAdd = Math.floorDiv(add, 4);
         int rAdd = (add % 4) < 0 ? 4 + (add % 4) : (add % 4);
@@ -83,6 +93,11 @@ public class MemoryAccessor {
         initiationSet.add(add);
     }
 
+    public void checkedPutByte(int add, byte b) throws IllegalDataWritingASMException {
+        checkAddress(add);
+        putByte(add, b);
+    }
+
     public void putHalf(int add, short s) {
         byte[] bytes = new byte[2];
         ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putShort(s);
@@ -92,12 +107,30 @@ public class MemoryAccessor {
         }
     }
 
+    public void checkedPutHalf(int add, short s) throws IllegalDataWritingASMException {
+        byte[] bytes = new byte[2];
+        ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putShort(s);
+
+        for (int i = 0; i < bytes.length; i++) {
+            checkedPutByte(add + i, bytes[i]);
+        }
+    }
+
     public void putWord(int add, int i) {
         byte[] bytes = new byte[4];
         ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(i);
 
         for (int j = 0; j < bytes.length; j++) {
             putByte(add + j, bytes[j]);
+        }
+    }
+
+    public void checkedPutWord(int add, int i) throws IllegalDataWritingASMException {
+        byte[] bytes = new byte[4];
+        ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN).putInt(i);
+
+        for (int j = 0; j < bytes.length; j++) {
+            checkedPutByte(add + j, bytes[j]);
         }
     }
 

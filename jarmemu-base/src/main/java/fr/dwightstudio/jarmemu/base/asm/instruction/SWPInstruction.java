@@ -105,10 +105,10 @@ public class SWPInstruction extends ParsedInstruction<Register, Register, Intege
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Register arg1, Register arg2, Integer arg3, Object arg4) throws ExecutionASMException {
         if (modifier.dataMode() == DataMode.B) {
             arg1.setData(stateContainer.getMemory().getByte(arg3));
-            stateContainer.getMemory().putByte(arg3, (byte) arg2.getData());
+            stateContainer.getMemory().checkedPutByte(arg3, (byte) arg2.getData());
         } else {
             arg1.setData(stateContainer.getMemory().getWord(arg3));
-            stateContainer.getMemory().putWord(arg3, arg2.getData());
+            stateContainer.getMemory().checkedPutWord(arg3, arg2.getData());
         }
 
     }

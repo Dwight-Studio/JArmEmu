@@ -101,7 +101,7 @@ public class StateContainer {
         clearAndInitFiles(1);
 
         // Initializing memory
-        this.memory = new MemoryAccessor();
+        this.memory = new MemoryAccessor(this);
     }
 
     public StateContainer() {
@@ -401,7 +401,7 @@ public class StateContainer {
     }
 
     /**
-     * @return the address of the writable data range in memory (end of pseudo instruction range)
+     * @return the address of the writable data range in memory (end of RO/pseudo instruction range)
      */
     public int getWritableDataAddress() {
         return writableDataAddress;
@@ -422,7 +422,7 @@ public class StateContainer {
     }
 
     /**
-     * Set the first address of the writable data range in memory (end of the RO range) using current position
+     * Set the first address of the writable data range in memory (end of the RO/Pseudo-instruction range) using current position
      */
     public void startWritableData() {
         this.writableDataAddress = memoryPos.getPos();

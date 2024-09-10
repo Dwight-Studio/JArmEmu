@@ -109,7 +109,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
             case FD, DB -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() - 4 * (i + 1);
-                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().checkedPutWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = - 4 * length;
@@ -117,7 +117,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
             case FA, IB -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * (i + 1);
-                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().checkedPutWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = 4 * length;
@@ -125,7 +125,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
             case ED, DA -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() - 4 * i;
-                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().checkedPutWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = - 4 * length;
@@ -133,7 +133,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
             default -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * i;
-                    stateContainer.getMemory().putWord(address, arg2[length - i - 1].getData());
+                    stateContainer.getMemory().checkedPutWord(address, arg2[length - i - 1].getData());
                     if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) throw new IllegalDataWritingASMException();
                 }
                 value = 4 * length;

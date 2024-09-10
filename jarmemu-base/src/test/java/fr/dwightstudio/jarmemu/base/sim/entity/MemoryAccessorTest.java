@@ -36,7 +36,7 @@ class MemoryAccessorTest {
 
     @BeforeEach
     public void setUp() {
-        memoryAccessor = new MemoryAccessor();
+        memoryAccessor = new MemoryAccessor(new StateContainer());
     }
 
     @Test

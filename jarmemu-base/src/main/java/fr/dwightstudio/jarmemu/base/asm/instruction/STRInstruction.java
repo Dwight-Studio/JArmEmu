@@ -116,9 +116,9 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
         }
 
         switch (modifier.dataMode()){
-            case null -> stateContainer.getMemory().putWord(address, arg1.getData());
-            case H -> stateContainer.getMemory().putHalf(address, (short) arg1.getData());
-            case B -> stateContainer.getMemory().putByte(address, (byte) arg1.getData());
+            case null -> stateContainer.getMemory().checkedPutWord(address, arg1.getData());
+            case H -> stateContainer.getMemory().checkedPutHalf(address, (short) arg1.getData());
+            case B -> stateContainer.getMemory().checkedPutByte(address, (byte) arg1.getData());
         }
 
         arg2.update(i1);
