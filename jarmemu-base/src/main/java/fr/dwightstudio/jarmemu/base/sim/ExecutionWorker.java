@@ -530,7 +530,13 @@ public class ExecutionWorker {
                             if (isIntervalTooShort()) {
                                 JArmEmuApplication.getEditorController().clearAllLineMarkings();
                             }
-                            JArmEmuApplication.getEditorController().markForward(next == null ? line : next);
+
+                            if (next == null) {
+                                JArmEmuApplication.getEditorController().markForward(line);
+                            } else {
+                                JArmEmuApplication.getEditorController().markForward(line);
+                                JArmEmuApplication.getEditorController().markForward(next);
+                            }
                         });
                     }
                 }
