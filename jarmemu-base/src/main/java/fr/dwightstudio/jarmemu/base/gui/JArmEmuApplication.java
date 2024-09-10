@@ -135,6 +135,7 @@ public class JArmEmuApplication extends Application {
     }
 
     // Before the release:
+    // TODO: Add tests for encoding
     // FIXME: Branch + Pseudo Instruction immediate allowed value
     // FIXME: Freeze when continue
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
