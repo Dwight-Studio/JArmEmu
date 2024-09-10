@@ -29,7 +29,6 @@ import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.factory.FlagTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.RegisterView;
-import fr.dwightstudio.jarmemu.base.gui.view.UpdatableWrapper;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.TableViewUtils;

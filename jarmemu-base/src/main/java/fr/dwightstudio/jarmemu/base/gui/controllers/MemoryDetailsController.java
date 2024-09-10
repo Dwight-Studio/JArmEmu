@@ -30,7 +30,6 @@ import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.factory.AddressTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.ValueTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.MemoryWordView;
-import fr.dwightstudio.jarmemu.base.gui.view.UpdatableWrapper;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import javafx.application.Platform;
