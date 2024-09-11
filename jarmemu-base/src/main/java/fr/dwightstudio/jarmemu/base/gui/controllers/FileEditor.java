@@ -47,6 +47,9 @@ import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.Paragraph;
 import org.fxmisc.richtext.model.TwoDimensional;
+import org.fxmisc.wellbehaved.event.EventPattern;
+import org.fxmisc.wellbehaved.event.InputMap;
+import org.fxmisc.wellbehaved.event.Nodes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -157,17 +160,20 @@ public class FileEditor {
 
         // Indentation automatique
         final Pattern whiteSpace = Pattern.compile( "^\\s+" );
-        codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
-            System.out.println(KE.getCode().toString());
-            if (KE.getCode() == KeyCode.ENTER) {
+
+        Nodes.addInputMap(codeArea, InputMap.consume(EventPattern.anyOf(EventPattern.keyPressed(KeyCode.TAB))));
+
+        codeArea.setOnKeyPressed(keyEvent -> {
+            System.out.println(keyEvent.getCode().toString());
+            if (keyEvent.getCode() == KeyCode.ENTER) {
                 String add = getRealTimeParser().lineDefinesLabel(codeArea.getCurrentParagraph() - 1) ? "\t" : "";
 
                 Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph() - 1).getSegments().getFirst());
                 if (matcher.find())
                     Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + add));
                 else if (!add.isEmpty()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), add));
-            } else if (KE.getCode() == KeyCode.TAB) {
-                KE.consume();
+            } else if (keyEvent.getCode() == KeyCode.TAB) {
+                keyEvent.consume();
 
                 int selStart = codeArea.getCaretSelectionBind().getStartPosition();
                 int selEnd = codeArea.getCaretSelectionBind().getEndPosition();
@@ -177,7 +183,7 @@ public class FileEditor {
                 int end = codeArea.getCaretSelectionBind().getEndParagraphIndex();
 
                 for (int parN = start; parN <= end; parN++) {
-                    if (KE.isShiftDown()) {
+                    if (keyEvent.isShiftDown()) {
                         Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                         if (par.getText().startsWith("\t") || par.getText().startsWith(" ")) {
                             codeArea.deleteText(parN, 0, parN, 1);
@@ -194,11 +200,11 @@ public class FileEditor {
         });
 
         // Ajout automatique du caractère fermant
-        codeArea.addEventHandler(KeyEvent.KEY_TYPED, KE -> {
+        codeArea.setOnKeyTyped(keyEvent -> {
+            if (keyEvent.getCode() == KeyCode.TAB) keyEvent.consume();
+
             int caretPosition = codeArea.getCaretPosition();
-            Platform.runLater( () -> {
-                JArmEmuApplication.getAutocompletionController().autocompleteChar(KE.getCharacter(), caretPosition);
-            } );
+            Platform.runLater( () -> JArmEmuApplication.getAutocompletionController().autocompleteChar(keyEvent.getCharacter(), caretPosition));
         });
 
         // Find & Replace
@@ -648,6 +654,7 @@ public class FileEditor {
                 this.codeArea.clear();
                 this.codeArea.replaceText(fileContent);
                 logger.info("File reloaded: " + path.getAbsolutePath());
+                this.codeArea.getUndoManager().forgetHistory();
             } catch (Exception exception) {
                 Platform.runLater(() -> new ExceptionDialog(exception).show());
                 logger.severe(ExceptionUtils.getStackTrace(exception));

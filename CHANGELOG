@@ -1,9 +1,10 @@
-0.2.2 -> 0.2.3
+0.2.2 -> 1.0.0
 - Added instruction code in memory
 - Added instruction list (documentation)
 - Added instruction/RO memory protection against overwriting
 - Removed the legacy source parser
 - Improved readability in memory views
+- Improved tabulation insertion/deletion
 - Fixed memory edition in GUI
 - Fixed CPSR/SPSR being usable as common registers
 - Fixed broken shift argument (with register)

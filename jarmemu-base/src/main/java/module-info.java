@@ -9,6 +9,7 @@ module fr.dwightstudio.jarmemu.base {
     requires org.jetbrains.annotations;
     requires org.apache.commons.lang3;
     requires org.fxmisc.richtext;
+    requires org.fxmisc.undo;
     requires reactfx;
     requires exp4j;
     requires java.prefs;
@@ -20,6 +21,7 @@ module fr.dwightstudio.jarmemu.base {
     requires org.json;
     requires org.kohsuke.github.api;
     requires org.kordamp.ikonli.core;
+    requires wellbehavedfx;
 
     exports fr.dwightstudio.jarmemu.base;
     exports fr.dwightstudio.jarmemu.base.gui;
