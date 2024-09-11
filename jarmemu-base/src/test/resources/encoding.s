@@ -98,4 +98,28 @@ _start:
 	bics sp, fp, r2
 	biceq r1, r2, rrx
 	bicpl r0, r1, r2
+	cmp r0, #25
+	cmpeq r5, r0
+	cmpcs r6, r6, lsr #9
+	cmpmi r10, r5
+	cmplo sp, #255
+	cmphs r8, r6, ror #2	
+	cmn r0, #25
+	cmneq r5, r0
+	cmncs r6, r6, lsr #9
+	cmnmi r10, r5
+	cmnlo sp, #255
+	cmnhs r8, r6, ror #2	
+	tst r0, #25
+	tsteq r5, r0
+	tstcs r6, r6, lsr #9
+	tstmi r10, r5
+	tstlo sp, #255
+	tsths r8, r6, ror #2	
+	teq r0, #25
+	teqeq r5, r0
+	teqcs r6, r6, lsr #9
+	teqmi r10, r5
+	teqlo sp, #255
+	teqhs r8, r6, ror #2
 
