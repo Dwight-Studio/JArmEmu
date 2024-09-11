@@ -23,13 +23,11 @@ public class InstructionCodeUtils {
                 Op2 = ((RotatedImmediateOrRegisterArgument) parsedInstruction.arg3).getRegisterNumber();
                 if (((ShiftArgument) parsedInstruction.arg4).getType() != null) {
                     Op2 += ((ShiftArgument) parsedInstruction.arg4).getType().getCode() << 5;
-                    if (((ShiftArgument) parsedInstruction.arg4).getArgument().isRegister()) {
-                        Op2 += 1 << 4;
-                        if (((ShiftArgument) parsedInstruction.arg4).getType() != Shift.RRX) {
+                    if (((ShiftArgument) parsedInstruction.arg4).getType() != Shift.RRX) {
+                        if (((ShiftArgument) parsedInstruction.arg4).getArgument().isRegister()) {
+                            Op2 += 1 << 4;
                             Op2 += ((ShiftArgument) parsedInstruction.arg4).getArgument().getRegisterNumber() << 8;
-                        }
-                    } else {
-                        if (((ShiftArgument) parsedInstruction.arg4).getType() != Shift.RRX) {
+                        } else {
                             Op2 += ((ShiftArgument) parsedInstruction.arg4).getArgument().getValue(stateContainer).intValue() << 7;
                         }
                     }
@@ -58,16 +56,15 @@ public class InstructionCodeUtils {
                 Op2 = ((OptionalRegister) parsedInstruction.arg2).getRegisterNumber();
                 if (((ShiftArgument) parsedInstruction.arg3).getType() != null) {
                     Op2 += ((ShiftArgument) parsedInstruction.arg3).getType().getCode() << 5;
-                    if (((ShiftArgument) parsedInstruction.arg3).getArgument().isRegister()) {
-                        Op2 += 1 << 4;
-                        if (((ShiftArgument) parsedInstruction.arg3).getType() != Shift.RRX) {
-                            Op2 += ((ShiftArgument) parsedInstruction.arg3).getArgument().getRegisterNumber() << 8;
-                        }
-                    } else {
-                        if (((ShiftArgument) parsedInstruction.arg3).getType() != Shift.RRX) {
+                    if (((ShiftArgument) parsedInstruction.arg3).getType() != Shift.RRX) {
+                        if (((ShiftArgument) parsedInstruction.arg3).getArgument().isRegister()) {
+                            Op2 += 1 << 4;
+                                Op2 += ((ShiftArgument) parsedInstruction.arg3).getArgument().getRegisterNumber() << 8;
+                        } else {
                             Op2 += ((ShiftArgument) parsedInstruction.arg3).getArgument().getValue(stateContainer).intValue() << 7;
                         }
                     }
+
                 }
             } else {
                 // Op2 is an immediate

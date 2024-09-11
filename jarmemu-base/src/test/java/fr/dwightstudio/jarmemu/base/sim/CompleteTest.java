@@ -69,7 +69,7 @@ public class CompleteTest extends JArmEmuTest {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     ArrayList<SourceScanner> sources;
-    SourceParser parser;
+    SourceParser parser = new RegexSourceParser();
     CodeInterpreter codeInterpreter;
 
     public void loadUnique(String name) {
@@ -193,7 +193,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void factorialTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/factorial.s");
 
         execute();
@@ -203,7 +202,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void matrixTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/matrix.s");
 
         // Parse
@@ -214,7 +212,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void pgcdTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/pgcd.s");
 
         // Parse
@@ -225,7 +222,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void helloworldIntTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/helloworldInt.s");
 
         // Parse
@@ -236,7 +232,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void helloworldAsciiTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/helloworldAscii.s");
 
         // Parse
@@ -247,7 +242,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void pgcdDriveTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/pgcdDrive.s");
 
         // Parse
@@ -258,7 +252,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void graphesTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/graph/Graphes.s");
 
         // Parse
@@ -269,7 +262,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void graphesMainTest() {
-        parser = new RegexSourceParser();
         ArrayList<String> names = new ArrayList<>();
         names.add("/complete/graph/GraphesMain.s");
         names.add("/complete/graph/RechercheSommet.s");
@@ -285,7 +277,6 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void countTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/count.s");
 
         // Parse
@@ -296,12 +287,21 @@ public class CompleteTest extends JArmEmuTest {
 
     @Test
     public void shiftTest() {
-        parser = new RegexSourceParser();
         loadUnique("/complete/shift.s");
 
         // Parse
         execute();
 
         assertEqualsMemory("/complete/shift-memory.d");
+    }
+
+    @Test
+    public void encodingTest() {
+        loadUnique("/encoding.s");
+
+        // Parse
+        execute();
+
+        assertEqualsMemory("/encoding.d");
     }
 }
