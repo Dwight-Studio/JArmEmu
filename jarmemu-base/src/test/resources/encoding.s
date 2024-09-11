@@ -38,15 +38,40 @@ _start:
 	rscccs r9, r5
 	rscne r0, r0, #55
 	rsccs r2, r3, r4
-    mul r0, r0, r0
-    muls r5, r6, r8
-    mulnes r5, r6, r5
-    muls r9, r9, r5
-    mullt r10, sp, fp
-    mulle r8, r6, r6
-    mla r8, r6, r6, r1
-    mlaeq r1, r8, r6, r5
-    mlaccs r8, r11, sp, sp
-    mlacc r8, r3, r1, r1
-    mlane r7, r0, r6, r9
-    mlavc r8, r6, r5, r4
+	mul r0, r0, r0
+	muls r5, r6, r8
+	mulnes r5, r6, r5
+	muls r9, r9, r5
+	mullt r10, sp, fp
+	mulle r8, r6, r6
+	mla r8, r6, r6, r1
+	mlaeq r1, r8, r6, r5
+	mlaccs r8, r11, sp, sp
+	mlacc r8, r3, r1, r1
+	mlane r7, r0, r6, r9
+	mlavc r8, r6, r5, r4
+	umull r0, r1, r2, r3
+	umulls r1, r2, r3, r4
+	umulleq r2, r3, r4, r5
+	umullmi sp, fp, ip, lr
+	umullvss sp, r8, r6, r8
+	umulllts r4, r5, r6, r7
+	umlal r0, r1, r2, r3
+	umlals r1, r2, r3, r4
+	umlaleq r2, r3, r4, r5
+	umlalmi sp, fp, ip, lr
+	umlalvss sp, r8, r6, r8
+	umlallts r4, r5, r6, r7	
+	smull r0, r1, r2, r3
+	smulls r1, r2, r3, r4
+	smulleq r2, r3, r4, r5
+	smullmi sp, fp, ip, lr
+	smullvss sp, r8, r6, r8
+	smulllts r4, r5, r6, r7	
+	smlal r0, r1, r2, r3
+	smlals r1, r2, r3, r4
+	smlaleq r2, r3, r4, r5
+	smlalmi sp, fp, ip, lr
+	smlalvss sp, r8, r6, r8
+	smlallts r4, r5, r6, r7
+
