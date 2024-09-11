@@ -74,4 +74,28 @@ _start:
 	smlalmi sp, fp, ip, lr
 	smlalvss sp, r8, r6, r8
 	smlallts r4, r5, r6, r7
+	and r1, r2, r3, lsl #2
+	andhss r5, r6
+	andvs r6, r2, #5
+	ands sp, fp, r2
+	andeq r1, r2, rrx
+	andpl r0, r1, r2
+	orr r1, r2, r3, lsl #2
+	orrhss r5, r6
+	orrvs r6, r2, #5
+	orrs sp, fp, r2
+	orreq r1, r2, rrx
+	orrpl r0, r1, r2
+	eor r1, r2, r3, lsl #2
+	eorhss r5, r6
+	eorvs r6, r2, #5
+	eors sp, fp, r2
+	eoreq r1, r2, rrx
+	eorpl r0, r1, r2
+	bic r1, r2, r3, lsl #2
+	bichss r5, r6
+	bicvs r6, r2, #5
+	bics sp, fp, r2
+	biceq r1, r2, rrx
+	bicpl r0, r1, r2
 
