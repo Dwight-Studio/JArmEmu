@@ -52,7 +52,7 @@ public class StateInitializerTest extends JArmEmuTest {
 
     @Test
     public void convertMovToShiftTest() throws ASMException {
-        SourceScanner sourceScanner = new SourceScanner(".TEXT \n ADD R0, R0 \n MOVSEQ R1, R0 \n MOVS R1, R0, LSL#5", "Test.s", 0);
+        SourceScanner sourceScanner = new SourceScanner(".TEXT \n ADD R0, R0 \n MOVEQS R1, R0 \n MOVS R1, R0, LSL#5", "Test.s", 0);
 
         ADDInstruction add = new ADDInstruction(new Modifier(Condition.AL, false, null, null), "r0", "r0", null, null);
         MOVInstruction mov = new MOVInstruction(new Modifier(Condition.EQ, true, null, null), "r1", "r0", null, null);

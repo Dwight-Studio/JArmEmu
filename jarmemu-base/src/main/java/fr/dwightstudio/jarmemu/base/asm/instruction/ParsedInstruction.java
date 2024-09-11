@@ -35,7 +35,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.SequencedSet;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.logging.Logger;
 
@@ -114,8 +114,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
     public abstract @NotNull Class<? extends ParsedArgument<D>> getParsedArg4Class();
 
-    @NotNull
-    public abstract SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses();
+    public abstract @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses();
 
     /**
      * Execute the instruction on the state container

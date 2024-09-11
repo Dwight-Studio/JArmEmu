@@ -37,10 +37,9 @@ import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.SequencedSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -82,9 +81,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     }
 
     @Override
-    @NotNull
-    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(UpdateFlags.class, DataMode.class, Condition.class);
+    public @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        return Set.of(UpdateFlags.class, DataMode.class, Condition.class);
     }
 
     @Override

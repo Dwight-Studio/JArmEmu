@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.base.gui.factory;
 
-import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.util.InstructionSyntaxUtils;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;

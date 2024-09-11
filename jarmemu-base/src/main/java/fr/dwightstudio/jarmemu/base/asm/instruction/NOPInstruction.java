@@ -6,10 +6,9 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.SequencedSet;
+import java.util.Set;
 
 public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Object> {
 
@@ -60,9 +59,8 @@ public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Ob
     }
 
     @Override
-    @NotNull
-    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of();
+    public @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        return Set.of();
     }
 
     @Override

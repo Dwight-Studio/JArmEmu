@@ -10,10 +10,9 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.SequencedSet;
+import java.util.Set;
 
 public class CLREXInstruction extends ParsedInstruction<Object, Object, Object, Object> {
     public CLREXInstruction(Modifier modifier, ParsedArgument<Object> arg1, ParsedArgument<Object> arg2, ParsedArgument<Object> arg3, ParsedArgument<Object> arg4) throws ASMException {
@@ -51,9 +50,8 @@ public class CLREXInstruction extends ParsedInstruction<Object, Object, Object, 
     }
 
     @Override
-    @NotNull
-    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class);
+    public @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        return Set.of(Condition.class);
     }
 
     @Override

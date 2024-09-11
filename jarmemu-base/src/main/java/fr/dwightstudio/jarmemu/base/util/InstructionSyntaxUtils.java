@@ -31,7 +31,6 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.SyntaxHighlightedTableCell;
-import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;

@@ -29,12 +29,15 @@ import fr.dwightstudio.jarmemu.base.asm.instruction.*;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.util.ModifierUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.SequencedSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public enum Instruction {
 
@@ -127,7 +130,7 @@ public enum Instruction {
     private String arg3Type;
     private String arg4Type;
     private boolean workingRegister;
-    private SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> parameters;
+    private Set<Class<? extends Enum<? extends ModifierParameter>>> parameters;
 
     Instruction(Class<? extends ParsedInstruction<?, ?, ?, ?>> instructionClass) {
 
@@ -203,7 +206,9 @@ public enum Instruction {
         return workingRegister;
     }
 
-    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
-        return parameters;
+    public List<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        ArrayList<Class<? extends Enum<? extends ModifierParameter>>> result = new ArrayList<>(parameters);
+        result.sort(ModifierUtils.getComparator());
+        return result;
     }
 }

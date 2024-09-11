@@ -4,9 +4,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.RequiredModifierParameter;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.SequencedSet;
+import java.util.*;
 
 public class ModifierUtils {
 
@@ -19,7 +17,7 @@ public class ModifierUtils {
         private final int[] finalIndices;
         private boolean finished;
 
-        public PossibleModifierIterator(SequencedSet<Class<? extends Enum<? extends ModifierParameter>>> classes) {
+        public PossibleModifierIterator(List<Class<? extends Enum<? extends ModifierParameter>>> classes) {
             this.classes = new ArrayList<>(classes);
             indices = new int[classes.size()];
             finalIndices = new int[classes.size()];
@@ -58,5 +56,29 @@ public class ModifierUtils {
             }
             return modifier;
         }
+    }
+
+    public static Comparator<? super Class<? extends Enum<? extends ModifierParameter>>> getComparator() {
+        return new Comparator<>() {
+            private static int getValue(Class<? extends Enum<? extends ModifierParameter>> clazz) {
+                return switch (clazz.getSimpleName()) {
+                    case "Condition" -> 3;
+                    case "UpdateMode" -> 2;
+                    case "UpdateFlags" -> 1;
+                    case "DataMode" -> 0;
+                    default -> throw new IllegalStateException("Unexpected value: " + clazz.getSimpleName());
+                };
+            }
+
+            @Override
+            public int compare(Class<? extends Enum<? extends ModifierParameter>> t1, Class<? extends Enum<? extends ModifierParameter>> t2) {
+                return getValue(t2) - getValue(t1);
+            }
+
+            @Override
+            public boolean equals(Object o) {
+                return super.equals(o);
+            }
+        };
     }
 }

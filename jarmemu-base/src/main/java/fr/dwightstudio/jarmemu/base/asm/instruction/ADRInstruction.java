@@ -37,10 +37,9 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateFlags;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.SequencedSet;
+import java.util.Set;
 
 public class ADRInstruction extends ParsedInstruction<Register, Integer, Object, Object> {
     public ADRInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -76,9 +75,8 @@ public class ADRInstruction extends ParsedInstruction<Register, Integer, Object,
     }
 
     @Override
-    @NotNull
-    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(UpdateFlags.class, Condition.class);
+    public @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        return Set.of(UpdateFlags.class, Condition.class);
     }
 
     @Override

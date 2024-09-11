@@ -33,10 +33,9 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Modifier;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
-import fr.dwightstudio.jarmemu.base.util.SequencedSetUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.SequencedSet;
+import java.util.Set;
 
 public class BInstruction extends ParsedInstruction<Integer, Object, Object, Object> {
     public BInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
@@ -72,9 +71,8 @@ public class BInstruction extends ParsedInstruction<Integer, Object, Object, Obj
     }
 
     @Override
-    @NotNull
-    public SequencedSet<Class<? extends Enum<? extends ModifierParameter>>>getModifierParameterClasses() {
-        return SequencedSetUtils.of(Condition.class);
+    public @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
+        return Set.of(Condition.class);
     }
 
     @Override

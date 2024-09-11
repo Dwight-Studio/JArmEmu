@@ -23,6 +23,8 @@
 
 package fr.dwightstudio.jarmemu.base.asm.modifier;
 
+import java.util.Comparator;
+
 public record Modifier(Condition condition, boolean doUpdateFlags, DataMode dataMode, UpdateMode updateMode) {
     public Modifier() {
         this(null, false, null, null);
@@ -60,9 +62,9 @@ public record Modifier(Condition condition, boolean doUpdateFlags, DataMode data
 
     @Override
     public String toString() {
-        return ((doUpdateFlags ? "S" : "") +
-                (dataMode == null ? "" : dataMode.toString()) +
+        return ((condition == null ? "" : condition.toString()) +
                 (updateMode == null ? "" : updateMode.toString()) +
-                (condition == null ? "" : condition.toString()));
+                (doUpdateFlags ? "S" : "") +
+                (dataMode == null ? "" : dataMode.toString()));
     }
 }
