@@ -74,7 +74,7 @@ public enum Instruction {
 
     // Comparison
     CMP(CMPInstruction.class),
-    CMN(CMPInstruction.class),
+    CMN(CMNInstruction.class),
     TST(TSTInstruction.class),
     TEQ(TEQInstruction.class),
     CBZ(CBZInstruction.class),

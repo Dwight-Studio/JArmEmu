@@ -21,6 +21,7 @@
 - Fixed undetected catch point by BX instruction
 - Fixed value update highlighting
 - Fixed unsaved dialog triggering
+- Fixed CMN wrongly transformed into CMP
 
 
 0.2.1 -> 0.2.2
