@@ -164,7 +164,6 @@ public class FileEditor {
         Nodes.addInputMap(codeArea, InputMap.consume(EventPattern.anyOf(EventPattern.keyPressed(KeyCode.TAB))));
 
         codeArea.setOnKeyPressed(keyEvent -> {
-            System.out.println(keyEvent.getCode().toString());
             if (keyEvent.getCode() == KeyCode.ENTER) {
                 String add = getRealTimeParser().lineDefinesLabel(codeArea.getCurrentParagraph() - 1) ? "\t" : "";
 
