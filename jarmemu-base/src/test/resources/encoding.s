@@ -38,3 +38,15 @@ _start:
 	rscccs r9, r5
 	rscne r0, r0, #55
 	rsccs r2, r3, r4
+    mul r0, r0, r0
+    muls r5, r6, r8
+    mulnes r5, r6, r5
+    muls r9, r9, r5
+    mullt r10, sp, fp
+    mulle r8, r6, r6
+    mla r8, r6, r6, r1
+    mlaeq r1, r8, r6, r5
+    mlaccs r8, r11, sp, sp
+    mlacc r8, r3, r1, r1
+    mlane r7, r0, r6, r9
+    mlavc r8, r6, r5, r4
