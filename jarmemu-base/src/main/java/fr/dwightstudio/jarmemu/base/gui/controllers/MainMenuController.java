@@ -108,26 +108,23 @@ public class MainMenuController {
     public void onReloadAll() {
         JArmEmuApplication.getSimulationMenuController().onStop();
         if (JArmEmuApplication.getEditorController().getSaveState()) {
-            if (JArmEmuApplication.getEditorController().getSaveState()) {
-                JArmEmuApplication.getEditorController().reloadAll();
-            } else {
-                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
-                    switch (rtn) {
-                        case SAVE_AND_CONTINUE -> {
-                            onSaveAll();
-                            JArmEmuApplication.getEditorController().reloadAll();
-                        }
-
-                        case DISCARD_AND_CONTINUE -> {
-                            JArmEmuApplication.getEditorController().reloadAll();
-                        }
-
-                        default -> {
-                        }
+            JArmEmuApplication.getEditorController().reloadAll();
+        } else {
+            JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        onSaveAll();
+                        JArmEmuApplication.getEditorController().reloadAll();
                     }
-                });
-            }
-            setLastSave();
+
+                    case DISCARD_AND_CONTINUE -> {
+                        JArmEmuApplication.getEditorController().reloadAll();
+                        setLastSave();
+                    }
+
+                    default -> {}
+                }
+            });
         }
     }
 
@@ -136,8 +133,25 @@ public class MainMenuController {
      */
     public void onReload() {
         JArmEmuApplication.getSimulationMenuController().onStop();
-        JArmEmuApplication.getEditorController().currentFileEditor().reload();
-        setLastSave();
+        if (JArmEmuApplication.getEditorController().currentFileEditor().getSaveState()) {
+            JArmEmuApplication.getEditorController().currentFileEditor().reload();
+        } else {
+            JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        onSave();
+                        JArmEmuApplication.getEditorController().currentFileEditor().reload();
+                    }
+
+                    case DISCARD_AND_CONTINUE -> {
+                        JArmEmuApplication.getEditorController().currentFileEditor().reload();
+                        setLastSave();
+                    }
+
+                    default -> {}
+                }
+            });
+        }
     }
 
     /**
@@ -146,26 +160,24 @@ public class MainMenuController {
     public void onCloseAll() {
         JArmEmuApplication.getSimulationMenuController().onStop();
         if (JArmEmuApplication.getEditorController().getSaveState()) {
-            if (JArmEmuApplication.getEditorController().getSaveState()) {
-                JArmEmuApplication.getEditorController().closeAll();
-            } else {
-                JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
-                    switch (rtn) {
-                        case SAVE_AND_CONTINUE -> {
-                            onSaveAll();
-                            JArmEmuApplication.getEditorController().closeAll();
-                            JArmEmuApplication.getMainMenuController().setLastSave();
-                        }
-
-                        case DISCARD_AND_CONTINUE -> {
-                            JArmEmuApplication.getEditorController().closeAll();
-                            JArmEmuApplication.getMainMenuController().setLastSave();
-                        }
-
-                        default -> {}
+            JArmEmuApplication.getEditorController().closeAll();
+        } else {
+            JArmEmuApplication.getDialogs().unsavedAlert().thenAccept(rtn -> {
+                switch (rtn) {
+                    case SAVE_AND_CONTINUE -> {
+                        onSaveAll();
+                        JArmEmuApplication.getEditorController().closeAll();
+                        setLastSave();
                     }
-                });
-            }
+
+                    case DISCARD_AND_CONTINUE -> {
+                        JArmEmuApplication.getEditorController().closeAll();
+                        setLastSave();
+                    }
+
+                    default -> {}
+                }
+            });
         }
     }
 

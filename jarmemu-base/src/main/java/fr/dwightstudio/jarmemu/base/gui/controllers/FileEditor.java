@@ -157,26 +157,44 @@ public class FileEditor {
 
         // Indentation automatique
         final Pattern whiteSpace = Pattern.compile( "^\\s+" );
-        codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE ->
-        {
+        codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
+            System.out.println(KE.getCode().toString());
             if (KE.getCode() == KeyCode.ENTER) {
                 String add = getRealTimeParser().lineDefinesLabel(codeArea.getCurrentParagraph() - 1) ? "\t" : "";
 
-                Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph()-1).getSegments().getFirst());
-                if (matcher.find()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + add));
+                Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph() - 1).getSegments().getFirst());
+                if (matcher.find())
+                    Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + add));
                 else if (!add.isEmpty()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), add));
-            } else if (KE.getCode() == KeyCode.TAB && KE.isShiftDown()) {
-                int parN = codeArea.getCurrentParagraph();
-                Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
-                if (par.getText().startsWith("\t") || par.getText().startsWith(" ")) {
-                    codeArea.deleteText(parN, 0, parN, 1);
+            } else if (KE.getCode() == KeyCode.TAB) {
+                KE.consume();
+
+                int selStart = codeArea.getCaretSelectionBind().getStartPosition();
+                int selEnd = codeArea.getCaretSelectionBind().getEndPosition();
+                boolean sel = selStart == selEnd;
+
+                int start = codeArea.getCaretSelectionBind().getStartParagraphIndex();
+                int end = codeArea.getCaretSelectionBind().getEndParagraphIndex();
+
+                for (int parN = start; parN <= end; parN++) {
+                    if (KE.isShiftDown()) {
+                        Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
+                        if (par.getText().startsWith("\t") || par.getText().startsWith(" ")) {
+                            codeArea.deleteText(parN, 0, parN, 1);
+                            selEnd--;
+                        }
+                    } else {
+                        codeArea.insertText(parN, 0, "\t");
+                        selEnd++;
+                    }
                 }
+
+                if (!sel) codeArea.selectRange(selStart, selEnd);
             }
         });
 
         // Ajout automatique du caractère fermant
-        codeArea.addEventHandler(KeyEvent.KEY_TYPED, KE ->
-        {
+        codeArea.addEventHandler(KeyEvent.KEY_TYPED, KE -> {
             int caretPosition = codeArea.getCaretPosition();
             Platform.runLater( () -> {
                 JArmEmuApplication.getAutocompletionController().autocompleteChar(KE.getCharacter(), caretPosition);

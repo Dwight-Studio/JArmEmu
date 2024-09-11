@@ -19,6 +19,7 @@
 - Fixed stuck UI when executing with minimum simulation interval
 - Fixed undetected catch point by BX instruction
 - Fixed value update highlighting
+- Fixed unsaved dialog triggering
 
 
 0.2.1 -> 0.2.2
