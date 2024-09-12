@@ -75,7 +75,9 @@ public class NOPInstruction extends ParsedInstruction<Object, Object, Object, Ob
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        return (cond << 28) + (0b11 << 24) + (1 << 21) + (0b1111 << 12);
     }
 
     @Override
