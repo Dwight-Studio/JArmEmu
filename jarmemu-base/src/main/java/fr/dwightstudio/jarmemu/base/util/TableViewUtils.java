@@ -11,6 +11,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TableViewUtils {
     public static void setupColumn(TableColumn<?,?> col, Ikon icon, double width, boolean editable, boolean resizable, boolean sortable) {
@@ -52,11 +54,35 @@ public class TableViewUtils {
             }
         }
 
+        private List<TableColumn<T, ?>> getLeafColumns(TableView<T> tableView) {
+            List<TableColumn<T, ?>> rtn = new ArrayList<>();
+
+            for (TableColumn<T, ?> child : tableView.getColumns()) {
+                rtn.addAll(getLeafColumnsRecursive(child));
+            }
+
+            return rtn;
+        }
+
+        private List<TableColumn<T, ?>> getLeafColumnsRecursive(TableColumn<T, ?> column) {
+            if (column.getColumns() == null || column.getColumns().isEmpty()) {
+                return List.of(column);
+            } else {
+                List<TableColumn<T, ?>> rtn = new ArrayList<>();
+
+                for (TableColumn<T, ?> child : column.getColumns()) {
+                    rtn.addAll(getLeafColumnsRecursive(child));
+                }
+
+                return rtn;
+            }
+        }
+
         @Override
         protected double computePrefWidth(double height, double topInset, double rightInset, double bottomInset, double leftInset) {
             update();
 
-            ObservableList<TableColumn<T, ?>> cols = getSkinnable().getColumns();
+            List<TableColumn<T, ?>> cols = getLeafColumns(getSkinnable());
 
             if (cols == null || cols.isEmpty()) {
                 return super.computePrefWidth(height, topInset, rightInset, bottomInset, leftInset);
