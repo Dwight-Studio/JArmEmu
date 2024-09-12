@@ -98,6 +98,8 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
                     shiftArgument = new ShiftArgument(mems[2]);
                     String rgString = mems[1];
 
+                    if (shiftArgument.getArgument().isRegister()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidValue", shiftArgument.getArgument().originalString));
+
                     if (rgString.startsWith("+")) {
                         rgString = rgString.substring(1);
                         negative = false;

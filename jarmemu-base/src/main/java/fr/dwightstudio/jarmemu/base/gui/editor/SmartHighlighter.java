@@ -117,13 +117,15 @@ public class SmartHighlighter extends RealTimeParser {
     private String modifier;
     private Instruction instruction;
     private String argType;
+
     private boolean offsetArgument;
     private boolean brace;
     private boolean bracket;
-    private List<Find> find;
-
+    private boolean rrx;
     private boolean error;
     private boolean errorOnLastIter;
+
+    private List<Find> find;
 
     public SmartHighlighter(FileEditor editor) {
         super("RealTimeParser" + editor.getRealIndex());
@@ -177,9 +179,13 @@ public class SmartHighlighter extends RealTimeParser {
         spansBuilder = new StyleSpansBuilder<>();
         command = "";
         argType = "";
+
         offsetArgument = false;
         brace = false;
         bracket = false;
+        rrx = false;
+        error = false;
+        errorOnLastIter = false;
 
         find = editor.getSearch(text);
     }
@@ -204,12 +210,13 @@ public class SmartHighlighter extends RealTimeParser {
                         error = false;
 
                         if (cursorPos <= 0) {
-                            cursorPos = Integer.MAX_VALUE;
                             if (line != preventLine) {
-                                JArmEmuApplication.getAutocompletionController().update(editor, line, currentSection, context, subContext, contextLength, command, argType, bracket, brace);
+                                SmartContext sc = new SmartContext(editor, line, currentSection, context, subContext, cursorPos, contextLength, command, argType, bracket, brace, rrx);
+                                JArmEmuApplication.getAutocompletionController().update(sc);
                             } else {
                                 preventLine = -1;
                             }
+                            cursorPos = Integer.MAX_VALUE;
                         }
 
                         if (text.isEmpty()) break;
@@ -474,14 +481,10 @@ public class SmartHighlighter extends RealTimeParser {
                 subContext = SubContext.NONE;
 
                 if (instruction.isValid()) {
-                    matcher = Pattern.compile(command).matcher(command + modifier);
-                    if (matcher.find()) tag("instruction", matcher);
+                    tag("instruction", command.length());
+                    if (!modifier.isEmpty()) tag("modifier", modifier.length());
 
-                    int rc = contextLength;
-                    matcher = Pattern.compile(modifier).matcher(modifier);
-                    if (matcher.find()) tag("modifier", matcher);
-
-                    contextLength += rc;
+                    contextLength = command.length() + modifier.length();
                 } else {
                     matcher = DIRECTIVE_VALUE_PATTERN.matcher(text);
                     if (matcher.find()) {
@@ -504,7 +507,8 @@ public class SmartHighlighter extends RealTimeParser {
 
         boolean rtn = switch (argType) {
             case "RegisterArgument", "RegisterWithUpdateArgument" -> matchRegister();
-            case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" -> matchImmediate();
+            case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" ->
+                    matchImmediate();
             case "RotatedOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> matchImmediateOrRegister();
             case "ShiftArgument" -> matchShift();
             case "AddressArgument" -> matchAddress();
@@ -550,6 +554,7 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private boolean matchShift() {
+        if (rrx) return false;
         if (subContext == SubContext.SHIFT) return matchImmediateOrRegister();
 
         if (subContext == SubContext.IMMEDIATE) return false;
@@ -557,6 +562,8 @@ public class SmartHighlighter extends RealTimeParser {
         Matcher matcher = SHIFT_PATTERN.matcher(text);
 
         if (matcher.find()) {
+            rrx = matcher.group().strip().equalsIgnoreCase("RRX");
+
             subContext = SubContext.SHIFT;
             tag("shift", matcher);
             return true;
@@ -584,7 +591,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     private boolean matchOffset() {
         if (matchImmediate()) return true;
-        else  {
+        else {
             Matcher matcher = REGISTER_SIGN_PATTERN.matcher(text);
 
             if (matcher.find()) {
@@ -722,7 +729,7 @@ public class SmartHighlighter extends RealTimeParser {
                 }
 
                 case SHIFT -> {
-                    if (matchBracket()) {
+                    if (rrx && matchBracket()) {
                         subContext = SubContext.ADDRESS;
                         return true;
                     } else {
@@ -749,7 +756,7 @@ public class SmartHighlighter extends RealTimeParser {
             if (subContext == SubContext.NONE) {
                 if (!matchRegister()) return false;
             } else if (subContext == SubContext.REGISTER) {
-                if (matchBracket()){
+                if (matchBracket()) {
                     subContext = SubContext.ADDRESS;
                     return true;
                 } else return false;
@@ -897,7 +904,7 @@ public class SmartHighlighter extends RealTimeParser {
                             tag("label", matcher);
                             subContext = SubContext.PRIMARY;
                             addSymbols = matcher.group().strip();
-                            
+
                             caseTranslationTable.add(new CaseIndependentEntry(addSymbols));
                             addSymbols = addSymbols.toUpperCase();
                             return true;
@@ -937,10 +944,10 @@ public class SmartHighlighter extends RealTimeParser {
 
                 if (matcher.find()) {
                     addGlobals = matcher.group().strip();
-                    
+
                     caseTranslationTable.add(new CaseIndependentEntry(addGlobals));
                     addGlobals = addGlobals.toUpperCase();
-                    
+
                     addReferences.add(addGlobals);
                     context = Context.ERROR;
 
@@ -1005,8 +1012,8 @@ public class SmartHighlighter extends RealTimeParser {
         }
     }
 
-    private void tag(String highlight, Matcher matcher) {
-        contextLength = matcher.end();
+    private void tag(String highlight, int length) {
+        contextLength = length;
         addSpan(Collections.singleton(highlight), contextLength);
         find.replaceAll(f -> f.offset(contextLength));
         find.removeIf(Objects::isNull);
@@ -1014,8 +1021,16 @@ public class SmartHighlighter extends RealTimeParser {
         cursorPos -= contextLength;
     }
 
+    private void tag(String highlight, Matcher matcher) {
+        tag(highlight, matcher.end());
+    }
+
     private void tagBlank(Matcher matcher) {
-        contextLength = matcher.end();
+        tagBlank(matcher.end());
+    }
+
+    private void tagBlank(int length) {
+        contextLength = length;
         addSpan(Collections.emptyList(), contextLength);
         find.replaceAll(f -> f.offset(contextLength));
         find.removeIf(Objects::isNull);
@@ -1024,7 +1039,11 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private void tagError(String highlight, Matcher matcher) {
-        contextLength = matcher.end();
+        tagError(highlight, matcher.end());
+    }
+
+    private void tagError(String highlight, int length) {
+        contextLength = length;
         addSpan(List.of(highlight, "error-secondary"), contextLength);
         find.replaceAll(f -> f.offset(contextLength));
         find.removeIf(Objects::isNull);
@@ -1136,7 +1155,7 @@ public class SmartHighlighter extends RealTimeParser {
     public Set<String> getSymbols() {
         return new HashSet<>(symbols.values());
     }
-    
+
     @Override
     public Set<CaseIndependentEntry> getCaseTranslationTable() {
         return caseTranslationTable;

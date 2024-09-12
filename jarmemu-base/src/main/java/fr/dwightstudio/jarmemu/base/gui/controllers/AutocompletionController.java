@@ -8,7 +8,7 @@ import fr.dwightstudio.jarmemu.base.asm.Directive;
 import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.base.gui.editor.Context;
+import fr.dwightstudio.jarmemu.base.gui.editor.SmartContext;
 import fr.dwightstudio.jarmemu.base.gui.editor.SubContext;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import javafx.application.Platform;
@@ -31,6 +31,8 @@ public class AutocompletionController implements Initializable {
 
     private final Object LOCK = new Object();
 
+    private SmartContext sc;
+    
     private ArrayList<String> list;
     private ObservableListWrapper<String> wrappedList;
     private ListView<String> listView;
@@ -38,18 +40,6 @@ public class AutocompletionController implements Initializable {
     private boolean reopened;
     private String currentWord;
     private boolean considerWord;
-
-    // Data
-    private FileEditor editor;
-    private int line;
-    private Section section;
-    private Context context;
-    private SubContext subContext;
-    private int contextLength;
-    private String command;
-    private String argType;
-    private boolean bracket;
-    private boolean brace;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -69,8 +59,14 @@ public class AutocompletionController implements Initializable {
         listView.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case ENTER, TAB -> applyAutocomplete();
-                case LEFT -> editor.getCodeArea().moveTo(editor.getCodeArea().getCaretPosition() - 1);
-                case RIGHT -> editor.getCodeArea().moveTo(editor.getCodeArea().getCaretPosition() + 1);
+                case LEFT -> {
+                    sc.editor().getCodeArea().moveTo(sc.editor().getCodeArea().getCaretPosition() - 1);
+                    close();
+                }
+                case RIGHT -> {
+                    sc.editor().getCodeArea().moveTo(sc.editor().getCodeArea().getCaretPosition() + 1);
+                    close();
+                }
                 case ESCAPE -> close();
             }
         });
@@ -92,20 +88,14 @@ public class AutocompletionController implements Initializable {
         popup.setHideOnEscape(true);
         popup.setAutoFix(false);
         popup.setAutoHide(true);
+
+        sc = new SmartContext();
     }
 
-    public void update(FileEditor editor, int line, Section section, Context context, SubContext subContext, int lastTagLength, String command, String argType, boolean bracket, boolean brace) {
-        this.editor = editor;
-        this.line = line;
-        this.section = section;
-        this.context = context;
-        this.subContext = subContext;
-        this.contextLength = lastTagLength;
-        this.command = command;
-        this.argType = argType;
-        this.bracket = bracket;
-        this.brace = brace;
+    public void update(SmartContext smartContext) {
         this.considerWord = false;
+
+        this.sc = smartContext;
 
         if (JArmEmuApplication.getStatus() == Status.EDITING && JArmEmuApplication.getSettingsController().getAutoCompletion()) {
             update();
@@ -116,13 +106,13 @@ public class AutocompletionController implements Initializable {
         synchronized (LOCK) {
             list.clear();
 
-            if (editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).getText().isBlank()) {
+            if (sc.editor().getCodeArea().getParagraph(sc.editor().getCodeArea().getCurrentParagraph()).getText().isBlank()) {
                 close();
                 return;
             }
 
-            if (section == Section.TEXT) {
-                switch (context) {
+            if (sc.section() == Section.TEXT) {
+                switch (sc.context()) {
                     case NONE, INSTRUCTION, LABEL -> {
                         list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
                         considerWord = true;
@@ -130,9 +120,9 @@ public class AutocompletionController implements Initializable {
 
                     case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
                          INSTRUCTION_ARGUMENT_4 -> {
-                        switch (argType) {
+                        switch (sc.argType()) {
                             case "RegisterArgument" -> {
-                                if (subContext != SubContext.REGISTER) {
+                                if (sc.subContext() != SubContext.REGISTER) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
                                         if (!value.isSpecial()) list.add(value.name());
                                     }
@@ -140,7 +130,7 @@ public class AutocompletionController implements Initializable {
                             }
 
                             case "RegisterWithUpdateArgument" -> {
-                                if (subContext != SubContext.REGISTER) {
+                                if (sc.subContext() != SubContext.REGISTER) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
                                         if (!value.isSpecial()) {
                                             list.add(value.name());
@@ -151,35 +141,35 @@ public class AutocompletionController implements Initializable {
                             }
 
                             case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" -> {
-                                if (subContext != SubContext.IMMEDIATE) list.add("#");
+                                if (sc.subContext() != SubContext.IMMEDIATE) list.add("#");
                                 else {
-                                    list.addAll(editor.getRealTimeParser().getSymbols());
+                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
                                     considerWord = true;
                                 }
                             }
 
                             case "ImmediateOrRegisterArgument", "LongImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument", "PostOffsetArgument" -> {
-                                if (subContext != SubContext.REGISTER && subContext != SubContext.IMMEDIATE) {
+                                if (sc.subContext() != SubContext.REGISTER && sc.subContext() != SubContext.IMMEDIATE) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
                                         if (!value.isSpecial()) list.add(value.name());
                                     }
 
                                     list.add("#");
-                                } else if (subContext == SubContext.IMMEDIATE) {
-                                    list.addAll(editor.getRealTimeParser().getSymbols());
+                                } else if (sc.subContext() == SubContext.IMMEDIATE) {
+                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
                                     considerWord = true;
                                 }
                             }
 
                             case "ShiftArgument" -> {
-                                if (subContext == SubContext.SHIFT) {
+                                if (sc.rrx()) return;
+                                if (sc.subContext() == SubContext.SHIFT) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
                                         if (!value.isSpecial()) list.add(value.name());
                                     }
 
                                     list.add("#");
-                                }
-                                else if (subContext != SubContext.IMMEDIATE && subContext != SubContext.REGISTER) {
+                                } else if (sc.subContext() != SubContext.IMMEDIATE && sc.subContext() != SubContext.REGISTER) {
                                     list.add("LSL");
                                     list.add("LSR");
                                     list.add("ASR");
@@ -189,7 +179,7 @@ public class AutocompletionController implements Initializable {
                             }
 
                             case "RegisterAddressArgument" -> {
-                                if (subContext != SubContext.ADDRESS) {
+                                if (sc.subContext() != SubContext.ADDRESS) {
                                     for (RegisterUtils value : RegisterUtils.values()) {
                                         if (!value.isSpecial()) list.add("[" + value.name() + "]");
                                     }
@@ -197,8 +187,8 @@ public class AutocompletionController implements Initializable {
                             }
 
                             case "RegisterArrayArgument" -> {
-                                if (brace) {
-                                    switch (subContext) {
+                                if (sc.brace()) {
+                                    switch (sc.subContext()) {
                                         case NONE -> {
                                             for (RegisterUtils value : RegisterUtils.values()) {
                                                 if (!value.isSpecial()) {
@@ -220,21 +210,21 @@ public class AutocompletionController implements Initializable {
                             }
 
                             case "LabelArgument" -> {
-                                if (subContext != SubContext.LABEL_REF)
-                                    list.addAll(editor.getRealTimeParser().getAccessibleLabels());
+                                if (sc.subContext() != SubContext.LABEL_REF)
+                                    list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
                             }
 
                             case "LabelOrRegisterArgument" -> {
-                                list.addAll(editor.getRealTimeParser().getAccessibleLabels());
+                                list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
                                 for (RegisterUtils value : RegisterUtils.values()) {
                                     if (!value.isSpecial()) list.add("[" + value.name() + "]");
                                 }
                             }
 
                             case "AddressArgument" -> {
-                                if (subContext != SubContext.ADDRESS && subContext != SubContext.PSEUDO) {
-                                    if (bracket) {
-                                        switch (subContext) {
+                                if (sc.subContext() != SubContext.ADDRESS && sc.subContext() != SubContext.PSEUDO) {
+                                    if (sc.bracket()) {
+                                        switch (sc.subContext()) {
                                             case NONE -> {
                                                 for (RegisterUtils value : RegisterUtils.values()) {
                                                     if (!value.isSpecial()) list.add(value.name());
@@ -257,10 +247,12 @@ public class AutocompletionController implements Initializable {
                                                 list.add("RRX");
                                             }
 
-                                            case SHIFT -> list.add("#");
+                                            case SHIFT -> {
+                                                if (!sc.rrx()) list.add("#");
+                                            }
 
                                             case IMMEDIATE -> {
-                                                list.addAll(editor.getRealTimeParser().getSymbols());
+                                                list.addAll(sc.editor().getRealTimeParser().getSymbols());
                                                 considerWord = true;
                                             }
                                         }
@@ -268,8 +260,8 @@ public class AutocompletionController implements Initializable {
                                         list.add("[");
                                         list.add("=");
                                     }
-                                } else if (subContext == SubContext.PSEUDO) {
-                                    list.addAll(editor.getRealTimeParser().getSymbols());
+                                } else if (sc.subContext() == SubContext.PSEUDO) {
+                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
                                     considerWord = true;
                                 }
                             }
@@ -278,8 +270,8 @@ public class AutocompletionController implements Initializable {
                 }
             }
 
-            if (section.isDataRelatedSection() || section == Section.TEXT || section == Section.NONE) {
-                switch (context) {
+            if (sc.section().isDataRelatedSection() || sc.section() == Section.TEXT || sc.section() == Section.NONE) {
+                switch (sc.context()) {
                     case NONE, LABEL -> {
                         for (Directive directive : Directive.values()) {
                             list.add("." + directive.name());
@@ -291,10 +283,10 @@ public class AutocompletionController implements Initializable {
                     }
 
                     case DIRECTIVE_ARGUMENTS -> {
-                        switch (command.toUpperCase()) {
+                        switch (sc.command().toUpperCase()) {
                             case "SET", "EQU", "EQUIV", "EQV" -> {
-                                if (Objects.requireNonNull(subContext) == SubContext.SECONDARY) {
-                                    list.addAll(editor.getRealTimeParser().getSymbols());
+                                if (Objects.requireNonNull(sc.subContext()) == SubContext.SECONDARY) {
+                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
                                     considerWord = true;
                                 }
                             }
@@ -305,16 +297,12 @@ public class AutocompletionController implements Initializable {
 
             currentWord = getCurrentContext();
 
-            System.out.println("\"" + currentWord + "\"");
-
             if (considerWord) {
                 Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
                 if (matcher.find()) {
                     currentWord = matcher.group();
-                    System.out.println("OUI");
                 } else {
                     currentWord = "";
-                    System.out.println("OUI");
                 }
 
                 considerWord = false;
@@ -322,7 +310,7 @@ public class AutocompletionController implements Initializable {
 
             currentWord = currentWord.strip();
 
-            System.out.println("\"" + currentWord + "\"");
+            //System.out.println("\"" + currentWord + "\"");
             //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
             //System.out.println(list);
 
@@ -339,7 +327,7 @@ public class AutocompletionController implements Initializable {
             list.replaceAll(String::toLowerCase);
             list.sort(Comparator.comparingInt(String::length));
 
-            editor.getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
+            sc.editor().getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
 
             if (!list.isEmpty()) Platform.runLater(this::show);
             else close();
@@ -351,14 +339,14 @@ public class AutocompletionController implements Initializable {
             int start = getCurrentContextStart();
             int end = getCurrentContextEnd();
 
-            (start != end ? editor.getCodeArea().getCharacterBoundsOnScreen(start, end) : editor.getCodeArea().getCaretBounds()).ifPresent(bounds -> {
+            (start != end ? sc.editor().getCodeArea().getCharacterBoundsOnScreen(start, end) : sc.editor().getCodeArea().getCaretBounds()).ifPresent(bounds -> {
                 wrappedList.clear();
                 wrappedList.addAll(list);
 
                 double height = wrappedList.size() * listView.getFixedCellSize() + 20;
                 listView.setPrefHeight(height);
 
-                if (bounds.getMaxY() + Math.min(height, 200) > editor.getCodeArea().localToScene(editor.getCodeArea().getBoundsInLocal()).getMaxY()) {
+                if (bounds.getMaxY() + Math.min(height, 200) > sc.editor().getCodeArea().localToScene(sc.editor().getCodeArea().getBoundsInLocal()).getMaxY()) {
                     popup.setAnchorLocation(PopupWindow.AnchorLocation.CONTENT_BOTTOM_LEFT);
                     if (!popup.isShowing()) popup.show(JArmEmuApplication.getStage());
                     popup.setAnchorY(bounds.getMinY());
@@ -382,21 +370,20 @@ public class AutocompletionController implements Initializable {
      * @return the current context string
      */
     private String getCurrentContext() {
-        int start = editor.getCodeArea().getCaretColumn() - contextLength;
-        int stop = editor.getCodeArea().getCaretColumn();
-        if (start < 0 || stop - start <= 0) return "";
-        return editor.getCodeArea().getParagraph(editor.getCodeArea().getCurrentParagraph()).substring(start, stop);
+        int stop = sc.editor().getCodeArea().getCaretColumn() - sc.cursorPos();
+        int start = stop - sc.contextLength();
+        return sc.editor().getCodeArea().getParagraph(sc.editor().getCodeArea().getCurrentParagraph()).substring(start, stop);
     }
 
     /**
      * @return current context starting pos
      */
     private int getCurrentContextStart() {
-        int start = editor.getCodeArea().getCaretColumn() - currentWord.length();
+        int start = sc.editor().getCodeArea().getCaretColumn() - currentWord.length();
         if (start < 0) {
-            return editor.getCodeArea().getCaretPosition();
+            return sc.editor().getCodeArea().getCaretPosition();
         } else {
-            return editor.getCodeArea().getAbsolutePosition(line, start);
+            return sc.editor().getCodeArea().getAbsolutePosition(sc.line(), start);
         }
     }
 
@@ -404,14 +391,14 @@ public class AutocompletionController implements Initializable {
      * @return current context ending pos
      */
     private int getCurrentContextEnd() {
-        return editor.getCodeArea().getAbsolutePosition(line, editor.getCodeArea().getCaretColumn());
+        return sc.editor().getCodeArea().getAbsolutePosition(sc.line(), sc.editor().getCodeArea().getCaretColumn());
     }
 
     /**
      * Selects current context/word
      */
     private void selectCurrentWord() {
-        editor.getCodeArea().selectRange(getCurrentContextStart(), getCurrentContextEnd());
+        sc.editor().getCodeArea().selectRange(getCurrentContextStart(), getCurrentContextEnd());
     }
 
     /**
@@ -435,8 +422,8 @@ public class AutocompletionController implements Initializable {
      */
     public void caretMoved() {
         synchronized (LOCK) {
-            if (editor == null) return;
-            if (editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != line)
+            if (sc.editor() == null) return;
+            if (sc.editor().getCodeArea().offsetToPosition(sc.editor().getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != sc.line())
                 close();
 
             if (!reopened) close();
@@ -465,9 +452,9 @@ public class AutocompletionController implements Initializable {
 
         if (!newChar.isEmpty()) {
             synchronized (LOCK) {
-                editor.getRealTimeParser().cancelLine(line);
-                editor.getCodeArea().insertText(pos, newChar);
-                editor.getCodeArea().moveTo(pos);
+                sc.editor().getRealTimeParser().cancelLine(sc.line());
+                sc.editor().getCodeArea().insertText(pos, newChar);
+                sc.editor().getCodeArea().moveTo(pos);
                 reopened = true;
             }
         }
@@ -480,14 +467,14 @@ public class AutocompletionController implements Initializable {
         String selected = listView.getSelectionModel().getSelectedItem();
 
         if (selected != null) {
-            int pos = editor.getCodeArea().getCaretPosition();
+            int pos = sc.editor().getCodeArea().getCaretPosition();
 
             if (currentWord.isBlank()) {
-                editor.getCodeArea().selectRange(pos, pos);
+                sc.editor().getCodeArea().selectRange(pos, pos);
             } else {
                 selectCurrentWord();
             }
-            editor.getCodeArea().replaceSelection(selected);
+            sc.editor().getCodeArea().replaceSelection(selected);
 
             if (selected.length() == 1) {
                 autocompleteChar(selected, pos + 1);
