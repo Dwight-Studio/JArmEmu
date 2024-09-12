@@ -122,4 +122,16 @@ _start:
 	teqmi r10, r5
 	teqlo sp, #255
 	teqhs r8, r6, ror #2
+	mov r0, #5
+	movs r4, r6
+	movcss r0, #99
+	movvss r9, r10, asr #9
+	movlo r5, r5
+	movmis r1, r2, lsl #3
+	mvn r0, #5
+	mvneq r4, r6
+	mvnnes r0, #99
+	mvnhs r9, r10, asr #9
+	mvnles r5, r5
+	mvnge r1, r2, lsl #3
 
