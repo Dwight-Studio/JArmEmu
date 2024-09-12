@@ -8,8 +8,6 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.*;
 
-import javax.swing.plaf.nimbus.State;
-
 public class InstructionCodeUtils {
 
     public static int getDataProcessingCode(StateContainer stateContainer, ParsedInstruction<Register, Register, RegisterOrImmediate, ShiftFunction> parsedInstruction, int opcode) {

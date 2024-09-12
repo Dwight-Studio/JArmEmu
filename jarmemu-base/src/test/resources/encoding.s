@@ -164,5 +164,23 @@ _start:
 	swpb r3, r4, [r5]
 	swpb r4, r5, [r6]
 	swpb r5, r6, [r7]
-
-
+	b 240
+coucou:
+	b coucou
+	b 123456
+	bl 240
+coucou2:
+	bl coucou2
+	bl 123456
+	bx r3
+	bxeq r6
+	lsl r5, r4, #3
+	lsl r5, r4, r3
+	lsr r5, r4, #3
+	lsr r5, r4, r3
+	asr r5, r4, #3
+	asr r5, r4, r3
+	ror r5, r4, #3
+	ror r5, r4, r3
+	rrx r5, r4
+	svc #42
