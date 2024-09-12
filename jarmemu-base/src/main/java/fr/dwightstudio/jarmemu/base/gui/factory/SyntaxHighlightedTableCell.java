@@ -35,9 +35,7 @@ public class SyntaxHighlightedTableCell<T> extends TableCell<T, String> {
     private final TextFlow textFlow;
 
     public SyntaxHighlightedTableCell() {
-        textFlow = new TextFlow();
-        textFlow.getStyleClass().add("usage");
-        textFlow.setMaxHeight(20);
+        textFlow = new TextFlow();textFlow.setMaxHeight(20);
         textFlow.setMinWidth(Region.USE_PREF_SIZE);
     }
 

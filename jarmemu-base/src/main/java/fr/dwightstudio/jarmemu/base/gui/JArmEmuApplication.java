@@ -135,6 +135,9 @@ public class JArmEmuApplication extends Application {
     }
 
     // Before the release:
+    // TODO: Add value argument table
+    // TODO: Add shift argument table
+    // TODO: Add address argument table
     // FIXME: Branch + Pseudo Instruction immediate allowed value
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
 

@@ -34,9 +34,9 @@ public class StylizedStringTableCell<T> extends TableCell<T, String> {
 
     Label label;
 
-    public StylizedStringTableCell(String clazz) {
+    public StylizedStringTableCell(String ... clazz) {
         label = new Label();
-        label.getStyleClass().addAll("text", "usage", clazz);
+        label.getStyleClass().addAll(clazz);
         setTextAlignment(TextAlignment.CENTER);
         setAlignment(Pos.CENTER);
     }
@@ -55,7 +55,7 @@ public class StylizedStringTableCell<T> extends TableCell<T, String> {
         }
     }
 
-    public static <T> Callback<TableColumn<T, String>, TableCell<T, String>> factory(String clazz) {
+    public static <T> Callback<TableColumn<T, String>, TableCell<T, String>> factory(String ... clazz) {
         return (val) -> new StylizedStringTableCell<>(clazz);
     }
 }

@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.ToggleSwitch;
+import atlantafx.base.layout.ModalBox;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.ModalDialog;
 import javafx.animation.KeyFrame;
@@ -298,15 +299,21 @@ public class JArmEmuController implements Initializable {
     }
 
     public void openDialogFront(ModalDialog dialog) {
+        if (dialog.getModalBox().getOnClose() == null) dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogFront());
         modalPaneFront.show(dialog.getModalBox());
+        dialog.getModalBox().requestFocus();
     }
 
     public void openDialogMiddle(ModalDialog dialog) {
+        if (dialog.getModalBox().getOnClose() == null) dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
         modalPaneMiddle.show(dialog.getModalBox());
+        dialog.getModalBox().requestFocus();
     }
 
     public void openDialogBack(ModalDialog dialog) {
+        if (dialog.getModalBox().getOnClose() == null) dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
         modalPaneBack.show(dialog.getModalBox());
+        dialog.getModalBox().requestFocus();
     }
 
     public void closeDialogFront() {

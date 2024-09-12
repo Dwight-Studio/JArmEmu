@@ -203,8 +203,6 @@ public class JArmEmuDialogs {
                 vBox.getPrefHeight()
         );
 
-        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
-
         JArmEmuApplication.getController().openDialogBack(dialog);
     }
 
@@ -223,8 +221,6 @@ public class JArmEmuDialogs {
         VBox.setMargin(title, new Insets(0, 0, 10, 0));
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
-
-        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
 
         JArmEmuApplication.getController().openDialogMiddle(dialog);
     }
@@ -254,8 +250,6 @@ public class JArmEmuDialogs {
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
 
-        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
-
         JArmEmuApplication.getController().openDialogMiddle(dialog);
     }
 
@@ -267,7 +261,7 @@ public class JArmEmuDialogs {
         TableColumn<Instruction, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.name"));
         TableViewUtils.setupColumn(col0, Material2OutlinedAL.LABEL, 80, false, false, true);
         col0.setCellValueFactory(i -> new ReadOnlyStringWrapper(i.getValue().toString()));
-        col0.setCellFactory(StylizedStringTableCell.factory("instruction"));
+        col0.setCellFactory(StylizedStringTableCell.factory("text", "usage", "instruction"));
 
         TableColumn<Instruction, Instruction> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.usage"));
         TableViewUtils.setupColumn(col1, Material2OutlinedAL.DESCRIPTION, 80, false, true, false);
@@ -323,8 +317,6 @@ public class JArmEmuDialogs {
         VBox.setMargin(instructionTable, new Insets(10));
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
-
-        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
 
         JArmEmuApplication.getController().openDialogBack(dialog);
     }
@@ -396,8 +388,6 @@ public class JArmEmuDialogs {
         }
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
-
-        dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
 
         JArmEmuApplication.getController().openDialogMiddle(dialog);
     }

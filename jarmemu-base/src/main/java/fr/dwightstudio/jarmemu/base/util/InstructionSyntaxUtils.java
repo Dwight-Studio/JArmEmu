@@ -156,7 +156,7 @@ public class InstructionSyntaxUtils {
         col0.setReorderable(false);
         col0.setMaxWidth(50);
         col0.setMinWidth(50);
-        col0.setCellFactory(StylizedStringTableCell.factory("modifier"));
+        col0.setCellFactory(StylizedStringTableCell.factory("text", "usage", "modifier"));
         col0.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().toString()));
 
         TableColumn<Condition, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.flag"));
@@ -167,11 +167,12 @@ public class InstructionSyntaxUtils {
         col1.setReorderable(false);
         col1.setMaxWidth(150);
         col1.setMinWidth(150);
-        col1.setCellFactory(TextFieldTableCell.forTableColumn());
+        col1.setCellFactory(StylizedStringTableCell.factory("usage"));
         col1.getStyleClass().add(Tweaks.ALIGN_CENTER);
         col1.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().getDescription()));
 
         TableColumn<Condition, String> col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
+        col2.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
         col2.setSortable(false);
         col2.setResizable(true);
         col2.setEditable(false);
@@ -186,15 +187,50 @@ public class InstructionSyntaxUtils {
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
         tableView.setEditable(false);
-        tableView.setMinWidth(Region.USE_PREF_SIZE);
         tableView.setMaxHeight(Double.POSITIVE_INFINITY);
         tableView.setMinHeight(200);
 
+        tableView.setSkin(new TableViewUtils.ResizableTableViewSkin<>(tableView));
+
         tableView.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
-        for (Condition value : Condition.values()) {
-            System.out.println("%instructionList.description." + value.toString().toLowerCase());
-        }
+        return tableView;
+    }
+
+    public static TableView<Condition> getValueTable() {
+        TableColumn<Condition, String> col0 = new TableColumn<>();
+        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        col0.setSortable(true);
+        col0.setResizable(false);
+        col0.setEditable(false);
+        col0.setReorderable(false);
+        col0.setMaxWidth(50);
+        col0.setMinWidth(50);
+        col0.setCellFactory(SyntaxHighlightedTableCell.factory());
+        col0.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().toString()));
+
+        TableColumn<Condition, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
+        col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        col1.setSortable(false);
+        col1.setResizable(true);
+        col1.setEditable(false);
+        col1.setReorderable(false);
+        col1.setMinWidth(Region.USE_PREF_SIZE);
+        col1.setCellFactory(SyntaxHighlightedTableCell.factory());
+        col1.setCellValueFactory(c -> new ReadOnlyStringWrapper(JArmEmuApplication.formatMessage("%instructionList.description." + c.getValue().toString().toLowerCase())));
+
+        TableView<Condition> tableView = new TableView<>();
+        tableView.getColumns().setAll(col0, col1);
+        tableView.getItems().setAll(Condition.values());
+        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
+        tableView.setEditable(false);
+        tableView.setMaxHeight(Double.POSITIVE_INFINITY);
+        tableView.setMinHeight(200);
+
+        tableView.setSkin(new TableViewUtils.ResizableTableViewSkin<>(tableView));
+
+        tableView.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
         return tableView;
     }
