@@ -24,6 +24,7 @@
 - Fixed CMN wrongly transformed into CMP
 - Fixed autocompletion triggered when using Find & Replace
 - Fixed shifted MOV to SHIFT conversion
+- Fixed RegisterAddress highlighting
 
 
 0.2.1 -> 0.2.2

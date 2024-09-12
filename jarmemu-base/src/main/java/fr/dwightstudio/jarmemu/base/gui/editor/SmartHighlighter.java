@@ -754,13 +754,13 @@ public class SmartHighlighter extends RealTimeParser {
     private boolean matchRegisterAddress() {
         if (bracket || matchBracket()) {
             if (subContext == SubContext.NONE) {
-                if (!matchRegister()) return false;
+                return matchRegister();
             } else if (subContext == SubContext.REGISTER) {
                 if (matchBracket()) {
                     subContext = SubContext.ADDRESS;
                     return true;
                 } else return false;
-            }
+            } else return false;
         }
 
         return false;
