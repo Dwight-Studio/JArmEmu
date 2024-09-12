@@ -105,6 +105,7 @@ public class AutocompletionController implements Initializable {
         this.argType = argType;
         this.bracket = bracket;
         this.brace = brace;
+        this.considerWord = false;
 
         if (JArmEmuApplication.getStatus() == Status.EDITING && JArmEmuApplication.getSettingsController().getAutoCompletion()) {
             update();
@@ -122,7 +123,10 @@ public class AutocompletionController implements Initializable {
 
             if (section == Section.TEXT) {
                 switch (context) {
-                    case NONE, INSTRUCTION, LABEL -> list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
+                    case NONE, INSTRUCTION, LABEL -> {
+                        list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
+                        considerWord = true;
+                    }
 
                     case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
                          INSTRUCTION_ARGUMENT_4 -> {
@@ -301,15 +305,24 @@ public class AutocompletionController implements Initializable {
 
             currentWord = getCurrentContext();
 
+            System.out.println("\"" + currentWord + "\"");
+
             if (considerWord) {
                 Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
                 if (matcher.find()) {
                     currentWord = matcher.group();
+                    System.out.println("OUI");
+                } else {
+                    currentWord = "";
+                    System.out.println("OUI");
                 }
+
+                considerWord = false;
             }
 
             currentWord = currentWord.strip();
 
+            System.out.println("\"" + currentWord + "\"");
             //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
             //System.out.println(list);
 
