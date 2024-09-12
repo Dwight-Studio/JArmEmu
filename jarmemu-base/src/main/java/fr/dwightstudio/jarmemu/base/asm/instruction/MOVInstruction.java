@@ -43,6 +43,9 @@ import java.util.Set;
 
 
 public class MOVInstruction extends ParsedInstruction<Register, RegisterOrImmediate, ShiftFunction, Object> {
+
+    private ParsedInstruction<?, ?, ?, ?> shiftInstruction;
+
     public MOVInstruction(Modifier modifier, String arg1, String arg2, String arg3, String arg4) throws ASMException {
         super(modifier, arg1, arg2, arg3, arg4);
     }
@@ -117,9 +120,24 @@ public class MOVInstruction extends ParsedInstruction<Register, RegisterOrImmedi
     }
 
     public ParsedInstruction<?, ?, ?, ?> getShiftInstruction() throws ASMException {
+        if (shiftInstruction == null) generateShiftInstruction();
+        return shiftInstruction;
+    }
+
+    private void generateShiftInstruction() throws ASMException {
         String argString = this.arg3.getOriginalString();
         try {
-            return Instruction.valueOf(argString.substring(0, 3).toUpperCase()).create(modifier, arg1.getOriginalString(), arg2.getOriginalString(), argString.substring(3), arg4.getOriginalString()).withLineNumber(this.getLineNumber()).withFile(this.getFile());
+            String nArg1 = arg1.getOriginalString();
+            String nArg2 = arg2.getOriginalString();
+            String nArg3 = argString.substring(3);
+            String nArg4 = arg4.getOriginalString();
+
+            if (nArg1 != null) nArg1 = nArg1.isBlank() ? null : nArg1;
+            if (nArg2 != null) nArg2 = nArg2.isBlank() ? null : nArg2;
+            if (nArg3 != null) nArg3 = nArg3.isBlank() ? null : nArg3;
+            if (nArg4 != null) nArg4 = nArg4.isBlank() ? null : nArg4;
+
+            shiftInstruction = Instruction.valueOf(argString.substring(0, 3).toUpperCase()).create(modifier, nArg1, nArg2, nArg3, nArg4).withLineNumber(this.getLineNumber()).withFile(this.getFile());
         } catch (IllegalArgumentException e) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidShift", argString));
         }

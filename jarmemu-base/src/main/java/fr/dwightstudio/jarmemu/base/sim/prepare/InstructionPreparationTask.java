@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.sim.prepare;
 import fr.dwightstudio.jarmemu.base.asm.ParsedFile;
 import fr.dwightstudio.jarmemu.base.asm.ParsedObject;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
+import fr.dwightstudio.jarmemu.base.asm.instruction.MOVInstruction;
 import fr.dwightstudio.jarmemu.base.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
@@ -59,6 +60,11 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         container.getCurrentMemoryPos().setPos(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
+                if (obj instanceof MOVInstruction ins) {
+                    if (ins.isShiftInstruction()) {
+                        obj = ins.getShiftInstruction();
+                    }
+                }
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                     if (test(ins)) {
                         logger.info("Contextualizing " + ins);
@@ -79,6 +85,11 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
         int fi = 0;
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
+                if (obj instanceof MOVInstruction ins) {
+                    if (ins.isShiftInstruction()) {
+                        obj = ins.getShiftInstruction();
+                    }
+                }
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                     if (test(ins)) {
                         int finalFi = fi;
@@ -98,10 +109,15 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
     }
 
     @Override
-    public PreparationStream perform(Consumer<ParsedInstruction<?, ?, ?, ?>> consumer) {
+    public PreparationStream perform(Consumer<ParsedInstruction<?, ?, ?, ?>> consumer) throws ASMException {
         logger.info("Performing operation on instructions" + getDescription());
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
+                if (obj instanceof MOVInstruction ins) {
+                    if (ins.isShiftInstruction()) {
+                        obj = ins.getShiftInstruction();
+                    }
+                }
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                     if (test(ins)) {
                         logger.info("Performing on " + ins);
@@ -120,12 +136,17 @@ public class InstructionPreparationTask extends PreparationTask<ParsedInstructio
      * @param container the state container on which writing
      * @param positionProvider the function used to translate from line to memory address
      */
-    public PreparationStream write(StateContainer container, Function<ParsedInstruction<?, ?, ?, ?>, Integer> positionProvider) {
+    public PreparationStream write(StateContainer container, Function<ParsedInstruction<?, ?, ?, ?>, Integer> positionProvider) throws ASMException {
         logger.info("Writing instructions" + getDescription());
 
         container.getCurrentMemoryPos().setFileIndex(0);
         for (ParsedFile file : stream.files) {
             for (ParsedObject obj : file) {
+                if (obj instanceof MOVInstruction ins) {
+                    if (ins.isShiftInstruction()) {
+                        obj = ins.getShiftInstruction();
+                    }
+                }
                 if (obj instanceof ParsedInstruction<?, ?, ?, ?> ins) {
                     if (test(ins)) {
                         int pos = positionProvider.apply(ins);

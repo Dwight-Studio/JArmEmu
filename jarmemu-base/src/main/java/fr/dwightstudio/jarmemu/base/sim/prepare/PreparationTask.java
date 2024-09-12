@@ -56,5 +56,5 @@ public abstract class PreparationTask<T> {
      *
      * @param consumer the operation to perform
      */
-    public abstract PreparationStream perform(Consumer<T> consumer);
+    public abstract PreparationStream perform(Consumer<T> consumer) throws ASMException;
 }
