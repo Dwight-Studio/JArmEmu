@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.base.sim;
 
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
+import fr.dwightstudio.jarmemu.base.asm.exception.SoftwareInterruptionASMException;
 import fr.dwightstudio.jarmemu.base.asm.instruction.ParsedInstruction;
 import fr.dwightstudio.jarmemu.base.asm.parser.SourceParser;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;

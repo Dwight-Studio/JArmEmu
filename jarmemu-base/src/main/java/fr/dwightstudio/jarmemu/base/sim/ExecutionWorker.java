@@ -308,6 +308,16 @@ public class ExecutionWorker {
                     ));
                     step(true);
                 }
+            } catch (SoftwareInterruptionASMException exception) {
+                Platform.runLater(() -> {
+                    JArmEmuApplication.getEditorController().addNotification(
+                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.title"),
+                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.message", + exception.getCode()),
+                            Styles.ACCENT
+                    );
+                    JArmEmuApplication.getSimulationMenuController().onPause();
+                });
+                step(true);
             } catch (ExecutionASMException exception) {
                 executionException = exception;
             }
@@ -351,18 +361,6 @@ public class ExecutionWorker {
                             JArmEmuApplication.formatMessage("%notification.catchPoint.title"),
                             JArmEmuApplication.formatMessage("%notification.catchPoint.message"),
                             Styles.SUCCESS
-                    );
-                    JArmEmuApplication.getSimulationMenuController().onPause();
-                });
-                doContinue = false;
-            }
-
-            if (executionException instanceof SoftwareInterruptionASMException exception) {
-                Platform.runLater(() -> {
-                    JArmEmuApplication.getEditorController().addNotification(
-                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.title"),
-                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.message", + exception.getCode()),
-                            Styles.ACCENT
                     );
                     JArmEmuApplication.getSimulationMenuController().onPause();
                 });

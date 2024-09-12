@@ -92,7 +92,7 @@ public class SWIInstruction extends ParsedInstruction<Integer, Object, Object, O
 
     @Override
     protected void execute(StateContainer stateContainer, boolean ignoreExceptions, Integer arg1, Object arg2, Object arg3, Object arg4) throws ExecutionASMException {
-        throw new SoftwareInterruptionASMException(arg1);
+        if (!ignoreExceptions) throw new SoftwareInterruptionASMException(arg1);
     }
 
     @Override
