@@ -179,7 +179,7 @@ public class JArmEmuApplication extends Application {
         }
 
         // Essayer d'ouvrir le fichier passé en paramètre
-        argSave = new ArrayList<String>();
+        argSave = new ArrayList<>();
         if (!getParameters().getUnnamed().isEmpty()) {
             for (String arg : getParameters().getUnnamed()) {
                 if (arg.startsWith("--")) continue;

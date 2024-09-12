@@ -313,6 +313,7 @@ public class FileEditor {
             if (previousFind != null) finds.addAll(previousFind);
 
             for (Find find : finds) {
+                this.realTimeParser.preventAutocomplete(codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor());
                 this.realTimeParser.markDirty(
                     codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
                     codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
@@ -801,6 +802,7 @@ public class FileEditor {
         if (previousFind != null) finds.addAll(previousFind);
 
         for (Find find : finds) {
+            this.realTimeParser.preventAutocomplete(codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor());
             this.realTimeParser.markDirty(
                     codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
                     codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
