@@ -23,9 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
@@ -88,7 +86,13 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int Rm = ((RegisterArgument) this.arg2).getRegisterNumber();
+
+        int updateFlags = (this.modifier.doUpdateFlags() ? 1 : 0);
+        return (cond << 28) + (0b1101 << 21) + (updateFlags << 20) + (Rd << 12) + (0b11 << 5) + Rm;
     }
 
     @Override

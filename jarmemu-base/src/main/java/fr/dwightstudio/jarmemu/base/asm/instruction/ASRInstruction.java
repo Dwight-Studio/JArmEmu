@@ -23,10 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.ImmediateOrRegisterArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.*;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
@@ -92,7 +89,7 @@ public class ASRInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        return InstructionCodeUtils.getShift(stateContainer, this, Shift.ASR);
     }
 
     @Override

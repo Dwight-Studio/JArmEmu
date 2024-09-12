@@ -76,7 +76,7 @@ public class SWPInstruction extends ParsedInstruction<Register, Register, Intege
 
     @Override
     public @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses() {
-        return Set.of(Condition.class);
+        return Set.of(Condition.class, DataMode.class);
     }
 
     @Override

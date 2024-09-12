@@ -8,6 +8,8 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.DataMode;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.*;
 
+import javax.swing.plaf.nimbus.State;
+
 public class InstructionCodeUtils {
 
     public static int getDataProcessingCode(StateContainer stateContainer, ParsedInstruction<Register, Register, RegisterOrImmediate, ShiftFunction> parsedInstruction, int opcode) {
@@ -78,6 +80,26 @@ public class InstructionCodeUtils {
         return (cond << 28) + (isImmediateOp << 25) + (opcode << 21) + (updateFlags << 20) + (R << shifting) + Op2;
     }
 
+    public static int getShift(StateContainer stateContainer, ParsedInstruction<Register, Register, RegisterOrImmediate, Object> parsedInstruction, Shift shift) {
+        int cond = parsedInstruction.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) parsedInstruction.arg1).getRegisterNumber();
+        int Rn = ((RegisterArgument) parsedInstruction.arg2).getRegisterNumber();
+        int Op2 = 0;
+        Op2 += shift.getCode() << 5;
+        if (shift != Shift.RRX) {
+            if (((ImmediateOrRegisterArgument) parsedInstruction.arg3).isRegister()) {
+                Op2 += 1 << 4;
+                Op2 += ((ImmediateOrRegisterArgument) parsedInstruction.arg3).getRegisterNumber() << 8;
+            } else {
+                Op2 += ((ImmediateOrRegisterArgument) parsedInstruction.arg3).getValue(stateContainer).intValue() << 7;
+            }
+        }
+
+        int updateFlags = (parsedInstruction.modifier.doUpdateFlags() ? 1 : 0);
+        return (cond << 28) + (0b1101 << 21) + (updateFlags << 20) + (Rd << 12) + Op2 + Rn;
+    }
+
     public static int getMultiplyLong(ParsedInstruction<Register, Register, Register, Register> parsedInstruction, boolean doAccumulate, boolean isSigned) {
         int cond = parsedInstruction.modifier.condition().getCode();
 
@@ -142,11 +164,9 @@ public class InstructionCodeUtils {
             case IMMEDIATE_OFFSET -> {
                 Rn = ((AddressArgument) parsedInstruction.arg2).getAddressRegisterArgument().getRegisterNumber();
                 P = 1;
-                try {
-                    Offset = parsedInstruction.arg2.getValue(stateContainer).toInt();
-                    U = (Offset < 0) ? 0 : 1;
-                    if (U == 0) Offset = Math.abs(Offset);
-                } catch (ASMException ignored) {}
+                Offset = ((AddressArgument) parsedInstruction.arg2).getOffsetImmediateArgument().getValue(stateContainer);
+                U = (Offset < 0) ? 0 : 1;
+                if (U == 0) Offset = Math.abs(Offset);
             }
             case REGISTER_OFFSET -> {
                 I = 1;
@@ -173,6 +193,8 @@ public class InstructionCodeUtils {
                 Offset = (dir.getLastPos().getPos() - 4 * 2) - pos;
             }
         }
+
+
 
         return (cond << 28) + (1 << 26) + (I << 25) + (P << 24) + (U << 23) + (B << 22) + (W << 21) + (L << 20) + (Rn << 16) + (Rd << 12) + ((Shift & 0x7F) << 5) + (Offset & 0xFFF);
     }

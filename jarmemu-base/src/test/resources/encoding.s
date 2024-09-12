@@ -61,13 +61,13 @@ _start:
 	umlaleq r2, r3, r4, r5
 	umlalmi sp, fp, ip, lr
 	umlalvss sp, r8, r6, r8
-	umlallts r4, r5, r6, r7	
+	umlallts r4, r5, r6, r7
 	smull r0, r1, r2, r3
 	smulls r1, r2, r3, r4
 	smulleq r2, r3, r4, r5
 	smullmi sp, fp, ip, lr
 	smullvss sp, r8, r6, r8
-	smulllts r4, r5, r6, r7	
+	smulllts r4, r5, r6, r7
 	smlal r0, r1, r2, r3
 	smlals r1, r2, r3, r4
 	smlaleq r2, r3, r4, r5
@@ -103,19 +103,19 @@ _start:
 	cmpcs r6, r6, lsr #9
 	cmpmi r10, r5
 	cmplo sp, #255
-	cmphs r8, r6, ror #2	
+	cmphs r8, r6, ror #2
 	cmn r0, #25
 	cmneq r5, r0
 	cmncs r6, r6, lsr #9
 	cmnmi r10, r5
 	cmnlo sp, #255
-	cmnhs r8, r6, ror #2	
+	cmnhs r8, r6, ror #2
 	tst r0, #25
 	tsteq r5, r0
 	tstcs r6, r6, lsr #9
 	tstmi r10, r5
 	tstlo sp, #255
-	tsths r8, r6, ror #2	
+	tsths r8, r6, ror #2
 	teq r0, #25
 	teqeq r5, r0
 	teqcs r6, r6, lsr #9
@@ -134,4 +134,35 @@ _start:
 	mvnhs r9, r10, asr #9
 	mvnles r5, r5
 	mvnge r1, r2, lsl #3
+	ldr r0, [r2]
+	ldrh r5, [r1, #2]
+	ldrsb r4, [r2, #1]!
+	ldrnesh r6, [r4], #4
+	ldr r4, [r6], r4, lsl #4
+	ldr r1, [r6, r3]
+	str r0, [r2]
+	strh r5, [r1, #2]
+	strb r4, [r2, #1]!
+	strneh r6, [r4], #4
+	str r4, [r6], r4, lsl #4
+	str r1, [r6, r3]
+	ldmfa sp!, {r0}
+	ldmvcea sp, {r5-r6}
+	ldmgtfd r2!, {r3}
+	ldmeqib sp!, {r0-r10}
+	ldmda sp, {r5, r7-r8}
+	ldmea sp!, {r0, r1}
+	stmfa sp!, {r0}
+	stmvcea sp, {r5-r6}
+	stmgtfd r2!, {r3}
+	stmeqib sp!, {r0-r10}
+	stmda sp, {r5, r7-r8}
+	stmea sp!, {r0, r1}
+	swp r0, r1, [r2]
+	swp r1, r2, [r3]
+	swp r2, r3, [r4]
+	swpb r3, r4, [r5]
+	swpb r4, r5, [r6]
+	swpb r5, r6, [r7]
+
 
