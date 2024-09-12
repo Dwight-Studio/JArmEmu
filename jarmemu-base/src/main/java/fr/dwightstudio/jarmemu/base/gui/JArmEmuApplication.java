@@ -136,9 +136,7 @@ public class JArmEmuApplication extends Application {
 
     // Before the release:
     // TODO: Add tests for encoding
-    // FIXME: Les MOV avec des shifts ne fonctionnent pas
     // FIXME: Branch + Pseudo Instruction immediate allowed value
-    // FIXME: Correct autocompletion (ex: UMULLMI ...)
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
 
     // Maybe:
