@@ -23,24 +23,36 @@
 
 package fr.dwightstudio.jarmemu.base.gui.factory;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Callback;
 
 public class StylizedStringTableCell<T> extends TableCell<T, String> {
 
-    public StylizedStringTableCell(String clazz) {
+    Label label;
 
-        getStyleClass().add(clazz);
-        getStyleClass().add("usage");
+    public StylizedStringTableCell(String clazz) {
+        label = new Label();
+        label.getStyleClass().addAll("text", "usage", clazz);
+        setTextAlignment(TextAlignment.CENTER);
+        setAlignment(Pos.CENTER);
     }
 
     @Override
     protected void updateItem(String string, boolean empty) {
         super.updateItem(string, empty);
 
-        if (empty) setText("");
-        else setText(string);
+        setText("");
+
+        if (empty) {
+            setGraphic(null);
+        } else {
+            label.setText(string);
+            setGraphic(label);
+        }
     }
 
     public static <T> Callback<TableColumn<T, String>, TableCell<T, String>> factory(String clazz) {

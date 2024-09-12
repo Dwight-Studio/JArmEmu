@@ -192,9 +192,9 @@ public class StateContainer {
 
             getAccessibleConsts().forEach((key, val) -> exp.setVariable(key, (double) val));
             getAccessibleData().forEach((key, val) -> exp.setVariable(key, (double) val));;
-            getAccessibleLabels().forEach((key, val) -> exp.setVariable(key, val - this.memoryPos.getPos()));
+            getAccessibleLabels().forEach(exp::setVariable);
 
-            return (int) exp.evaluate();
+            return ((int) exp.evaluate()) - this.memoryPos.getPos();
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", expString, exception.getMessage()));
         }

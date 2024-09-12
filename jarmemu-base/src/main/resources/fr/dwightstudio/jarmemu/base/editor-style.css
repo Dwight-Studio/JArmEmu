@@ -61,65 +61,81 @@
 
 .text.bracket {
     -fx-fill: #611811;
+    -fx-text-fill: #611811;
     -fx-font-weight: bold;
 }
 .text.brace {
     -fx-fill: #d9a544;
+    -fx-text-fill: #d9a544;
     -fx-font-weight: bold;
 }
 .text.invalid-instruction {
     -fx-fill: #cda4df;
+    -fx-text-fill: #cda4df;
     -fx-font-style: italic;
 }
 .text.instruction {
     -fx-fill: #ab44d9;
+    -fx-text-fill: #ab44d9;
     -fx-font-weight: bold;
-}
-.text.modifier {
-    -fx-fill: #7e329f;
 }
 .text.section {
     -fx-fill: #44b6d9;
+    -fx-text-fill: #44b6d9;
     -fx-font-weight: 900;
     -fx-underline: true;
 }
 .text.directive {
     -fx-fill: #44b6d9;
+    -fx-text-fill: #44b6d9;
     -fx-font-weight: bold;
 }
 .text.directive-argument {
     -fx-fill: #1b4d5c;
+    -fx-text-fill: #1b4d5c;
     -fx-font-weight: bold;
 }
 .text.string {
     -fx-fill: #32409d;
+    -fx-text-fill: #32409d;
 }
 .text.label {
     -fx-fill: #569d32;
     -fx-font-weight: bold;
 }
+.text.modifier {
+    -fx-fill: #7e329f;
+    -fx-text-fill: #7e329f;
+}
 .text.comment {
     -fx-fill: cadetblue;
+    -fx-text-fill: cadetblue;
 }
 .text.register {
     -fx-fill: #6444d9;
+    -fx-text-fill: #6444d9;
 }
 .text.immediate {
     -fx-fill: #329d61;
+    -fx-text-fill: #329d61;
 }
 .text.pseudo-instruction {
     -fx-fill: #329d61;
+    -fx-text-fill: #329d61;
     -fx-font-style: italic
 }
 .text.shift {
     -fx-fill: #9d3257;
+    -fx-text-fill: #9d3257;
 }
 .text.label-ref {
     -fx-fill: #80a36e;
+    -fx-text-fill: #80a36e;
     -fx-font-style: italic
 }
 .text.error {
     -fx-fill: #d9534f;
+    -fx-text-fill: #d9534f;
     -rtfx-underline-color: red;
     -rtfx-underline-dash-array: 2 2;
     -rtfx-underline-width: 1;

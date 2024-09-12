@@ -32,12 +32,14 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionDetailTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
+import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
 import fr.dwightstudio.jarmemu.base.util.InstructionSyntaxUtils;
 import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
@@ -49,6 +51,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -264,7 +267,7 @@ public class JArmEmuDialogs {
         TableColumn<Instruction, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.name"));
         TableViewUtils.setupColumn(col0, Material2OutlinedAL.LABEL, 80, false, false, true);
         col0.setCellValueFactory(i -> new ReadOnlyStringWrapper(i.getValue().toString()));
-        col0.setCellFactory(TextFieldTableCell.forTableColumn());
+        col0.setCellFactory(StylizedStringTableCell.factory("instruction"));
 
         TableColumn<Instruction, Instruction> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.usage"));
         TableViewUtils.setupColumn(col1, Material2OutlinedAL.DESCRIPTION, 80, false, true, false);
@@ -373,7 +376,12 @@ public class JArmEmuDialogs {
             JArmEmuApplication.getEditorController().open(instruction + ".s", exampleContent);
         });
 
-        VBox vBox = new VBox(title, usage, description);
+        FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL, 30, 30);
+        flowPane.setAlignment(Pos.CENTER);
+        flowPane.setMinWidth(Region.USE_PREF_SIZE);
+        flowPane.maxWidth(Double.POSITIVE_INFINITY);
+
+        VBox vBox = new VBox(title, usage, description, flowPane);
         vBox.setSpacing(20);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));
@@ -384,8 +392,7 @@ public class JArmEmuDialogs {
 
         if (instruction.getModifierParameterClasses().contains(Condition.class)) {
             TableView<Condition> conditionTable = InstructionSyntaxUtils.getConditionTable();
-
-            vBox.getChildren().add(conditionTable);
+            flowPane.getChildren().add(conditionTable);
         }
 
         ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());

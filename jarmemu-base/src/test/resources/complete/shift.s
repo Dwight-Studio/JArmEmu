@@ -14,7 +14,7 @@ _start:
 	LDR r5, =VAL
 	LDR r6, =VAL2
 	mov r0, #0
-	b 8
+	b 20
 	mov r0, #4
 	mov r1, #4
 	mov r2, #2
