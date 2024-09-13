@@ -82,7 +82,11 @@ public class JArmEmuDialogs {
         confirm.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED);
         confirm.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
         confirm.setContentDisplay(ContentDisplay.RIGHT);
-        confirm.setOnAction(event -> JArmEmuApplication.getController().closeDialogFront());
+        confirm.setOnAction(event -> {
+            JArmEmuApplication.getController().closeDialogFront();
+        });
+
+        JArmEmuApplication.getController().lockModals();
 
         JArmEmuApplication.getController().openDialogFront(new ModalDialog(
                 icon,
@@ -140,6 +144,8 @@ public class JArmEmuDialogs {
             rtn.complete(UnsavedDialogChoice.CANCEL);
             JArmEmuApplication.getController().closeDialogFront();
         });
+
+        JArmEmuApplication.getController().lockModals();
 
         JArmEmuApplication.getController().openDialogFront(dialog);
         JArmEmuApplication.getStage().requestFocus();

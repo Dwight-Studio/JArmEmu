@@ -319,16 +319,31 @@ public class JArmEmuController implements Initializable {
         dialog.getModalBox().requestFocus();
     }
 
+    public void lockModals() {
+        modalPaneBack.setPersistent(true);
+        modalPaneMiddle.setPersistent(true);
+        modalPaneFront.setPersistent(true);
+    }
+
+    public void unlockModals() {
+        modalPaneBack.setPersistent(false);
+        modalPaneMiddle.setPersistent(false);
+        modalPaneFront.setPersistent(false);
+    }
+
     public void closeDialogFront() {
         modalPaneFront.hide();
+        unlockModals();
     }
 
     public void closeDialogMiddle() {
         modalPaneMiddle.hide();
+        unlockModals();
     }
 
     public void closeDialogBack() {
         modalPaneBack.hide();
+        unlockModals();
     }
 
     @FXML
