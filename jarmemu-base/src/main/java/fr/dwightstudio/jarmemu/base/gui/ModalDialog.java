@@ -25,6 +25,7 @@ package fr.dwightstudio.jarmemu.base.gui;
 
 import atlantafx.base.layout.ModalBox;
 import atlantafx.base.theme.Styles;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
@@ -33,10 +34,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class ModalDialog {
 
     private final ModalBox box;
+    private final VBox vBox;
 
     public ModalDialog(Node graphic, String title, Node content, Control ... controls) {
         Text titleText = new Text(title);
@@ -69,6 +72,8 @@ public class ModalDialog {
 
         box = new ModalBox(mainBox);
         box.setMaxSize(mainBox.getPrefWidth() + 40, mainBox.getPrefHeight() + 40);
+
+        vBox = null;
     }
 
     public ModalDialog(Node content, double width, double height) {
@@ -78,6 +83,8 @@ public class ModalDialog {
         AnchorPane.setBottomAnchor(content, 20.0);
         box = new ModalBox(content);
         box.setMaxSize(width + 40, height + 40);
+
+        vBox = null;
     }
 
     public ModalDialog(Node content) {
@@ -85,10 +92,20 @@ public class ModalDialog {
         AnchorPane.setRightAnchor(content, 20.0);
         AnchorPane.setLeftAnchor(content, 20.0);
         AnchorPane.setBottomAnchor(content, 20.0);
+
         box = new ModalBox(content);
+
+        vBox = new VBox(box);
+        vBox.setPickOnBounds(false);
+        VBox.setMargin(box, new Insets(50));
+        vBox.setAlignment(Pos.CENTER);
     }
 
     public ModalBox getModalBox() {
         return box;
+    }
+
+    public Node getNode() {
+        return vBox == null ? box : vBox;
     }
 }

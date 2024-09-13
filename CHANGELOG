@@ -5,6 +5,7 @@
 - Removed the legacy source parser
 - Improved readability in memory views
 - Improved tabulation insertion/deletion
+- Improved settings UI
 - Fixed memory edition in GUI
 - Fixed CPSR/SPSR being usable as common registers
 - Fixed broken shift argument (with register)

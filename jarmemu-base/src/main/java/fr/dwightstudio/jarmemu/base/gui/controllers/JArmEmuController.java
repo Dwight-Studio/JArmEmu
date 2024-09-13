@@ -35,6 +35,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -149,6 +150,7 @@ public class JArmEmuController implements Initializable {
         modalPaneBack = new ModalPane();
         modalPaneMiddle = new ModalPane();
         modalPaneFront = new ModalPane();
+
         mainPane.getChildren().addAll(modalPaneBack, modalPaneMiddle, modalPaneFront);
 
         JArmEmuApplication.notifyPreloader("Initializing GUI");
@@ -300,19 +302,20 @@ public class JArmEmuController implements Initializable {
 
     public void openDialogFront(ModalDialog dialog) {
         if (dialog.getModalBox().getOnClose() == null) dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogFront());
-        modalPaneFront.show(dialog.getModalBox());
+        modalPaneFront.show(dialog.getNode());
         dialog.getModalBox().requestFocus();
     }
 
     public void openDialogMiddle(ModalDialog dialog) {
         if (dialog.getModalBox().getOnClose() == null) dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogMiddle());
-        modalPaneMiddle.show(dialog.getModalBox());
+
+        modalPaneMiddle.show(dialog.getNode());
         dialog.getModalBox().requestFocus();
     }
 
     public void openDialogBack(ModalDialog dialog) {
         if (dialog.getModalBox().getOnClose() == null) dialog.getModalBox().setOnClose(event -> JArmEmuApplication.getController().closeDialogBack());
-        modalPaneBack.show(dialog.getModalBox());
+        modalPaneBack.show(dialog.getNode());
         dialog.getModalBox().requestFocus();
     }
 

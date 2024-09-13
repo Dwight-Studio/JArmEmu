@@ -43,10 +43,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -335,11 +332,18 @@ public class JArmEmuDialogs {
         usage.getChildren().addAll(InstructionSyntaxUtils.getUsage(instruction));
         usage.getStyleClass().add("big-usage");
         usage.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
-        usage.setMinWidth(Region.USE_PREF_SIZE);
+        usage.setMaxWidth(Region.USE_PREF_SIZE);
 
         TextFlow description = new TextFlow();
         description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
         description.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
+        description.setMaxWidth(Region.USE_PREF_SIZE);
+
+        VBox usageGroup = new VBox(usage, description);
+        usageGroup.setSpacing(20);
+        usageGroup.setPadding(new Insets(10, 200, 10, 200));
+        usageGroup.setFillWidth(false);
+        usageGroup.setMinWidth(VBox.USE_PREF_SIZE);
 
         Button exampleButton = new Button(JArmEmuApplication.formatMessage("%instructionList.detail.example"));
 
@@ -375,15 +379,12 @@ public class JArmEmuDialogs {
         flowPane.setMinWidth(Region.USE_PREF_SIZE);
         flowPane.maxWidth(Double.POSITIVE_INFINITY);
 
-        VBox vBox = new VBox(title, usage, description, flowPane);
+        VBox vBox = new VBox(title, usageGroup, exampleButton, flowPane);
         vBox.setSpacing(20);
         vBox.setAlignment(Pos.CENTER);
         vBox.setPadding(new Insets(10));
-        vBox.setPrefWidth(VBox.USE_PREF_SIZE);
-        vBox.setPrefHeight(VBox.USE_PREF_SIZE);
-        vBox.setFillWidth(true);
-        VBox.setMargin(usage, new Insets(0, 30, 0, 30));
-        VBox.setMargin(description, new Insets(0, 30, 30, 30));
+
+        VBox.setMargin(exampleButton, new Insets(0, 0, 30, 0));
 
         List<Class<? extends Enum<? extends ModifierParameter>>> modifiers = instruction.getModifierParameterClasses();
 
