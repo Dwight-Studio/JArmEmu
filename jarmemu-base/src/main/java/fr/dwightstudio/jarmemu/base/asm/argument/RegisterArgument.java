@@ -31,6 +31,8 @@ import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 
+import java.util.function.Supplier;
+
 public class RegisterArgument extends ParsedArgument<Register> {
     
     private final RegisterUtils register;
@@ -54,6 +56,11 @@ public class RegisterArgument extends ParsedArgument<Register> {
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
 
+    }
+
+    @Override
+    public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
+        super.verify(stateSupplier);
     }
 
     @Override

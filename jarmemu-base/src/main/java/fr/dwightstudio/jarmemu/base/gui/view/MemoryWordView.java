@@ -122,7 +122,7 @@ public class MemoryWordView {
             invalidationListeners = new ArrayList<>();
 
             valueProperty.addListener(((observable, oldVal, newVal) -> {
-                if (getFrom(oldVal.intValue()) != getFrom(newVal.intValue())) {
+                if (oldVal == null || getFrom(oldVal.intValue()) != getFrom(newVal.intValue())) {
                     changeListeners.forEach(changeListener -> changeListener.changed(this, getFrom(oldVal.intValue()), getFrom(newVal.intValue())));
                     invalidationListeners.forEach(invalidationListener -> invalidationListener.invalidated(observable));
                 }

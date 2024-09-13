@@ -35,8 +35,12 @@ public class SyntaxHighlightedTableCell<T> extends TableCell<T, String> {
     private final TextFlow textFlow;
 
     public SyntaxHighlightedTableCell() {
-        textFlow = new TextFlow();textFlow.setMaxHeight(20);
+        textFlow = new TextFlow();
+        textFlow.setMaxHeight(20);
         textFlow.setMinWidth(Region.USE_PREF_SIZE);
+
+        setPrefHeight(20);
+        setMinWidth(Region.USE_PREF_SIZE);
     }
 
     @Override
@@ -47,9 +51,6 @@ public class SyntaxHighlightedTableCell<T> extends TableCell<T, String> {
         if (!empty && string != null) {
             textFlow.getChildren().clear();
             textFlow.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(string));
-
-            setPrefHeight(20);
-            setMinWidth(Region.USE_PREF_SIZE);
 
             setText("");
             setGraphic(textFlow);

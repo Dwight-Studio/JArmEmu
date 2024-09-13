@@ -23,5 +23,8 @@
 
 package fr.dwightstudio.jarmemu.base.gui.view;
 
-public record SyntaxView(String symbol, String description) {
-}
+import javafx.scene.text.Text;
+
+import java.util.List;
+
+public record InstructionSyntaxView(List<Text> symbol, List<Text> description) {}

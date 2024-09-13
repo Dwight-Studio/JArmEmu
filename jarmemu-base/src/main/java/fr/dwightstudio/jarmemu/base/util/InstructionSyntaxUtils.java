@@ -31,6 +31,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.SyntaxHighlightedTableCell;
+import fr.dwightstudio.jarmemu.base.gui.view.SyntaxView;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -144,9 +145,20 @@ public class InstructionSyntaxUtils {
         };
     }
 
+    public static String textToString(Collection<Text> texts) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (Text text : texts) {
+            stringBuilder.append(text.getText());
+        }
+
+        return stringBuilder.toString();
+    }
+
     @SuppressWarnings("unchecked")
     public static TableView<Condition> getConditionTable() {
-        TableColumn<Condition, String> col0 = new TableColumn<>("Cd");
+        TableColumn<Condition, String> col0 = new TableColumn<>();
+        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
         setup(col0, true, false);
         col0.setMaxWidth(50);
         col0.setMinWidth(50);
@@ -188,27 +200,26 @@ public class InstructionSyntaxUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static TableView<Condition> getValueTable() {
-        TableColumn<Condition, String> col0 = new TableColumn<>();
+    public static TableView<SyntaxView> getValueTable(String usage) {
+        TableColumn<SyntaxView, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.title"));
         col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
         setup(col0, true, false);
-        col0.setMaxWidth(50);
-        col0.setMinWidth(50);
+        col0.setMaxWidth(150);
+        col0.setMinWidth(150);
         col0.setCellFactory(SyntaxHighlightedTableCell.factory());
-        col0.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().toString()));
+        col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
 
-        TableColumn<Condition, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
+        TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
         setup(col1, false, true);
         col1.setCellFactory(SyntaxHighlightedTableCell.factory());
-        col1.setCellValueFactory(c -> new ReadOnlyStringWrapper(JArmEmuApplication.formatMessage("%instructionList.description." + c.getValue().toString().toLowerCase())));
+        col1.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().description()));
 
-        TableColumn<Condition, Condition> masterCol = getMasterColumn("%instructionList.detail.value");
+        TableColumn<SyntaxView, SyntaxView> masterCol = getMasterColumn("%instructionList.detail.value");
         masterCol.getColumns().addAll(col0, col1);
 
-        TableView<Condition> tableView = new TableView<>();
+        TableView<SyntaxView> tableView = new TableView<>();
         tableView.getColumns().setAll(masterCol);
-        tableView.getItems().setAll(Condition.values());
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
         tableView.setEditable(false);
@@ -218,6 +229,32 @@ public class InstructionSyntaxUtils {
         tableView.setSkin(new TableViewUtils.ResizableTableViewSkin<>(tableView));
 
         tableView.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+
+        ArrayList<SyntaxView> items = new ArrayList<>();
+
+        items.add(new SyntaxView("#imm8", JArmEmuApplication.formatMessage("%instructionList.description.imm", 8)));
+        items.add(new SyntaxView("#rimm8", JArmEmuApplication.formatMessage("%instructionList.description.rimm", 8)));
+        items.add(new SyntaxView("#imm9", JArmEmuApplication.formatMessage("%instructionList.description.imm", 9)));
+        items.add(new SyntaxView("#imm12", JArmEmuApplication.formatMessage("%instructionList.description.imm", 12)));
+        items.add(new SyntaxView("#imm16", JArmEmuApplication.formatMessage("%instructionList.description.imm", 16)));
+        items.add(new SyntaxView("imm24", JArmEmuApplication.formatMessage("%instructionList.description.imm", 24)));
+
+        items.add(new SyntaxView("reg0", JArmEmuApplication.formatMessage("%instructionList.description.rego")));
+        items.add(new SyntaxView("reg1", JArmEmuApplication.formatMessage("%instructionList.description.reg")));
+        items.add(new SyntaxView("reg2", JArmEmuApplication.formatMessage("%instructionList.description.reg")));
+        items.add(new SyntaxView("reg3", JArmEmuApplication.formatMessage("%instructionList.description.reg")));
+        items.add(new SyntaxView("[rega]", JArmEmuApplication.formatMessage("%instructionList.description.reg")));
+        items.add(new SyntaxView("regb", JArmEmuApplication.formatMessage("%instructionList.description.reg")));
+        items.add(new SyntaxView("regi", JArmEmuApplication.formatMessage("%instructionList.description.reg")));
+        items.add(new SyntaxView("regs", JArmEmuApplication.formatMessage("%instructionList.description.regs")));
+        items.add(new SyntaxView("regv", JArmEmuApplication.formatMessage("%instructionList.description.regv")));
+        items.add(new SyntaxView("{regn}", JArmEmuApplication.formatMessage("%instructionList.description.regn")));
+
+        items.add(new SyntaxView("lbl", JArmEmuApplication.formatMessage("%instructionList.description.lbl")));
+
+        for (SyntaxView sv : items) {
+            if (usage.contains(sv.symbol())) tableView.getItems().add(sv);
+        }
 
         return tableView;
     }
@@ -240,6 +277,7 @@ public class InstructionSyntaxUtils {
     public static List<Text> replacePlaceholder(String text) {
         HashMap<String, String> map = new HashMap<>();
 
+        map.put("#", "immediate");
         map.put("imm8", "immediate");
         map.put("rimm8", "immediate");
         map.put("imm9", "immediate");
@@ -256,6 +294,13 @@ public class InstructionSyntaxUtils {
         map.put("rega\\b", "register");
         map.put("regs", "register");
         map.put("regv", "register");
+        map.put("regn", "register");
+
+        map.put("\\{", "brace");
+        map.put("\\}", "brace");
+
+        map.put("\\[", "bracket");
+        map.put("\\]", "bracket");
 
         map.put("PC", "register");
         map.put("LR", "register");
@@ -263,6 +308,8 @@ public class InstructionSyntaxUtils {
         map.put("NOP", "instruction");
 
         map.put("lbl", "label-ref");
+
+        map.put("sht", "shift");
 
         return replacePlaceholderRecursive(text, map);
     }
@@ -277,7 +324,9 @@ public class InstructionSyntaxUtils {
 
         boolean start = true;
         String replacement = entry.getKey().replace("\\b", "");
-        for (String textPart : text.split(entry.getKey())) {
+        replacement = replacement.replace("\\", "");
+
+        for (String textPart : text.split(entry.getKey(), -1)) {
             if (start) {
                 start = false;
             } else {

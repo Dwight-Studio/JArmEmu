@@ -28,7 +28,9 @@ import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
+import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
+import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionDetailTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
@@ -63,6 +65,7 @@ import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
@@ -337,7 +340,6 @@ public class JArmEmuDialogs {
         TextFlow description = new TextFlow();
         description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
         description.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
-        description.setMinWidth(800);
 
         Button exampleButton = new Button(JArmEmuApplication.formatMessage("%instructionList.detail.example"));
 
@@ -380,14 +382,17 @@ public class JArmEmuDialogs {
         vBox.setPrefWidth(VBox.USE_PREF_SIZE);
         vBox.setPrefHeight(VBox.USE_PREF_SIZE);
         vBox.setFillWidth(true);
-        VBox.setMargin(usage, new Insets(10));
+        VBox.setMargin(usage, new Insets(0, 30, 0, 30));
+        VBox.setMargin(description, new Insets(0, 30, 30, 30));
 
-        if (instruction.getModifierParameterClasses().contains(Condition.class)) {
-            TableView<Condition> conditionTable = InstructionSyntaxUtils.getConditionTable();
-            flowPane.getChildren().add(conditionTable);
-        }
+        List<Class<? extends Enum<? extends ModifierParameter>>> modifiers = instruction.getModifierParameterClasses();
 
-        ModalDialog dialog = new ModalDialog(vBox, vBox.getPrefWidth(), vBox.getPrefHeight());
+        final String usageString = InstructionSyntaxUtils.textToString(InstructionSyntaxUtils.getUsage(instruction));
+
+        if (modifiers.contains(Condition.class)) flowPane.getChildren().add(InstructionSyntaxUtils.getConditionTable());
+        flowPane.getChildren().add(InstructionSyntaxUtils.getValueTable(usageString));
+
+        ModalDialog dialog = new ModalDialog(vBox);
 
         JArmEmuApplication.getController().openDialogMiddle(dialog);
     }
