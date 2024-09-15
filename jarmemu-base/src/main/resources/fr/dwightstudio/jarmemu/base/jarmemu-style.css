@@ -21,6 +21,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+* {
+    -fx-border-width: 2;
+    -fx-border-color: red;
+}
+*/
+
 .root {
     -fx-font-family: Cantarell;
 }
@@ -87,4 +94,13 @@
 .big-usage {
     -fx-font-family: "Source Code Pro";
     -fx-font-size: 24px;
+}
+
+.notice {
+    -fx-font-style: italic;
+    -fx-font-size: 14px;
+}
+
+.description {
+    -fx-font-size: 16px;
 }

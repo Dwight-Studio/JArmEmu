@@ -60,8 +60,8 @@
 }
 
 .text.bracket {
-    -fx-fill: #611811;
-    -fx-text-fill: #611811;
+    -fx-fill: #d94444;
+    -fx-text-fill: #d94444;
     -fx-font-weight: bold;
 }
 .text.brace {

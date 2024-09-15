@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.base.gui.enums.UnsavedDialogChoice;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionDetailTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.InstructionUsageTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
+import fr.dwightstudio.jarmemu.base.gui.view.SyntaxView;
 import fr.dwightstudio.jarmemu.base.util.InstructionSyntaxUtils;
 import fr.dwightstudio.jarmemu.base.util.TableViewUtils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -50,10 +51,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
@@ -334,20 +332,23 @@ public class JArmEmuDialogs {
         title.setStyle("-fx-font-family: 'Inter Black';");
         title.getStyleClass().addAll(Styles.TITLE_1);
 
+        final String usageString = InstructionSyntaxUtils.getUsage(instruction);
+
         TextFlow usage = new TextFlow();
-        usage.getChildren().addAll(InstructionSyntaxUtils.getUsage(instruction));
+        usage.getChildren().addAll(InstructionSyntaxUtils.getFormatted(usageString));
         usage.getStyleClass().add("big-usage");
         usage.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
-        usage.setMaxWidth(Region.USE_PREF_SIZE);
 
         TextFlow description = new TextFlow();
         description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
-        description.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
-        description.setMaxWidth(Region.USE_PREF_SIZE);
+        description.getChildren().add(InstructionSyntaxUtils.getText(JArmEmuApplication.formatMessage("%instructionList.description.all") + "\n\n", "notice"));
+        description.getChildren().addAll(InstructionSyntaxUtils.getFormatted(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
+        description.getStyleClass().add("description");
+        description.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.6));
 
         VBox usageGroup = new VBox(usage, description);
         usageGroup.setSpacing(20);
-        usageGroup.setPadding(new Insets(10, 200, 10, 200));
+        usageGroup.setPadding(new Insets(10, 10, 10, 10));
         usageGroup.setFillWidth(false);
         usageGroup.setMinWidth(VBox.USE_PREF_SIZE);
 
@@ -383,7 +384,8 @@ public class JArmEmuDialogs {
         FlowPane flowPane = new FlowPane(Orientation.HORIZONTAL, 30, 30);
         flowPane.setAlignment(Pos.CENTER);
         flowPane.setMinWidth(Region.USE_PREF_SIZE);
-        flowPane.maxWidth(Double.POSITIVE_INFINITY);
+        flowPane.setMinHeight(Region.USE_PREF_SIZE);
+        flowPane.prefWrapLengthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.6));
 
         VBox vBox = new VBox(title, usageGroup, exampleButton, flowPane);
         vBox.setSpacing(20);
@@ -394,10 +396,10 @@ public class JArmEmuDialogs {
 
         List<Class<? extends Enum<? extends ModifierParameter>>> modifiers = instruction.getModifierParameterClasses();
 
-        final String usageString = InstructionSyntaxUtils.textToString(InstructionSyntaxUtils.getUsage(instruction));
+        TableView<SyntaxView> valueTable = InstructionSyntaxUtils.getValueTable(usageString);
+        if (valueTable != null) flowPane.getChildren().add(valueTable);
 
         if (modifiers.contains(Condition.class)) flowPane.getChildren().add(InstructionSyntaxUtils.getConditionTable());
-        flowPane.getChildren().add(InstructionSyntaxUtils.getValueTable(usageString));
 
         ModalDialog dialog = new ModalDialog(vBox);
 

@@ -28,11 +28,14 @@ import atlantafx.base.theme.Tweaks;
 import fr.dwightstudio.jarmemu.base.asm.Instruction;
 import fr.dwightstudio.jarmemu.base.asm.modifier.Condition;
 import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
+import fr.dwightstudio.jarmemu.base.asm.parser.regex.ASMParser;
+import fr.dwightstudio.jarmemu.base.fx.ResizableTableViewSkin;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.SyntaxHighlightedTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.SyntaxView;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Region;
@@ -41,34 +44,59 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class InstructionSyntaxUtils {
-    public static List<Text> getUsage(Instruction instruction) {
-        ArrayList<Text> rtn = new ArrayList<>();
 
-        rtn.add(getText(instruction.toString().toUpperCase(), "instruction"));
+    public static String IMMEDIATE_REGEX = "#|\\b(rimm[0-9]+|imm[0-9]+)\\b";
+    public static String REGISTER_REGEX = "\\b(?i)(reg[0-9abisvn]|PC|LR)(?-i)\\b";
+    public static String BRACE_REGEX = "\\{|\\}";
+    public static String BRACKET_REGEX = "\\[adr\\]|\\[|\\]";
+    public static String INSTRUCTION_REGEX = "\\b" + String.join("|", ASMParser.INSTRUCTIONS) + "\\b";
+    public static String LABEL_REGEX = "\\blbl\\b";
+    public static String SHIFT_REGEX = "\\b(?i)(sht|lsl|lsr|asr|ror|rrx)(?-i)\\b";
+    public static String IGNORED_REGEX = "\\bign\\b";
+    public static String MODIFIER_REGEX = "\\B[+\\-!]\\B|\\b(Cd|Um|S|h|b)\\b";
+
+    public static Pattern SYNTAX_PATTERN = Pattern.compile(
+            "(?<IMMEDIATE>" + IMMEDIATE_REGEX + ")|"
+            + "(?<REGISTER>" + REGISTER_REGEX + ")|"
+            + "(?<BRACE>" + BRACE_REGEX + ")|"
+            + "(?<BRACKET>" + BRACKET_REGEX + ")|"
+            + "(?<INSTRUCTION>" + INSTRUCTION_REGEX + ")|"
+            + "(?<LABEL>" + LABEL_REGEX + ")|"
+            + "(?<SHIFT>" + SHIFT_REGEX + ")|"
+            + "(?<IGNORED>" + IGNORED_REGEX + ")|"
+            + "(?<MODIFIER>" + MODIFIER_REGEX + ")"
+    );
+
+    public static String getUsage(Instruction instruction) {
+        StringBuilder rtn = new StringBuilder();
+        rtn.append(instruction.toString().toUpperCase());
 
         for (Class<? extends Enum<? extends ModifierParameter>> mod : instruction.getModifierParameterClasses()) {
-            rtn.add(new Text("<"));
+            rtn.append("<");
             switch (mod.getSimpleName()) {
-                case "Condition" -> rtn.add(getText("Cd", "modifier"));
-                case "UpdateMode" -> rtn.add(getText("Um", "modifier"));
+                case "Condition" -> rtn.append("Cd");
+                case "UpdateMode" -> rtn.append("Um");
+                case "DataMode" -> rtn.append("h/b");
                 default -> {
                     boolean first = true;
                     for (Enum<? extends ModifierParameter> param : mod.getEnumConstants()) {
                         if (first) {
                             first = false;
                         } else {
-                            rtn.add(new Text("/"));
+                            rtn.append("/");
                         }
-                        rtn.add(getText(param.toString(), "modifier"));
+                        rtn.append(param.toString());
                     }
                 }
             }
-            rtn.add(new Text(">"));
+            rtn.append(">");
         }
 
-        rtn.add(new Text(" "));
+        rtn.append(" ");
 
         int preOpt = 0;
         int opt = 0;
@@ -79,69 +107,52 @@ public class InstructionSyntaxUtils {
 
             if ((i == 0 && instruction.hasWorkingRegister() || type.startsWith("Optional") || type.startsWith("PostOffset") || type.startsWith("Shift"))) {
                 if (i > 0) {
-                    rtn.add(new Text(" <, "));
-                    rtn.addAll(getArgumentUsage(type, i));
+                    rtn.append(" <, ");
+                    rtn.append(getArgumentUsage(type, i));
                     opt++;
                 } else {
-                    rtn.add(new Text("<"));
-                    rtn.addAll(getArgumentUsage(type, i));
-                    rtn.add(new Text(",> "));
+                    rtn.append("<");
+                    rtn.append(getArgumentUsage(type, i));
+                    rtn.append(",> ");
                     preOpt++;
                 }
             } else {
                 if (i > 0 && preOpt != i) {
-                    rtn.add(new Text(", "));
-                    rtn.addAll(getArgumentUsage(type, i));
+                    rtn.append(", ");
+                    rtn.append(getArgumentUsage(type, i));
                 } else {
-                    rtn.addAll(getArgumentUsage(type, i));
+                    rtn.append(getArgumentUsage(type, i));
                 }
             }
         }
 
         for (int i = 0; i < opt; i++) {
-            rtn.add(new Text(">"));
+            rtn.append(">");
         }
 
-        return rtn;
+        return rtn.toString();
     }
 
-    public static List<Text> getArgumentUsage(String type, Integer regNum) {
+    public static String getArgumentUsage(String type, Integer regNum) {
         return switch (type) {
-            case "AddressArgument" -> List.of(getText("[adr]", "bracket"), new Text("<"), getText("!", "bracket"), new Text(">")); // List.of(getText("[", "bracket"), getText("reg", "register"), new Text("<,"), getText("#imm12", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("reg", "register"), new Text("<,"), getText("shift", "shift"), new Text(">"), getText("]", "bracket"), new Text("<"), getText("!", "bracket"), new Text(">/"), getText("=var", "pseudo-instruction"));
-
-            case "IgnoredArgument" -> List.of(getText("ign", "invalid-instruction"));
-
-            case "ImmediateArgument" -> List.of(getText("#imm12", "immediate"));
-
-            case "SmallImmediateArgument" -> List.of(getText("#imm8", "immediate"));
-
-            case "LongImmediateArgument" -> List.of(getText("#imm16", "immediate"));
-
-            case "OptionalImmediateOrRegisterArgument", "ImmediateOrRegisterArgument" -> List.of(getText("#imm12", "immediate"), new Text("/"), getText("regv", "register"));
-
-            case "OptionalLongImmediateOrRegisterArgument", "LongImmediateOrRegisterArgument" -> List.of(getText("#imm16", "immediate"), new Text("/"), getText("regv", "register"));
-
-            case "LabelArgument" -> List.of(getText("lbl", "label-ref"), new Text("/"), getText("imm24", "immediate"));
-
-            case "LabelOrRegisterArgument" -> List.of(getText("lbl", "label-ref"), new Text("/"), getText("imm24", "immediate"), new Text("/"), getText("regb", "register"));
-
-            case "PostOffsetArgument" -> List.of(getText("#imm9", "immediate"), new Text("/<"), getText("+", "immediate"), new Text("/"), getText("-", "immediate"), new Text(">"), getText("regi", "register"));
-
-            case "RegisterAddressArgument" -> List.of(getText("[rega]", "register"));
-
-            case "RegisterArgument" -> List.of(getText("reg" + regNum, "register"));
-
-            case "RegisterArrayArgument" -> List.of(getText("{", "brace"), getText("regn", "register"), getText("}", "brace"));
-
-            case "RegisterWithUpdateArgument" -> List.of(getText("reg" + regNum, "register"), new Text("<"), getText("!", "register"), new Text(">"));
-
-            case "RotatedImmediateArgument" -> List.of(getText("#rimm8", "immediate"));
-
-            case "OptionalRotatedImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> List.of(getText("#rimm8", "immediate"), new Text("/"), getText("regv", "register"));
-
-            case "ShiftArgument" -> List.of(getText("sht ", "shift"), getText("#imm5", "immediate"), new Text("/"), getText("regs", "register"));
-
-            default -> List.of(new Text());
+            case "AddressArgument" -> "[adr]<!>";
+            case "IgnoredArgument" -> "ign";
+            case "ImmediateArgument" -> "#imm12";
+            case "SmallImmediateArgument" -> "#imm8";
+            case "LongImmediateArgument" -> "#imm16";
+            case "OptionalImmediateOrRegisterArgument", "ImmediateOrRegisterArgument" -> "#imm12/regv";
+            case "OptionalLongImmediateOrRegisterArgument", "LongImmediateOrRegisterArgument" -> "#imm16/regv";
+            case "LabelArgument" -> "lbl/imm24";
+            case "LabelOrRegisterArgument" -> "lbl/imm24/regb";
+            case "PostOffsetArgument" -> "#imm9/<+/->regi";
+            case "RegisterAddressArgument" -> "[rega]";
+            case "RegisterArgument" -> "reg" + regNum;
+            case "RegisterArrayArgument" -> "{regn}";
+            case "RegisterWithUpdateArgument" -> "reg" + regNum + "<!>";
+            case "RotatedImmediateArgument" -> "#rimm8";
+            case "OptionalRotatedImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument" -> "#rimm8/regv";
+            case "ShiftArgument" -> "sht #imm5/regs";
+            default -> "";
         };
     }
 
@@ -159,7 +170,7 @@ public class InstructionSyntaxUtils {
     public static TableView<Condition> getConditionTable() {
         TableColumn<Condition, String> col0 = new TableColumn<>();
         col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
-        setup(col0, true, false);
+        setupColumn(col0, true, false);
         col0.setMaxWidth(50);
         col0.setMinWidth(50);
         col0.setCellFactory(StylizedStringTableCell.factory("text", "usage", "modifier"));
@@ -167,7 +178,7 @@ public class InstructionSyntaxUtils {
 
         TableColumn<Condition, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.flag"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.FLAG));
-        setup(col1, false, false);
+        setupColumn(col1, false, false);
         col1.setMaxWidth(150);
         col1.setMinWidth(150);
         col1.setCellFactory(StylizedStringTableCell.factory("usage"));
@@ -176,25 +187,18 @@ public class InstructionSyntaxUtils {
 
         TableColumn<Condition, String> col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
         col2.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
-        setup(col2, false, true);
-        col2.setCellFactory(SyntaxHighlightedTableCell.factory());
+        setupColumn(col2, false, true);
+        col2.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
         col2.setCellValueFactory(c -> new ReadOnlyStringWrapper(JArmEmuApplication.formatMessage("%instructionList.description." + c.getValue().toString().toLowerCase())));
 
         TableColumn<Condition, Condition> masterCol = getMasterColumn("%instructionList.detail.condition");
         masterCol.getColumns().addAll(col0, col1, col2);
+        masterCol.setGraphic(getText("Cd", "modifier"));
 
         TableView<Condition> tableView = new TableView<>();
         tableView.getColumns().add(masterCol);
         tableView.getItems().setAll(Condition.values());
-        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
-        tableView.setEditable(false);
-        tableView.setMaxHeight(Double.POSITIVE_INFINITY);
-        tableView.setMinHeight(200);
-
-        tableView.setSkin(new TableViewUtils.ResizableTableViewSkin<>(tableView));
-
-        tableView.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+        setupTable(tableView);
 
         return tableView;
     }
@@ -203,16 +207,16 @@ public class InstructionSyntaxUtils {
     public static TableView<SyntaxView> getValueTable(String usage) {
         TableColumn<SyntaxView, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.title"));
         col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
-        setup(col0, true, false);
+        setupColumn(col0, true, false);
         col0.setMaxWidth(150);
         col0.setMinWidth(150);
-        col0.setCellFactory(SyntaxHighlightedTableCell.factory());
+        col0.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER));
         col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
 
         TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
         col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
-        setup(col1, false, true);
-        col1.setCellFactory(SyntaxHighlightedTableCell.factory());
+        setupColumn(col1, false, true);
+        col1.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
         col1.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().description()));
 
         TableColumn<SyntaxView, SyntaxView> masterCol = getMasterColumn("%instructionList.detail.value");
@@ -220,23 +224,16 @@ public class InstructionSyntaxUtils {
 
         TableView<SyntaxView> tableView = new TableView<>();
         tableView.getColumns().setAll(masterCol);
-        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
-        tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
-        tableView.setEditable(false);
-        tableView.setMaxHeight(Double.POSITIVE_INFINITY);
-        tableView.setMinHeight(200);
-
-        tableView.setSkin(new TableViewUtils.ResizableTableViewSkin<>(tableView));
-
-        tableView.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+        setupTable(tableView);
 
         ArrayList<SyntaxView> items = new ArrayList<>();
 
-        items.add(new SyntaxView("#imm8", JArmEmuApplication.formatMessage("%instructionList.description.imm", 8)));
-        items.add(new SyntaxView("#rimm8", JArmEmuApplication.formatMessage("%instructionList.description.rimm", 8)));
-        items.add(new SyntaxView("#imm9", JArmEmuApplication.formatMessage("%instructionList.description.imm", 9)));
-        items.add(new SyntaxView("#imm12", JArmEmuApplication.formatMessage("%instructionList.description.imm", 12)));
-        items.add(new SyntaxView("#imm16", JArmEmuApplication.formatMessage("%instructionList.description.imm", 16)));
+        items.add(new SyntaxView("imm5", JArmEmuApplication.formatMessage("%instructionList.description.imm", 5)));
+        items.add(new SyntaxView("imm8", JArmEmuApplication.formatMessage("%instructionList.description.imm", 8)));
+        items.add(new SyntaxView("rimm8", JArmEmuApplication.formatMessage("%instructionList.description.rimm", 8)));
+        items.add(new SyntaxView("imm9", JArmEmuApplication.formatMessage("%instructionList.description.imm", 9)));
+        items.add(new SyntaxView("imm12", JArmEmuApplication.formatMessage("%instructionList.description.imm", 12)));
+        items.add(new SyntaxView("imm16", JArmEmuApplication.formatMessage("%instructionList.description.imm", 16)));
         items.add(new SyntaxView("imm24", JArmEmuApplication.formatMessage("%instructionList.description.imm", 24)));
 
         items.add(new SyntaxView("reg0", JArmEmuApplication.formatMessage("%instructionList.description.rego")));
@@ -252,14 +249,19 @@ public class InstructionSyntaxUtils {
 
         items.add(new SyntaxView("lbl", JArmEmuApplication.formatMessage("%instructionList.description.lbl")));
 
+        boolean empty = true;
+
         for (SyntaxView sv : items) {
-            if (usage.contains(sv.symbol())) tableView.getItems().add(sv);
+            if (usage.contains(sv.symbol())) {
+                tableView.getItems().add(sv);
+                empty = false;
+            }
         }
 
-        return tableView;
+        return empty ? null : tableView;
     }
 
-    private static void setup(TableColumn<?, ?> column, boolean sortable, boolean resizable) {
+    private static void setupColumn(TableColumn<?, ?> column, boolean sortable, boolean resizable) {
         column.setSortable(sortable);
         column.setResizable(resizable);
         if (resizable) column.setMinWidth(Region.USE_PREF_SIZE);
@@ -267,74 +269,53 @@ public class InstructionSyntaxUtils {
         column.setReorderable(false);
     }
 
+    private static void setupTable(TableView<?> tableView) {
+        tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
+        tableView.setEditable(false);
+        tableView.setMaxHeight(Double.POSITIVE_INFINITY);
+
+        tableView.setSkin(new ResizableTableViewSkin<>(tableView));
+
+        tableView.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+    }
+
     private static <T, S> TableColumn<T, S> getMasterColumn(String title) {
         TableColumn<T, S> masterCol = new TableColumn<>(JArmEmuApplication.formatMessage(title));
-        setup(masterCol, false, true);
+        setupColumn(masterCol, false, true);
         masterCol.setMinWidth(Region.USE_COMPUTED_SIZE);
         return masterCol;
     }
 
-    public static List<Text> replacePlaceholder(String text) {
-        HashMap<String, String> map = new HashMap<>();
-
-        map.put("#", "immediate");
-        map.put("imm8", "immediate");
-        map.put("rimm8", "immediate");
-        map.put("imm9", "immediate");
-        map.put("imm12", "immediate");
-        map.put("imm16", "immediate");
-        map.put("imm24", "immediate");
-
-        map.put("reg0", "register");
-        map.put("reg1", "register");
-        map.put("reg2", "register");
-        map.put("reg3", "register");
-        map.put("regb", "register");
-        map.put("regi\\b", "register");
-        map.put("rega\\b", "register");
-        map.put("regs", "register");
-        map.put("regv", "register");
-        map.put("regn", "register");
-
-        map.put("\\{", "brace");
-        map.put("\\}", "brace");
-
-        map.put("\\[", "bracket");
-        map.put("\\]", "bracket");
-
-        map.put("PC", "register");
-        map.put("LR", "register");
-
-        map.put("NOP", "instruction");
-
-        map.put("lbl", "label-ref");
-
-        map.put("sht", "shift");
-
-        return replacePlaceholderRecursive(text, map);
-    }
-
-    private static List<Text> replacePlaceholderRecursive(String text, Map<String, String> dict) {
-        if (dict.isEmpty()) return List.of(new Text(text));
-
+    public static List<Text> getFormatted(String text) {
         ArrayList<Text> rtn = new ArrayList<>();
+        Matcher matcher = SYNTAX_PATTERN.matcher(text);
 
-        Map.Entry<String, String> entry = dict.entrySet().iterator().next();
-        dict.remove(entry.getKey());
+        int lastKwEnd = 0;
+        while (matcher.find()) {
+            String styleClass =matcher.group("IMMEDIATE") != null ? "immediate"
+                    : matcher.group("REGISTER") != null ? "register"
+                    : matcher.group("BRACE") != null ? "brace"
+                    : matcher.group("BRACKET") != null ? "bracket"
+                    : matcher.group("INSTRUCTION") != null ? "instruction"
+                    : matcher.group("LABEL") != null ? "label-ref"
+                    : matcher.group("SHIFT") != null ? "shift"
+                    : matcher.group("IGNORED") != null ? "invalid-instruction"
+                    : matcher.group("MODIFIER") != null ? "modifier"
+                    : null;
 
-        boolean start = true;
-        String replacement = entry.getKey().replace("\\b", "");
-        replacement = replacement.replace("\\", "");
+            if (styleClass != null) {
+                if (lastKwEnd != matcher.start()) {
+                    rtn.add(new Text(text.substring(lastKwEnd, matcher.start())));
+                }
 
-        for (String textPart : text.split(entry.getKey(), -1)) {
-            if (start) {
-                start = false;
-            } else {
-                Text r = getText(replacement, entry.getValue());
-                r.getStyleClass().add("usage");
-                rtn.add(r);
+                rtn.add(getText(matcher.group(), styleClass));
+                lastKwEnd = matcher.end();
             }
-            rtn.addAll(replacePlaceholderRecursive(textPart, new HashMap<>(dict)));
+        }
+
+        if (lastKwEnd != text.length()) {
+            rtn.add(new Text(text.substring(lastKwEnd)));
         }
 
         return rtn;

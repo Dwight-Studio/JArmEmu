@@ -23,10 +23,13 @@
 
 package fr.dwightstudio.jarmemu.base.gui.factory;
 
+import fr.dwightstudio.jarmemu.base.fx.AdjustedTextFlow;
 import fr.dwightstudio.jarmemu.base.util.InstructionSyntaxUtils;
+import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.layout.Region;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 
@@ -34,13 +37,10 @@ public class SyntaxHighlightedTableCell<T> extends TableCell<T, String> {
 
     private final TextFlow textFlow;
 
-    public SyntaxHighlightedTableCell() {
-        textFlow = new TextFlow();
-        textFlow.setMaxHeight(20);
-        textFlow.setMinWidth(Region.USE_PREF_SIZE);
-
-        setPrefHeight(20);
-        setMinWidth(Region.USE_PREF_SIZE);
+    public SyntaxHighlightedTableCell(Pos alignment) {
+        textFlow = new AdjustedTextFlow();
+        prefHeightProperty().bind(textFlow.heightProperty());
+        setAlignment(alignment);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class SyntaxHighlightedTableCell<T> extends TableCell<T, String> {
 
         if (!empty && string != null) {
             textFlow.getChildren().clear();
-            textFlow.getChildren().addAll(InstructionSyntaxUtils.replacePlaceholder(string));
+            textFlow.getChildren().addAll(InstructionSyntaxUtils.getFormatted(string));
 
             setText("");
             setGraphic(textFlow);
@@ -59,7 +59,7 @@ public class SyntaxHighlightedTableCell<T> extends TableCell<T, String> {
         }
     }
 
-    public static <T> Callback<TableColumn<T, String>, TableCell<T, String>> factory() {
-        return (val) -> new SyntaxHighlightedTableCell<>();
+    public static <T> Callback<TableColumn<T, String>, TableCell<T, String>> factory(Pos alignment) {
+        return (val) -> new SyntaxHighlightedTableCell<>(alignment);
     }
 }

@@ -26,7 +26,7 @@ public class InstructionUsageTableCell extends TableCell<Instruction, Instructio
 
         if (!empty && instruction != null) {
             textFlow.getChildren().clear();
-            textFlow.getChildren().addAll(InstructionSyntaxUtils.getUsage(instruction));
+            textFlow.getChildren().addAll(InstructionSyntaxUtils.getFormatted(InstructionSyntaxUtils.getUsage(instruction)));
 
             setPrefHeight(20);
             setMinWidth(Region.USE_PREF_SIZE);
