@@ -395,234 +395,244 @@
                                     <font>
                                         <Font size="14.0"/>
                                     </font>
-                                    <VBox spacing="10">
-                                        <Tile title="%settings.editor.realTimeParser.title"
-                                              description="%settings.editor.realTimeParser.description">
-                                            <action>
-                                                <HBox>
-                                                    <ToggleButton
-                                                            fx:id="settingsSmart"
-                                                            mnemonicParsing="false"
-                                                            onAction="#onSettingsSmart"
-                                                            styleClass="left-pill"
-                                                            text="Smart"/>
-                                                    <ToggleButton
-                                                            fx:id="settingsSimple"
-                                                            mnemonicParsing="false"
-                                                            onAction="#onSettingsSimple"
-                                                            styleClass="right-pill"
-                                                            text="Simple"/>
-                                                </HBox>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.editor.autoCompletion.title"
-                                              description="%settings.editor.autoCompletion.description">
-                                            <action>
-                                                <ToggleSwitch fx:id="autoCompletionSwitch"/>
-                                            </action>
-                                        </Tile>
-                                    </VBox>
+                                    <ScrollPane fitToWidth="true">
+                                        <VBox spacing="10" minWidth="400">
+                                            <Tile title="%settings.editor.realTimeParser.title"
+                                                  description="%settings.editor.realTimeParser.description">
+                                                <action>
+                                                    <HBox>
+                                                        <ToggleButton
+                                                                fx:id="settingsSmart"
+                                                                mnemonicParsing="false"
+                                                                onAction="#onSettingsSmart"
+                                                                styleClass="left-pill"
+                                                                text="Smart"/>
+                                                        <ToggleButton
+                                                                fx:id="settingsSimple"
+                                                                mnemonicParsing="false"
+                                                                onAction="#onSettingsSimple"
+                                                                styleClass="right-pill"
+                                                                text="Simple"/>
+                                                    </HBox>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.editor.autoCompletion.title"
+                                                  description="%settings.editor.autoCompletion.description">
+                                                <action>
+                                                    <ToggleSwitch fx:id="autoCompletionSwitch"/>
+                                                </action>
+                                            </Tile>
+                                        </VBox>
+                                    </ScrollPane>
                                 </TitledPane>
                                 <TitledPane text="%settings.simulation.title">
                                     <font>
                                         <Font size="14.0"/>
                                     </font>
-                                    <VBox spacing="10">
-                                        <Tile title="%settings.simulation.interval.title"
-                                              description="%settings.simulation.interval.description">
-                                            <action>
-                                                <Spinner fx:id="settingsSimInterval"
-                                                        editable="true"
-                                                        styleClass="arrows-on-right-horizontal"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.simulation.notImplemented.title"
-                                              description="%settings.simulation.notImplemented.description">
-                                            <action>
-                                                <ToggleSwitch fx:id="notImplementedSwitch"
-                                                        selected="false"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.simulation.deprecated.title"
-                                              description="%settings.simulation.deprecated.description">
-                                            <action>
-                                                <ToggleSwitch fx:id="deprecatedSwitch"
-                                                        selected="false"/>
-                                            </action>
-                                        </Tile>
-                                    </VBox>
+                                    <ScrollPane fitToWidth="true">
+                                        <VBox spacing="10" minWidth="400">
+                                            <Tile title="%settings.simulation.interval.title"
+                                                  description="%settings.simulation.interval.description">
+                                                <action>
+                                                    <Spinner fx:id="settingsSimInterval"
+                                                             editable="true"
+                                                             styleClass="arrows-on-right-horizontal"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.simulation.notImplemented.title"
+                                                  description="%settings.simulation.notImplemented.description">
+                                                <action>
+                                                    <ToggleSwitch fx:id="notImplementedSwitch"
+                                                                  selected="false"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.simulation.deprecated.title"
+                                                  description="%settings.simulation.deprecated.description">
+                                                <action>
+                                                    <ToggleSwitch fx:id="deprecatedSwitch"
+                                                                  selected="false"/>
+                                                </action>
+                                            </Tile>
+                                        </VBox>
+                                    </ScrollPane>
                                 </TitledPane>
                                 <TitledPane text="%settings.breakpoints.title">
                                     <font>
                                         <Font size="14.0"/>
                                     </font>
-                                    <VBox spacing="10">
-                                        <Tile title="%settings.breakpoints.manualBreakpoints.title"
-                                              description="%settings.breakpoints.manualBreakpoints.description">
-                                            <action>
-                                                <ToggleSwitch
-                                                        fx:id="manualBreakSwitch"
-                                                        alignment="CENTER_RIGHT"
-                                                        selected="true"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.breakpoints.codeBreakpoints.title"
-                                              description="%settings.breakpoints.codeBreakpoints.description">
-                                            <action>
-                                                <ToggleSwitch
-                                                        fx:id="codeBreakSwitch"
-                                                        alignment="CENTER_RIGHT"
-                                                        selected="true"/>
-                                            </action>
-                                        </Tile>
-                                        <Card>
-                                            <header>
-                                                <Tile title="%settings.breakpoints.autoBreakpoints.title"
-                                                      description="%settings.breakpoints.autoBreakpoints.description">
-                                                    <action>
-                                                        <ToggleSwitch
-                                                                fx:id="autoBreakSwitch"
-                                                                alignment="CENTER_RIGHT"
-                                                                selected="true"/>
-                                                    </action>
-                                                </Tile>
-                                            </header>
-                                            <body>
-                                                <VBox spacing="10">
-                                                    <Tile description="%settings.breakpoints.memoryAlign">
+                                    <ScrollPane fitToWidth="true">
+                                        <VBox spacing="10" minWidth="400">
+                                            <Tile title="%settings.breakpoints.manualBreakpoints.title"
+                                                  description="%settings.breakpoints.manualBreakpoints.description">
+                                                <action>
+                                                    <ToggleSwitch
+                                                            fx:id="manualBreakSwitch"
+                                                            alignment="CENTER_RIGHT"
+                                                            selected="true"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.breakpoints.codeBreakpoints.title"
+                                                  description="%settings.breakpoints.codeBreakpoints.description">
+                                                <action>
+                                                    <ToggleSwitch
+                                                            fx:id="codeBreakSwitch"
+                                                            alignment="CENTER_RIGHT"
+                                                            selected="true"/>
+                                                </action>
+                                            </Tile>
+                                            <Card>
+                                                <header>
+                                                    <Tile title="%settings.breakpoints.autoBreakpoints.title"
+                                                          description="%settings.breakpoints.autoBreakpoints.description">
                                                         <action>
                                                             <ToggleSwitch
-                                                                    fx:id="memoryAlignBreakSwitch"
+                                                                    fx:id="autoBreakSwitch"
+                                                                    alignment="CENTER_RIGHT"
                                                                     selected="true"/>
                                                         </action>
                                                     </Tile>
-                                                    <Tile description="%settings.breakpoints.stackAlign">
-                                                        <action>
-                                                            <ToggleSwitch
-                                                                    fx:id="stackAlignBreakSwitch"
-                                                                    selected="true"/>
-                                                        </action>
-                                                    </Tile>
-                                                    <Tile description="%settings.breakpoints.programAlign">
-                                                        <action>
-                                                            <ToggleSwitch
-                                                                    fx:id="programAlignBreakSwitch"
-                                                                    selected="true"/>
-                                                        </action>
-                                                    </Tile>
-                                                    <Tile description="%settings.breakpoints.nesting">
-                                                        <action>
-                                                            <ToggleSwitch
-                                                                    fx:id="functionNestingBreakSwitch"
-                                                                    selected="true"/>
-                                                        </action>
-                                                    </Tile>
-                                                    <Tile description="%settings.breakpoints.readOnly">
-                                                        <action>
-                                                            <ToggleSwitch
-                                                                    fx:id="readOnlyWritingBreakSwitch"
-                                                                    selected="true"/>
-                                                        </action>
-                                                    </Tile>
-                                                </VBox>
-                                            </body>
-                                        </Card>
-                                    </VBox>
+                                                </header>
+                                                <body>
+                                                    <VBox spacing="10">
+                                                        <Tile description="%settings.breakpoints.memoryAlign">
+                                                            <action>
+                                                                <ToggleSwitch
+                                                                        fx:id="memoryAlignBreakSwitch"
+                                                                        selected="true"/>
+                                                            </action>
+                                                        </Tile>
+                                                        <Tile description="%settings.breakpoints.stackAlign">
+                                                            <action>
+                                                                <ToggleSwitch
+                                                                        fx:id="stackAlignBreakSwitch"
+                                                                        selected="true"/>
+                                                            </action>
+                                                        </Tile>
+                                                        <Tile description="%settings.breakpoints.programAlign">
+                                                            <action>
+                                                                <ToggleSwitch
+                                                                        fx:id="programAlignBreakSwitch"
+                                                                        selected="true"/>
+                                                            </action>
+                                                        </Tile>
+                                                        <Tile description="%settings.breakpoints.nesting">
+                                                            <action>
+                                                                <ToggleSwitch
+                                                                        fx:id="functionNestingBreakSwitch"
+                                                                        selected="true"/>
+                                                            </action>
+                                                        </Tile>
+                                                        <Tile description="%settings.breakpoints.readOnly">
+                                                            <action>
+                                                                <ToggleSwitch
+                                                                        fx:id="readOnlyWritingBreakSwitch"
+                                                                        selected="true"/>
+                                                            </action>
+                                                        </Tile>
+                                                    </VBox>
+                                                </body>
+                                            </Card>
+                                        </VBox>
+                                    </ScrollPane>
                                 </TitledPane>
                                 <TitledPane text="%settings.dataManagement.title">
                                     <font>
                                         <Font size="14.0"/>
                                     </font>
-                                    <VBox spacing="10">
-                                        <Tile title="%settings.dataManagement.stackAddress.title"
-                                              description="%settings.dataManagement.stackAddress.description">
-                                            <action>
-                                                <Spinner fx:id="settingsStackAddress"
-                                                         editable="true"
-                                                         styleClass="arrows-on-right-horizontal"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.dataManagement.programAddress.title"
-                                              description="%settings.dataManagement.programAddress.description">
-                                            <action>
-                                                <Spinner fx:id="settingsProgramAddress"
-                                                        editable="true"
-                                                        styleClass="arrows-on-right-horizontal"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.dataManagement.dataFormat.title"
-                                              description="%settings.dataManagement.dataFormat.description">
-                                            <action>
-                                                <ChoiceBox fx:id="settingsFormat"
-                                                        prefWidth="200.0"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.dataManagement.follow.title"
-                                              description="%settings.dataManagement.follow.description">
-                                            <action>
-                                                <ToggleSwitch fx:id="followSPSwitch"
-                                                        alignment="CENTER_RIGHT"
-                                                        selected="true"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.dataManagement.highlight.title"
-                                              description="%settings.dataManagement.highlight.description">
-                                            <action>
-                                                <ToggleSwitch fx:id="updateSwitch"
-                                                        alignment="CENTER_RIGHT"
-                                                        selected="true"/>
-                                            </action>
-                                        </Tile>
-                                    </VBox>
+                                    <ScrollPane fitToWidth="true">
+                                        <VBox spacing="10" minWidth="400">
+                                            <Tile title="%settings.dataManagement.stackAddress.title"
+                                                  description="%settings.dataManagement.stackAddress.description">
+                                                <action>
+                                                    <Spinner fx:id="settingsStackAddress"
+                                                             editable="true"
+                                                             styleClass="arrows-on-right-horizontal"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.dataManagement.programAddress.title"
+                                                  description="%settings.dataManagement.programAddress.description">
+                                                <action>
+                                                    <Spinner fx:id="settingsProgramAddress"
+                                                             editable="true"
+                                                             styleClass="arrows-on-right-horizontal"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.dataManagement.dataFormat.title"
+                                                  description="%settings.dataManagement.dataFormat.description">
+                                                <action>
+                                                    <ChoiceBox fx:id="settingsFormat"
+                                                               prefWidth="200.0"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.dataManagement.follow.title"
+                                                  description="%settings.dataManagement.follow.description">
+                                                <action>
+                                                    <ToggleSwitch fx:id="followSPSwitch"
+                                                                  alignment="CENTER_RIGHT"
+                                                                  selected="true"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.dataManagement.highlight.title"
+                                                  description="%settings.dataManagement.highlight.description">
+                                                <action>
+                                                    <ToggleSwitch fx:id="updateSwitch"
+                                                                  alignment="CENTER_RIGHT"
+                                                                  selected="true"/>
+                                                </action>
+                                            </Tile>
+                                        </VBox>
+                                    </ScrollPane>
                                 </TitledPane>
                                 <TitledPane text="%settings.appearance.title">
                                     <font>
                                         <Font size="14.0"/>
                                     </font>
-                                    <VBox spacing="10">
-                                        <Tile title="%settings.appearance.themeFamily.title"
-                                              description="%settings.appearance.themeFamily.description">
-                                            <action>
-                                                <ChoiceBox fx:id="settingsFamily"
-                                                        prefWidth="150.0"/>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.appearance.themeVariation.title"
-                                              description="%settings.appearance.themeVariation.description">
-                                            <action>
-                                                <HBox>
-                                                    <ToggleButton fx:id="settingsDark"
-                                                                  mnemonicParsing="false"
-                                                                  onAction="#onSettingsDark"
-                                                                  styleClass="left-pill"
-                                                                  text="%settings.appearance.dark">
-                                                        <graphic>
-                                                            <FontIcon
-                                                                    iconLiteral="mdsal-bedtime"/>
-                                                        </graphic>
-                                                    </ToggleButton>
-                                                    <ToggleButton fx:id="settingsLight"
-                                                            mnemonicParsing="false"
-                                                            onAction="#onSettingsLight"
-                                                            styleClass="right-pill"
-                                                            text="%settings.appearance.light">
-                                                        <graphic>
-                                                            <FontIcon
-                                                                    iconLiteral="mdrmz-wb_sunny"/>
-                                                        </graphic>
-                                                    </ToggleButton>
-                                                </HBox>
-                                            </action>
-                                        </Tile>
-                                        <Tile title="%settings.appearance.maxNotification.title"
-                                              description="%settings.appearance.maxNotification.description">
-                                            <action>
-                                                <Spinner fx:id="settingsMaxNotification"
-                                                        editable="true"
-                                                        styleClass="arrows-on-right-horizontal"/>
-                                            </action>
-                                        </Tile>
-                                    </VBox>
+                                    <ScrollPane fitToWidth="true">
+                                        <VBox spacing="10" minWidth="400">
+                                            <Tile title="%settings.appearance.themeFamily.title"
+                                                  description="%settings.appearance.themeFamily.description">
+                                                <action>
+                                                    <ChoiceBox fx:id="settingsFamily"
+                                                               prefWidth="150.0"/>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.appearance.themeVariation.title"
+                                                  description="%settings.appearance.themeVariation.description">
+                                                <action>
+                                                    <HBox>
+                                                        <ToggleButton fx:id="settingsDark"
+                                                                      mnemonicParsing="false"
+                                                                      onAction="#onSettingsDark"
+                                                                      styleClass="left-pill"
+                                                                      text="%settings.appearance.dark">
+                                                            <graphic>
+                                                                <FontIcon
+                                                                        iconLiteral="mdsal-bedtime"/>
+                                                            </graphic>
+                                                        </ToggleButton>
+                                                        <ToggleButton fx:id="settingsLight"
+                                                                      mnemonicParsing="false"
+                                                                      onAction="#onSettingsLight"
+                                                                      styleClass="right-pill"
+                                                                      text="%settings.appearance.light">
+                                                            <graphic>
+                                                                <FontIcon
+                                                                        iconLiteral="mdrmz-wb_sunny"/>
+                                                            </graphic>
+                                                        </ToggleButton>
+                                                    </HBox>
+                                                </action>
+                                            </Tile>
+                                            <Tile title="%settings.appearance.maxNotification.title"
+                                                  description="%settings.appearance.maxNotification.description">
+                                                <action>
+                                                    <Spinner fx:id="settingsMaxNotification"
+                                                             editable="true"
+                                                             styleClass="arrows-on-right-horizontal"/>
+                                                </action>
+                                            </Tile>
+                                        </VBox>
+                                    </ScrollPane>
                                 </TitledPane>
                             </panes>
                         </Accordion>

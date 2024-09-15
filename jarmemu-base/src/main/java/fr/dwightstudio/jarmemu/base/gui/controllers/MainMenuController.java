@@ -218,6 +218,7 @@ public class MainMenuController {
     public void exit() {
         logger.info("Exiting JArmEmu...");
 
+        JArmEmuApplication.getController().saveLayout();
         setLastSave();
 
         JArmEmuApplication.getExecutionWorker().stop();

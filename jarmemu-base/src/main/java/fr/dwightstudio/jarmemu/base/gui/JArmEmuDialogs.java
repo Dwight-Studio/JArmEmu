@@ -343,7 +343,7 @@ public class JArmEmuDialogs {
         description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
         description.getChildren().add(InstructionSyntaxUtils.getText(JArmEmuApplication.formatMessage("%instructionList.description.all") + "\n\n", "notice"));
         description.getChildren().addAll(InstructionSyntaxUtils.getFormatted(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
-        description.getStyleClass().add("description");
+        description.getStyleClass().add("instruction-description");
         description.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.6));
 
         VBox usageGroup = new VBox(usage, description);
