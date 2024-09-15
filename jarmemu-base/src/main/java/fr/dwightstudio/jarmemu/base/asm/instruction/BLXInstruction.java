@@ -23,6 +23,7 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.LabelOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
@@ -86,8 +87,16 @@ public class BLXInstruction extends ParsedInstruction<Integer, Object, Object, O
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+    public int getMemoryCode(StateContainer stateContainer, int pos) throws ExecutionASMException {
+        if (((LabelOrRegisterArgument) this.arg1).isRegister()) {
+            int cond = this.modifier.condition().getCode();
+            int Rm = ((LabelOrRegisterArgument) this.arg1).getRegisterNumber();
+            return (cond << 28) + (1 << 24) + (1 << 21) + (0xFFF << 8) + (0b11 << 4) + Rm;
+        } else {
+            int offset = this.arg1.getValue(stateContainer) / 4 - 2;
+            offset &= 0xFFFFFF;
+            return (0b11111 << 27) + (1 << 25) + offset;
+        }
     }
 
     @Override

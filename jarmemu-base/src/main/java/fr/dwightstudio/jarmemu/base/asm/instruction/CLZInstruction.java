@@ -64,7 +64,12 @@ public class CLZInstruction extends ParsedInstruction<Register, Register, Object
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int Rm = ((RegisterArgument) this.arg2).getRegisterNumber();
+
+        return (cond << 28) + (1 << 24) + (0b11 << 21) + (0b1111 << 16) + (Rd << 12) + (0b1111 << 8) + (1 << 4) + Rm;
     }
 
     @Override

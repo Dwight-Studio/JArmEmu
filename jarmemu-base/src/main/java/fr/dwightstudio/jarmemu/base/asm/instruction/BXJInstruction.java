@@ -68,7 +68,10 @@ public class BXJInstruction extends ParsedInstruction<Register, Object, Object, 
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rm = ((RegisterArgument) this.arg1).getRegisterNumber();
+        return (cond << 28) + (24 << 1) + (21 << 1) + (0xFFF << 8) + (1 << 5) + Rm;
     }
 
     @Override

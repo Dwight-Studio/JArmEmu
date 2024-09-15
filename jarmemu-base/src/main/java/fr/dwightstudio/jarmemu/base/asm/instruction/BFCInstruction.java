@@ -90,7 +90,14 @@ public class BFCInstruction extends ParsedInstruction<Register, Integer, Integer
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int lsb = ((ImmediateArgument) this.arg2).getValue(stateContainer);
+        int width = ((ImmediateArgument) this.arg3).getValue(stateContainer);
+        int msb = lsb + width - 1;
+
+        return (cond << 28) + (0b11111 << 22) + (msb << 16) + (Rd << 12) + (lsb << 7) + 0b11111;
     }
 
     @Override

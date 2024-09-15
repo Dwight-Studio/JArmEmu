@@ -65,8 +65,10 @@ public class CBNZInstruction extends ParsedInstruction<Register, Integer, Object
     }
 
     @Override
-    public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+    public int getMemoryCode(StateContainer stateContainer, int pos) throws ExecutionASMException {
+        int Rn = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int imm = this.arg2.getValue(stateContainer);
+        return (1 << 15) + (0b111 << 11) + (1 << 8) + ((imm & 0x1F) << 3) + (Rn & 0x7);
     }
 
     @Override

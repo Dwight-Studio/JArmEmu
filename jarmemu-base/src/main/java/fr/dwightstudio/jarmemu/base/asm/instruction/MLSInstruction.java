@@ -87,7 +87,14 @@ public class MLSInstruction extends ParsedInstruction<Register, Register, Regist
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int Rn = ((RegisterArgument) this.arg2).getRegisterNumber();
+        int Rm = ((RegisterArgument) this.arg3).getRegisterNumber();
+        int Ra = ((RegisterArgument) this.arg4).getRegisterNumber();
+
+        return (cond << 28) + (0b11 << 21) + (Rd << 16) + (Ra << 12) + (Rm << 8) + (1 << 7) + (1 << 4) + Rn;
     }
 
     @Override

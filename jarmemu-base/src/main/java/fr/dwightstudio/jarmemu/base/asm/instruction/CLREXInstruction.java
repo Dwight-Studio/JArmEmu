@@ -66,7 +66,7 @@ public class CLREXInstruction extends ParsedInstruction<Object, Object, Object, 
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        return (0b1111 << 28) + (1 << 26) + (1 << 24) + (0b111 << 20) + (0xFF << 12) + 0b11111;
     }
 
     @Override

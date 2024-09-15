@@ -188,7 +188,7 @@ public class InstructionCodeUtils {
                 P = 1;
                 U = 1;
                 Rn = 0b1111;
-                Offset = (dir.getLastPos().getPos() - 4 * 2) - pos;
+                Offset = (dir.getLastPos().getPos() - 8) - pos;
             }
         }
 

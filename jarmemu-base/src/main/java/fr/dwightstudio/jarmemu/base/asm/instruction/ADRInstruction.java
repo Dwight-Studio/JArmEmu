@@ -91,7 +91,14 @@ public class ADRInstruction extends ParsedInstruction<Register, Integer, Object,
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int Rd = ((RegisterArgument) this.arg1).getRegisterNumber();
+        int label = ((LabelArgument) this.arg2).getValue() - 8;
+        int neg = (label < 0) ? 22 : 23;
+        label = (label < 0) ? -label : label;
+
+        return (cond << 28) + (1 << 25) + (1 << neg) + (0b1111 << 16) + (Rd << 12) + (label & 0xFFF);
     }
 
     @Override

@@ -86,7 +86,11 @@ public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, 
 
     @Override
     public int getMemoryCode(StateContainer stateContainer, int pos) {
-        return 0;
+        int cond = this.modifier.condition().getCode();
+
+        int imm = ((LongImmediateArgument) this.arg1).getValue(stateContainer);
+
+        return (cond << 28) + (1 << 24) + (1 << 21) + ((imm >> 4) << 8)+ (0b111 << 4) + (imm & 0xF);
     }
 
     @Override

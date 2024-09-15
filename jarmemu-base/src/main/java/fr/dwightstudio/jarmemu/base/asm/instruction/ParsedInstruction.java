@@ -176,7 +176,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
      * @return a 32 bit value representing the instruction in program memory
      * @apiNote this value is for education purpose, it is not actually used by the emulator
      */
-    public abstract int getMemoryCode(StateContainer stateContainer, int pos);
+    public abstract int getMemoryCode(StateContainer stateContainer, int pos) throws ExecutionASMException;
 
     protected abstract void execute(StateContainer stateContainer, boolean ignoreExceptions, A arg1, B arg2, C arg3, D arg4) throws ExecutionASMException;
 
