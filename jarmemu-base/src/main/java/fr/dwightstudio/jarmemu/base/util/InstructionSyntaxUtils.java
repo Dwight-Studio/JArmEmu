@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 public class InstructionSyntaxUtils {
 
-    public static String IMMEDIATE_REGEX = "#|\\b(rimm[0-9]+|imm[0-9]+)\\b";
+    public static String IMMEDIATE_REGEX = "=data|#|\\b(rimm[0-9]+|imm[0-9]+)\\b";
     public static String REGISTER_REGEX = "\\b(?i)(reg[0-9abisvn]|PC|LR)(?-i)\\b";
     public static String BRACE_REGEX = "\\{|\\}";
     public static String BRACKET_REGEX = "\\[adr\\]|\\[|\\]";
@@ -313,7 +313,7 @@ public class InstructionSyntaxUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static TableView<SyntaxView> getAddressTable() {
+    public static TableView<SyntaxView> getAddressTable(Instruction instruction) {
         TableColumn<SyntaxView, String> col0 = new TableColumn<>();
         col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
         setupColumn(col0, true, false);
@@ -350,6 +350,7 @@ public class InstructionSyntaxUtils {
         items.add(new SyntaxView("[rega], #imm12", JArmEmuApplication.formatMessage("%instructionList.description.adrRegImmP")));
         items.add(new SyntaxView("[rega], <+/->regi", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegP")));
         items.add(new SyntaxView("[rega], <+/->regi, sht #imm5/regs", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegShtP")));
+        if (instruction == Instruction.LDR) items.add(new SyntaxView("=data", JArmEmuApplication.formatMessage("%instructionList.description.adrPseudo")));
 
         return tableView;
     }

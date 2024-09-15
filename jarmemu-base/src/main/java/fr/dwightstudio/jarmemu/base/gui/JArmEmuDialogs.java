@@ -405,7 +405,7 @@ public class JArmEmuDialogs {
 
         if (modifiers.contains(Condition.class)) flowPane.getChildren().add(InstructionSyntaxUtils.getConditionTable());
         if (usageString.contains("sht") || usageString.contains("[adr]")) flowPane.getChildren().add(InstructionSyntaxUtils.getShiftTable());
-        if (usageString.contains("[adr]")) flowPane.getChildren().add(InstructionSyntaxUtils.getAddressTable());
+        if (usageString.contains("[adr]")) flowPane.getChildren().add(InstructionSyntaxUtils.getAddressTable(instruction));
 
         ModalDialog dialog = new ModalDialog(vBox);
 
