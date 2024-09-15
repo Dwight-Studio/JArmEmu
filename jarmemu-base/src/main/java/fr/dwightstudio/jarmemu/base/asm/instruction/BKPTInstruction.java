@@ -23,9 +23,9 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
+import fr.dwightstudio.jarmemu.base.asm.argument.LongImmediateArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
-import fr.dwightstudio.jarmemu.base.asm.argument.SmallImmediateArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.BreakpointASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
@@ -48,7 +48,7 @@ public class BKPTInstruction extends ParsedInstruction<Integer, Object, Object, 
     @Override
     @NotNull
     public Class<? extends ParsedArgument<Integer>> getParsedArg1Class() {
-        return SmallImmediateArgument.class;
+        return LongImmediateArgument.class;
     }
 
     @Override
