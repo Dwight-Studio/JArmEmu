@@ -77,8 +77,8 @@ public enum Instruction {
     CMN(CMNInstruction.class),
     TST(TSTInstruction.class),
     TEQ(TEQInstruction.class),
-    CBZ(CBZInstruction.class),
-    CBNZ(CBNZInstruction.class),
+    //CBZ(CBZInstruction.class),
+    //CBNZ(CBNZInstruction.class),
 
     // Data movement
     MOV(MOVInstruction.class),
