@@ -59,7 +59,9 @@ public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
             if (immediate) {
                 immediateArgument.verify(stateSupplier);
 
-                if (Integer.numberOfLeadingZeros(Math.abs(immediateArgument.getValue(stateSupplier.get()))) < 25) {
+                int value = immediateArgument.getValue(stateSupplier.get());
+
+                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21 && value != -2048) {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
                 }
             } else {

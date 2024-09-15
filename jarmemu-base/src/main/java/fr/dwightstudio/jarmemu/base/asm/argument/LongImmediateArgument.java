@@ -47,7 +47,7 @@ public class LongImmediateArgument extends ParsedArgument<Integer> {
 
                 value = stateContainer.evalWithAccessible(valueString);
 
-                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 17 && value != -2048)
+                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 17 && value != -32768)
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
 
             } else if (originalString.startsWith("=") || originalString.startsWith("*")) {

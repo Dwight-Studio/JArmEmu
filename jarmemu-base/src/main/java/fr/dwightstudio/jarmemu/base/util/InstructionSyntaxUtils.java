@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.base.gui.factory.StylizedStringTableCell;
 import fr.dwightstudio.jarmemu.base.gui.factory.SyntaxHighlightedTableCell;
 import fr.dwightstudio.jarmemu.base.gui.view.SyntaxView;
 import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -105,7 +106,7 @@ public class InstructionSyntaxUtils {
 
             if (type.equals("NullArgument")) continue;
 
-            if ((i == 0 && instruction.hasWorkingRegister() || type.startsWith("Optional") || type.startsWith("PostOffset") || type.startsWith("Shift"))) {
+            if ((i == 0 && instruction.hasWorkingRegister() || type.startsWith("Optional") || type.startsWith("Shift"))) {
                 if (i > 0) {
                     rtn.append(" <, ");
                     rtn.append(getArgumentUsage(type, i));
@@ -124,6 +125,8 @@ public class InstructionSyntaxUtils {
                     rtn.append(getArgumentUsage(type, i));
                 }
             }
+
+            if (type.equals("AddressArgument")) break;
         }
 
         for (int i = 0; i < opt; i++) {
@@ -135,7 +138,7 @@ public class InstructionSyntaxUtils {
 
     public static String getArgumentUsage(String type, Integer regNum) {
         return switch (type) {
-            case "AddressArgument" -> "[adr]<!>";
+            case "AddressArgument" -> "[adr]";
             case "IgnoredArgument" -> "ign";
             case "ImmediateArgument" -> "#imm12";
             case "SmallImmediateArgument" -> "#imm8";
@@ -249,16 +252,106 @@ public class InstructionSyntaxUtils {
 
         items.add(new SyntaxView("lbl", JArmEmuApplication.formatMessage("%instructionList.description.lbl")));
 
+        final boolean adr = usage.contains("[adr]");
         boolean empty = true;
 
         for (SyntaxView sv : items) {
             if (usage.contains(sv.symbol())) {
                 tableView.getItems().add(sv);
                 empty = false;
+            } else if (adr) {
+                boolean add = switch (sv.symbol()) {
+                    case "imm5", "imm12", "rega", "regi", "regs" -> true;
+                    default -> false;
+                };
+
+                if (add) {
+                    tableView.getItems().add(sv);
+                    empty = false;
+                }
             }
         }
 
         return empty ? null : tableView;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TableView<SyntaxView> getShiftTable() {
+        TableColumn<SyntaxView, String> col0 = new TableColumn<>();
+        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        setupColumn(col0, true, false);
+        col0.setMaxWidth(150);
+        col0.setMinWidth(150);
+        col0.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
+        col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
+
+        TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
+        col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        setupColumn(col1, false, true);
+        col1.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.5));
+        col1.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
+        col1.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().description()));
+
+        TableColumn<SyntaxView, SyntaxView> masterCol = getMasterColumn("%instructionList.detail.shift");
+        masterCol.getColumns().addAll(col0, col1);
+        masterCol.setGraphic(getText("sht", "shift"));
+
+        TableView<SyntaxView> tableView = new TableView<>();
+        tableView.getColumns().setAll(masterCol);
+        tableView.setPrefHeight(310);
+        setupTable(tableView);
+
+        ObservableList<SyntaxView> items = tableView.getItems();
+
+        items.add(new SyntaxView("LSL #imm5/regs", JArmEmuApplication.formatMessage("%instructionList.description.lslShift")));
+        items.add(new SyntaxView("LSR #imm5/regs", JArmEmuApplication.formatMessage("%instructionList.description.lsrShift")));
+        items.add(new SyntaxView("ASR #imm5/regs", JArmEmuApplication.formatMessage("%instructionList.description.asrShift")));
+        items.add(new SyntaxView("ROR #imm5/regs", JArmEmuApplication.formatMessage("%instructionList.description.rorShift")));
+        items.add(new SyntaxView("RRX", JArmEmuApplication.formatMessage("%instructionList.description.rrxShift")));
+
+        return tableView;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static TableView<SyntaxView> getAddressTable() {
+        TableColumn<SyntaxView, String> col0 = new TableColumn<>();
+        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        setupColumn(col0, true, false);
+        col0.setMaxWidth(250);
+        col0.setMinWidth(250);
+        col0.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
+        col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
+
+        TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
+        col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        setupColumn(col1, false, true);
+        col1.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.4));
+        col1.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
+        col1.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().description()));
+
+        TableColumn<SyntaxView, SyntaxView> masterCol = getMasterColumn("%instructionList.detail.address");
+        masterCol.getColumns().addAll(col0, col1);
+        masterCol.setGraphic(getText("[adr]", "bracket"));
+
+        TableView<SyntaxView> tableView = new TableView<>();
+        tableView.getColumns().setAll(masterCol);
+        tableView.setPrefHeight(310);
+        setupTable(tableView);
+
+        ObservableList<SyntaxView> items = tableView.getItems();
+
+        items.add(new SyntaxView("[rega]", JArmEmuApplication.formatMessage("%instructionList.description.adrReg")));
+        items.add(new SyntaxView("[rega, #imm12]", JArmEmuApplication.formatMessage("%instructionList.description.adrRegImm")));
+        items.add(new SyntaxView("[rega, <+/->regi]", JArmEmuApplication.formatMessage("%instructionList.description.adrRegReg")));
+        items.add(new SyntaxView("[rega, <+/->regi, sht #imm5/regs]", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegSht")));
+        items.add(new SyntaxView("[rega, #imm12]!", JArmEmuApplication.formatMessage("%instructionList.description.adrRegImmU")));
+        items.add(new SyntaxView("[rega, <+/->regi]!", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegU")));
+        items.add(new SyntaxView("[rega, <+/->regi, sht #imm5/regs]!", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegShtU")));
+        items.add(new SyntaxView("[rega], #imm12", JArmEmuApplication.formatMessage("%instructionList.description.adrRegImmP")));
+        items.add(new SyntaxView("[rega], <+/->regi", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegP")));
+        items.add(new SyntaxView("[rega], <+/->regi, sht #imm5/regs", JArmEmuApplication.formatMessage("%instructionList.description.adrRegRegShtP")));
+
+        return tableView;
     }
 
     private static void setupColumn(TableColumn<?, ?> column, boolean sortable, boolean resizable) {
@@ -273,7 +366,6 @@ public class InstructionSyntaxUtils {
         tableView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
         tableView.getStyleClass().addAll(Styles.STRIPED, Tweaks.ALIGN_CENTER);
         tableView.setEditable(false);
-        tableView.setMaxHeight(Double.POSITIVE_INFINITY);
 
         tableView.setSkin(new ResizableTableViewSkin<>(tableView));
 

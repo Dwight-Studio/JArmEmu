@@ -134,9 +134,7 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
-    // Before the release:
-    // TODO: Add shift argument table
-    // TODO: Add address argument table
+    // Soon:
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
 
     // Maybe:

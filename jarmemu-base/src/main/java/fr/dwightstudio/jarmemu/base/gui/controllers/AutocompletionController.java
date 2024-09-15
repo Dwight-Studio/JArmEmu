@@ -217,7 +217,7 @@ public class AutocompletionController implements Initializable {
                             case "LabelOrRegisterArgument" -> {
                                 list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
                                 for (RegisterUtils value : RegisterUtils.values()) {
-                                    if (!value.isSpecial()) list.add("[" + value.name() + "]");
+                                    if (!value.isSpecial()) list.add(value.name());
                                 }
                             }
 

@@ -291,8 +291,9 @@ public class JArmEmuDialogs {
         instructionTable.setEditable(false);
         instructionTable.setMaxWidth(Double.POSITIVE_INFINITY);
         instructionTable.setMaxHeight(Double.POSITIVE_INFINITY);
-        instructionTable.setMinWidth(720);
-        instructionTable.setMinHeight(500);
+        instructionTable.setMinWidth(650);
+        instructionTable.setMinHeight(Region.USE_PREF_SIZE);
+        instructionTable.prefHeightProperty().bind(JArmEmuApplication.getStage().heightProperty().map(n -> Math.min(0.6 * n.doubleValue(), 500.0)));
 
         instructionTable.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
@@ -334,23 +335,26 @@ public class JArmEmuDialogs {
 
         final String usageString = InstructionSyntaxUtils.getUsage(instruction);
 
+        VBox usageGroup = new VBox();
+        usageGroup.setSpacing(20);
+        usageGroup.setFillWidth(false);
+        usageGroup.setMinWidth(VBox.USE_PREF_SIZE);
+        usageGroup.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.55));
+
         TextFlow usage = new TextFlow();
         usage.getChildren().addAll(InstructionSyntaxUtils.getFormatted(usageString));
         usage.getStyleClass().add("big-usage");
         usage.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
+        usage.maxWidthProperty().bind(usageGroup.widthProperty());
 
         TextFlow description = new TextFlow();
         description.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
         description.getChildren().add(InstructionSyntaxUtils.getText(JArmEmuApplication.formatMessage("%instructionList.description.all") + "\n\n", "notice"));
         description.getChildren().addAll(InstructionSyntaxUtils.getFormatted(JArmEmuApplication.formatMessage("%instructionList.description." + instructionString)));
         description.getStyleClass().add("instruction-description");
-        description.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.6));
+        description.maxWidthProperty().bind(usageGroup.widthProperty());;
 
-        VBox usageGroup = new VBox(usage, description);
-        usageGroup.setSpacing(20);
-        usageGroup.setPadding(new Insets(10, 10, 10, 10));
-        usageGroup.setFillWidth(false);
-        usageGroup.setMinWidth(VBox.USE_PREF_SIZE);
+        usageGroup.getChildren().addAll(usage, description);
 
         Button exampleButton = new Button(JArmEmuApplication.formatMessage("%instructionList.detail.example"));
 
@@ -390,7 +394,7 @@ public class JArmEmuDialogs {
         VBox vBox = new VBox(title, usageGroup, exampleButton, flowPane);
         vBox.setSpacing(20);
         vBox.setAlignment(Pos.CENTER);
-        vBox.setPadding(new Insets(10));
+        vBox.setPadding(new Insets(0, 0, 30, 0));
 
         VBox.setMargin(exampleButton, new Insets(0, 0, 30, 0));
 
@@ -400,6 +404,8 @@ public class JArmEmuDialogs {
         if (valueTable != null) flowPane.getChildren().add(valueTable);
 
         if (modifiers.contains(Condition.class)) flowPane.getChildren().add(InstructionSyntaxUtils.getConditionTable());
+        if (usageString.contains("sht") || usageString.contains("[adr]")) flowPane.getChildren().add(InstructionSyntaxUtils.getShiftTable());
+        if (usageString.contains("[adr]")) flowPane.getChildren().add(InstructionSyntaxUtils.getAddressTable());
 
         ModalDialog dialog = new ModalDialog(vBox);
 
