@@ -18,6 +18,7 @@ import javafx.scene.control.PopupControl;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.PopupWindow;
+import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
@@ -427,8 +428,14 @@ public class AutocompletionController implements Initializable {
     public void caretMoved() {
         synchronized (LOCK) {
             if (sc.editor() == null) return;
-            if (sc.editor().getCodeArea().offsetToPosition(sc.editor().getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != sc.line())
+            CodeArea codeArea = sc.editor().getCodeArea();
+
+            try {
+                if (codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != sc.line())
+                    close();
+            } catch (IndexOutOfBoundsException ignored) {
                 close();
+            }
 
             if (!reopened) close();
             else reopened = false;
