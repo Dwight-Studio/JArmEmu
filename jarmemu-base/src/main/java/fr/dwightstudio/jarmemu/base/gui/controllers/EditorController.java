@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
+import atlantafx.base.util.BBCodeParser;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;

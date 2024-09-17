@@ -77,6 +77,42 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-09-17" version="1.0.0">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.0.0</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Added instruction code in memory</li>
+                    <li>Added instruction list (documentation)</li>
+                    <li>Added instruction/RO memory protection against overwriting</li>
+                    <li>Removed the legacy source parser</li>
+                    <li>Improved readability in memory views</li>
+                    <li>Improved tabulation insertion/deletion</li>
+                    <li>Improved settings UI</li>
+                    <li>Fixed memory edition in GUI</li>
+                    <li>Fixed CPSR/SPSR being usable as common registers</li>
+                    <li>Fixed broken shift argument (with register)</li>
+                    <li>Fixed broken shift highlighting/autocompletion</li>
+                    <li>Fixed incorrect pre-/post-indexing behaviour, syntax and highlighting</li>
+                    <li>Fixed incorrect syntax of &#39;label&#39; arguments</li>
+                    <li>Fixed incorrect instruction memory position when fetching from StateInitializer (instruction comparison)</li>
+                    <li>Fixed LDM and STM default update mode</li>
+                    <li>Fixed instruction modifier order (data mode, store mode, update flags etc)</li>
+                    <li>Fixed MOV behaviour</li>
+                    <li>Fixed shift on immediate highlighting</li>
+                    <li>Fixed line number highlighting when looping over 2 addresses</li>
+                    <li>Fixed stuck UI when executing with minimum simulation interval</li>
+                    <li>Fixed undetected catch point by BX instruction</li>
+                    <li>Fixed value update highlighting</li>
+                    <li>Fixed unsaved dialog triggering</li>
+                    <li>Fixed CMN wrongly transformed into CMP</li>
+                    <li>Fixed autocompletion triggered when using Find &amp; Replace</li>
+                    <li>Fixed shifted MOV to SHIFT conversion</li>
+                    <li>Fixed RegisterAddress highlighting</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-05-24" version="0.2.2">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v0.2.2</url>
             <description>

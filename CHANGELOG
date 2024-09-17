@@ -10,7 +10,7 @@
 - Fixed CPSR/SPSR being usable as common registers
 - Fixed broken shift argument (with register)
 - Fixed broken shift highlighting/autocompletion
-- Fixed incorrect pre/post indexing behaviour, syntax and highlighting
+- Fixed incorrect pre-/post-indexing behaviour, syntax and highlighting
 - Fixed incorrect syntax of 'label' arguments
 - Fixed incorrect instruction memory position when fetching from StateInitializer (instruction comparison)
 - Fixed LDM and STM default update mode
