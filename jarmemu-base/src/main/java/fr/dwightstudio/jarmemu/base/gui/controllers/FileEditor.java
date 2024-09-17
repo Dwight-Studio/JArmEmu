@@ -185,16 +185,20 @@ public class FileEditor {
                     if (keyEvent.isShiftDown()) {
                         Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                         if (par.getText().startsWith("\t") || par.getText().startsWith(" ")) {
+                            getRealTimeParser().preventAutocomplete(parN);
                             codeArea.deleteText(parN, 0, parN, 1);
                             selEnd--;
                         }
                     } else {
+                        getRealTimeParser().preventAutocomplete(parN);
                         codeArea.insertText(parN, 0, "\t");
                         selEnd++;
                     }
                 }
 
                 if (!sel) codeArea.selectRange(selStart, selEnd);
+                else
+                getRealTimeParser().preventAutocomplete(-1);
             }
         });
 

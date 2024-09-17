@@ -295,7 +295,11 @@ public class AutocompletionController implements Initializable {
                 }
             }
 
-            currentWord = getCurrentContext();
+            try {
+                currentWord = getCurrentContext();
+            } catch (IndexOutOfBoundsException exception) {
+                currentWord = "";
+            }
 
             if (considerWord) {
                 Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
