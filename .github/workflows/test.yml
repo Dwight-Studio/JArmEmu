@@ -2,7 +2,7 @@ name: Build & test
 run-name: Build & tests
 on:
   pull_request:
-    types: [opened]
+    types: [opened, synchronize, reopened]
     branches:
       - main
 jobs:
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           java-version: '21'
-          distribution: 'openjdk'
+          distribution: 'oracle'
           cache: maven
       - name: maven-test
         run: mvn compile test
