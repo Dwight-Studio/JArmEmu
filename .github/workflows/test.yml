@@ -1,0 +1,49 @@
+name: Build & test
+run-name: Build & tests
+on:
+  pull_request:
+    types: [opened]
+    branches:
+      - main
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: main-version-check
+      uses: avides/actions-project-version-check@v1.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        file-to-check: pom.xml
+    - name: base-version-check
+      uses: avides/actions-project-version-check@v1.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        file-to-check: jarmemu-base/pom.xml
+    - name: distribution-version-check
+      uses: avides/actions-project-version-check@v1.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        file-to-check: jarmemu-distribution/pom.xml
+    - name: launcher-version-check
+      uses: avides/actions-project-version-check@v1.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        file-to-check: jarmemu-launcher/pom.xml
+    - name: medias-version-check
+      uses: avides/actions-project-version-check@v1.4.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        file-to-check: jarmemu-medias/pom.xml
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'openjdk'
+          cache: maven
+      - name: maven-test
+        run: mvn compile test
