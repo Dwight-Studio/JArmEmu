@@ -1,5 +1,4 @@
-name: Build & test
-run-name: Build & tests
+name: Validation
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -10,27 +9,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: main-version-check
+    - name: Check root project version
       uses: avides/actions-project-version-check@v1.4.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         file-to-check: pom.xml
-    - name: base-version-check
+    - name: Check base version
       uses: avides/actions-project-version-check@v1.4.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         file-to-check: jarmemu-base/pom.xml
-    - name: distribution-version-check
+    - name: Check distribution version
       uses: avides/actions-project-version-check@v1.4.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         file-to-check: jarmemu-distribution/pom.xml
-    - name: launcher-version-check
+    - name: Check launcher version
       uses: avides/actions-project-version-check@v1.4.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         file-to-check: jarmemu-launcher/pom.xml
-    - name: medias-version-check
+    - name: Check medias version
       uses: avides/actions-project-version-check@v1.4.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -45,5 +44,5 @@ jobs:
           java-version: '21'
           distribution: 'oracle'
           cache: maven
-      - name: maven-test
+      - name: Run tests
         run: mvn compile test
