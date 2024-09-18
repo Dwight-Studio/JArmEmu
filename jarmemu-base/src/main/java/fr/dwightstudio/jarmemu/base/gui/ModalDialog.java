@@ -25,13 +25,11 @@ package fr.dwightstudio.jarmemu.base.gui;
 
 import atlantafx.base.layout.ModalBox;
 import atlantafx.base.theme.Styles;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 public class ModalDialog {
 
