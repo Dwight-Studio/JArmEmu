@@ -127,8 +127,10 @@ public class JArmEmuPreloader extends Preloader {
 
         stage.show();
         stage.centerOnScreen();
+        /* Fix centering on certain JRE
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
         stage.setY(((dimension.getHeight() - (stage.getHeight() * stage.getOutputScaleY())) / 2) / stage.getOutputScaleY());
+        */
     }
 
     @Override

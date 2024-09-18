@@ -1,3 +1,7 @@
+1.0.0 -> 1.0.1
+- Fixed preloader centering
+
+
 0.2.2 -> 1.0.0
 - Added instruction code in memory
 - Added instruction list (documentation)
