@@ -1,5 +1,6 @@
 1.0.0 -> 1.0.1
 
+- Improved memory views (resolved #11)
 - Fixed preloader centering
 - Fixed program being editable during simulation (resolved #12)
 

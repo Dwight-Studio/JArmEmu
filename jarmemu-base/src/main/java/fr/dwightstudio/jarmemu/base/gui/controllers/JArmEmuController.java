@@ -197,8 +197,8 @@ public class JArmEmuController implements Initializable {
             mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
             leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
 
-            JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
-            JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
 
             Platform.runLater(LAYOUT_SAVING_TIMELINE::stop);
         });
@@ -230,11 +230,11 @@ public class JArmEmuController implements Initializable {
         HashMap<String, JSONArray> memoryColumns = new HashMap<>();
         memoryColumns.put(
                 MEMORY_DETAILS_KEY,
-                new JSONArray(JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+                new JSONArray(JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
         memoryColumns.put(
                 MEMORY_OVERVIEW_KEY,
-                new JSONArray(JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+                new JSONArray(JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
         layout.put(MEMORY_COLUMNS_KEY, memoryColumns);;
 
@@ -273,12 +273,12 @@ public class JArmEmuController implements Initializable {
 
             JSONArray memoryDetailsData = memoryColumns.getJSONArray(MEMORY_DETAILS_KEY);
             for (int i = 0; i < memoryDetailsData.length(); i++) {
-                JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
+                JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
             }
 
             JSONArray memoryOverviewData = memoryColumns.getJSONArray(MEMORY_OVERVIEW_KEY);
             for (int i = 0; i < memoryOverviewData.length(); i++) {
-                JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
+                JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
             }
         } catch (JSONException exception) {
             logger.severe("Error while parsing layout");

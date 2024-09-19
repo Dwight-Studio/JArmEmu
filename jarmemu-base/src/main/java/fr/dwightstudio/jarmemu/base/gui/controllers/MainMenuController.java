@@ -310,7 +310,7 @@ public class MainMenuController {
     public void registerMemoryDetailsColumns() {
         JArmEmuApplication.getController().memoryDetailsMenu.getItems().clear();
 
-        JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().forEach(column -> {
+        JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
@@ -340,7 +340,7 @@ public class MainMenuController {
     public void registerMemoryOverviewColumns() {
         JArmEmuApplication.getController().memoryOverviewMenu.getItems().clear();
 
-        JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().forEach(column -> {
+        JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {

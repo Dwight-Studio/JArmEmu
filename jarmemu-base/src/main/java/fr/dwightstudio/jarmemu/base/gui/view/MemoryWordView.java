@@ -34,7 +34,7 @@ import javafx.beans.value.ChangeListener;
 
 import java.util.ArrayList;
 
-public class MemoryWordView {
+public class MemoryWordView implements MemoryView {
     private final MemoryAccessor memoryAccessor;
     private final ReadOnlyIntegerProperty addressProperty;
     private final UpdatableWrapper<Number> valueProperty;
