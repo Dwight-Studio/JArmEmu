@@ -21,7 +21,7 @@ jobs:
         run: mvn compile package
       - name: Generate portable archive
         run: |
-          cd jarmemu-distribution/target
+          cd jarmemu-distribution/target || exit 1
           zip -r JArmEmu-${{ steps.parse-tag.outputs.version }}.zip ./jarmemu/
       - name: Compute SHA256 checksum
         id: sha256
@@ -44,12 +44,9 @@ jobs:
           owner: 'Dwight-Studio'
           repository: 'JArmEmu-Packages'
       - name: Generate PKGBUILD
-        env:
-          VERSION: ${{needs.generate-portable-archive.outputs.version}}
-          SUM: ${{needs.generate-portable-archive.outputs.sum}}
         run: |
-          cd JArmEmu-Packages/arch
-          VERSION=$VERSION SUM=$SUM envsubst '${VERSION} ${SUM}' < PKGBUILD_template > PKGBUILD
+          cd JArmEmu-Packages/arch || exit 1
+          VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} envsubst '${VERSION} ${SUM}' < PKGBUILD_template > PKGBUILD
       - name: Publish package to AUR
         uses: KSXGitHub/github-actions-deploy-aur@v3.0.1
         with:
@@ -59,3 +56,46 @@ jobs:
           pkgname: 'jarmemu'
           ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: Update to v${{needs.generate-portable-archive.outputs.version}}
+
+  deploy-to-deb:
+    runs-on: ubuntu-latest
+    needs: generate-portable-archive
+    steps:
+      - name: Clone packaging repository
+        uses: GuillaumeFalourd/clone-github-repo-action@main
+        with:
+          owner: 'Dwight-Studio'
+          repository: 'JArmEmu-Packages'
+      - name: Generate control files
+        run: |
+          cd JArmEmu-Packages/deb/jarmemu_template || exit 1
+          FILES=$(find "debian" -type f)
+          cd .. || exit 1
+          mkdir -p jarmemu/debian
+          for file in $FILES; do
+            VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} DATE=$(date -R) envsubst '${VERSION} ${SUM} ${DATE}' < jarmemu_template/$file > jarmemu/$file
+          done
+      - name: Configure GPG Key
+        run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+        env:
+          GPG_SIGNING_KEY: ${{ secrets.GPG_KEY }}
+      - name: Build package
+        run: |
+          cd JArmEmu-Packages/deb/jarmemu || exit 1
+          dpkg-buildpackage -b -kcontact@dwightstudio.fr
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+      - name: Publish to Dwight Studio Repository
+        env:
+          VERSION: ${{needs.generate-portable-archive.outputs.version}}
+          HOST: ${{ secrets.VPS_HOST }}
+          USERNAME: ${{ secrets.VPS_USERNAME }}
+          PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          scp -P $PORT JArmEmu-Packages/deb/jarmemu_${VERSION}-1_all.deb ${USERNAME}@${HOST}:/home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+          ssh ${USERNAME}@${HOST} -p $PORT <<-ENDSSH
+            sudo reprepro -b /var/deb includedeb all /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+            rm /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+          ENDSSH
