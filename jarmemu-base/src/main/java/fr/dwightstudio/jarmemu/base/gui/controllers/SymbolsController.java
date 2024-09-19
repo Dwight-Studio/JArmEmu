@@ -36,6 +36,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
@@ -95,6 +96,18 @@ public class SymbolsController implements Initializable {
         symbolTable.setEditable(true);
         symbolTable.getSortOrder().clear();
         symbolTable.getSortOrder().add(col0);
+
+        symbolTable.setRowFactory(table -> {
+            TableRow<SymbolView> row = new TableRow<>();
+
+            row.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                    JArmEmuApplication.getController().getOpenedMemoryViewController().goTo(row.getItem().getValueProperty().get());
+                }
+            });
+
+            return row;
+        });
 
         AnchorPane.setTopAnchor(symbolTable, 0d);
         AnchorPane.setRightAnchor(symbolTable, 0d);

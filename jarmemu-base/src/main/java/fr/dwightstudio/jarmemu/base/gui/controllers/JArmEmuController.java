@@ -95,6 +95,8 @@ public class JArmEmuController implements Initializable {
 
     @FXML protected AnchorPane registersPane;
 
+    @FXML protected TabPane rightTabPane;
+
     @FXML protected AnchorPane memoryDetailsPane;
     @FXML protected AnchorPane memoryDetailsAnchorPane;
     @FXML protected Menu memoryDetailsMenu;
@@ -490,5 +492,9 @@ public class JArmEmuController implements Initializable {
 
     @FXML void onFindAndReplace() {
         JArmEmuApplication.getEditorController().currentFileEditor().toggleFindAndReplace();
+    }
+
+    public MemoryController<?> getOpenedMemoryViewController() {
+        return rightTabPane.getSelectionModel().getSelectedIndex() == 1 ? JArmEmuApplication.getMemoryDetailsController() : JArmEmuApplication.getMemoryOverviewController() ;
     }
 }

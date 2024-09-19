@@ -346,7 +346,7 @@
                     </padding>
                 </VBox>
             </StackPane>
-            <TabPane side="BOTTOM" styleClass="btn-group-horizontal"
+            <TabPane fx:id="rightTabPane" side="BOTTOM" styleClass="btn-group-horizontal"
                      tabClosingPolicy="UNAVAILABLE">
                 <Tab text="%tab.memoryOverview.title">
                     <AnchorPane fx:id="memoryOverviewPane">

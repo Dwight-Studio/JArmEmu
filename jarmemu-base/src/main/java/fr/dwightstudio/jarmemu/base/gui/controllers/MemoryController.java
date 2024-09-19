@@ -77,18 +77,8 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
                 if (doSearchQuery) return;
                 try {
                     StateContainer container = JArmEmuApplication.getCodeInterpreter().getStateContainer();
-
-                    searchQuery = container.evalWithAll(getTextField().getText().strip().toUpperCase());
-                    doSearchQuery = true;
+                    goTo(container.evalWithAll(getTextField().getText().strip().toUpperCase()));
                     getTextField().pseudoClassStateChanged(Styles.STATE_DANGER, false);
-
-                    int page = getPageIndex(searchQuery);
-
-                    if (page == getPagination().getCurrentPageIndex()) {
-                        JArmEmuApplication.getExecutionWorker().updateGUI();
-                    } else {
-                        getPagination().setCurrentPageIndex(page);
-                    }
                 } catch (Exception e) {
                     logger.severe(e.getMessage());
                     getTextField().pseudoClassStateChanged(Styles.STATE_DANGER, true);
@@ -119,6 +109,23 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
      */
     private void showHint() {
         hintPop.show(getTextField());
+    }
+
+    /**
+     * Select row associated to specified address in memory
+     * @param address the address to go
+     */
+    public void goTo(int address) {
+        searchQuery = address;
+        doSearchQuery = true;
+
+        int page = getPageIndex(searchQuery);
+
+        if (page == getPagination().getCurrentPageIndex()) {
+            JArmEmuApplication.getExecutionWorker().updateGUI();
+        } else {
+            getPagination().setCurrentPageIndex(page);
+        }
     }
 
     /**
