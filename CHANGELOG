@@ -1,6 +1,7 @@
 1.0.0 -> 1.0.1
 
 - Fixed preloader centering
+- Fixed program being editable during simulation (resolved #12)
 
 
 0.2.2 -> 1.0.0

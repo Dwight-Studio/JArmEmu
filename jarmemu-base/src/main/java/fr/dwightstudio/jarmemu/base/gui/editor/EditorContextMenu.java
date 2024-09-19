@@ -62,6 +62,13 @@ public class EditorContextMenu extends ContextMenu {
         delete.setOnAction(this::onDelete);
         breakpoint.setOnAction(this::onToggleBreakpoint);
 
+        if (!editor.getCodeArea().isEditable()) {
+            copy.setDisable(true);
+            cut.setDisable(true);
+            paste.setDisable(true);
+            delete.setDisable(true);
+        }
+
         getItems().add(copy);
         getItems().add(cut);
         getItems().add(paste);
@@ -72,7 +79,6 @@ public class EditorContextMenu extends ContextMenu {
     @Override
     protected void show() {
         super.show();
-
 
         if (!editor.isMouseOverSelection()) {
             int pos = editor.getMousePosition();
@@ -91,6 +97,8 @@ public class EditorContextMenu extends ContextMenu {
     }
 
     public void onCut(ActionEvent event) {
+        if (!editor.getCodeArea().isEditable()) return;
+
         ClipboardContent content = new ClipboardContent();
         content.putString(editor.getCodeArea().getSelectedText());
         Clipboard.getSystemClipboard().setContent(content);
@@ -98,16 +106,22 @@ public class EditorContextMenu extends ContextMenu {
     }
 
     public void onCopy(ActionEvent event) {
+        if (!editor.getCodeArea().isEditable()) return;
+
         ClipboardContent content = new ClipboardContent();
         content.putString(editor.getCodeArea().getSelectedText());
         Clipboard.getSystemClipboard().setContent(content);
     }
 
     public void onPaste(ActionEvent event) {
+        if (!editor.getCodeArea().isEditable()) return;
+
         editor.getCodeArea().replaceSelection(Clipboard.getSystemClipboard().getString());
     }
 
     public void onDelete(ActionEvent event) {
+        if (!editor.getCodeArea().isEditable()) return;
+
         editor.getCodeArea().replaceSelection("");
     }
 

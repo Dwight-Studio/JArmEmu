@@ -781,6 +781,8 @@ public class FileEditor {
     }
 
     public synchronized void handleKeyPressed(KeyEvent keyEvent) {
+        if (!codeArea.isEditable()) return;
+
         if (keyEvent.getCode() == KeyCode.ENTER) {
             String add = getRealTimeParser().lineDefinesLabel(codeArea.getCurrentParagraph() - 1) ? "\t" : "";
 
