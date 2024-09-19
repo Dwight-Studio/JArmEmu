@@ -4,6 +4,7 @@
 - Adding quick access to symbol address in memory (resolved #9)
 - Fixed preloader centering (resolved #7)
 - Fixed program being editable during simulation (resolved #12)
+- Fixed smart highlighter confusion between B/BL with condition LE (resolved #10)
 
 
 0.2.2 -> 1.0.0
