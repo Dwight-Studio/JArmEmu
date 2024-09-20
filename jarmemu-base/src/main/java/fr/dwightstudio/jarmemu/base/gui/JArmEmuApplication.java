@@ -332,10 +332,10 @@ public class JArmEmuApplication extends Application {
     }
 
     /**
-     * Mise à jour de l'UserAgentStyle pour la modification du thème.
+     * Update User Agent Style to apply a new theme.
      *
-     * @param variation l'indice de la variation
-     * @param family    l'indice' de la famille
+     * @param variation theme variation index
+     * @param family theme family index
      */
     public void updateUserAgentStyle(int variation, int family) {
         if (family == 0) {

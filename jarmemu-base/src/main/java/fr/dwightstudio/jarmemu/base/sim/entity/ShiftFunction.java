@@ -51,7 +51,7 @@ public class ShiftFunction {
     }
 
     /**
-     * Checks if the RegisterOrImmediate can be shifted
+     * Check if the RegisterOrImmediate can be shifted.
      */
     public void check(RegisterOrImmediate i) throws SyntaxASMException {
         if (!identity && !i.isRegister())

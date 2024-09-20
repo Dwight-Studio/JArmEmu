@@ -36,7 +36,7 @@ public abstract class ParsedArgument<T> extends ParsedObject implements Contextu
     protected final String originalString;
 
     /**
-     * Analyse la chaîne de caractères en entrée pour définir les paramètres internes de l'argument.
+     * Parse the string to populate the internal variables.
      *
      * @param originalString la chaîne de caractères
      */
@@ -45,18 +45,21 @@ public abstract class ParsedArgument<T> extends ParsedObject implements Contextu
     }
 
     /**
-     * Contextualise l'argument dans le conteneur d'état initial, après définition des constantes.
+     * Contextualise the argument in the supplied state container.
      *
-     * @param stateContainer le conteneur d'état initial
+     * @param stateContainer the state container in which contextualise the argument
      */
     public abstract void contextualize(StateContainer stateContainer) throws ASMException;
 
     /**
-     * @param stateContainer le conteneur d'état courant
-     * @return la valeur associée à l'argument pour le conteneur d'état
+     * @param stateContainer the current state container
+     * @return the associated value for this state container
      */
     public abstract T getValue(StateContainer stateContainer) throws ExecutionASMException;
 
+    /**
+     * @return the original string of the argument (as in the editor)
+     */
     public final String getOriginalString() {
         return originalString;
     }

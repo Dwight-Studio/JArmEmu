@@ -1079,9 +1079,9 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     /**
-     * Met à jour les références
+     * Update label/symbol references.
      *
-     * @param name le nom du global/label/symbol à mettre à jour
+     * @param name the name of the symbol/label
      */
     private void updateReferences(String name) {
         for (Map.Entry<Integer, Set<String>> entry : references.entrySet()) {

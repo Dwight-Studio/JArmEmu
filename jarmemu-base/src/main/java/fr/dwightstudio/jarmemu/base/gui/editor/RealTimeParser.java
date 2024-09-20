@@ -37,7 +37,7 @@ public abstract class RealTimeParser extends Thread {
     }
 
     /**
-     * Marks lines as requiring update
+     * Marks lines as requiring update.
      *
      * @param startLine starting line
      * @param stopLine stop line (excluded)
@@ -45,7 +45,7 @@ public abstract class RealTimeParser extends Thread {
     public abstract void markDirty(int startLine, int stopLine);
 
     /**
-     * Marks line as requiring update
+     * Marks line as requiring update.
      *
      * @param line the line to update
      */
@@ -72,13 +72,15 @@ public abstract class RealTimeParser extends Thread {
     public abstract boolean lineDefinesLabel(int currentParagraph);
 
     /**
-     * Cancels line analysis if in progress
+     * Cancels line analysis if in progress.
+     *
      * @param cancelLine the line to cancel
      */
     public abstract void cancelLine(int cancelLine);
 
     /**
-     * Prevents autocomplete when processing line
+     * Prevents autocomplete when processing line.
+     *
      * @param line the line to prevents
      */
     public abstract void preventAutocomplete(int line);

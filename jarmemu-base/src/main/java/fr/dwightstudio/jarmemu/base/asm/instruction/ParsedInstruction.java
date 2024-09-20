@@ -117,7 +117,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     public abstract @NotNull Set<Class<? extends Enum<? extends ModifierParameter>>> getModifierParameterClasses();
 
     /**
-     * Execute the instruction on the state container
+     * Execute the instruction on the state container.
      *
      * @param stateContainer the current state container
      * @param forceExecution true if you want to force execution (ignore execution exception)
@@ -155,7 +155,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
     }
 
     /**
-     * Contextualize the instruction in the initial state container (with the constants)
+     * Contextualize the instruction in the initial state container (with the constants).
      *
      * @param stateContainer the state container used to contextualize
      */
@@ -172,7 +172,7 @@ public abstract class ParsedInstruction<A, B, C, D> extends ParsedObject impleme
 
     /**
      * @param stateContainer the state container used to contextualize
-     * @param pos
+     * @param pos the current position in memory
      * @return a 32 bit value representing the instruction in program memory
      * @apiNote this value is for education purpose, it is not actually used by the emulator
      */

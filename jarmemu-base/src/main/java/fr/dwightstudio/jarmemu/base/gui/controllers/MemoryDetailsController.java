@@ -139,12 +139,6 @@ public class MemoryDetailsController extends MemoryController<MemoryWordView> {
         lastPageIndex = PAGE_OFFSET;
     }
 
-    /**
-     * Met à jour la mémoire sur le GUI avec les informations du conteneur d'état.
-     *
-     * @apiNote Attention, ne pas exécuter sur l'Application Thread (pour des raisons de performances)
-     * @param stateContainer le conteneur d'état
-     */
     public void attach(StateContainer stateContainer) {
         if (stateContainer == null) {
             views.clear();

@@ -46,10 +46,10 @@ public class ParsedLabel extends ParsedObject {
     }
 
     /**
-     * Enregistre le label dans le conteneur d'état
+     * Register the label into the state container.
      *
-     * @param stateContainer le conteneur d'état
-     * @param pos la position dans le programme ou dans la mémoire
+     * @param stateContainer the state container in which registering the label
+     * @param pos the position in the program (memory address)
      */
     public void register(StateContainer stateContainer, FilePos pos) throws ASMException {
         if (section != Section.TEXT) {
@@ -77,6 +77,9 @@ public class ParsedLabel extends ParsedObject {
         return this;
     }
 
+    /**
+     * @return the section in which the label was registered
+     */
     public Section getSection() {
         return section;
     }

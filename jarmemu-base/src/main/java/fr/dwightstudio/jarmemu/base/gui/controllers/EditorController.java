@@ -66,11 +66,11 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ajoute une notification sur l'éditeur (5 maximums).
+     * Create and show a notification on the editor.
      *
-     * @param titleString le titre (en gras)
-     * @param contentString le corps du message
-     * @param classString la classe à utiliser (Classes de BootstrapFX)
+     * @param titleString the title
+     * @param contentString the notification body
+     * @param classString the style class of the message
      */
     public void addNotification(String titleString, String contentString, String classString, Button... buttons) {
 
@@ -104,9 +104,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Affiche une notification relative à une AssemblyError.
+     * Create and show a notification explaining an exception.
      *
-     * @param exception l'erreur en question
+     * @param exception the thrown exception
      */
     protected void addError(ASMException exception) {
         if (exception.getObject() != null) {
@@ -140,14 +140,14 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Supprime les notifications.
+     * Empty the notification tray.
      */
     public void clearNotifications() {
         JArmEmuApplication.getController().notifications.getChildren().clear();
     }
 
     /**
-     * @return l'éditeur actuellement ouvert.
+     * @return the currently opened editor (on which the user is working)
      */
     public FileEditor currentFileEditor() {
         return fileEditors.get(JArmEmuApplication.getController().filesTabPane.getSelectionModel().getSelectedIndex());
@@ -168,17 +168,17 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ouvre un nouvel éditeur vide.
+     * Open a new editor containing the default code.
      */
     public void newFile() {
         open(JArmEmuApplication.formatMessage("%menu.file.newFile"), SAMPLE_CODE);
     }
 
     /**
-     * Ouvre un éditeur sans fichier.
+     * Open a new editor which is not tied to a file.
      *
-     * @param fileName le nom du fichier
-     * @param content  le contenu du fichier
+     * @param fileName the editor title (file name)
+     * @param content the content of the editor
      */
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(fileName, content));
@@ -187,9 +187,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ouvre un éditeur à partir d'un fichier.
+     * Open an editor with a file.
      *
-     * @param path le chemin du fichier
+     * @param path the path to the file
      */
     public void open(File path) {
         FileEditor editor = new FileEditor(path);
@@ -198,9 +198,6 @@ public class EditorController implements Initializable {
         JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
     }
 
-    /**
-     * Nettoie tous les marquages de ligne.
-     */
     public void clearAllLineMarkings() {
         for (FileEditor editor : fileEditors) {
             editor.clearLineMarkings();
@@ -208,9 +205,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévu.
+     * Mark the line as scheduled (next to be executed) and the scheduled line as executed.
      *
-     * @param pos la ligne à marquer
+     * @param pos the line number to mark as scheduled
      */
     public void markForward(FilePos pos) {
         try {
@@ -234,9 +231,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Déplace le curseur jusqu'à cette ligne.
+     * Move cursor to the line (selecting the corresponding editor).
      *
-     * @param pos les coordonnées de la ligne dans les fichiers
+     * @param pos the file coordinates in editors
      */
     public void goTo(FilePos pos) {
         try {
@@ -250,8 +247,8 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * @param pos la ligne à marquer
-     * @return vrai si la ligne contient un breakpoint, faux sinon
+     * @param pos the number of the line to test
+     * @return true if the line contains a breakpoint, false otherwise
      */
     public boolean hasBreakPoint(FilePos pos) {
         if (pos == null) return false;
@@ -259,7 +256,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Prépare chaque FileEditor pour la simulation (pré-génération etc...)
+     * Prepare each file editor to the simulation (pre-generating lines...).
      */
     public void prepareSimulation() {
         fileEditors.forEach(FileEditor::prepareSimulation);

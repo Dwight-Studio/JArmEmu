@@ -395,7 +395,7 @@ public class AutocompletionController implements Initializable {
     }
 
     /**
-     * @return the current context string
+     * @return the current context string.
      */
     private String getCurrentContext() {
         int stop = sc.editor().getCodeArea().getCaretColumn() - sc.cursorPos();
@@ -404,7 +404,7 @@ public class AutocompletionController implements Initializable {
     }
 
     /**
-     * @return current context starting pos
+     * @return current context starting pos.
      */
     private int getCurrentContextStart() {
         int start = sc.editor().getCodeArea().getCaretColumn() - currentWord.length();
@@ -416,21 +416,21 @@ public class AutocompletionController implements Initializable {
     }
 
     /**
-     * @return current context ending pos
+     * @return current context ending pos.
      */
     private int getCurrentContextEnd() {
         return sc.editor().getCodeArea().getAbsolutePosition(sc.line(), sc.editor().getCodeArea().getCaretColumn());
     }
 
     /**
-     * Selects current context/word
+     * Selects current context/word.
      */
     private void selectCurrentWord() {
         sc.editor().getCodeArea().selectRange(getCurrentContextStart(), getCurrentContextEnd());
     }
 
     /**
-     * Updates autocompletion popover when scrolling
+     * Updates autocompletion popover when scrolling.
      */
     public void scroll() {
         close();

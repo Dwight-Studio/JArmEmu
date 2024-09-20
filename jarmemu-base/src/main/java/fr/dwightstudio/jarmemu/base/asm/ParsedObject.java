@@ -38,7 +38,7 @@ public abstract class ParsedObject {
     private boolean generated;
 
     /**
-     * Test the execution capacity
+     * Test the object's execution capacity in its current state.
      *
      * @param stateSupplier the initial state container (pre-execution state)
      * @throws ASMException when an error is detected during the test
@@ -76,7 +76,7 @@ public abstract class ParsedObject {
     }
 
     /**
-     * Define the object as generated (not directly included in the source code)
+     * Define the object as generated (not directly present in the source code).
      */
     public void setGenerated() {
         this.generated = true;

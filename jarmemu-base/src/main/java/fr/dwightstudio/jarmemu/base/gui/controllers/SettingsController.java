@@ -224,7 +224,7 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Met à jour les paramètres sur le GUI.
+     * Update the settings on the GUI to reflect saved values.
      */
     public void updateGUI() {
         // Spinners
@@ -262,7 +262,7 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Remet les paramètres aux valeurs d'origine
+     * Reset all settings value to default.
      */
     public void setToDefaults() {
         preferences.put(VERSION_KEY, JArmEmuApplication.VERSION);
@@ -298,14 +298,14 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Smart highlighter)
      */
     protected void onSettingsSmart() {
         setRealTimeParser(0);
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Simple highlighter)
      */
     protected void onSettingsSimple() {
         setRealTimeParser(1);

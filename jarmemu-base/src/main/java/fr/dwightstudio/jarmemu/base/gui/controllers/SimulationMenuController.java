@@ -35,7 +35,7 @@ public class SimulationMenuController {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Simulate)
      */
     public void onSimulate() {
         logger.info("Triggered simulation");
@@ -56,8 +56,9 @@ public class SimulationMenuController {
     }
 
     /**
-     * Méthode de rappel si la préparation de la simulation s'est effectué avec succès
-     * @param errors les erreurs rencontrées lors de l'analyse du code
+     * Launch simulation (after the code parsing).
+     *
+     * @param errors the exceptions thrown during code parsing
      */
     public void launchSimulation(ASMException[] errors) {
         JArmEmuApplication.getEditorController().clearNotifications();
@@ -116,7 +117,7 @@ public class SimulationMenuController {
     }
 
     /**
-     * Méthode de rappel si la préparation de la simulation a échoué
+     * Abort simulation if the simulator was unable to parse the code.
      */
     public void abortSimulation() {
         JArmEmuApplication.getEditorController().clearNotifications();

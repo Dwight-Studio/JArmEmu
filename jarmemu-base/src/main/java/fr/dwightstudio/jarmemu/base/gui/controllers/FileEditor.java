@@ -403,8 +403,8 @@ public class FileEditor {
     }
 
     /**
-     * @param line le numéro de la ligne
-     * @return vrai si la ligne contient un breakpoint, faux sinon
+     * @param line the number of the line to test
+     * @return true if the line contains a breakpoint, false otherwise
      */
     public boolean hasBreakPoint(int line) {
         return lineFactory.hasBreakpoint(line);
@@ -414,24 +414,21 @@ public class FileEditor {
         lineFactory.onToggleBreakpoint(line);
     }
 
-    /**
-     * Nettoie le marquage des lignes.
-     */
     public void clearLineMarkings() {
         this.lineFactory.clearMarkings();
     }
 
     /**
-     * Marque comme executé la dernière ligne prévue tout en nettoyant l'ancienne ligne exécutée.
+     * Mark the scheduled line as executed and unmark the previous line.
      */
     public void markExecuted() {
         this.lineFactory.markExecuted();
     }
 
     /**
-     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévue.
+     * Mark the line as scheduled (next to be executed) and the scheduled line as executed.
      *
-     * @param line le numéro de la ligne
+     * @param line the line number to mark as scheduled
      */
     public void markForward(int line) {
         if (line >= 0) {
@@ -443,9 +440,9 @@ public class FileEditor {
     }
 
     /**
-     * Déplace le curseur jusqu'à cette ligne.
+     * Move the cursor to the line.
      *
-     * @param line le numéro de la ligne dans le fichier
+     * @param line the line number in the editor
      */
     public void goTo(int line) {
         codeArea.moveTo(line, 0);

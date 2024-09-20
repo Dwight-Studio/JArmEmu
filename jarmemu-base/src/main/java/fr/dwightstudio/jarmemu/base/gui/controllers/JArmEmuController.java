@@ -207,7 +207,7 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * Indique un changement de layout et enclenche une timeline de sauvegarde.
+     * Notify a change in the layout and trigger the saving timeline.
      */
     public void notifyLayoutChange() {
         if (!getLayoutJSON().equals(JArmEmuApplication.getSettingsController().getLayout())) {
@@ -217,7 +217,7 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * @return une chaîne de caractères contenant les données du layout au format JSON
+     * @return the layout data in a JSON string
      */
     public String getLayoutJSON() {
         HashMap<String, Object> layout = new HashMap<>();
@@ -244,9 +244,9 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * Lit et applique le layout à partir d'une chaîne de caractères.
+     * Parse and apply the layout.
      *
-     * @param json une chaîne de caractères contenant les données du layout au format JSON
+     * @param json a JSON string containing all the layout data
      */
     public void applyLayout(String json) {
         logger.info("Applying layout");
@@ -291,7 +291,7 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * Sauvegarde le layout actuel.
+     * Save current layout.
      */
     public void saveLayout() {
         if (!getLayoutJSON().equals(JArmEmuApplication.getSettingsController().getLayout())) {

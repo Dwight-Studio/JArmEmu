@@ -174,3 +174,9 @@ jobs:
     steps:
       - name: Post to Copr webhook
         run: curl -X POST --data "${{ needs.generate-portable-archive.outputs.version }}" ${{ secrets.COPR_WEBHOOK_URL }}
+
+  deploy-to-flathub:
+    runs-on: ubuntu-latest
+    needs: [ generate-portable-archive ]
+    steps:
+      - name: Clone Flathub

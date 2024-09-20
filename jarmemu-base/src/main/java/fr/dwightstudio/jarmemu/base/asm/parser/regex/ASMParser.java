@@ -106,9 +106,9 @@ public class ASMParser {
     );
 
     /**
-     * Lecture d'une ligne avec assembler
+     * Read a line which contains assembly code.
      *
-     * @param parsedFile le fichier à analyser
+     * @param parsedFile the file to parse
      */
     protected static void parseOneLine(RegexSourceParser parser, String line, SourceScanner sourceScanner, ParsedFile parsedFile) throws ASMException {
         Instruction instruction;

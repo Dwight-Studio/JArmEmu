@@ -43,7 +43,7 @@ public class MainMenuController {
     private File lastFile;
 
     /**
-     * Initie un nouveau fichier
+     * Initiate a new file.
      */
     public void onNewFile() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -54,7 +54,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Opening a file)
      */
     public void onOpen() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -79,7 +79,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Saving all)
      */
     public void onSaveAll() {
         JArmEmuApplication.getEditorController().saveAll();
@@ -87,7 +87,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Saving one)
      */
     public void onSave() {
         JArmEmuApplication.getEditorController().currentFileEditor().save();
@@ -95,7 +95,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Saving as)
      */
     public void onSaveAs() {
         JArmEmuApplication.getEditorController().currentFileEditor().saveAs();
@@ -103,7 +103,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Reloading all)
      */
     public void onReloadAll() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -129,7 +129,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Reloading one)
      */
     public void onReload() {
         JArmEmuApplication.getSimulationMenuController().onStop();

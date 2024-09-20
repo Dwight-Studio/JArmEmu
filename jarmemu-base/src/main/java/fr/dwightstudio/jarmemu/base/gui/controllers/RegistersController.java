@@ -99,10 +99,10 @@ public class RegistersController implements Initializable {
     }
 
     /**
-     * Met à jour les registres sur le GUI avec les informations du conteneur d'état.
+     * Update the values using the state container.
      *
-     * @apiNote Attention, ne pas exécuter sur l'Application Thread (pour des raisons de performances)
-     * @param stateContainer le conteneur d'état
+     * @apiNote Do not execute it on the application thread (to save performance)
+     * @param stateContainer the current state container
      */
     public void attach(StateContainer stateContainer) {
         if (stateContainer == null) {

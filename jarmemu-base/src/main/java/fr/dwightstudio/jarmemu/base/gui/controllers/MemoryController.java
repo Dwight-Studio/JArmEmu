@@ -105,14 +105,15 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
     }
 
     /**
-     * Open address search hint
+     * Open address search hint.
      */
     private void showHint() {
         hintPop.show(getTextField());
     }
 
     /**
-     * Select row associated to specified address in memory
+     * Select row associated to specified address in memory.
+     *
      * @param address the address to go
      */
     public void goTo(int address) {
@@ -129,7 +130,8 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
     }
 
     /**
-     * Update the current displayed page in the view and attach the state container to the GUI
+     * Update the current displayed page in the view and attach the state container to the GUI.
+     *
      * @param stateContainer the state container to tie to the GUI
      */
     public void updatePage(StateContainer stateContainer) {
@@ -150,7 +152,8 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
     }
 
     /**
-     * Compute page index with address
+     * Compute page index with address.
+     *
      * @param address the address to search
      */
     public abstract int getPageIndex(int address);
@@ -169,12 +172,12 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
     public abstract int getIndexInPage(int page, int address);
 
     /**
-     * Set up the Table View
+     * Set up the Table View.
      */
     public abstract void setupTableView();
 
     /**
-     * Tie the stateContainer to the GUI (any modification will appear in real time)
+     * Tie the stateContainer to the GUI (any modification will appear in real time).
      *
      * @apiNote Do not execute it on application thread (to avoid poor performance)
      * @param stateContainer the state container to tie to the GUI
@@ -182,7 +185,7 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
     public abstract void attach(StateContainer stateContainer);
 
     /**
-     * Refresh the view
+     * Refresh the view.
      */
     public abstract void refresh();
 

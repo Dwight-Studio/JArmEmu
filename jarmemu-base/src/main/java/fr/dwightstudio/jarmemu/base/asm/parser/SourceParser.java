@@ -32,10 +32,10 @@ public interface SourceParser {
     int DEFAULT_SOURCE_PARSER = 0;
 
     /**
-     * Lecture du fichier et renvoie des objets parsés non vérifiés
+     * Read the file and return the unverified parsed objects.
      *
-     * @param scanner le scanneur de fichier à utiliser
-     * @return le fichier analysé
+     * @param scanner the file scanner to use
+     * @return the parsed file
      */
     ParsedFile parse(SourceScanner scanner) throws ASMException;
 }

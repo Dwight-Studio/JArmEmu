@@ -42,8 +42,10 @@ public class RegexSourceParser implements SourceParser {
     }
 
     /**
-     * Méthode principale
-     * Lecture du fichier et renvoie des objets parsés non vérifiés
+     * Read the file and returns the unverified parsed objects.
+     *
+     * @param sourceScanner the source scanner from which read
+     * @return the parsed file containing the unverified parsed objects
      */
     @Override
     public ParsedFile parse(SourceScanner sourceScanner) throws ASMException {
@@ -77,10 +79,10 @@ public class RegexSourceParser implements SourceParser {
     }
 
     /**
-     * Prépare la ligne pour le parsage
+     * Prepare the line to parsing by cleaning it (removing comments and blanks).
      *
-     * @param line la ligne à préparer
-     * @return la ligne sans commentaire ou blancs
+     * @param line the string to clean
+     * @return the string without comments or trailing blanks
      */
     public static String prepare(@NotNull String line) {
         return line.split("@")[0].strip();
