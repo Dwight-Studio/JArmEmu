@@ -19,7 +19,7 @@
 
 ![JArmEmu Editor](https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_LIGHT.png)
 
-<img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="20"/> JArmEmu is a simple, user-friendly simulator that provides basic control and information about a simulated ARMv7
+JArmEmu <img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="18"/> is a simple, user-friendly simulator that provides basic control and information about a simulated ARMv7
 architecture.
 
 JArmEmu is powered by an ARMv7 interpreter built *Ex Nihilo* for this project, which provides real-time syntax
