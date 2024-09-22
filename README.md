@@ -1,6 +1,6 @@
 <img src="https://static.dwightstudio.fr/jarmemu/LOGO.svg" alt="drawing" width="140"/>
 
-# <img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="30"/> JArmEmu
+# JArmEmu
 
 ### Simple ARMv7 simulator written in Java, intended for educational purpose.
 
@@ -19,7 +19,7 @@
 
 ![JArmEmu Editor](https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_LIGHT.png)
 
-JArmEmu is a simple, user-friendly simulator that provides basic control and information about a simulated ARMv7
+<img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="12"/> JArmEmu is a simple, user-friendly simulator that provides basic control and information about a simulated ARMv7
 architecture.
 
 JArmEmu is powered by an ARMv7 interpreter built *Ex Nihilo* for this project, which provides real-time syntax
