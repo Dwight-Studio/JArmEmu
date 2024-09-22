@@ -73,7 +73,8 @@ choco install jarmemu
 
 [![FlatHub downloads](https://img.shields.io/flathub/downloads/fr.dwightstudio.JArmEmu)](https://flathub.org/fr/apps/fr.dwightstudio.JArmEmu)
 
-JArmEmu is available on [FlatHub](https://flathub.org/fr/apps/fr.dwightstudio.JArmEmu):
+JArmEmu is available on [FlatHub](https://flathub.org/fr/apps/fr.dwightstudio.JArmEmu). You can install it using your Software Manager (Gnome Software, KDE
+Discover...) or using FlatPak CLI:
 
 ```bash
 flatpak install flathub fr.dwightstudio.JArmEmu
