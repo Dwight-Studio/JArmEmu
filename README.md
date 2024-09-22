@@ -1,4 +1,4 @@
-# JArmEmu ![logo](https://static.dwightstudio.fr/jarmemu/LOGO.svg){:height="36px" width="36px"}
+# JArmEmu <img src="https://static.dwightstudio.fr/jarmemu/LOGO.svg" alt="drawing" width="26"/>
 
 ### Simple ARMv7 simulator written in Java, intended for educational purpose.
 
