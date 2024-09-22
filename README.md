@@ -23,10 +23,12 @@ architecture.
 JArmEmu is powered by an ARMv7 interpreter built *Ex Nihilo* for this project, which provides real-time syntax
 highlighting, intelligent auto-completion, memory, stack and register monitoring...
 
-You can write your program using the ARMv7 instruction set (refer
-to [Instructions.md](https://github.com/Dwight-Studio/JArmEmu/blob/main/Instructions.md)) and include GNU Assembly
-directives (only the basic ones are implemented, you can refer to syntax highlighting or auto-completion to see if it is
-available).
+You can write your program using ARMv7 instructions and commonly used GNU directives, and watch the simulator execute
+it with details on any execution step.
+
+> [!NOTE]
+> The implemented instruction set is available in [Instructions.md](https://github.com/Dwight-Studio/JArmEmu/blob/main/Instructions.md)
+> or directly in the simulator (Help > See instructions...).
 
 # Install
 
@@ -57,8 +59,10 @@ the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest). It
 [![Chocolatey downloads](https://img.shields.io/chocolatey/dt/fr.dwightstudio.JArmEmu)](https://community.chocolatey.org/packages/fr.dwightstudio.JArmEmu/)
 
 You can download an installer for JArmEmu (or the portable version) from
-the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest). **The executables aren't signed, and can
-trigger a warning screen from Windows UAC (which you can simply ignore)**.
+the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest).
+
+> [!IMPORTANT]
+> The executables aren't signed, and can trigger a warning screen from Windows UAC (which you can simply ignore).
 
 JArmEmu is also available on Chocolatey:
 
@@ -73,8 +77,12 @@ choco install jarmemu
 
 [![FlatHub downloads](https://img.shields.io/flathub/downloads/fr.dwightstudio.JArmEmu)](https://flathub.org/fr/apps/fr.dwightstudio.JArmEmu)
 
-JArmEmu is available on [FlatHub](https://flathub.org/fr/apps/fr.dwightstudio.JArmEmu). You can install it using your Software Manager (Gnome Software, KDE
-Discover...) or using FlatPak CLI:
+JArmEmu is available on [FlatHub](https://flathub.org/fr/apps/fr.dwightstudio.JArmEmu).
+
+> [!TIP]
+> You can install it using your Software Manager (Gnome Software, KDE Discover...).
+
+You can install it using FlatPak CLI:
 
 ```bash
 flatpak install flathub fr.dwightstudio.JArmEmu
@@ -116,7 +124,14 @@ yay -S jarmemu
 [![Linux Mint](https://img.shields.io/badge/Linux_Mint-87CF3E?style=for-the-badge&logo=linux-mint&logoColor=white)](#debian)
 [![Kali Linux](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kali-linux&logoColor=white)](#debian)
 
-JArmEmu is available on the Dwight Studio repository:
+JArmEmu is available on the Dwight Studio repository.
+
+> [!NOTE]
+> The following command will install the Dwight Studio's repository which host Debian binaries for all available
+> projects of the collective.
+
+
+You can install it by running:
 
 ```bash
 sudo wget -O - https://deb.dwightstudio.fr/install-repository.sh | sudo bash
@@ -125,5 +140,7 @@ sudo apt update && sudo apt install jarmemu
 
 ## Licence
 
+This project is managed by the Dwight Studio collective, which is not affiliated not endorsed by Arm Limited in any sort.
+
 This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes
-(not affiliated). It is distributed in open source under GPL3 (refer to the LICENCE file).
+(not affiliated). JArmEmu is distributed in open source under GPL3 (refer to the LICENCE file).
