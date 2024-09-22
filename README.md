@@ -1,4 +1,4 @@
-<img src="https://static.dwightstudio.fr/jarmemu/LOGO.svg" alt="drawing" width="150"/>
+<img src="https://static.dwightstudio.fr/jarmemu/LOGO.svg" alt="drawing" width="140"/>
 
 # JArmEmu
 
