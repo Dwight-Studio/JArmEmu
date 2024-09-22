@@ -125,7 +125,7 @@ yay -S jarmemu
 [![Linux Mint](https://img.shields.io/badge/Linux_Mint-87CF3E?style=for-the-badge&logo=linux-mint&logoColor=white)](#debian)
 [![Kali Linux](https://img.shields.io/badge/Kali_Linux-557C94?style=for-the-badge&logo=kali-linux&logoColor=white)](#debian)
 
-JArmEmu is available on the Dwight Studio repository.
+JArmEmu <img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="18"/> is available on the Dwight Studio repository.
 
 > [!NOTE]
 > The following command will install the Dwight Studio's repository which hosts Debian binaries for all available
