@@ -141,7 +141,7 @@ sudo apt update && sudo apt install jarmemu
 
 ## Licence
 
-This project is managed by the Dwight Studio collective, which is not affiliated not endorsed by Arm Limited in any sort.
+This project is managed by the <img src="https://static.dwightstudio.fr/dwightstudio/LOGO_WHITE.svg" alt="drawing" width="15"/> Dwight Studio collective, which is not affiliated not endorsed by Arm Limited in any sort.
 
 This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes
 (not affiliated). <img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="15"/> JArmEmu is distributed in open source under GPL3 (refer to the LICENCE file).
