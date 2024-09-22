@@ -27,8 +27,7 @@ You can write your program using ARMv7 instructions and commonly used GNU direct
 it with details on any execution step.
 
 > [!NOTE]
-> The implemented instruction set is available in [Instructions.md](https://github.com/Dwight-Studio/JArmEmu/blob/main/Instructions.md)
-> or directly in the simulator (Help > See instructions...).
+> The implemented instruction set is available directly in the simulator (Help > See instructions...).
 
 # Install
 
