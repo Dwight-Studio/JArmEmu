@@ -57,7 +57,7 @@ You can download an installer for JArmEmu (or the portable version) from
 the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest). **The executables aren't signed, and can
 trigger a warning screen from Windows UAC (which you can simply ignore)**.
 
-JArmEmu is also available on Chocolatey (but the repository is not actively maintained at this time):
+JArmEmu is also available on Chocolatey:
 
 ```bash
 choco install jarmemu
