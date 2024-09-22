@@ -32,7 +32,8 @@ available).
 
 ## From Git
 
-You can compile and run JArmEmu directly from source by cloning this repository. The project requires the `JDK 21` and is built using `Maven 3`.
+You can compile and run JArmEmu directly from source by cloning this repository. The project requires the `JDK 21` and
+is built using `Maven 3`.
 ```bash
 # Clone the repository
 git clone https://github.com/Dwight-Studio/JArmEmu
@@ -123,6 +124,5 @@ sudo apt update && sudo apt install jarmemu
 
 ## Licence
 
-This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes (
-independent
-project). It is distributed in open source under GPL3 (refer to the LICENCE file).
+This project was created by Kévin "FoxYinx" TOLLEMER and Alexandre "Deleranax" LECONTE, students at INSA Rennes
+(not affiliated). It is distributed in open source under GPL3 (refer to the LICENCE file).
