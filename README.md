@@ -1,4 +1,6 @@
-# JArmEmu <img src="https://static.dwightstudio.fr/jarmemu/LOGO.svg" alt="drawing" width="26"/>
+<img src="https://static.dwightstudio.fr/jarmemu/LOGO.svg" alt="drawing" width="150"/>
+
+# JArmEmu
 
 ### Simple ARMv7 simulator written in Java, intended for educational purpose.
 
