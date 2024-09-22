@@ -24,7 +24,7 @@ JArmEmu is powered by an ARMv7 interpreter built *Ex Nihilo* for this project, w
 highlighting, intelligent auto-completion, memory, stack and register monitoring...
 
 You can write your program using ARMv7 instructions and commonly used GNU directives, and watch the simulator execute
-it with details on any execution step.
+it with details on any step.
 
 > [!NOTE]
 > The implemented instruction set is available directly in the simulator (Help > See instructions...).
@@ -126,7 +126,7 @@ yay -S jarmemu
 JArmEmu is available on the Dwight Studio repository.
 
 > [!NOTE]
-> The following command will install the Dwight Studio's repository which host Debian binaries for all available
+> The following command will install the Dwight Studio's repository which hosts Debian binaries for all available
 > projects of the collective.
 
 
