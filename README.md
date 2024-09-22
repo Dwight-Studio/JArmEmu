@@ -15,6 +15,8 @@
 
 # Features
 
+![JArmEmu Editor](https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_LIGHT.png)
+
 JArmEmu is a simple, user-friendly simulator that provides basic control and information about a simulated ARMv7
 architecture.
 
