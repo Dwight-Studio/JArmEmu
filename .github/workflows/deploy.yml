@@ -179,4 +179,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive ]
     steps:
-      - name: Clone Flathub
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: flathub/fr.dwightstudio.JArmEmu
+          event-type: new-release
+          client-payload: '{"version": "${{ needs.generate-portable-archive.outputs.version }}", "sum": "${{ needs.generate-portable-archive.outputs.sum }}"}'
