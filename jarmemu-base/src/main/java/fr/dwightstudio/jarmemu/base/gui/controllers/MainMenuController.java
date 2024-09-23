@@ -305,6 +305,13 @@ public class MainMenuController {
     }
 
     /**
+     * Invoked by JavaFX
+     */
+    public void onTour() {
+        JArmEmuApplication.getDialogs().tour();
+    }
+
+    /**
      * Crée les boutons pour les colonnes du tableau de détails de la mémoire.
      */
     public void registerMemoryDetailsColumns() {

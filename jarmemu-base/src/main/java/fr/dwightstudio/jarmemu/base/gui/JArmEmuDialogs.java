@@ -214,6 +214,10 @@ public class JArmEmuDialogs {
         JArmEmuApplication.getController().openDialogBack(dialog);
     }
 
+    public void tour() {
+        JArmEmuApplication.getSettingsController().setTour(false);
+    }
+
     private void license() {
         Text title = new Text(JArmEmuApplication.formatMessage("%about.licence.title"));
         title.setStyle("-fx-font-family: 'Inter Black';");

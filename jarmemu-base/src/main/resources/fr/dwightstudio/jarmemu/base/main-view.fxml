@@ -216,6 +216,11 @@
                         <FontIcon iconLiteral="mdsal-info"/>
                     </graphic>
                 </MenuItem>
+                <MenuItem mnemonicParsing="false" onAction="#onTour" text="%menu.help.tour">
+                    <graphic>
+                        <FontIcon iconLiteral="mdrmz-rocket"/>
+                    </graphic>
+                </MenuItem>
             </Menu>
         </MenuBar>
         <SplitPane fx:id="mainSplitPane" dividerPositions="0.2, 0.75" VBox.vgrow="ALWAYS">
