@@ -163,6 +163,7 @@ public class JArmEmuController implements Initializable {
         JArmEmuApplication.getSymbolsController().initialize(url, resourceBundle);
         JArmEmuApplication.getLabelsController().initialize(url, resourceBundle);
         JArmEmuApplication.getAutocompletionController().initialize(url, resourceBundle);
+        JArmEmuApplication.getPopupController().initialize(url, resourceBundle);
 
         JArmEmuApplication.getInstance().newSourceParser();
 

@@ -111,6 +111,7 @@ public class JArmEmuApplication extends Application {
     private static SymbolsController symbolsController;
     private static LabelsController labelsController;
     private static AutocompletionController autocompletionController;
+    private static PopupController popupController;
 
     // Loading objects
     public Scene scene;
@@ -164,6 +165,7 @@ public class JArmEmuApplication extends Application {
         symbolsController = new SymbolsController();
         labelsController = new LabelsController();
         autocompletionController = new AutocompletionController();
+        popupController = new PopupController();
         dialogs = new JArmEmuDialogs();
         popups = new JArmEmuPopups();
 
@@ -455,6 +457,10 @@ public class JArmEmuApplication extends Application {
 
     public static AutocompletionController getAutocompletionController() {
         return autocompletionController;
+    }
+
+    public static PopupController getPopupController() {
+        return popupController;
     }
 
     public static JArmEmuDialogs getDialogs() {
