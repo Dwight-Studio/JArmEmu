@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.base.gui;
 
 import atlantafx.base.controls.CustomTextField;
+import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
@@ -212,10 +213,6 @@ public class JArmEmuDialogs {
         );
 
         JArmEmuApplication.getController().openDialogBack(dialog);
-    }
-
-    public void tour() {
-        JArmEmuApplication.getSettingsController().setTour(false);
     }
 
     private void license() {

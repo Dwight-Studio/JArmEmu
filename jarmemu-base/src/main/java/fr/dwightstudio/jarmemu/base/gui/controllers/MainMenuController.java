@@ -308,7 +308,7 @@ public class MainMenuController {
      * Invoked by JavaFX
      */
     public void onTour() {
-        JArmEmuApplication.getDialogs().tour();
+        JArmEmuApplication.getPopUps().tour();
     }
 
     /**

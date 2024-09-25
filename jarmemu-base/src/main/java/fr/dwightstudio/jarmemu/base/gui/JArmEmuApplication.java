@@ -121,6 +121,7 @@ public class JArmEmuApplication extends Application {
     private static CodeInterpreter codeInterpreter;
     private static ExecutionWorker executionWorker;
     private static JArmEmuDialogs dialogs;
+    private static JArmEmuPopups popups;
 
     public Theme theme;
     public SimpleObjectProperty<Status> status;
@@ -164,6 +165,7 @@ public class JArmEmuApplication extends Application {
         labelsController = new LabelsController();
         autocompletionController = new AutocompletionController();
         dialogs = new JArmEmuDialogs();
+        popups = new JArmEmuPopups();
 
         fxmlLoader.setController(new JArmEmuController());
         controller = fxmlLoader.getController();
@@ -457,6 +459,10 @@ public class JArmEmuApplication extends Application {
 
     public static JArmEmuDialogs getDialogs() {
         return dialogs;
+    }
+
+    public static JArmEmuPopups getPopUps() {
+        return popups;
     }
 
     private void onClosingRequest(WindowEvent event) {
