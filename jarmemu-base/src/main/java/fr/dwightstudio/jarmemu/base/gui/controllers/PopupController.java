@@ -28,7 +28,7 @@ public class PopupController implements Initializable {
     public static void popoverMaker(String title, String text, Node location, Popover.ArrowLocation arrowLocation) {
         VBox vbox = new VBox();
         vbox.setSpacing(10);
-        vbox.setPadding(new Insets(10));
+        vbox.setPadding(new Insets(15));
         HBox firstRow = new HBox(new Text(JArmEmuApplication.formatMessage(text)));
         HBox secondRow = new HBox(new Hyperlink(), new Hyperlink());
         secondRow.setSpacing(10);
@@ -101,12 +101,5 @@ public class PopupController implements Initializable {
         return popovers;
     }
 
-    public static class PopupWithLocation {
-        public final Popover popover;
-        public final Node location;
-        public PopupWithLocation(Popover popover, Node location) {
-            this.popover = popover;
-            this.location = location;
-        }
-    }
+    public record PopupWithLocation(Popover popover, Node location) {}
 }

@@ -18,6 +18,6 @@ public class JArmEmuPopups {
     public void tour() {
         JArmEmuApplication.getSettingsController().setTour(false);
 
-        getPopovers().getFirst().popover.show(getPopovers().getFirst().location);
+        getPopovers().getFirst().popover().show(getPopovers().getFirst().location());
     }
 }
