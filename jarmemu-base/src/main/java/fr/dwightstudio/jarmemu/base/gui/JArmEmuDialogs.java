@@ -24,7 +24,6 @@
 package fr.dwightstudio.jarmemu.base.gui;
 
 import atlantafx.base.controls.CustomTextField;
-import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.theme.Tweaks;
 import com.sun.javafx.collections.ObservableListWrapper;
@@ -61,8 +60,8 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +73,7 @@ public class JArmEmuDialogs {
     public Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     public void warningAlert(String message) {
-        FontIcon icon = new FontIcon(Material2OutlinedMZ.WARNING);
+        FontIcon icon = new FontIcon(Material2RoundMZ.WARNING);
         icon.getStyleClass().addAll(Styles.WARNING, "big-icon");
         icon.setIconSize(128);
 
@@ -83,7 +82,7 @@ public class JArmEmuDialogs {
 
         Button confirm = new Button(JArmEmuApplication.formatMessage("%dialog.warning.confirm"));
         confirm.getStyleClass().addAll(Styles.ACCENT, Styles.ROUNDED);
-        confirm.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+        confirm.setGraphic(new FontIcon(Material2RoundAL.CHECK));
         confirm.setContentDisplay(ContentDisplay.RIGHT);
         confirm.setOnAction(event -> {
             JArmEmuApplication.getController().closeDialogFront();
@@ -105,13 +104,13 @@ public class JArmEmuDialogs {
 
         CompletableFuture<UnsavedDialogChoice> rtn = new CompletableFuture<>();
 
-        FontIcon icon = new FontIcon(Material2OutlinedMZ.WARNING);
+        FontIcon icon = new FontIcon(Material2RoundMZ.WARNING);
         icon.getStyleClass().addAll(Styles.WARNING, "big-icon");
         icon.setIconSize(128);
 
         Button save = new Button(JArmEmuApplication.formatMessage("%dialog.unsaved.save"));
         save.getStyleClass().addAll(Styles.SUCCESS, Styles.ROUNDED);
-        save.setGraphic(new FontIcon(Material2OutlinedMZ.SAVE));
+        save.setGraphic(new FontIcon(Material2RoundMZ.SAVE));
         save.setContentDisplay(ContentDisplay.RIGHT);
         save.setOnAction(event -> {
             rtn.complete(UnsavedDialogChoice.SAVE_AND_CONTINUE);
@@ -120,7 +119,7 @@ public class JArmEmuDialogs {
 
         Button conti = new Button(JArmEmuApplication.formatMessage("%dialog.unsaved.discard"));
         conti.getStyleClass().addAll(Styles.DANGER, Styles.ROUNDED);
-        conti.setGraphic(new FontIcon(Material2OutlinedAL.DELETE));
+        conti.setGraphic(new FontIcon(Material2RoundAL.DELETE));
         conti.setContentDisplay(ContentDisplay.RIGHT);
         conti.setOnAction(event -> {
             rtn.complete(UnsavedDialogChoice.DISCARD_AND_CONTINUE);
@@ -176,7 +175,7 @@ public class JArmEmuDialogs {
 
         Button website = new Button(JArmEmuApplication.formatMessage("%about.website.title"));
         website.setPrefWidth(200);
-        website.setGraphic(new FontIcon(Material2OutlinedAL.LAUNCH));
+        website.setGraphic(new FontIcon(Material2RoundAL.LAUNCH));
         website.setContentDisplay(ContentDisplay.RIGHT);
         website.setAlignment(Pos.CENTER);
         website.setOnAction(event -> {
@@ -186,14 +185,14 @@ public class JArmEmuDialogs {
 
         Button credits = new Button(JArmEmuApplication.formatMessage("%about.credits.title"));
         credits.setPrefWidth(200);
-        credits.setGraphic(new FontIcon(Material2OutlinedAL.INFO));
+        credits.setGraphic(new FontIcon(Material2RoundAL.INFO));
         credits.setContentDisplay(ContentDisplay.RIGHT);
         credits.setAlignment(Pos.CENTER);
         credits.setOnAction(event -> credits());
 
         Button license = new Button(JArmEmuApplication.formatMessage("%about.licence.title"));
         license.setPrefWidth(200);
-        license.setGraphic(new FontIcon(Material2OutlinedAL.INFO));
+        license.setGraphic(new FontIcon(Material2RoundAL.INFO));
         license.setContentDisplay(ContentDisplay.RIGHT);
         license.setAlignment(Pos.CENTER);
         license.setOnAction(event -> license());
@@ -268,18 +267,18 @@ public class JArmEmuDialogs {
         title.getStyleClass().addAll(Styles.TITLE_1);
 
         TableColumn<Instruction, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.name"));
-        TableViewUtils.setupColumn(col0, Material2OutlinedAL.LABEL, 80, false, false, true);
+        TableViewUtils.setupColumn(col0, Material2RoundAL.LABEL, 80, false, false, true);
         col0.setCellValueFactory(i -> new ReadOnlyStringWrapper(i.getValue().toString()));
         col0.setCellFactory(StylizedStringTableCell.factory("text", "usage", "instruction"));
 
         TableColumn<Instruction, Instruction> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.usage"));
-        TableViewUtils.setupColumn(col1, Material2OutlinedAL.DESCRIPTION, 80, false, true, false);
+        TableViewUtils.setupColumn(col1, Material2RoundAL.DESCRIPTION, 80, false, true, false);
         col1.setMinWidth(Region.USE_PREF_SIZE);
         col1.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(i.getValue()));
         col1.setCellFactory(InstructionUsageTableCell.factory());
 
         TableColumn<Instruction, Instruction> col2 = new TableColumn<>();
-        TableViewUtils.setupColumn(col2, Material2OutlinedAL.INFO, 35, false, false, false);
+        TableViewUtils.setupColumn(col2, Material2RoundAL.INFO, 35, false, false, false);
         col2.setCellValueFactory(i -> new ReadOnlyObjectWrapper<>(i.getValue()));
         col2.setCellFactory(InstructionDetailTableCell.factory());
 
@@ -302,7 +301,7 @@ public class JArmEmuDialogs {
 
         instructionTable.getStylesheets().add(JArmEmuApplication.getResource("editor-style.css").toExternalForm());
 
-        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        FontIcon icon = new FontIcon(Material2RoundAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");
@@ -310,7 +309,7 @@ public class JArmEmuDialogs {
         instructionTable.setPlaceholder(placeHolder);
 
         CustomTextField textField = new CustomTextField();
-        textField.setLeft(new FontIcon(Material2OutlinedMZ.SEARCH));
+        textField.setLeft(new FontIcon(Material2RoundMZ.SEARCH));
         textField.setMaxWidth(200);
         textField.setOnKeyPressed(keyEvent -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {

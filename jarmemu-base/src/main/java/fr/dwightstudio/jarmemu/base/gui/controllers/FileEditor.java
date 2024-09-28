@@ -53,8 +53,8 @@ import org.fxmisc.wellbehaved.event.Nodes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.awt.*;
 import java.io.File;
@@ -202,7 +202,7 @@ public class FileEditor {
 
         findTextField = new CustomTextField();
         findTextField.setPromptText(JArmEmuApplication.formatMessage("%pop.find.find"));
-        findTextField.setLeft(new FontIcon(Material2OutlinedMZ.SEARCH));
+        findTextField.setLeft(new FontIcon(Material2RoundMZ.SEARCH));
         findContainer.add(findTextField, 0, 0);
 
         previousButton = new Button(null, new FontIcon(Material2RoundAL.KEYBOARD_ARROW_UP));

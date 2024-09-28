@@ -35,14 +35,17 @@ public class SimulationMenuController {
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
     /**
-     * Invoked by JavaFX (Simulate)
+     * Prepare GUI for simulation.
+     *
+     * @return true if the simulation should be aborted, false otherwise
      */
-    public void onSimulate() {
-        logger.info("Triggered simulation");
-        if (JArmEmuApplication.getController().menuSimulate.isDisable()) return;
+    private boolean preSimulation() {
+        if (JArmEmuApplication.getController().menuSimulate.isDisable()) return true;
 
         JArmEmuApplication.getController().toolSimulate.setDisable(true);
+        JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
         JArmEmuApplication.getController().menuSimulate.setDisable(true);
+        JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
         JArmEmuApplication.getEditorController().clearNotifications();
 
         JArmEmuApplication.getEditorController().addNotification(
@@ -52,7 +55,25 @@ public class SimulationMenuController {
         );
 
         JArmEmuApplication.getExecutionWorker().revive();
+        return false;
+    }
+
+    /**
+     * Invoked by JavaFX (Simulate)
+     */
+    public void onSimulate() {
+        logger.info("Triggered simulation");
+        if (preSimulation()) return;
         JArmEmuApplication.getExecutionWorker().prepare();
+    }
+
+    /**
+     * Invoked by JavaFX (SimulateAll)
+     */
+    public void onSimulateAll() {
+        logger.info("Triggered simulation of all files");
+        if (preSimulation()) return;
+        JArmEmuApplication.getExecutionWorker().prepareAll();
     }
 
     /**
@@ -66,7 +87,9 @@ public class SimulationMenuController {
         if (errors == null || errors.length == 0) {
             if (JArmEmuApplication.getCodeInterpreter().getInstructionCount() == 0) {
                 JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
                 JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
                 JArmEmuApplication.getEditorController().addNotification(
                         JArmEmuApplication.formatMessage("%notification.noInstruction.title"),
                         JArmEmuApplication.formatMessage("%notification.noInstruction.message"),
@@ -101,7 +124,11 @@ public class SimulationMenuController {
                 JArmEmuApplication.getController().labelsPane.setDisable(false);
                 JArmEmuApplication.getController().symbolsPane.setDisable(false);
                 JArmEmuApplication.getEditorController().getFileEditors().forEach(FileEditor::closeFindAndReplace);
-                JArmEmuApplication.getController().findAndReplace.setDisable(true);
+                JArmEmuApplication.getController().menuCopy.setDisable(true);
+                JArmEmuApplication.getController().menuCut.setDisable(true);
+                JArmEmuApplication.getController().menuPaste.setDisable(true);
+                JArmEmuApplication.getController().menuDelete.setDisable(true);
+                JArmEmuApplication.getController().menuFindAndReplace.setDisable(true);
 
                 JArmEmuApplication.getExecutionWorker().restart();
 
@@ -109,7 +136,9 @@ public class SimulationMenuController {
             }
         } else {
             JArmEmuApplication.getController().toolSimulate.setDisable(false);
+            JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
             JArmEmuApplication.getController().menuSimulate.setDisable(false);
+            JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
             for (ASMException error : errors) {
                 JArmEmuApplication.getEditorController().addError(error);
             }
@@ -127,7 +156,9 @@ public class SimulationMenuController {
                 Styles.DANGER
         );
         JArmEmuApplication.getController().toolSimulate.setDisable(false);
+        JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
         JArmEmuApplication.getController().menuSimulate.setDisable(false);
+        JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
     }
 
     /**
@@ -217,7 +248,9 @@ public class SimulationMenuController {
         JArmEmuApplication.getExecutionWorker().pause();
         JArmEmuApplication.getEditorController().onStop();
         JArmEmuApplication.getController().toolSimulate.setDisable(false);
+        JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
         JArmEmuApplication.getController().menuSimulate.setDisable(false);
+        JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
         JArmEmuApplication.getController().toolStepInto.setDisable(true);
         JArmEmuApplication.getController().menuStepInto.setDisable(true);
         JArmEmuApplication.getController().toolStepOver.setDisable(true);
@@ -242,7 +275,11 @@ public class SimulationMenuController {
         JArmEmuApplication.getController().labelsPane.setDisable(true);
         JArmEmuApplication.getController().symbolsPane.setDisable(true);
         JArmEmuApplication.getController().stackPane.setDisable(true);
-        JArmEmuApplication.getController().findAndReplace.setDisable(false);
+        JArmEmuApplication.getController().menuCopy.setDisable(false);
+        JArmEmuApplication.getController().menuCut.setDisable(false);
+        JArmEmuApplication.getController().menuPaste.setDisable(false);
+        JArmEmuApplication.getController().menuDelete.setDisable(false);
+        JArmEmuApplication.getController().menuFindAndReplace.setDisable(false);
 
         JArmEmuApplication.setStatus(Status.EDITING);
         JArmEmuApplication.getExecutionWorker().updateGUI();

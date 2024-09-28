@@ -30,7 +30,7 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
+import org.kordamp.ikonli.material2.Material2RoundAL;
 
 import java.io.File;
 import java.util.List;
@@ -322,14 +322,14 @@ public class MainMenuController {
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
-                    item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                    item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
                 } else {
                     item.setGraphic(null);
                 }
             });
 
             if (column.isVisible()) {
-                item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
             } else {
                 item.setGraphic(null);
             }
@@ -352,14 +352,14 @@ public class MainMenuController {
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
-                    item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                    item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
                 } else {
                     item.setGraphic(null);
                 }
             });
 
             if (column.isVisible()) {
-                item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
             } else {
                 item.setGraphic(null);
             }

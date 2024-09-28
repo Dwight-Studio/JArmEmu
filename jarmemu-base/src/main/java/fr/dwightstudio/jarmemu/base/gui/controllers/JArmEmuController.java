@@ -75,7 +75,8 @@ public class JArmEmuController implements Initializable {
 
     @FXML protected TabPane filesTabPane;
     @FXML protected VBox notifications;
-    @FXML protected Button toolSimulate;
+    @FXML protected SplitMenuButton toolSimulate;
+    @FXML protected MenuItem toolSimulateAll;
     @FXML protected Button toolStepInto;
     @FXML protected Button toolStepOver;
     @FXML protected Button toolContinue;
@@ -83,9 +84,14 @@ public class JArmEmuController implements Initializable {
     @FXML protected Button toolStop;
     @FXML protected Button toolRestart;
 
-    @FXML protected MenuItem findAndReplace;
+    @FXML protected MenuItem menuCopy;
+    @FXML protected MenuItem menuCut;
+    @FXML protected MenuItem menuPaste;
+    @FXML protected MenuItem menuDelete;
+    @FXML protected MenuItem menuFindAndReplace;
 
     @FXML protected MenuItem menuSimulate;
+    @FXML protected MenuItem menuSimulateAll;
     @FXML protected MenuItem menuStepInto;
     @FXML protected MenuItem menuStepOver;
     @FXML protected MenuItem menuContinue;
@@ -399,6 +405,11 @@ public class JArmEmuController implements Initializable {
     @FXML
     protected void onSimulate() {
         JArmEmuApplication.getSimulationMenuController().onSimulate();
+    }
+
+    @FXML
+    protected void onSimulateAll() {
+        JArmEmuApplication.getSimulationMenuController().onSimulateAll();
     }
 
     @FXML

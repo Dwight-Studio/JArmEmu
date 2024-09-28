@@ -123,7 +123,7 @@ public class MemoryWordView implements MemoryView {
 
             valueProperty.addListener(((observable, oldVal, newVal) -> {
                 if (oldVal == null || getFrom(oldVal.intValue()) != getFrom(newVal.intValue())) {
-                    changeListeners.forEach(changeListener -> changeListener.changed(this, getFrom(oldVal.intValue()), getFrom(newVal.intValue())));
+                    changeListeners.forEach(changeListener -> changeListener.changed(this, oldVal == null ? 0 : getFrom(oldVal.intValue()), getFrom(newVal.intValue())));
                     invalidationListeners.forEach(invalidationListener -> invalidationListener.invalidated(observable));
                 }
             }));

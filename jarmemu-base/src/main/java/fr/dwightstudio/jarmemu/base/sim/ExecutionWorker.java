@@ -34,22 +34,28 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.controlsfx.dialog.ExceptionDialog;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 public class ExecutionWorker {
     public static final int UPDATE_THRESHOLD = 10;
     public static final int FALLBACK_UPDATE_INTERVAL = 30;
 
-    private static final int ERROR = -1;
-    private static final int IDLE = 0;
-    private static final int STEP_INTO = 1;
-    private static final int STEP_OVER = 2;
-    private static final int CONTINUE = 3;
-    private static final int UPDATE_GUI = 4;
-    private static final int PREPARE = 5;
-    private static final int RESTART = 6;
-    private static final int UPDATE_FORMAT = 7;
+    private static enum Task {
+        IDLE,
+
+        STEP_INTO,
+        STEP_OVER,
+        CONTINUE,
+        UPDATE_GUI,
+        PREPARE,
+        PREPARE_ALL,
+        RESTART,
+        UPDATE_FORMAT,
+
+        ERROR
+    }
 
     private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
@@ -61,91 +67,70 @@ public class ExecutionWorker {
     }
 
     /**
-     * Execute une instruction
+     * Execute next instruction.
      */
     public void stepInto() {
-        checkTask(STEP_INTO);
-        this.daemon.nextTask.set(STEP_INTO);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.STEP_INTO);
     }
 
     /**
-     * Execute les instructions jusqu'au prochain saut
+     * Execute all next instructions until next jump.
      */
     public void stepOver() {
-        checkTask(STEP_OVER);
-        this.daemon.nextTask.set(STEP_OVER);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.STEP_OVER);
     }
 
     /**
-     * Execute les instructions jusqu'à la fin du programme
+     * Execute all next instructions until the end.
      */
     public void conti() {
-        checkTask(CONTINUE);
-        this.daemon.nextTask.set(CONTINUE);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.CONTINUE);
     }
 
     /**
-     * Met à jour le GUI
+     * Update GUI (memory, stack, registers...).
      */
     public void updateGUI() {
-        checkTask(UPDATE_GUI);
-        this.daemon.nextTask.set(UPDATE_GUI);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.UPDATE_GUI);
     }
 
     /**
-     * Parse le code et prépare l'exécution
+     * Parse code of the current file and prepare for execution.
      */
     public void prepare() {
-        checkTask(PREPARE);
-        this.daemon.nextTask.set(PREPARE);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.PREPARE);
     }
 
     /**
-     * Réinitialise les indicateurs du GUI pour le redémarrage
+     * Parse code of all files and prepare for execution.
+     */
+    public void prepareAll() {
+        checkAndSetNext(Task.PREPARE_ALL);
+    }
+
+    /**
+     * Reinitialize GUI for next simulation.
      */
     public void restart() {
-        checkTask(RESTART);
-        this.daemon.nextTask.set(RESTART);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.RESTART);
     }
 
     /**
-     * Met à jour le GUI
+     * Update GUI (number format).
      */
     public void updateFormat() {
-        checkTask(UPDATE_FORMAT);
-        this.daemon.nextTask.set(UPDATE_FORMAT);
-        synchronized (LOCK) {
-            LOCK.notifyAll();
-        }
+        checkAndSetNext(Task.UPDATE_FORMAT);
     }
 
     /**
-     * Met en pause l'exécution
+     * Pause execution.
      */
     public void pause() {
         this.daemon.doContinue = false;
     }
 
     /**
-     * Re-exécute le Thread si nécessaire
+     * Revive the execution thread if needed.
      */
     public void revive() {
         if (!this.daemon.isAlive()) {
@@ -155,7 +140,7 @@ public class ExecutionWorker {
     }
 
     /**
-     * Tue le Thread d'exécution
+     * Kill execution thread.
      */
     public void stop() {
         logger.info("Killing Execution Thread");
@@ -169,24 +154,32 @@ public class ExecutionWorker {
         this.daemon = null;
     }
 
-    public int getTask() {
+    /**
+     * @return the next task to be executed
+     */
+    public Task getTask() {
         if (this.daemon.isAlive()) {
             return daemon.nextTask.get();
         } else {
-            return ERROR;
+            return Task.ERROR;
         }
     }
 
-    public void checkTask(int id) {
+    private void checkAndSetNext(Task nTask) {
         if (!this.daemon.isAlive()) logger.warning("Adding task to a dead Worker");
-        int task = this.daemon.nextTask.get();
-        if (task != IDLE) logger.warning("Overriding next task (ID" + task + " with ID" + id + ")");
+        Task task = this.daemon.nextTask.get();
+        if (task != Task.IDLE) logger.warning("Overriding next task (" + task.name() + " with " + nTask.name() + ")");
+
+        this.daemon.nextTask.set(nTask);
+        synchronized (LOCK) {
+            LOCK.notifyAll();
+        }
     }
 
     private static class ExecutionThead extends Thread {
         private final Logger logger = Logger.getLogger(getClass().getSimpleName());
-        
-        private final AtomicInteger nextTask = new AtomicInteger();
+
+        private final AtomicReference<Task> nextTask = new AtomicReference<>(Task.IDLE);
         private boolean doContinue = false;
         private boolean doRun = true;
         private int waitingPeriod;
@@ -210,7 +203,7 @@ public class ExecutionWorker {
                 while (doRun) {
                     try {
                         synchronized (ExecutionWorker.LOCK) {
-                            if (nextTask.get() == IDLE) ExecutionWorker.LOCK.wait();
+                            if (nextTask.get() == Task.IDLE) ExecutionWorker.LOCK.wait();
                         }
                     } catch (InterruptedException exception) {
                         doRun = false;
@@ -219,8 +212,8 @@ public class ExecutionWorker {
 
                     waitingPeriod = JArmEmuApplication.getSettingsController().getSimulationInterval();
 
-                    int task = nextTask.get();
-                    logger.info("Executing task ID" + task + "...");
+                    Task task = nextTask.get();
+                    logger.info("Executing task " + task.name() + "...");
 
                     switch (task) {
                         case STEP_INTO -> stepIntoTask();
@@ -228,12 +221,14 @@ public class ExecutionWorker {
                         case CONTINUE -> continueTask();
                         case UPDATE_GUI -> updateGUITask();
                         case PREPARE -> prepareTask();
+                        case PREPARE_ALL -> prepareAllTask();
                         case RESTART -> restartTask();
                         case UPDATE_FORMAT -> updateFormatTask();
 
                         case IDLE -> {
                         }
-                        default -> logger.severe("Unknown task: Invalid ID");
+
+                        default -> logger.severe("Error while fetching next task");
                     }
 
                 }
@@ -312,7 +307,7 @@ public class ExecutionWorker {
                 Platform.runLater(() -> {
                     JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.softwareInterrupt.title"),
-                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.message", + exception.getCode()),
+                            JArmEmuApplication.formatMessage("%notification.softwareInterrupt.message", +exception.getCode()),
                             Styles.ACCENT
                     );
                     JArmEmuApplication.getSimulationMenuController().onPause();
@@ -428,7 +423,7 @@ public class ExecutionWorker {
         }
 
         private void stepIntoTask() {
-            nextTask.set(IDLE);
+            nextTask.set(Task.IDLE);
 
             UpdatableWrapper.resetUpdatables();
             step(false);
@@ -445,7 +440,7 @@ public class ExecutionWorker {
         }
 
         private void stepOverTask() {
-            nextTask.set(IDLE);
+            nextTask.set(Task.IDLE);
             doContinue = true;
 
             int nesting = JArmEmuApplication.getCodeInterpreter().getNestingCount();
@@ -478,7 +473,7 @@ public class ExecutionWorker {
         }
 
         private void continueTask() {
-            nextTask.set(IDLE);
+            nextTask.set(Task.IDLE);
             doContinue = true;
             while (doContinue) {
                 long m = System.currentTimeMillis();
@@ -505,7 +500,7 @@ public class ExecutionWorker {
         }
 
         private void updateGUITask() {
-            nextTask.set(IDLE);
+            nextTask.set(Task.IDLE);
 
             updateGUI(false);
 
@@ -543,20 +538,13 @@ public class ExecutionWorker {
             updateGUITimestamp = System.currentTimeMillis();
         }
 
-        private void prepareTask() {
-            nextTask.set(IDLE);
-
-            synchronized (ExecutionWorker.LOCK) {
-                try {
-                    ExecutionWorker.LOCK.wait(50);
-                } catch (InterruptedException ignored) {
-                }
-            }
-
+        private void prepare(boolean onlyCurrent) {
             try {
                 ASMException[] errors1 = JArmEmuApplication.getCodeInterpreter().load(
                         JArmEmuApplication.getSourceParser(),
-                        JArmEmuApplication.getEditorController().getSources()
+                        onlyCurrent ?
+                                List.of(JArmEmuApplication.getEditorController().currentFileEditor().getSourceScanner())
+                                : JArmEmuApplication.getEditorController().getSources()
                 );
 
                 if (errors1.length == 0) {
@@ -585,12 +573,40 @@ public class ExecutionWorker {
                     JArmEmuApplication.getSimulationMenuController().abortSimulation();
                 });
             }
+        }
+
+        private void prepareTask() {
+            nextTask.set(Task.IDLE);
+
+            synchronized (ExecutionWorker.LOCK) {
+                try {
+                    ExecutionWorker.LOCK.wait(50);
+                } catch (InterruptedException ignored) {
+                }
+            }
+
+            prepare(true);
+
+            logger.info("Done!");
+        }
+
+        private void prepareAllTask() {
+            nextTask.set(Task.IDLE);
+
+            synchronized (ExecutionWorker.LOCK) {
+                try {
+                    ExecutionWorker.LOCK.wait(50);
+                } catch (InterruptedException ignored) {
+                }
+            }
+
+            prepare(false);
 
             logger.info("Done!");
         }
 
         private void restartTask() {
-            nextTask.set(IDLE);
+            nextTask.set(Task.IDLE);
 
             line = next = null;
             updateGUI(true);
@@ -601,7 +617,7 @@ public class ExecutionWorker {
         }
 
         private void updateFormatTask() {
-            nextTask.set(IDLE);
+            nextTask.set(Task.IDLE);
 
             JArmEmuApplication.getRegistersController().refresh();
             JArmEmuApplication.getStackController().refresh();

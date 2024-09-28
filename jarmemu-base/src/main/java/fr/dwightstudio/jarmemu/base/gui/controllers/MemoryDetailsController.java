@@ -40,8 +40,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 public class MemoryDetailsController extends MemoryController<MemoryWordView> {
 
@@ -65,38 +65,38 @@ public class MemoryDetailsController extends MemoryController<MemoryWordView> {
     @Override
     public void setupTableView() {
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.address"));
-        TableViewUtils.setupColumn(col0, Material2OutlinedAL.ALTERNATE_EMAIL, 80, false, true, false);
+        TableViewUtils.setupColumn(col0, Material2RoundAL.ALTERNATE_EMAIL, 80, false, true, false);
         col0.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col0.setCellFactory(AddressTableCell.factory());
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.value"));
-        TableViewUtils.setupColumn(col1, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col1, Material2RoundMZ.MONEY, 80, true, true, false);
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
         col1.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col2 = new TableColumn<>("ASCII");
-        TableViewUtils.setupColumn(col2, Material2OutlinedMZ.SHORT_TEXT, 80, false, true, false);
+        TableViewUtils.setupColumn(col2, Material2RoundMZ.SHORT_TEXT, 80, false, true, false);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
         col2.setCellFactory(ValueTableCell.factoryStaticWordASCII(JArmEmuApplication.getInstance()));
         col2.setVisible(false);
 
         col3 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 3));
-        TableViewUtils.setupColumn(col3, Material2OutlinedAL.LOOKS_ONE, 80, false, true, false);
+        TableViewUtils.setupColumn(col3, Material2RoundAL.LOOKS_ONE, 80, false, true, false);
         col3.setCellValueFactory(c -> c.getValue().getByte0Property());
         col3.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col4 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 2));
-        TableViewUtils.setupColumn(col4, Material2OutlinedAL.LOOKS_ONE, 80, false, true, false);
+        TableViewUtils.setupColumn(col4, Material2RoundAL.LOOKS_ONE, 80, false, true, false);
         col4.setCellValueFactory(c -> c.getValue().getByte1Property());
         col4.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col5 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 1));
-        TableViewUtils.setupColumn(col5, Material2OutlinedAL.LOOKS_ONE, 80, false, true, false);
+        TableViewUtils.setupColumn(col5, Material2RoundAL.LOOKS_ONE, 80, false, true, false);
         col5.setCellValueFactory(c -> c.getValue().getByte2Property());
         col5.setCellFactory(ValueTableCell.factoryStaticBin());
 
         col6 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryDetails.byte", 0));
-        TableViewUtils.setupColumn(col6, Material2OutlinedAL.LOOKS_ONE, 80, false, true, false);
+        TableViewUtils.setupColumn(col6, Material2RoundAL.LOOKS_ONE, 80, false, true, false);
         col6.setCellValueFactory(c -> c.getValue().getByte3Property());
         col6.setCellFactory(ValueTableCell.factoryStaticBin());
 
@@ -113,7 +113,7 @@ public class MemoryDetailsController extends MemoryController<MemoryWordView> {
 
         JArmEmuApplication.getMainMenuController().registerMemoryDetailsColumns();
 
-        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        FontIcon icon = new FontIcon(Material2RoundAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");

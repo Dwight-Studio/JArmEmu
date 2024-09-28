@@ -24,7 +24,7 @@
   -->
 
 <?import atlantafx.base.controls.*?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -43,98 +43,100 @@
                 <MenuItem mnemonicParsing="false" onAction="#onOpen" text="%menu.file.open"
                           accelerator="Shortcut+O">
                     <graphic>
-                        <FontIcon iconLiteral="mdal-folder"/>
+                        <FontIcon iconLiteral="mdral-folder"/>
                     </graphic>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem/>
                 <MenuItem mnemonicParsing="false" onAction="#onSaveAll" text="%menu.file.saveAll"
                           accelerator="Shortcut+Shift+S">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-save"/>
+                        <FontIcon iconLiteral="mdrmz-save"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#onSave" text="%menu.file.save"
                           accelerator="Shortcut+S">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-save"/>
+                        <FontIcon iconLiteral="mdrmz-save"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#onSaveAs" text="%menu.file.saveAs">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-save"/>
+                        <FontIcon iconLiteral="mdrmz-save"/>
                     </graphic>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem/>
                 <MenuItem mnemonicParsing="false" onAction="#onReloadAll" text="%menu.file.reloadAll"
                           accelerator="Shortcut+Shift+R">
                     <graphic>
-                        <FontIcon iconLiteral="mdsmz-refresh"/>
+                        <FontIcon iconLiteral="mdrmz-refresh"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#onReload" text="%menu.file.reload"
                           accelerator="Shortcut+R">
                     <graphic>
-                        <FontIcon iconLiteral="mdsmz-refresh"/>
+                        <FontIcon iconLiteral="mdrmz-refresh"/>
                     </graphic>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem/>
                 <MenuItem mnemonicParsing="false" onAction="#onCloseAll" text="%menu.file.closeAll">
                     <graphic>
-                        <FontIcon iconLiteral="mdal-close"/>
+                        <FontIcon iconLiteral="mdral-close"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#onClose" text="%menu.file.close">
                     <graphic>
-                        <FontIcon iconLiteral="mdal-close"/>
+                        <FontIcon iconLiteral="mdral-close"/>
                     </graphic>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem/>
                 <MenuItem mnemonicParsing="false" onAction="#onResetSettings" text="%menu.file.reset">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-settings_backup_restore"/>
+                        <FontIcon iconLiteral="mdrmz-settings_backup_restore"/>
                     </graphic>
                 </MenuItem>
-                <SeparatorMenuItem mnemonicParsing="false"/>
+                <SeparatorMenuItem/>
                 <MenuItem mnemonicParsing="false" onAction="#onExit" text="%menu.file.exit">
                     <graphic>
-                        <FontIcon iconLiteral="mdoal-exit_to_app"/>
+                        <FontIcon iconLiteral="mdral-exit_to_app"/>
                     </graphic>
                 </MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.edit.title">
-                <MenuItem mnemonicParsing="false" onAction="#onCopy" text="%menu.edit.copy"
+                <MenuItem mnemonicParsing="false" fx:id="menuCopy" onAction="#onCopy" text="%menu.edit.copy"
                           accelerator="Shortcut+C">
                     <graphic>
-                        <FontIcon iconLiteral="mdsal-content_copy"/>
+                        <FontIcon iconLiteral="mdral-content_copy"/>
                     </graphic>
                 </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#onCut" text="%menu.edit.cut"
+                <MenuItem mnemonicParsing="false" fx:id="menuCut" onAction="#onCut" text="%menu.edit.cut"
                           accelerator="Shortcut+X">
                     <graphic>
-                        <FontIcon iconLiteral="mdsal-content_cut"/>
+                        <FontIcon iconLiteral="mdral-content_cut"/>
                     </graphic>
                 </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#onPaste" text="%menu.edit.paste"
+                <MenuItem mnemonicParsing="false" fx:id="menuPaste" onAction="#onPaste" text="%menu.edit.paste"
                           accelerator="Shortcut+V">
                     <graphic>
-                        <FontIcon iconLiteral="mdsal-content_paste"/>
+                        <FontIcon iconLiteral="mdral-content_paste"/>
                     </graphic>
                 </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#onDelete" text="%menu.edit.delete">
+                <MenuItem mnemonicParsing="false" fx:id="menuDelete" onAction="#onDelete" text="%menu.edit.delete">
                     <graphic>
-                        <FontIcon iconLiteral="mdsal-delete"/>
+                        <FontIcon iconLiteral="mdral-delete"/>
                     </graphic>
                 </MenuItem>
-                <MenuItem fx:id="findAndReplace" mnemonicParsing="false" onAction="#onFindAndReplace"
+                <SeparatorMenuItem/>
+                <MenuItem fx:id="menuFindAndReplace" mnemonicParsing="false" onAction="#onFindAndReplace"
                           text="%menu.edit.findAndReplace" accelerator="Shortcut+F">
                     <graphic>
-                        <FontIcon iconLiteral="mdoal-find_replace"/>
+                        <FontIcon iconLiteral="mdral-find_replace"/>
                     </graphic>
                 </MenuItem>
+                <SeparatorMenuItem/>
                 <MenuItem mnemonicParsing="false" onAction="#onToggleBreakpoint"
                           text="%menu.edit.breakpoint" accelerator="Shortcut+B">
                     <graphic>
-                        <FontIcon iconLiteral="mdsmz-stop_circle"/>
+                        <FontIcon iconLiteral="mdrmz-stop_circle"/>
                     </graphic>
                 </MenuItem>
             </Menu>
@@ -142,44 +144,52 @@
                 <MenuItem fx:id="menuSimulate" disable="true" mnemonicParsing="false" onAction="#onSimulate"
                           text="%menu.simulation.simulate" accelerator="F2">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-plagiarism"/>
+                        <FontIcon iconLiteral="mdrmz-plagiarism"/>
                     </graphic>
                 </MenuItem>
+                <MenuItem fx:id="menuSimulateAll" disable="true" mnemonicParsing="false" onAction="#onSimulateAll"
+                          text="%menu.simulation.simulateAll" accelerator="Shift+F2">
+                    <graphic>
+                        <FontIcon iconLiteral="mdrmz-plagiarism"/>
+                    </graphic>
+                </MenuItem>
+                <SeparatorMenuItem/>
                 <MenuItem fx:id="menuStepInto" disable="true" mnemonicParsing="false" onAction="#onStepInto"
                           text="%menu.simulation.stepInto" accelerator="F3">
                     <graphic>
-                        <FontIcon iconLiteral="mdomz-subdirectory_arrow_left"
+                        <FontIcon iconLiteral="mdrmz-subdirectory_arrow_left"
                                   rotate="-90"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem fx:id="menuStepOver" disable="true" mnemonicParsing="false" onAction="#onStepOver"
                           text="%menu.simulation.stepOver" accelerator="F4">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-redo"/>
+                        <FontIcon iconLiteral="mdrmz-redo"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem fx:id="menuContinue" disable="true" mnemonicParsing="false" onAction="#onContinue"
                           text="%menu.simulation.continue" accelerator="F5">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-play_arrow"/>
+                        <FontIcon iconLiteral="mdrmz-play_arrow"/>
                     </graphic>
                 </MenuItem>
+                <SeparatorMenuItem/>
                 <MenuItem fx:id="menuPause" disable="true" mnemonicParsing="false" onAction="#onPause"
                           text="%menu.simulation.pause" accelerator="F6">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-pause"/>
+                        <FontIcon iconLiteral="mdrmz-pause"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem fx:id="menuStop" disable="true" mnemonicParsing="false" onAction="#onStop"
                           text="%menu.simulation.stop" accelerator="F7">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-stop"/>
+                        <FontIcon iconLiteral="mdrmz-stop"/>
                     </graphic>
                 </MenuItem>
                 <MenuItem fx:id="menuRestart" disable="true" mnemonicParsing="false" onAction="#onRestart"
                           text="%menu.simulation.restart" accelerator="F8">
                     <graphic>
-                        <FontIcon iconLiteral="mdmz-rotate_left"/>
+                        <FontIcon iconLiteral="mdrmz-rotate_left"/>
                     </graphic>
                 </MenuItem>
             </Menu>
@@ -188,18 +198,19 @@
                     <Menu fx:id="memoryOverviewMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
                           text="%tab.memoryOverview.title">
                         <graphic>
-                            <FontIcon iconLiteral="mdmz-memory"/>
+                            <FontIcon iconLiteral="mdrmz-memory"/>
                         </graphic>
                     </Menu>
                     <Menu fx:id="memoryDetailsMenu" mnemonicParsing="false" styleClass="split-menu-btn-default"
                           text="%tab.memoryDetails.title">
                         <graphic>
-                            <FontIcon iconLiteral="mdmz-memory"/>
+                            <FontIcon iconLiteral="mdrmz-memory"/>
                         </graphic>
                     </Menu>
+                    <SeparatorMenuItem/>
                     <MenuItem mnemonicParsing="false" onAction="#onClearNotifs" text="%menu.view.clearNotifs">
                         <graphic>
-                            <FontIcon iconLiteral="mdoal-clear_all"/>
+                            <FontIcon iconLiteral="mdral-clear_all"/>
                         </graphic>
                     </MenuItem>
                 </items>
@@ -211,14 +222,15 @@
                         <FontIcon iconLiteral="mdral-ballot"/>
                     </graphic>
                 </MenuItem>
-                <MenuItem mnemonicParsing="false" onAction="#onAbout" text="%menu.help.about">
-                    <graphic>
-                        <FontIcon iconLiteral="mdsal-info"/>
-                    </graphic>
-                </MenuItem>
                 <MenuItem mnemonicParsing="false" onAction="#onTour" text="%menu.help.tour">
                     <graphic>
                         <FontIcon iconLiteral="mdrmz-rocket"/>
+                    </graphic>
+                </MenuItem>
+                <SeparatorMenuItem/>
+                <MenuItem mnemonicParsing="false" onAction="#onAbout" text="%menu.help.about">
+                    <graphic>
+                        <FontIcon iconLiteral="mdral-info"/>
                     </graphic>
                 </MenuItem>
             </Menu>
@@ -247,94 +259,83 @@
             <StackPane>
                 <VBox alignment="TOP_CENTER">
                     <ToolBar>
-                        <HBox layoutX="10.0" layoutY="10.0">
-                            <Button fx:id="toolSimulate" contentDisplay="RIGHT"
-                                    mnemonicParsing="false" onAction="#onSimulate"
-                                    styleClass="accent" text="%menu.simulation.simulate">
-                                <HBox.margin>
-                                    <Insets left="10.0" right="10.0"/>
-                                </HBox.margin>
-                                <graphic>
-                                    <FontIcon iconLiteral="mdmz-plagiarism"/>
-                                </graphic>
-                            </Button>
-                        </HBox>
                         <HBox>
-                            <Button fx:id="toolStepInto" disable="true" contentDisplay="RIGHT"
+                            <SplitMenuButton fx:id="toolSimulate"
+                                             mnemonicParsing="false" onAction="#onSimulate"
+                                             styleClass="accent" text="%menu.simulation.simulate">
+                                <graphic>
+                                    <FontIcon iconLiteral="mdrmz-plagiarism"/>
+                                </graphic>
+                                <items>
+                                    <MenuItem fx:id="toolSimulateAll" mnemonicParsing="false" onAction="#onSimulateAll"
+                                              styleClass="accent" text="%menu.simulation.simulateAll">
+                                        <graphic>
+                                            <FontIcon iconLiteral="mdrmz-plagiarism"/>
+                                        </graphic>
+                                    </MenuItem>
+                                </items>
+                            </SplitMenuButton>
+                        </HBox>
+                        <Separator orientation="VERTICAL"/>
+                        <HBox>
+                            <Button fx:id="toolStepInto" disable="true"
                                     mnemonicParsing="false" onAction="#onStepInto"
                                     text="%menu.simulation.stepInto">
-                                <HBox.margin>
-                                    <Insets left="10.0" right="10.0"/>
-                                </HBox.margin>
                                 <graphic>
-                                    <FontIcon iconLiteral="mdomz-subdirectory_arrow_left"
+                                    <FontIcon iconLiteral="mdrmz-subdirectory_arrow_left"
                                               rotate="-90"/>
                                 </graphic>
                             </Button>
                         </HBox>
-                        <HBox layoutX="10.0" layoutY="10.0">
-                            <Button fx:id="toolStepOver" disable="true" contentDisplay="RIGHT"
+                        <HBox>
+                            <Button fx:id="toolStepOver" disable="true"
                                     mnemonicParsing="false" onAction="#onStepOver"
                                     text="%menu.simulation.stepOver">
-                                <HBox.margin>
-                                    <Insets left="10.0" right="10.0"/>
-                                </HBox.margin>
                                 <graphic>
-                                    <FontIcon iconLiteral="mdmz-redo"/>
+                                    <FontIcon iconLiteral="mdrmz-redo"/>
                                 </graphic>
                             </Button>
                         </HBox>
-                        <HBox layoutX="20.0" layoutY="20.0">
-                            <Button fx:id="toolContinue" disable="true" contentDisplay="RIGHT"
+                        <HBox>
+                            <Button fx:id="toolContinue" disable="true"
                                     layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
                                     onAction="#onContinue" styleClass="success"
                                     text="%menu.simulation.continue" HBox.hgrow="ALWAYS">
-                                <HBox.margin>
-                                    <Insets left="10.0" right="10.0"/>
-                                </HBox.margin>
                                 <graphic>
-                                    <FontIcon iconLiteral="mdmz-play_arrow"/>
+                                    <FontIcon iconLiteral="mdrmz-play_arrow"/>
                                 </graphic>
                             </Button>
-                            <HBox>
-                                <Button fx:id="toolPause" contentDisplay="RIGHT"
-                                        disable="true" layoutX="10.0" layoutY="10.0"
-                                        mnemonicParsing="false" onAction="#onPause"
-                                        styleClass="accent" text="%menu.simulation.pause"
-                                        HBox.hgrow="ALWAYS">
-                                    <HBox.margin>
-                                        <Insets left="10.0" right="10.0"/>
-                                    </HBox.margin>
-                                    <graphic>
-                                        <FontIcon iconLiteral="mdmz-pause"/>
-                                    </graphic>
-                                </Button>
-                            </HBox>
                         </HBox>
-                        <HBox layoutX="10.0" layoutY="10.0">
-                            <Button fx:id="toolStop" contentDisplay="RIGHT" disable="true"
+                        <Separator orientation="VERTICAL"/>
+                        <HBox>
+                            <Button fx:id="toolPause"
+                                    disable="true" layoutX="10.0" layoutY="10.0"
+                                    mnemonicParsing="false" onAction="#onPause"
+                                    styleClass="accent" text="%menu.simulation.pause"
+                                    HBox.hgrow="ALWAYS">
+                                <graphic>
+                                    <FontIcon iconLiteral="mdrmz-pause"/>
+                                </graphic>
+                            </Button>
+                        </HBox>
+                        <HBox>
+                            <Button fx:id="toolStop" disable="true"
                                     layoutX="20.0" layoutY="20.0" mnemonicParsing="false"
                                     onAction="#onStop" styleClass="danger"
                                     text="%menu.simulation.stop">
-                                <HBox.margin>
-                                    <Insets left="10.0" right="10.0"/>
-                                </HBox.margin>
                                 <graphic>
-                                    <FontIcon iconLiteral="mdmz-stop"/>
+                                    <FontIcon iconLiteral="mdrmz-stop"/>
                                 </graphic>
                             </Button>
                         </HBox>
-                        <HBox layoutX="20.0" layoutY="20.0">
-                            <Button fx:id="toolRestart" contentDisplay="RIGHT" disable="true"
+                        <HBox>
+                            <Button fx:id="toolRestart" disable="true"
                                     layoutX="160.0" layoutY="10.0" mnemonicParsing="false"
                                     onAction="#onRestart" styleClass="danger"
                                     text="%menu.simulation.restart"
                                     HBox.hgrow="ALWAYS">
-                                <HBox.margin>
-                                    <Insets left="10.0" right="10.0"/>
-                                </HBox.margin>
                                 <graphic>
-                                    <FontIcon iconLiteral="mdmz-rotate_left"/>
+                                    <FontIcon iconLiteral="mdrmz-rotate_left"/>
                                 </graphic>
                             </Button>
                         </HBox>
@@ -364,7 +365,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                 </VBox.margin>
                                 <left>
-                                    <FontIcon iconLiteral="mdmz-search"/>
+                                    <FontIcon iconLiteral="mdrmz-search"/>
                                 </left>
                             </CustomTextField>
                             <Pagination fx:id="memoryOverviewPage" styleClass="bullet"
@@ -383,7 +384,7 @@
                                     <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
                                 </VBox.margin>
                                 <left>
-                                    <FontIcon iconLiteral="mdmz-search"/>
+                                    <FontIcon iconLiteral="mdrmz-search"/>
                                 </left>
                             </CustomTextField>
                             <Pagination fx:id="memoryDetailsPage" styleClass="bullet"
@@ -612,7 +613,7 @@
                                                                       text="%settings.appearance.dark">
                                                             <graphic>
                                                                 <FontIcon
-                                                                        iconLiteral="mdsal-bedtime"/>
+                                                                        iconLiteral="mdral-bedtime"/>
                                                             </graphic>
                                                         </ToggleButton>
                                                         <ToggleButton fx:id="settingsLight"

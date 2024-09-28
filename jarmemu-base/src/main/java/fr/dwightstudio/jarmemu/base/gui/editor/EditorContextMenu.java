@@ -30,8 +30,8 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.*;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 public class EditorContextMenu extends ContextMenu {
 
@@ -45,11 +45,11 @@ public class EditorContextMenu extends ContextMenu {
     public EditorContextMenu(FileEditor editor) {
         this.editor = editor;
 
-        copy = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.copy"), new FontIcon(Material2OutlinedAL.CONTENT_COPY));
-        cut = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.cut"), new FontIcon(Material2OutlinedAL.CONTENT_CUT));
-        paste = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.paste"), new FontIcon(Material2OutlinedAL.CONTENT_PASTE));
-        delete = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.delete"), new FontIcon(Material2OutlinedAL.DELETE));
-        breakpoint = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.breakpoint"), new FontIcon(Material2OutlinedMZ.STOP_CIRCLE));
+        copy = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.copy"), new FontIcon(Material2RoundAL.CONTENT_COPY));
+        cut = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.cut"), new FontIcon(Material2RoundAL.CONTENT_CUT));
+        paste = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.paste"), new FontIcon(Material2RoundAL.CONTENT_PASTE));
+        delete = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.delete"), new FontIcon(Material2RoundAL.DELETE));
+        breakpoint = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.breakpoint"), new FontIcon(Material2RoundMZ.STOP_CIRCLE));
 
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));

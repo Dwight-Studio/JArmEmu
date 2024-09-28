@@ -41,8 +41,8 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -61,24 +61,24 @@ public class RegistersController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.register"));
-        TableViewUtils.setupColumn(col0, Material2OutlinedMZ.MEMORY, 80, false, true, false);
+        TableViewUtils.setupColumn(col0, Material2RoundMZ.MEMORY, 80, false, true, false);
         col0.setCellValueFactory(c -> c.getValue().getNameProperty());
         col0.setCellFactory(TextFieldTableCell.forTableColumn());
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.value"));
-        TableViewUtils.setupColumn(col1, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col1, Material2RoundMZ.MONEY, 80, true, true, false);
         col1.setCellValueFactory(c -> c.getValue().getValueProperty());
         col1.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.registers.flags"));
-        TableViewUtils.setupColumn(col2, Material2OutlinedAL.FLAG, 80, false, true, false);
+        TableViewUtils.setupColumn(col2, Material2RoundAL.FLAG, 80, false, true, false);
         col2.setCellValueFactory(c -> c.getValue().getRegisterObservable());
         col2.setCellFactory(FlagTableCell.factory());
 
         registersTable = new TableView<>();
         views = registersTable.getItems();
 
-        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        FontIcon icon = new FontIcon(Material2RoundAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");

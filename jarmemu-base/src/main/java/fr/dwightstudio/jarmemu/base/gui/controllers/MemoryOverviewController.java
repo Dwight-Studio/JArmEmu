@@ -40,8 +40,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.util.logging.Logger;
 
@@ -67,33 +67,33 @@ public class MemoryOverviewController extends MemoryController<MemoryChunkView> 
     @Override
     public void setupTableView() {
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.address"));
-        TableViewUtils.setupColumn(col0, Material2OutlinedAL.ALTERNATE_EMAIL, 80, false, true, false);
+        TableViewUtils.setupColumn(col0, Material2RoundAL.ALTERNATE_EMAIL, 80, false, true, false);
         col0.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col0.setCellFactory(AddressTableCell.factory());
 
         col1 = new TableColumn<>("ASCII");
-        TableViewUtils.setupColumn(col1, Material2OutlinedMZ.SHORT_TEXT, 80, false, true, false);
+        TableViewUtils.setupColumn(col1, Material2RoundMZ.SHORT_TEXT, 80, false, true, false);
         col1.setCellValueFactory(c -> c.getValue().getASCIIProperty());
         col1.setCellFactory(ValueTableCell.factoryStaticString());
         col1.setVisible(false);
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 0));
-        TableViewUtils.setupColumn(col2, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col2, Material2RoundMZ.MONEY, 80, true, true, false);
         col2.setCellValueFactory(c -> c.getValue().getValue0Property());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col3 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 1));
-        TableViewUtils.setupColumn(col3, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col3, Material2RoundMZ.MONEY, 80, true, true, false);
         col3.setCellValueFactory(c -> c.getValue().getValue1Property());
         col3.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col4 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 2));
-        TableViewUtils.setupColumn(col4, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col4, Material2RoundMZ.MONEY, 80, true, true, false);
         col4.setCellValueFactory(c -> c.getValue().getValue2Property());
         col4.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         col5 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.memoryOverview.value", 3));
-        TableViewUtils.setupColumn(col5, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col5, Material2RoundMZ.MONEY, 80, true, true, false);
         col5.setCellValueFactory(c -> c.getValue().getValue3Property());
         col5.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
@@ -110,7 +110,7 @@ public class MemoryOverviewController extends MemoryController<MemoryChunkView> 
 
         JArmEmuApplication.getMainMenuController().registerMemoryOverviewColumns();
 
-        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        FontIcon icon = new FontIcon(Material2RoundAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");

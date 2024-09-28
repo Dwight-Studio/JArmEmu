@@ -37,8 +37,8 @@ import javafx.scene.control.Button;
 import javafx.util.Duration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.io.File;
 import java.net.URL;
@@ -79,10 +79,10 @@ public class EditorController implements Initializable {
         Notification notification;
 
         switch (classString) {
-            case Styles.ACCENT -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.INFO));
-            case Styles.SUCCESS -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
-            case Styles.WARNING -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
-            case Styles.DANGER -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
+            case Styles.ACCENT -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundAL.INFO));
+            case Styles.SUCCESS -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundAL.CHECK_CIRCLE_OUTLINE));
+            case Styles.WARNING -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundMZ.OUTLINED_FLAG));
+            case Styles.DANGER -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundAL.ERROR_OUTLINE));
 
             default -> notification = new Notification(titleString + ": " + contentString);
         }
@@ -389,13 +389,17 @@ public class EditorController implements Initializable {
         for (FileEditor fileEditor : fileEditors) {
             if (!fileEditor.isClosed()) {
                 JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
                 JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
                 return;
             }
         }
 
         JArmEmuApplication.getController().menuSimulate.setDisable(true);
+        JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
         JArmEmuApplication.getController().toolSimulate.setDisable(true);
+        JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
     }
 
     /**
