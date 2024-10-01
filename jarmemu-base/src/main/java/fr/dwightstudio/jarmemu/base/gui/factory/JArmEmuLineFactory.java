@@ -220,7 +220,6 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 if (event.getButton() == MouseButton.PRIMARY) toggle();
             });
             lineNo.setOnMouseEntered(event -> {
-
                 if (!breakpoint) {
                     lineNo.setText("  ⬤ ");
                     lineNo.getStyleClass().clear();
@@ -228,7 +227,6 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 }
             });
             lineNo.setOnMouseExited(event -> {
-
                 if (!breakpoint) {
                     lineNo.setText(String.format("%4d", line + 1));
                     lineNo.getStyleClass().clear();

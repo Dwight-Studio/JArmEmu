@@ -35,7 +35,6 @@ import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.*;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
@@ -836,11 +835,7 @@ public class FileEditor {
         }
     }
 
-    /**
-     * @param line the line index
-     * @return a node corresponding to the line number
-     */
-    public Node getLineMargin(int line) {
-        return lineFactory.apply(line);
+    public JArmEmuLineFactory getLineFactory() {
+        return lineFactory;
     }
 }

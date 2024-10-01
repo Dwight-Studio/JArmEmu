@@ -263,7 +263,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Sauvegarde tous les fichiers.
+     * Save all files.
      */
     public void saveAll() {
         for (FileEditor editor : fileEditors) {
@@ -272,7 +272,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Recharge tous les fichiers.
+     * Reload all files.
      */
     public void reloadAll() {
         for (FileEditor editor : fileEditors) {
@@ -281,7 +281,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ferme tous les fichiers.
+     * Close all files.
      */
     public void closeAll() {
         for (FileEditor editor : fileEditors) {
@@ -291,7 +291,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Enlève les fichiers fermés de la liste des fichiers
+     * Clear closed editors from file list.
      */
     public void cleanClosedEditors() {
         fileEditors.removeIf(FileEditor::isClosed);
@@ -299,7 +299,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * @return l'état de sauvegarde globale (tous les fichiers ouverts).
+     * @return the save state of all files combined
      */
     public boolean getSaveState() {
         for (FileEditor editor : fileEditors) {
@@ -312,9 +312,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Calcule tous les chemins d'accès et actualise les préférences.
+     * Compute all save paths and update the preference.
      *
-     * @return les chemin d'accès de la sauvegarde courante
+     * @return the save paths of the current save
      */
     public ArrayList<File> getSavePaths() {
         ArrayList<File> rtn = new ArrayList<>();
@@ -327,9 +327,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Méthode appelée lors de la reprise de l'exécution.
+     * Disable edition on all editors.
      */
-    public void onLaunch() {
+    public void setSimulationGUI() {
         if (!fileEditors.isEmpty()) {
             for (FileEditor editor : fileEditors) {
                 editor.getCodeArea().setEditable(false);
@@ -338,52 +338,26 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Méthode appelée lors de la reprise de l'exécution.
+     * Enable edition on all editors.
      */
-    public void onContinueOrStepOver() {
+    public void setEditionGUI() {
         if (!fileEditors.isEmpty()) {
             for (FileEditor editor : fileEditors) {
-                editor.getCodeArea().setDisable(true);
-                editor.getScrollPane().setDisable(true);
-            }
-        }
-    }
-
-    /**
-     * Méthode appelée lors de la pause de l'exécution.
-     */
-    public void onPause() {
-        if (!fileEditors.isEmpty()) {
-            for (FileEditor editor : fileEditors) {
-                editor.getCodeArea().setDisable(false);
-                editor.getScrollPane().setDisable(false);
-            }
-        }
-    }
-
-    /**
-     * Méthode appelée lors de l'arrêt de la simulation.
-     */
-    public void onStop() {
-        if (!fileEditors.isEmpty()) {
-            for (FileEditor editor : fileEditors) {
-                editor.getCodeArea().setDisable(false);
                 editor.getCodeArea().setEditable(true);
-                editor.getScrollPane().setDisable(false);
             }
         }
     }
 
     /**
-     * @param fileEditor l'éditeur de fichier
-     * @return l'indice de l'éditeur
+     * @param fileEditor the file editor
+     * @return the file editor's index in file list
      */
     public int getFileIndex(FileEditor fileEditor) {
         return fileEditors.indexOf(fileEditor);
     }
 
     /**
-     * Checks if there is still opened files to allow simulation
+     * Checks if there is still opened files to allow simulation.
      */
     public void updateSimulationButtons() {
         for (FileEditor fileEditor : fileEditors) {
@@ -403,7 +377,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Reinitialize all real time parsers
+     * Reinitialize all real time parsers.
      */
     public void reinitializeRealTimeParsers() {
         getFileEditors().forEach(FileEditor::initializeRealTimeParser);

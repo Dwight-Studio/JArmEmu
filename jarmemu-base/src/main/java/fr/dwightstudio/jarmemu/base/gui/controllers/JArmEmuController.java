@@ -84,6 +84,8 @@ public class JArmEmuController implements Initializable {
     @FXML protected Button toolStop;
     @FXML protected Button toolRestart;
 
+    @FXML protected MenuBar menuBar;
+
     @FXML protected MenuItem menuCopy;
     @FXML protected MenuItem menuCut;
     @FXML protected MenuItem menuPaste;
@@ -101,6 +103,7 @@ public class JArmEmuController implements Initializable {
 
     @FXML protected AnchorPane registersPane;
 
+    @FXML protected TabPane leftTabPane;
     @FXML protected TabPane rightTabPane;
 
     @FXML protected AnchorPane memoryDetailsPane;

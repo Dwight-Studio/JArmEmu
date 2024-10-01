@@ -21,6 +21,16 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+.popover {
+    -fx-font-family: Cantarell;
+    -fx-font-weight: normal;
+}
+
+.popover > .content > .title > .text {
+    -fx-font-family: Cantarell;
+    -fx-font-weight: normal;
+}
+
 .paragraph-box {
     -fx-background-color: -color-bg-overlay;
 }

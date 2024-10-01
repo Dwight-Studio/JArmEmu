@@ -42,7 +42,7 @@ public class ExecutionWorker {
     public static final int UPDATE_THRESHOLD = 10;
     public static final int FALLBACK_UPDATE_INTERVAL = 30;
 
-    private static enum Task {
+    public static enum Task {
         IDLE,
 
         STEP_INTO,
@@ -155,9 +155,20 @@ public class ExecutionWorker {
     }
 
     /**
-     * @return the next task to be executed
+     * @return the current task
      */
     public Task getTask() {
+        if (this.daemon.isAlive()) {
+            return daemon.currentTask;
+        } else {
+            return Task.ERROR;
+        }
+    }
+
+    /**
+     * @return the next task to be executed
+     */
+    public Task getNextTask() {
         if (this.daemon.isAlive()) {
             return daemon.nextTask.get();
         } else {
@@ -180,6 +191,7 @@ public class ExecutionWorker {
         private final Logger logger = Logger.getLogger(getClass().getSimpleName());
 
         private final AtomicReference<Task> nextTask = new AtomicReference<>(Task.IDLE);
+        private Task currentTask;
         private boolean doContinue = false;
         private boolean doRun = true;
         private int waitingPeriod;
@@ -212,10 +224,11 @@ public class ExecutionWorker {
 
                     waitingPeriod = JArmEmuApplication.getSettingsController().getSimulationInterval();
 
-                    Task task = nextTask.get();
-                    logger.info("Executing task " + task.name() + "...");
+                    currentTask = nextTask.get();
+                    nextTask.set(Task.IDLE);
+                    logger.info("Executing task " + currentTask.name() + "...");
 
-                    switch (task) {
+                    switch (currentTask) {
                         case STEP_INTO -> stepIntoTask();
                         case STEP_OVER -> stepOverTask();
                         case CONTINUE -> continueTask();
@@ -231,6 +244,9 @@ public class ExecutionWorker {
                         default -> logger.severe("Error while fetching next task");
                     }
 
+                    currentTask = Task.IDLE;
+
+                    logger.info("Done!");
                 }
             } catch (Exception exception) {
                 Platform.runLater(() -> {
@@ -423,8 +439,6 @@ public class ExecutionWorker {
         }
 
         private void stepIntoTask() {
-            nextTask.set(Task.IDLE);
-
             UpdatableWrapper.resetUpdatables();
             step(false);
             updateGUI(true);
@@ -435,12 +449,9 @@ public class ExecutionWorker {
                 }
             } catch (InterruptedException ignored) {
             }
-
-            logger.info("Done!");
         }
 
         private void stepOverTask() {
-            nextTask.set(Task.IDLE);
             doContinue = true;
 
             int nesting = JArmEmuApplication.getCodeInterpreter().getNestingCount();
@@ -469,11 +480,9 @@ public class ExecutionWorker {
             }
 
             Platform.runLater(() -> JArmEmuApplication.getSimulationMenuController().onPause());
-            logger.info("Done!");
         }
 
         private void continueTask() {
-            nextTask.set(Task.IDLE);
             doContinue = true;
             while (doContinue) {
                 long m = System.currentTimeMillis();
@@ -496,18 +505,13 @@ public class ExecutionWorker {
                 UpdatableWrapper.resetUpdatables();
                 updateGUI(true);
             }
-            logger.info("Done!");
         }
 
         private void updateGUITask() {
-            nextTask.set(Task.IDLE);
-
             updateGUI(false);
 
             JArmEmuApplication.getMemoryDetailsController().updatePage(JArmEmuApplication.getCodeInterpreter().stateContainer);
             JArmEmuApplication.getMemoryOverviewController().updatePage(JArmEmuApplication.getCodeInterpreter().stateContainer);
-
-            logger.info("Done!");
         }
 
         private void updateGUI(boolean updateLine) {
@@ -576,8 +580,6 @@ public class ExecutionWorker {
         }
 
         private void prepareTask() {
-            nextTask.set(Task.IDLE);
-
             synchronized (ExecutionWorker.LOCK) {
                 try {
                     ExecutionWorker.LOCK.wait(50);
@@ -586,13 +588,9 @@ public class ExecutionWorker {
             }
 
             prepare(true);
-
-            logger.info("Done!");
         }
 
         private void prepareAllTask() {
-            nextTask.set(Task.IDLE);
-
             synchronized (ExecutionWorker.LOCK) {
                 try {
                     ExecutionWorker.LOCK.wait(50);
@@ -601,24 +599,16 @@ public class ExecutionWorker {
             }
 
             prepare(false);
-
-            logger.info("Done!");
         }
 
         private void restartTask() {
-            nextTask.set(Task.IDLE);
-
             line = next = null;
             updateGUI(true);
 
             attachControllers();
-
-            logger.info("Done!");
         }
 
         private void updateFormatTask() {
-            nextTask.set(Task.IDLE);
-
             JArmEmuApplication.getRegistersController().refresh();
             JArmEmuApplication.getStackController().refresh();
             JArmEmuApplication.getMemoryDetailsController().refresh();

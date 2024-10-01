@@ -293,6 +293,7 @@ public class JArmEmuApplication extends Application {
                     JArmEmuApplication.notifyPreloader("Finishing up");
                     controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
                     JArmEmuApplication.getExecutionWorker().updateGUI();
+                    JArmEmuPopups.build();
                 }),
 
                 new KeyFrame(Duration.seconds(2), actionEvent -> {

@@ -5,6 +5,7 @@
 - Improved ExecutionWorker readability
 - Added quick access to symbol address in memory (resolved #9)
 - Added option to only simulate current file (resolved #13)
+- Added onboarding tour (resolved #8)
 - Fixed preloader centering (resolved #7)
 - Fixed program being editable during simulation (resolved #12)
 - Fixed smart highlighter confusion between B/BL with condition LE (resolved #10)

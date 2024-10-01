@@ -32,7 +32,7 @@
 <StackPane fx:id="mainPane" xmlns="http://javafx.com/javafx/21"
            xmlns:fx="http://javafx.com/fxml/1">
     <VBox>
-        <MenuBar>
+        <MenuBar fx:id="menuBar">
             <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.file.title">
                 <MenuItem mnemonicParsing="false" onAction="#onNewFile" text="%menu.file.newFile"
                           accelerator="Shortcut+N">
@@ -215,7 +215,7 @@
                     </MenuItem>
                 </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="%menu.help.title">
+            <Menu fx:id="menuHelp" mnemonicParsing="false" text="%menu.help.title">
                 <MenuItem mnemonicParsing="false" onAction="#onInstructionList"
                           text="%menu.help.instructionList">
                     <graphic>
@@ -243,8 +243,8 @@
                         <AnchorPane fx:id="registersPane"/>
                     </Tab>
                 </TabPane>
-                <TabPane layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal"
-                         tabClosingPolicy="UNAVAILABLE">
+                <TabPane fx:id="leftTabPane" layoutX="10.0" layoutY="10.0" side="BOTTOM" styleClass="btn-group-horizontal"
+                         tabClosingPolicy="UNAVAILABLE" tabDragPolicy="FIXED">
                     <Tab text="%tab.stack.title">
                         <AnchorPane fx:id="stackPane" disable="true"/>
                     </Tab>
@@ -353,7 +353,7 @@
                 </VBox>
             </StackPane>
             <TabPane fx:id="rightTabPane" side="BOTTOM" styleClass="btn-group-horizontal"
-                     tabClosingPolicy="UNAVAILABLE">
+                     tabClosingPolicy="UNAVAILABLE" tabDragPolicy="FIXED">
                 <Tab text="%tab.memoryOverview.title">
                     <AnchorPane fx:id="memoryOverviewPane">
                         <VBox AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"

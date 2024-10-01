@@ -3,12 +3,12 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
-import fr.dwightstudio.jarmemu.base.gui.JArmEmuPopups;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -20,6 +20,7 @@ import org.kordamp.ikonli.material2.Material2RoundAL;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 public class PopupController implements Initializable {
@@ -31,17 +32,17 @@ public class PopupController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        JArmEmuPopups.build();
+
     }
 
-    public static void popoverMaker(Node location, Popover.ArrowLocation arrowLocation) {
+    public static void popoverMaker(Supplier<Node> location, Popover.ArrowLocation arrowLocation) {
         popoverMaker(location, arrowLocation, NOTHING, NOTHING);
     }
 
-    public static void popoverMaker(Node location, Popover.ArrowLocation arrowLocation, Runnable before, Runnable after) {
+    public static void popoverMaker(Supplier<Node> location, Popover.ArrowLocation arrowLocation, Runnable before, Runnable after) {
         VBox vbox = new VBox();
         vbox.setSpacing(10);
-        vbox.setPadding(new Insets(15, 15, 0, 15));
+        vbox.setPadding(new Insets(0, 15, 0, 15));
 
         Text text = new Text();
         TextFlow textFlow = new TextFlow(text);
@@ -123,7 +124,7 @@ public class PopupController implements Initializable {
                 try {
                     popup = popovers.get(j);
                     popup.before.run();
-                    popup.popover.show(popovers.get(j).location);
+                    popup.popover.show(popovers.get(j).location.get());
                     break;
                 } catch (Exception exception) {
                     logger.warning("Cannot open Popup: " + exception.getMessage());
@@ -142,7 +143,7 @@ public class PopupController implements Initializable {
                 try {
                     popup = popovers.get(j);
                     popup.before.run();
-                    popup.popover.show(popovers.get(j).location);
+                    popup.popover.show(popovers.get(j).location.get());
                     break;
                 } catch (Exception exception) {
                     logger.warning("Cannot open Popup: " + exception.getMessage());
@@ -164,7 +165,7 @@ public class PopupController implements Initializable {
         return JArmEmuApplication.getController().mainPane;
     }
 
-    public static Node getTabPaneHeader() {
+    public static Node getMainTabPaneHeader() {
         return JArmEmuApplication.getController().filesTabPane.lookup(".tab-header-area");
     }
 
@@ -180,14 +181,42 @@ public class PopupController implements Initializable {
         return JArmEmuApplication.getController().toolStop;
     }
 
+    public static Node getLineMargin() {
+        return JArmEmuApplication.getEditorController().currentFileEditor().getLineFactory().apply(11);
+    }
+
     public static Node getRegistersPane() {
         return JArmEmuApplication.getController().registersPane;
+    }
+
+    public static Node getStackPane() {
+        return JArmEmuApplication.getController().stackPane;
+    }
+
+    public static Node getLabelPane() {
+        return JArmEmuApplication.getController().labelsPane;
+    }
+
+    public static TabPane getLeftTabPane() {
+        return JArmEmuApplication.getController().leftTabPane;
+    }
+
+    public static Node getRightTabPane() {
+        return JArmEmuApplication.getController().rightTabPane;
+    }
+
+    public static Node getMenu() {
+        return JArmEmuApplication.getController().menuBar;
+    }
+
+    public static Node getRightTabPaneHeader() {
+        return JArmEmuApplication.getController().rightTabPane.lookup(".tab-header-area");
     }
 
     public static ArrayList<Popup> getPopovers() {
         return popovers;
     }
 
-    public record Popup(Popover popover, Node location, Text text, Button prev, Button next, Runnable before, Runnable after) {
+    public record Popup(Popover popover, Supplier<Node> location, Text text, Button prev, Button next, Runnable before, Runnable after) {
     }
 }
