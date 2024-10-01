@@ -49,7 +49,6 @@ import javafx.stage.StageStyle;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
@@ -129,7 +128,7 @@ public class JArmEmuPreloader extends Preloader {
         stage.centerOnScreen();
         /* Fix centering on certain JRE
         Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-        stage.setY(((dimension.getHeight() - (stage.getHeight() * stage.getOutputScaleY())) / 2) / stage.getOutputScaleY());
+        //stage.setY(((dimension.getHeight() - (stage.getHeight() * stage.getOutputScaleY())) / 2) / stage.getOutputScaleY());
         */
     }
 

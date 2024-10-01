@@ -42,8 +42,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -65,26 +65,26 @@ public class StackController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         col0 = new TableColumn<>();
-        TableViewUtils.setupColumn(col0, Material2OutlinedAL.LOCATION_SEARCHING, 35, false, false, false);
+        TableViewUtils.setupColumn(col0, Material2RoundAL.LOCATION_SEARCHING, 35, false, false, false);
         col0.setCellValueFactory(c -> c.getValue().getCursorProperty());
         col0.setCellFactory(CursorTableCell.factory());
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.stack.address"));
-        TableViewUtils.setupColumn(col1, Material2OutlinedAL.ALTERNATE_EMAIL, 80, false, true, false);
-        col1.setGraphic(new FontIcon(Material2OutlinedAL.ALTERNATE_EMAIL));
+        TableViewUtils.setupColumn(col1, Material2RoundAL.ALTERNATE_EMAIL, 80, false, true, false);
+        col1.setGraphic(new FontIcon(Material2RoundAL.ALTERNATE_EMAIL));
         col1.setCellValueFactory(c -> c.getValue().getAddressProperty());
         col1.setCellFactory(AddressTableCell.factory());
         col1.setSortType(TableColumn.SortType.ASCENDING);
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.stack.value"));
-        TableViewUtils.setupColumn(col2, Material2OutlinedMZ.MONEY, 80, true, true, false);
+        TableViewUtils.setupColumn(col2, Material2RoundMZ.MONEY, 80, true, true, false);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         stackTable = new TableView<>();
         views = stackTable.getItems();
 
-        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        FontIcon icon = new FontIcon(Material2RoundAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");
@@ -144,10 +144,10 @@ public class StackController implements Initializable {
     }
 
     /**
-     * Met à jour les registres sur le GUI avec les informations du conteneur d'état.
+     * Update the values using the state container.
      *
-     * @apiNote Attention, ne pas exécuter sur l'Application Thread (pour des raisons de performances)
-     * @param stateContainer le conteneur d'état
+     * @apiNote Do not execute it on the application thread (to save performance)
+     * @param stateContainer the current state container
      */
     public void updateGUI(StateContainer stateContainer) {
         if (stateContainer == null) {

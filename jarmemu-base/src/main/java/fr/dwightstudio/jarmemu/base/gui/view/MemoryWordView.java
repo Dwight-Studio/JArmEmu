@@ -34,7 +34,7 @@ import javafx.beans.value.ChangeListener;
 
 import java.util.ArrayList;
 
-public class MemoryWordView {
+public class MemoryWordView implements MemoryView {
     private final MemoryAccessor memoryAccessor;
     private final ReadOnlyIntegerProperty addressProperty;
     private final UpdatableWrapper<Number> valueProperty;
@@ -123,7 +123,7 @@ public class MemoryWordView {
 
             valueProperty.addListener(((observable, oldVal, newVal) -> {
                 if (oldVal == null || getFrom(oldVal.intValue()) != getFrom(newVal.intValue())) {
-                    changeListeners.forEach(changeListener -> changeListener.changed(this, getFrom(oldVal.intValue()), getFrom(newVal.intValue())));
+                    changeListeners.forEach(changeListener -> changeListener.changed(this, oldVal == null ? 0 : getFrom(oldVal.intValue()), getFrom(newVal.intValue())));
                     invalidationListeners.forEach(invalidationListener -> invalidationListener.invalidated(observable));
                 }
             }));

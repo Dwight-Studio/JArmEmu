@@ -111,6 +111,7 @@ public class JArmEmuApplication extends Application {
     private static SymbolsController symbolsController;
     private static LabelsController labelsController;
     private static AutocompletionController autocompletionController;
+    private static PopupController popupController;
 
     // Loading objects
     public Scene scene;
@@ -121,6 +122,7 @@ public class JArmEmuApplication extends Application {
     private static CodeInterpreter codeInterpreter;
     private static ExecutionWorker executionWorker;
     private static JArmEmuDialogs dialogs;
+    private static JArmEmuPopups popups;
 
     public Theme theme;
     public SimpleObjectProperty<Status> status;
@@ -163,7 +165,9 @@ public class JArmEmuApplication extends Application {
         symbolsController = new SymbolsController();
         labelsController = new LabelsController();
         autocompletionController = new AutocompletionController();
+        popupController = new PopupController();
         dialogs = new JArmEmuDialogs();
+        popups = new JArmEmuPopups();
 
         fxmlLoader.setController(new JArmEmuController());
         controller = fxmlLoader.getController();
@@ -289,6 +293,7 @@ public class JArmEmuApplication extends Application {
                     JArmEmuApplication.notifyPreloader("Finishing up");
                     controller.applyLayout(JArmEmuApplication.getSettingsController().getLayout());
                     JArmEmuApplication.getExecutionWorker().updateGUI();
+                    JArmEmuPopups.build();
                 }),
 
                 new KeyFrame(Duration.seconds(2), actionEvent -> {
@@ -332,10 +337,10 @@ public class JArmEmuApplication extends Application {
     }
 
     /**
-     * Mise à jour de l'UserAgentStyle pour la modification du thème.
+     * Update User Agent Style to apply a new theme.
      *
-     * @param variation l'indice de la variation
-     * @param family    l'indice' de la famille
+     * @param variation theme variation index
+     * @param family theme family index
      */
     public void updateUserAgentStyle(int variation, int family) {
         if (family == 0) {
@@ -455,8 +460,16 @@ public class JArmEmuApplication extends Application {
         return autocompletionController;
     }
 
+    public static PopupController getPopupController() {
+        return popupController;
+    }
+
     public static JArmEmuDialogs getDialogs() {
         return dialogs;
+    }
+
+    public static JArmEmuPopups getPopUps() {
+        return popups;
     }
 
     private void onClosingRequest(WindowEvent event) {

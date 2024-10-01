@@ -1,0 +1,188 @@
+name: Deployment
+on:
+  release:
+    types: [ published ]
+jobs:
+  generate-portable-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'oracle'
+          cache: maven
+      - name: Parse version tag
+        id: parse-tag
+        run: |
+          TAG=${{ github.event.release.tag_name }}
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+      - name: Building and packaging
+        run: mvn compile package
+      - name: Generate portable archive
+        run: |
+          cd jarmemu-distribution/target || exit 1
+          zip -r JArmEmu-${{ steps.parse-tag.outputs.version }}.zip ./jarmemu/
+      - name: Compute SHA256 checksum
+        id: sha256
+        run: echo "sum=$(sha256sum JArmEmu-${{ steps.parse-tag.outputs.version }}.zip | awk '{print $1}')"
+      - name: Upload to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          file: 'jarmemu-distribution/target/JArmEmu-${{ steps.parse-tag.outputs.version }}.zip'
+    outputs:
+      version: ${{ steps.parse-tag.outputs.version }}
+      sum: ${{ steps.sha256.outputs.sum }}
+
+  deploy-to-aur:
+    runs-on: ubuntu-latest
+    needs: generate-portable-archive
+    steps:
+      - name: Clone packaging repository
+        uses: GuillaumeFalourd/clone-github-repo-action@main
+        with:
+          owner: 'Dwight-Studio'
+          repository: 'JArmEmu-Packages'
+      - name: Generate PKGBUILD
+        run: |
+          cd JArmEmu-Packages/arch || exit 1
+          VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} envsubst '${VERSION} ${SUM}' < PKGBUILD_template > PKGBUILD
+      - name: Publish to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v3.0.1
+        with:
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          pkgbuild: JArmEmu-Packages/arch/PKGBUILD
+          pkgname: 'jarmemu'
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Update to v${{needs.generate-portable-archive.outputs.version}}
+
+  build-deb:
+    runs-on: ubuntu-latest
+    needs: generate-portable-archive
+    steps:
+      - name: Clone packaging repository
+        uses: GuillaumeFalourd/clone-github-repo-action@main
+        with:
+          owner: 'Dwight-Studio'
+          repository: 'JArmEmu-Packages'
+      - name: Generate control files
+        run: |
+          cd JArmEmu-Packages/deb/jarmemu_template || exit 1
+          FILES=$(find "debian" -type f)
+          cd .. || exit 1
+          mkdir -p jarmemu/debian
+          for file in $FILES; do
+            VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} DATE=$(date -R) envsubst '${VERSION} ${SUM} ${DATE}' < jarmemu_template/$file > jarmemu/$file
+          done
+      - name: Configure GPG Key
+        run: echo -n "$GPG_SIGNING_KEY" | base64 --decode | gpg --import
+        env:
+          GPG_SIGNING_KEY: ${{ secrets.GPG_KEY }}
+      - name: Build package
+        run: |
+          cd JArmEmu-Packages/deb/jarmemu || exit 1
+          dpkg-buildpackage -b -kcontact@dwightstudio.fr
+      - name: Configure SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+      - name: Publish to Dwight Studio Repository
+        env:
+          VERSION: ${{needs.generate-portable-archive.outputs.version}}
+          HOST: ${{ secrets.VPS_HOST }}
+          USERNAME: ${{ secrets.VPS_USERNAME }}
+          PORT: ${{ secrets.VPS_PORT }}
+        run: |
+          scp -P $PORT JArmEmu-Packages/deb/jarmemu_${VERSION}-1_all.deb ${USERNAME}@${HOST}:/home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+          ssh ${USERNAME}@${HOST} -p $PORT <<-ENDSSH
+            sudo reprepro -b /var/deb includedeb all /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+            rm /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+          ENDSSH
+
+  build-win:
+    runs-on: ubuntu-latest
+    needs: generate-portable-archive
+    steps:
+      - name: Clone packaging repository
+        uses: GuillaumeFalourd/clone-github-repo-action@main
+        with:
+          owner: 'Dwight-Studio'
+          repository: 'JArmEmu-Packages'
+      - name: Generate control files
+        run: |
+          cd JArmEmu-Packages/win/innosetup_template || exit 1
+          FILES=$(find "./" -type f)
+          cd .. || exit 1
+          mkdir -p innosetup/build
+          for file in $FILES; do
+            VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} envsubst '${VERSION} ${SUM}' < innosetup_template/$file > innosetup/$file
+          done
+      - name: Download portable archive
+        env:
+          VERSION: ${{ needs.generate-portable-archive.outputs.version }}
+        run: |
+          cd JArmEmu-Packages/win/innosetup/build || exit 1
+          wget https://github.com/Dwight-Studio/JArmEmu/releases/download/v${VERSION}/JArmEmu-${VERSION}.zip
+          unzip JArmEmu-${VERSION}.zip
+      - name: Build installer
+        uses: tj-actions/docker-run@v2.2.1
+        with:
+          image: 'amake/innosetup'
+          name: 'inno'
+          options: --rm -i -v "JArmEmu-Packages/win/innosetup:/jarmemu"
+          args: /V Z:/jarmemu/jarmemu.iss
+      - name: Upload to release
+        uses: svenstaro/upload-release-action@2.9.0
+        with:
+          file: 'JArmEmu-Packages/win/innosetup/JArmEmu-${{ needs.generate-portable-archive.outputs.version }}-1.exe'
+
+  deploy-to-chocolatey:
+    runs-on: ubuntu-latest
+    needs: [ generate-portable-archive, build-win ]
+    steps:
+      - name: Clone packaging repository
+        uses: GuillaumeFalourd/clone-github-repo-action@main
+        with:
+          owner: 'Dwight-Studio'
+          repository: 'JArmEmu-Packages'
+      - name: Generate control files
+        run: |
+          cd JArmEmu-Packages/win/chocolatey_template || exit 1
+          FILES=$(find "./" -type f)
+          cd .. || exit 1
+          mkdir -p chocolatey/tools
+          for file in $FILES; do
+            VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM="5be7c12b8a5d4f88c09eca63e77fb3f559e6edffe8a6399932f7da2e6a76a23b" envsubst '${VERSION} ${SUM}' < chocolatey_template/$file > chocolatey/$file
+          done
+      - name: Sign in Chocolatey
+        uses: crazy-max/ghaction-chocolatey@v3.0.0
+        with:
+          args: choco apikey add -k ${{ secrets.CHOCOLATEY_API_KEY }} -s https://push.chocolatey.org/
+      - name: Build package
+        uses: crazy-max/ghaction-chocolatey@v3.0.0
+        with:
+          args: pack JArmEmu-Packages/win/chocolatey/jarmemu.nuspec
+      - name: Push package
+        uses: crazy-max/ghaction-chocolatey@v3.0.0
+        with:
+          args: push .\jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/
+
+  deploy-to-copr:
+    runs-on: ubuntu-latest
+    needs: [ generate-portable-archive ]
+    steps:
+      - name: Post to Copr webhook
+        run: curl -X POST --data "${{ needs.generate-portable-archive.outputs.version }}" ${{ secrets.COPR_WEBHOOK_URL }}
+
+  deploy-to-flathub:
+    runs-on: ubuntu-latest
+    needs: [ generate-portable-archive ]
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repository: flathub/fr.dwightstudio.JArmEmu
+          event-type: new-release
+          client-payload: '{"version": "${{ needs.generate-portable-archive.outputs.version }}", "sum": "${{ needs.generate-portable-archive.outputs.sum }}"}'

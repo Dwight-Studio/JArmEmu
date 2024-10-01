@@ -30,7 +30,7 @@ import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
+import org.kordamp.ikonli.material2.Material2RoundAL;
 
 import java.io.File;
 import java.util.List;
@@ -43,7 +43,7 @@ public class MainMenuController {
     private File lastFile;
 
     /**
-     * Initie un nouveau fichier
+     * Initiate a new file.
      */
     public void onNewFile() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -54,7 +54,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Opening a file)
      */
     public void onOpen() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -79,7 +79,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Saving all)
      */
     public void onSaveAll() {
         JArmEmuApplication.getEditorController().saveAll();
@@ -87,7 +87,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Saving one)
      */
     public void onSave() {
         JArmEmuApplication.getEditorController().currentFileEditor().save();
@@ -95,7 +95,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Saving as)
      */
     public void onSaveAs() {
         JArmEmuApplication.getEditorController().currentFileEditor().saveAs();
@@ -103,7 +103,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Reloading all)
      */
     public void onReloadAll() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -129,7 +129,7 @@ public class MainMenuController {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Reloading one)
      */
     public void onReload() {
         JArmEmuApplication.getSimulationMenuController().onStop();
@@ -305,24 +305,31 @@ public class MainMenuController {
     }
 
     /**
+     * Invoked by JavaFX
+     */
+    public void onTour() {
+        JArmEmuApplication.getPopUps().tour();
+    }
+
+    /**
      * Crée les boutons pour les colonnes du tableau de détails de la mémoire.
      */
     public void registerMemoryDetailsColumns() {
         JArmEmuApplication.getController().memoryDetailsMenu.getItems().clear();
 
-        JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().forEach(column -> {
+        JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
-                    item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                    item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
                 } else {
                     item.setGraphic(null);
                 }
             });
 
             if (column.isVisible()) {
-                item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
             } else {
                 item.setGraphic(null);
             }
@@ -340,19 +347,19 @@ public class MainMenuController {
     public void registerMemoryOverviewColumns() {
         JArmEmuApplication.getController().memoryOverviewMenu.getItems().clear();
 
-        JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().forEach(column -> {
+        JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().forEach(column -> {
             MenuItem item = new MenuItem(column.getText());
 
             column.visibleProperty().addListener((obs, oldVal, newVal) -> {
                 if (newVal) {
-                    item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                    item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
                 } else {
                     item.setGraphic(null);
                 }
             });
 
             if (column.isVisible()) {
-                item.setGraphic(new FontIcon(Material2OutlinedAL.CHECK));
+                item.setGraphic(new FontIcon(Material2RoundAL.CHECK));
             } else {
                 item.setGraphic(null);
             }

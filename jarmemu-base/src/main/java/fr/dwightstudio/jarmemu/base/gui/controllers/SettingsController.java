@@ -55,6 +55,7 @@ public class SettingsController implements Initializable {
 
     public static final boolean DEFAULT_IGNORE_UNIMPLEMENTED = false;
     public static final boolean DEFAULT_IGNORE_DEPRECATED = false;
+    public static final boolean DEFAULT_GUIDED_TOUR = true;
 
     public static final boolean DEFAULT_MANUAL_BREAK = true;
     public static final boolean DEFAULT_CODE_BREAK = true;
@@ -81,6 +82,7 @@ public class SettingsController implements Initializable {
     public static final String VERSION_KEY = "version";
     public static final String LAST_SAVE_PATH_KEY = "lastSavePath";
     public static final String IGNORE_VERSION_KEY = "ignoreVersion";
+    public static final String GUIDED_TOUR_KEY = "guidedTour";
 
     public static final String REAL_TIME_PARSER_KEY = "realTimeParser";
     public static final String AUTO_COMPLETION_KEY = "autoCompletion";
@@ -210,6 +212,7 @@ public class SettingsController implements Initializable {
 
         if (preferences.get("version", "").isEmpty()) {
             setToDefaults();
+            setTour(true);
         }
 
         updateGUI();
@@ -224,7 +227,7 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Met à jour les paramètres sur le GUI.
+     * Update the settings on the GUI to reflect saved values.
      */
     public void updateGUI() {
         // Spinners
@@ -262,12 +265,13 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Remet les paramètres aux valeurs d'origine
+     * Reset all settings value to default.
      */
     public void setToDefaults() {
         preferences.put(VERSION_KEY, JArmEmuApplication.VERSION);
         preferences.put(LAST_SAVE_PATH_KEY, "");
         preferences.put(IGNORE_VERSION_KEY, "");
+        preferences.putBoolean(GUIDED_TOUR_KEY, true);
 
         setRealTimeParser(RealTimeParser.DEFAULT_REAL_TIME_PARSER);
         setAutoCompletion(DEFAULT_AUTO_COMPLETION);
@@ -298,14 +302,14 @@ public class SettingsController implements Initializable {
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Smart highlighter)
      */
     protected void onSettingsSmart() {
         setRealTimeParser(0);
     }
 
     /**
-     * Invoked by JavaFX
+     * Invoked by JavaFX (Simple highlighter)
      */
     protected void onSettingsSimple() {
         setRealTimeParser(1);
@@ -525,6 +529,14 @@ public class SettingsController implements Initializable {
 
     public void setIgnoreVersion(String s) {
         preferences.put(IGNORE_VERSION_KEY, s);
+    }
+
+    public boolean getTour() {
+        return preferences.getBoolean(GUIDED_TOUR_KEY, DEFAULT_GUIDED_TOUR);
+    }
+
+    public void setTour(boolean b) {
+        preferences.putBoolean(GUIDED_TOUR_KEY, b);
     }
 
     public void setIgnoreUnimplemented(boolean b) {

@@ -36,13 +36,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.net.URL;
 import java.util.Map;
@@ -63,25 +64,25 @@ public class SymbolsController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.file"));
-        TableViewUtils.setupColumn(col0, Material2OutlinedAL.INSERT_DRIVE_FILE, 80, false, true, true);
+        TableViewUtils.setupColumn(col0, Material2RoundAL.INSERT_DRIVE_FILE, 80, false, true, true);
         col0.setCellValueFactory(c -> c.getValue().getFileIndexProperty());
         col0.setCellFactory(TextFieldTableCell.forTableColumn(new FileNameStringConverter()));
 
         col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.name"));
-        TableViewUtils.setupColumn(col1, Material2OutlinedAL.LABEL, 80, false, true, true);
+        TableViewUtils.setupColumn(col1, Material2RoundAL.LABEL, 80, false, true, true);
         col1.setCellValueFactory(c -> c.getValue().getNameProperty());
         col1.setCellFactory(TextFieldTableCell.forTableColumn());
         col1.setSortType(TableColumn.SortType.ASCENDING);
 
         col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.value"));
-        TableViewUtils.setupColumn(col2, Material2OutlinedMZ.MONEY, 80, false, true, true);
+        TableViewUtils.setupColumn(col2, Material2RoundMZ.MONEY, 80, false, true, true);
         col2.setCellValueFactory(c -> c.getValue().getValueProperty());
         col2.setCellFactory(ValueTableCell.factoryDynamicFormat());
 
         symbolTable = new TableView<>();
         views = symbolTable.getItems();
 
-        FontIcon icon = new FontIcon(Material2OutlinedAL.AUTORENEW);
+        FontIcon icon = new FontIcon(Material2RoundAL.AUTORENEW);
         HBox placeHolder = new HBox(5, icon);
 
         icon.getStyleClass().add("medium-icon");
@@ -96,6 +97,18 @@ public class SymbolsController implements Initializable {
         symbolTable.getSortOrder().clear();
         symbolTable.getSortOrder().add(col0);
 
+        symbolTable.setRowFactory(table -> {
+            TableRow<SymbolView> row = new TableRow<>();
+
+            row.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2 && !row.isEmpty()) {
+                    JArmEmuApplication.getController().getOpenedMemoryViewController().goTo(row.getItem().getValueProperty().get());
+                }
+            });
+
+            return row;
+        });
+
         AnchorPane.setTopAnchor(symbolTable, 0d);
         AnchorPane.setRightAnchor(symbolTable, 0d);
         AnchorPane.setBottomAnchor(symbolTable, 0d);
@@ -105,10 +118,10 @@ public class SymbolsController implements Initializable {
     }
 
     /**
-     * Met à jour les registres sur le GUI avec les informations du conteneur d'état.
+     * Update the values using the state container.
      *
-     * @apiNote Attention, ne pas exécuter sur l'Application Thread (pour des raisons de performances)
-     * @param stateContainer le conteneur d'état
+     * @apiNote Do not execute it on the application thread (to save performance)
+     * @param stateContainer the current state container
      */
     public void attach(StateContainer stateContainer) {
         views.clear();

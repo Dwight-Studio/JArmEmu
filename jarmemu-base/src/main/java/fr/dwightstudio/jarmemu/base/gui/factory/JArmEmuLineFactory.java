@@ -62,7 +62,7 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Récupère une marge de ligne (dans le cache, ou fraiche).
+     * Get a line from the cache or generate it if absent.
      *
      * @param line le numéro de ligne
      * @return une marge de ligne
@@ -78,14 +78,14 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Nettoie le marquage.
+     * Clear markings.
      */
     public void clearMarkings() {
         managers.values().forEach(lineManager -> lineManager.markLine(LineStatus.NONE));
     }
 
     /**
-     * Marque comme executé la dernière ligne prévue tout en nettoyant l'ancienne ligne exécutée.
+     * Mark the scheduled line as executed and unmark the previous line.
      */
     public void markExecuted() {
         if (lastScheduled != null) lastScheduled.markLine(LineStatus.EXECUTED);
@@ -95,9 +95,9 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévue.
+     * Mark the line as scheduled (next to be executed) and the scheduled line as executed.
      *
-     * @param line le numéro de la ligne
+     * @param line the line number to mark as scheduled
      */
     public void markForward(int line) {
         if (managers.containsKey(line)) {
@@ -111,17 +111,17 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Nettoie la dernière ligne marquée comme exécutée.
+     * Unmark previously executed line.
      *
-     * @apiNote Utile lors du changement d'éditeur
+     * @apiNote Used when changing editor
      */
     public void clearLastExecuted() {
         if (lastExecuted != null) lastExecuted.markLine(LineStatus.NONE);
     }
 
     /**
-     * @param line le numéro de la ligne
-     * @return vrai si la ligne contient un breakpoint, faux sinon
+     * @param line the line to test
+     * @return true if the line contains a breakpoint, false otherwise
      */
     public boolean hasBreakpoint(int line) {
         if (!managers.containsKey(line)) return false;
@@ -130,9 +130,9 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Ajoute un breakpoint
+     * Add a breakpoint.
      *
-     * @param line le numéro de la ligne
+     * @param line the line number
      */
     public void onToggleBreakpoint(int line) {
         if (!managers.containsKey(line)) return;
@@ -141,8 +141,9 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
     }
 
     /**
-     * Pré-génère des lignes pour améliorer les performances.
-     * @param lineNum le numéro de la dernière ligne (exclusif)
+     * Pre-generate lines to reduce impact on performances.
+     *
+     * @param lineNum last line number (exclusive)
      */
     public void pregen(int lineNum) {
         for (int i = 0; i < lineNum; i++) {
@@ -219,7 +220,6 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 if (event.getButton() == MouseButton.PRIMARY) toggle();
             });
             lineNo.setOnMouseEntered(event -> {
-
                 if (!breakpoint) {
                     lineNo.setText("  ⬤ ");
                     lineNo.getStyleClass().clear();
@@ -227,7 +227,6 @@ public class JArmEmuLineFactory implements IntFunction<Node> {
                 }
             });
             lineNo.setOnMouseExited(event -> {
-
                 if (!breakpoint) {
                     lineNo.setText(String.format("%4d", line + 1));
                     lineNo.getStyleClass().clear();

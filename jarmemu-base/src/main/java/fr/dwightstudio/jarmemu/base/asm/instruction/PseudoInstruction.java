@@ -30,22 +30,22 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 public interface PseudoInstruction {
 
     /**
-     * @return vrai si l'instruction agit comme une Pseudo-Instruction
+     * @return true if this instruction acts as a Pseudo instruction in its current state
      */
     boolean isPseudoInstruction();
 
     /**
-     * Alloue la place nécessaire à la Pseudo-Instruction dans la mémoire
+     * Allocate the required memory space for the Pseudo Instruction.
      *
-     * @param container le conteur d'état sur lequel effectuer l'opération
+     * @param container the state container in which allocating memory
      */
     void allocate(StateContainer container) throws ASMException;
 
     /**
-     * Génère les objets relatifs à la Pseudo-Instruction
+     * Generate the object related to the Pseudo Instruction.
      *
-     * @param container le conteur d'état sur lequel effectuer l'opération
-     * @return l'objet généré
+     * @param container the state container used to contextualise the generation
+     * @return the generated object
      */
     ParsedObject generate(StateContainer container) throws ASMException;
 }

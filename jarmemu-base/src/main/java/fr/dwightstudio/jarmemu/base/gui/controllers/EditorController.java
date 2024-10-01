@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
-import atlantafx.base.util.BBCodeParser;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
@@ -38,8 +37,8 @@ import javafx.scene.control.Button;
 import javafx.util.Duration;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
-import org.kordamp.ikonli.material2.Material2OutlinedMZ;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.io.File;
 import java.net.URL;
@@ -67,11 +66,11 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ajoute une notification sur l'éditeur (5 maximums).
+     * Create and show a notification on the editor.
      *
-     * @param titleString le titre (en gras)
-     * @param contentString le corps du message
-     * @param classString la classe à utiliser (Classes de BootstrapFX)
+     * @param titleString the title
+     * @param contentString the notification body
+     * @param classString the style class of the message
      */
     public void addNotification(String titleString, String contentString, String classString, Button... buttons) {
 
@@ -80,10 +79,10 @@ public class EditorController implements Initializable {
         Notification notification;
 
         switch (classString) {
-            case Styles.ACCENT -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.INFO));
-            case Styles.SUCCESS -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.CHECK_CIRCLE_OUTLINE));
-            case Styles.WARNING -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedMZ.OUTLINED_FLAG));
-            case Styles.DANGER -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2OutlinedAL.ERROR_OUTLINE));
+            case Styles.ACCENT -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundAL.INFO));
+            case Styles.SUCCESS -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundAL.CHECK_CIRCLE_OUTLINE));
+            case Styles.WARNING -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundMZ.OUTLINED_FLAG));
+            case Styles.DANGER -> notification = new Notification(titleString + "\n\n" + contentString, new FontIcon(Material2RoundAL.ERROR_OUTLINE));
 
             default -> notification = new Notification(titleString + ": " + contentString);
         }
@@ -105,9 +104,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Affiche une notification relative à une AssemblyError.
+     * Create and show a notification explaining an exception.
      *
-     * @param exception l'erreur en question
+     * @param exception the thrown exception
      */
     protected void addError(ASMException exception) {
         if (exception.getObject() != null) {
@@ -141,14 +140,14 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Supprime les notifications.
+     * Empty the notification tray.
      */
     public void clearNotifications() {
         JArmEmuApplication.getController().notifications.getChildren().clear();
     }
 
     /**
-     * @return l'éditeur actuellement ouvert.
+     * @return the currently opened editor (on which the user is working)
      */
     public FileEditor currentFileEditor() {
         return fileEditors.get(JArmEmuApplication.getController().filesTabPane.getSelectionModel().getSelectedIndex());
@@ -169,17 +168,17 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ouvre un nouvel éditeur vide.
+     * Open a new editor containing the default code.
      */
     public void newFile() {
         open(JArmEmuApplication.formatMessage("%menu.file.newFile"), SAMPLE_CODE);
     }
 
     /**
-     * Ouvre un éditeur sans fichier.
+     * Open a new editor which is not tied to a file.
      *
-     * @param fileName le nom du fichier
-     * @param content  le contenu du fichier
+     * @param fileName the editor title (file name)
+     * @param content the content of the editor
      */
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(fileName, content));
@@ -188,9 +187,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ouvre un éditeur à partir d'un fichier.
+     * Open an editor with a file.
      *
-     * @param path le chemin du fichier
+     * @param path the path to the file
      */
     public void open(File path) {
         FileEditor editor = new FileEditor(path);
@@ -199,9 +198,6 @@ public class EditorController implements Initializable {
         JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
     }
 
-    /**
-     * Nettoie tous les marquages de ligne.
-     */
     public void clearAllLineMarkings() {
         for (FileEditor editor : fileEditors) {
             editor.clearLineMarkings();
@@ -209,9 +205,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Marque comme prévu une ligne tout en marquant executé l'ancienne ligne prévu.
+     * Mark the line as scheduled (next to be executed) and the scheduled line as executed.
      *
-     * @param pos la ligne à marquer
+     * @param pos the line number to mark as scheduled
      */
     public void markForward(FilePos pos) {
         try {
@@ -235,9 +231,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Déplace le curseur jusqu'à cette ligne.
+     * Move cursor to the line (selecting the corresponding editor).
      *
-     * @param pos les coordonnées de la ligne dans les fichiers
+     * @param pos the file coordinates in editors
      */
     public void goTo(FilePos pos) {
         try {
@@ -251,8 +247,8 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * @param pos la ligne à marquer
-     * @return vrai si la ligne contient un breakpoint, faux sinon
+     * @param pos the number of the line to test
+     * @return true if the line contains a breakpoint, false otherwise
      */
     public boolean hasBreakPoint(FilePos pos) {
         if (pos == null) return false;
@@ -260,14 +256,14 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Prépare chaque FileEditor pour la simulation (pré-génération etc...)
+     * Prepare each file editor to the simulation (pre-generating lines...).
      */
     public void prepareSimulation() {
         fileEditors.forEach(FileEditor::prepareSimulation);
     }
 
     /**
-     * Sauvegarde tous les fichiers.
+     * Save all files.
      */
     public void saveAll() {
         for (FileEditor editor : fileEditors) {
@@ -276,7 +272,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Recharge tous les fichiers.
+     * Reload all files.
      */
     public void reloadAll() {
         for (FileEditor editor : fileEditors) {
@@ -285,7 +281,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Ferme tous les fichiers.
+     * Close all files.
      */
     public void closeAll() {
         for (FileEditor editor : fileEditors) {
@@ -295,7 +291,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Enlève les fichiers fermés de la liste des fichiers
+     * Clear closed editors from file list.
      */
     public void cleanClosedEditors() {
         fileEditors.removeIf(FileEditor::isClosed);
@@ -303,7 +299,7 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * @return l'état de sauvegarde globale (tous les fichiers ouverts).
+     * @return the save state of all files combined
      */
     public boolean getSaveState() {
         for (FileEditor editor : fileEditors) {
@@ -316,9 +312,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Calcule tous les chemins d'accès et actualise les préférences.
+     * Compute all save paths and update the preference.
      *
-     * @return les chemin d'accès de la sauvegarde courante
+     * @return the save paths of the current save
      */
     public ArrayList<File> getSavePaths() {
         ArrayList<File> rtn = new ArrayList<>();
@@ -331,9 +327,9 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Méthode appelée lors de la reprise de l'exécution.
+     * Disable edition on all editors.
      */
-    public void onLaunch() {
+    public void setSimulationGUI() {
         if (!fileEditors.isEmpty()) {
             for (FileEditor editor : fileEditors) {
                 editor.getCodeArea().setEditable(false);
@@ -342,68 +338,46 @@ public class EditorController implements Initializable {
     }
 
     /**
-     * Méthode appelée lors de la reprise de l'exécution.
+     * Enable edition on all editors.
      */
-    public void onContinueOrStepOver() {
+    public void setEditionGUI() {
         if (!fileEditors.isEmpty()) {
             for (FileEditor editor : fileEditors) {
-                editor.getCodeArea().setDisable(true);
-                editor.getScrollPane().setDisable(true);
-            }
-        }
-    }
-
-    /**
-     * Méthode appelée lors de la pause de l'exécution.
-     */
-    public void onPause() {
-        if (!fileEditors.isEmpty()) {
-            for (FileEditor editor : fileEditors) {
-                editor.getCodeArea().setDisable(false);
-                editor.getScrollPane().setDisable(false);
-            }
-        }
-    }
-
-    /**
-     * Méthode appelée lors de l'arrêt de la simulation.
-     */
-    public void onStop() {
-        if (!fileEditors.isEmpty()) {
-            for (FileEditor editor : fileEditors) {
-                editor.getCodeArea().setDisable(false);
                 editor.getCodeArea().setEditable(true);
-                editor.getScrollPane().setDisable(false);
             }
         }
     }
 
     /**
-     * @param fileEditor l'éditeur de fichier
-     * @return l'indice de l'éditeur
+     * @param fileEditor the file editor
+     * @return the file editor's index in file list
      */
     public int getFileIndex(FileEditor fileEditor) {
         return fileEditors.indexOf(fileEditor);
     }
 
     /**
-     * Checks if there is still opened files to allow simulation
+     * Checks if there is still opened files to allow simulation.
      */
     public void updateSimulationButtons() {
         for (FileEditor fileEditor : fileEditors) {
             if (!fileEditor.isClosed()) {
                 JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
                 JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
                 return;
             }
         }
 
         JArmEmuApplication.getController().menuSimulate.setDisable(true);
+        JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
         JArmEmuApplication.getController().toolSimulate.setDisable(true);
+        JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
     }
 
     /**
-     * Reinitialize all real time parsers
+     * Reinitialize all real time parsers.
      */
     public void reinitializeRealTimeParsers() {
         getFileEditors().forEach(FileEditor::initializeRealTimeParser);

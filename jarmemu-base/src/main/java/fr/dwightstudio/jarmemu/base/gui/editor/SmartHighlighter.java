@@ -64,7 +64,7 @@ public class SmartHighlighter extends RealTimeParser {
     public static final Pattern SECTION_PATTERN = Pattern.compile("^\\.(?i)(?<SECTION>" + String.join("|", SECTIONS) + "|SECTION)(?-i)\\b");
     public static final Pattern DIRECTIVE_PATTERN = Pattern.compile("^\\.(?i)(?<DIRECTIVE>" + String.join("|", DIRECTIVES) + ")(?-i)\\b");
     public static final Pattern LABEL_PATTERN = Pattern.compile("^(?<LABEL>[A-Za-z_]+[A-Za-z_0-9]*)[ \t]*:");
-    public static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + ASMParser.INSTRUCTION_REGEX + ")(?-i)");
+    public static final Pattern INSTRUCTION_PATTERN = Pattern.compile("^(?i)(" + ASMParser.INSTRUCTION_REGEX + ")( |\t|$)(?-i)");
 
     public static final Pattern ARGUMENT_SEPARATOR = Pattern.compile("^,");
     public static final Pattern RANGE_SEPARATOR = Pattern.compile("^-");
@@ -1079,9 +1079,9 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     /**
-     * Met à jour les références
+     * Update label/symbol references.
      *
-     * @param name le nom du global/label/symbol à mettre à jour
+     * @param name the name of the symbol/label
      */
     private void updateReferences(String name) {
         for (Map.Entry<Integer, Set<String>> entry : references.entrySet()) {

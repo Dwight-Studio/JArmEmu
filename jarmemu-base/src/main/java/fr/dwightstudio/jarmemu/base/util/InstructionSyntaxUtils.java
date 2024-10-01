@@ -42,9 +42,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.material2.Material2OutlinedAL;
+import org.kordamp.ikonli.material2.Material2RoundAL;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -172,7 +174,7 @@ public class InstructionSyntaxUtils {
     @SuppressWarnings("unchecked")
     public static TableView<Condition> getConditionTable() {
         TableColumn<Condition, String> col0 = new TableColumn<>();
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        col0.setGraphic(new FontIcon(Material2RoundAL.LABEL));
         setupColumn(col0, true, false);
         col0.setMaxWidth(50);
         col0.setMinWidth(50);
@@ -180,7 +182,7 @@ public class InstructionSyntaxUtils {
         col0.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().toString()));
 
         TableColumn<Condition, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.flag"));
-        col1.setGraphic(new FontIcon(Material2OutlinedAL.FLAG));
+        col1.setGraphic(new FontIcon(Material2RoundAL.FLAG));
         setupColumn(col1, false, false);
         col1.setMaxWidth(150);
         col1.setMinWidth(150);
@@ -189,7 +191,7 @@ public class InstructionSyntaxUtils {
         col1.setCellValueFactory(c -> new ReadOnlyStringWrapper(c.getValue().getDescription()));
 
         TableColumn<Condition, String> col2 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
-        col2.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        col2.setGraphic(new FontIcon(Material2RoundAL.DESCRIPTION));
         setupColumn(col2, false, true);
         col2.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
         col2.setCellValueFactory(c -> new ReadOnlyStringWrapper(JArmEmuApplication.formatMessage("%instructionList.description." + c.getValue().toString().toLowerCase())));
@@ -209,7 +211,7 @@ public class InstructionSyntaxUtils {
     @SuppressWarnings("unchecked")
     public static TableView<SyntaxView> getValueTable(String usage) {
         TableColumn<SyntaxView, String> col0 = new TableColumn<>(JArmEmuApplication.formatMessage("%tab.symbols.title"));
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        col0.setGraphic(new FontIcon(Material2RoundAL.LABEL));
         setupColumn(col0, true, false);
         col0.setMaxWidth(150);
         col0.setMinWidth(150);
@@ -217,7 +219,7 @@ public class InstructionSyntaxUtils {
         col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
 
         TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
-        col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        col1.setGraphic(new FontIcon(Material2RoundAL.DESCRIPTION));
         setupColumn(col1, false, true);
         col1.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
         col1.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().description()));
@@ -278,7 +280,7 @@ public class InstructionSyntaxUtils {
     @SuppressWarnings("unchecked")
     public static TableView<SyntaxView> getShiftTable() {
         TableColumn<SyntaxView, String> col0 = new TableColumn<>();
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        col0.setGraphic(new FontIcon(Material2RoundAL.LABEL));
         setupColumn(col0, true, false);
         col0.setMaxWidth(150);
         col0.setMinWidth(150);
@@ -286,7 +288,7 @@ public class InstructionSyntaxUtils {
         col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
 
         TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
-        col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        col1.setGraphic(new FontIcon(Material2RoundAL.DESCRIPTION));
         setupColumn(col1, false, true);
         col1.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.5));
         col1.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));
@@ -315,7 +317,7 @@ public class InstructionSyntaxUtils {
     @SuppressWarnings("unchecked")
     public static TableView<SyntaxView> getAddressTable(Instruction instruction) {
         TableColumn<SyntaxView, String> col0 = new TableColumn<>();
-        col0.setGraphic(new FontIcon(Material2OutlinedAL.LABEL));
+        col0.setGraphic(new FontIcon(Material2RoundAL.LABEL));
         setupColumn(col0, true, false);
         col0.setMaxWidth(250);
         col0.setMinWidth(250);
@@ -323,7 +325,7 @@ public class InstructionSyntaxUtils {
         col0.setCellValueFactory(s -> new ReadOnlyStringWrapper(s.getValue().symbol()));
 
         TableColumn<SyntaxView, String> col1 = new TableColumn<>(JArmEmuApplication.formatMessage("%instructionList.table.description"));
-        col1.setGraphic(new FontIcon(Material2OutlinedAL.DESCRIPTION));
+        col1.setGraphic(new FontIcon(Material2RoundAL.DESCRIPTION));
         setupColumn(col1, false, true);
         col1.maxWidthProperty().bind(JArmEmuApplication.getStage().widthProperty().multiply(0.4));
         col1.setCellFactory(SyntaxHighlightedTableCell.factory(Pos.CENTER_LEFT));

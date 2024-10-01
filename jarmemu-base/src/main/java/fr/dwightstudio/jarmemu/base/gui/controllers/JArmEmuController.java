@@ -26,7 +26,6 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.CustomTextField;
 import atlantafx.base.controls.ModalPane;
 import atlantafx.base.controls.ToggleSwitch;
-import atlantafx.base.layout.ModalBox;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.ModalDialog;
 import javafx.animation.KeyFrame;
@@ -35,7 +34,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -77,7 +75,8 @@ public class JArmEmuController implements Initializable {
 
     @FXML protected TabPane filesTabPane;
     @FXML protected VBox notifications;
-    @FXML protected Button toolSimulate;
+    @FXML protected SplitMenuButton toolSimulate;
+    @FXML protected MenuItem toolSimulateAll;
     @FXML protected Button toolStepInto;
     @FXML protected Button toolStepOver;
     @FXML protected Button toolContinue;
@@ -85,9 +84,16 @@ public class JArmEmuController implements Initializable {
     @FXML protected Button toolStop;
     @FXML protected Button toolRestart;
 
-    @FXML protected MenuItem findAndReplace;
+    @FXML protected MenuBar menuBar;
+
+    @FXML protected MenuItem menuCopy;
+    @FXML protected MenuItem menuCut;
+    @FXML protected MenuItem menuPaste;
+    @FXML protected MenuItem menuDelete;
+    @FXML protected MenuItem menuFindAndReplace;
 
     @FXML protected MenuItem menuSimulate;
+    @FXML protected MenuItem menuSimulateAll;
     @FXML protected MenuItem menuStepInto;
     @FXML protected MenuItem menuStepOver;
     @FXML protected MenuItem menuContinue;
@@ -96,6 +102,9 @@ public class JArmEmuController implements Initializable {
     @FXML protected MenuItem menuRestart;
 
     @FXML protected AnchorPane registersPane;
+
+    @FXML protected TabPane leftTabPane;
+    @FXML protected TabPane rightTabPane;
 
     @FXML protected AnchorPane memoryDetailsPane;
     @FXML protected AnchorPane memoryDetailsAnchorPane;
@@ -163,6 +172,7 @@ public class JArmEmuController implements Initializable {
         JArmEmuApplication.getSymbolsController().initialize(url, resourceBundle);
         JArmEmuApplication.getLabelsController().initialize(url, resourceBundle);
         JArmEmuApplication.getAutocompletionController().initialize(url, resourceBundle);
+        JArmEmuApplication.getPopupController().initialize(url, resourceBundle);
 
         JArmEmuApplication.getInstance().newSourceParser();
 
@@ -199,15 +209,15 @@ public class JArmEmuController implements Initializable {
             mainSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
             leftSplitPane.getDividers().forEach(divider -> divider.positionProperty().addListener(obs -> notifyLayoutChange()));
 
-            JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
-            JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
+            JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().forEach(column -> column.visibleProperty().addListener(obs -> notifyLayoutChange()));
 
             Platform.runLater(LAYOUT_SAVING_TIMELINE::stop);
         });
     }
 
     /**
-     * Indique un changement de layout et enclenche une timeline de sauvegarde.
+     * Notify a change in the layout and trigger the saving timeline.
      */
     public void notifyLayoutChange() {
         if (!getLayoutJSON().equals(JArmEmuApplication.getSettingsController().getLayout())) {
@@ -217,7 +227,7 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * @return une chaîne de caractères contenant les données du layout au format JSON
+     * @return the layout data in a JSON string
      */
     public String getLayoutJSON() {
         HashMap<String, Object> layout = new HashMap<>();
@@ -232,11 +242,11 @@ public class JArmEmuController implements Initializable {
         HashMap<String, JSONArray> memoryColumns = new HashMap<>();
         memoryColumns.put(
                 MEMORY_DETAILS_KEY,
-                new JSONArray(JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+                new JSONArray(JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
         memoryColumns.put(
                 MEMORY_OVERVIEW_KEY,
-                new JSONArray(JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
+                new JSONArray(JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().stream().map(TableColumnBase::isVisible).toArray(Boolean[]::new))
         );
         layout.put(MEMORY_COLUMNS_KEY, memoryColumns);;
 
@@ -244,9 +254,9 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * Lit et applique le layout à partir d'une chaîne de caractères.
+     * Parse and apply the layout.
      *
-     * @param json une chaîne de caractères contenant les données du layout au format JSON
+     * @param json a JSON string containing all the layout data
      */
     public void applyLayout(String json) {
         logger.info("Applying layout");
@@ -275,12 +285,12 @@ public class JArmEmuController implements Initializable {
 
             JSONArray memoryDetailsData = memoryColumns.getJSONArray(MEMORY_DETAILS_KEY);
             for (int i = 0; i < memoryDetailsData.length(); i++) {
-                JArmEmuApplication.getMemoryDetailsController().memoryTable.getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
+                JArmEmuApplication.getMemoryDetailsController().getMemoryTable().getColumns().get(i).setVisible(memoryDetailsData.getBoolean(i));
             }
 
             JSONArray memoryOverviewData = memoryColumns.getJSONArray(MEMORY_OVERVIEW_KEY);
             for (int i = 0; i < memoryOverviewData.length(); i++) {
-                JArmEmuApplication.getMemoryOverviewController().memoryTable.getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
+                JArmEmuApplication.getMemoryOverviewController().getMemoryTable().getColumns().get(i).setVisible(memoryOverviewData.getBoolean(i));
             }
         } catch (JSONException exception) {
             logger.severe("Error while parsing layout");
@@ -291,7 +301,7 @@ public class JArmEmuController implements Initializable {
     }
 
     /**
-     * Sauvegarde le layout actuel.
+     * Save current layout.
      */
     public void saveLayout() {
         if (!getLayoutJSON().equals(JArmEmuApplication.getSettingsController().getLayout())) {
@@ -401,6 +411,11 @@ public class JArmEmuController implements Initializable {
     }
 
     @FXML
+    protected void onSimulateAll() {
+        JArmEmuApplication.getSimulationMenuController().onSimulateAll();
+    }
+
+    @FXML
     protected void onStepInto() {
         JArmEmuApplication.getSimulationMenuController().onStepInto();
     }
@@ -443,6 +458,11 @@ public class JArmEmuController implements Initializable {
     @FXML
     protected void onAbout() {
         JArmEmuApplication.getMainMenuController().onAbout();
+    }
+
+    @FXML
+    protected void onTour() {
+        JArmEmuApplication.getMainMenuController().onTour();
     }
 
     @FXML
@@ -492,5 +512,9 @@ public class JArmEmuController implements Initializable {
 
     @FXML void onFindAndReplace() {
         JArmEmuApplication.getEditorController().currentFileEditor().toggleFindAndReplace();
+    }
+
+    public MemoryController<?> getOpenedMemoryViewController() {
+        return rightTabPane.getSelectionModel().getSelectedIndex() == 1 ? JArmEmuApplication.getMemoryDetailsController() : JArmEmuApplication.getMemoryOverviewController() ;
     }
 }

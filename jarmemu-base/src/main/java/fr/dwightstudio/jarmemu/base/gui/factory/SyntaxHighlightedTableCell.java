@@ -28,8 +28,6 @@ import fr.dwightstudio.jarmemu.base.util.InstructionSyntaxUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.layout.Region;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.util.Callback;
 

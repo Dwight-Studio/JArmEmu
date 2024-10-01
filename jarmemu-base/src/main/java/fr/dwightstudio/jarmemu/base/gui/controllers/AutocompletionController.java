@@ -1,3 +1,26 @@
+/*
+ *            ____           _       __    __     _____ __            ___
+ *           / __ \_      __(_)___ _/ /_  / /_   / ___// /___  ______/ (_)___
+ *          / / / / | /| / / / __ `/ __ \/ __/   \__ \/ __/ / / / __  / / __ \
+ *         / /_/ /| |/ |/ / / /_/ / / / / /_    ___/ / /_/ /_/ / /_/ / / /_/ /
+ *        /_____/ |__/|__/_/\__, /_/ /_/\__/   /____/\__/\__,_/\__,_/_/\____/
+ *                         /____/
+ *     Copyright (C) 2024 Dwight Studio
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package fr.dwightstudio.jarmemu.base.gui.controllers;
 
 import atlantafx.base.theme.Styles;
@@ -372,7 +395,7 @@ public class AutocompletionController implements Initializable {
     }
 
     /**
-     * @return the current context string
+     * @return the current context string.
      */
     private String getCurrentContext() {
         int stop = sc.editor().getCodeArea().getCaretColumn() - sc.cursorPos();
@@ -381,7 +404,7 @@ public class AutocompletionController implements Initializable {
     }
 
     /**
-     * @return current context starting pos
+     * @return current context starting pos.
      */
     private int getCurrentContextStart() {
         int start = sc.editor().getCodeArea().getCaretColumn() - currentWord.length();
@@ -393,21 +416,21 @@ public class AutocompletionController implements Initializable {
     }
 
     /**
-     * @return current context ending pos
+     * @return current context ending pos.
      */
     private int getCurrentContextEnd() {
         return sc.editor().getCodeArea().getAbsolutePosition(sc.line(), sc.editor().getCodeArea().getCaretColumn());
     }
 
     /**
-     * Selects current context/word
+     * Selects current context/word.
      */
     private void selectCurrentWord() {
         sc.editor().getCodeArea().selectRange(getCurrentContextStart(), getCurrentContextEnd());
     }
 
     /**
-     * Updates autocompletion popover when scrolling
+     * Updates autocompletion popover when scrolling.
      */
     public void scroll() {
         close();

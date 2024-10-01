@@ -47,14 +47,14 @@ public abstract class ParsedDirective extends ParsedObject implements Contextual
     }
 
     /**
-     * Contextualize the directive in initial state container (with the constants already defined if it doesn't build context)
+     * Contextualize the directive in initial state container (with the constants already defined if it doesn't build context).
      *
      * @param stateContainer the initial state container
      */
     public abstract void contextualize(StateContainer stateContainer) throws ASMException;
 
     /**
-     * Execute the directive
+     * Execute the directive.
      *
      * @param stateContainer the state container on which applying the directive
      */

@@ -29,9 +29,10 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 public interface Contextualized {
 
     /**
-     * Contextualise l'objet dans le conteneur d'état initial, après définition des constantes.
+     * Contextualise the object in the supplied state container.
      *
-     * @param stateContainer le conteneur d'état initial
+     * @apiNote This step is meant to happen after the constant initialisation
+     * @param stateContainer the initial state container (before executing the program) which contains the constants
      */
     void contextualize(StateContainer stateContainer) throws ASMException;
 }

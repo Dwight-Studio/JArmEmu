@@ -33,7 +33,7 @@ import javafx.beans.value.ChangeListener;
 
 import java.util.ArrayList;
 
-public class MemoryChunkView {
+public class MemoryChunkView implements MemoryView {
     private final MemoryAccessor memoryAccessor;
     private final ReadOnlyIntegerProperty addressProperty;
     private final UpdatableWrapper<Number> value0Property;

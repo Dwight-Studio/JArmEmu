@@ -147,7 +147,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     public AddressArgument.UpdatableInteger getValue(StateContainer stateContainer) throws ExecutionASMException {
         switch (mode) {
             case PSEUDO_INSTRUCTION -> {
-                return null; // On retourne null car c'est une pseudo-instruction, l'adresse est ignorée
+                return null; // Returns null when it is a Pseudo Instruction (address is not relevant)
             }
 
             case SIMPLE_REGISTER -> {
@@ -210,7 +210,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     }
 
     /**
-     * Objet utilisé pour contenir une valeur et permettre la mise à jour du registre sous-jacent si celui-ci doit être mis à jour
+     * Integer/Register wrapper used propagate the value while allowing the register to be updated.
      */
     public static final class UpdatableInteger {
 
@@ -219,10 +219,10 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
         private boolean update;
 
         /**
-         * @param integer   la valeur actuelle
-         * @param update    vrai si on autorise la mise à jour du registre lors de l'appel de update()
-         * @param updateNow vrai si on veut effectuer la mise à jour instantanément (quelque soit la valeur du paramètre précédant)
-         * @param register  le registre à mettre à jour
+         * @param integer current value
+         * @param update true to allow the update of the value using update()
+         * @param updateNow true if the update should be applied in the construction (unrelated to the previous parameter)
+         * @param register the register to be updated (if applicable)
          */
         public UpdatableInteger(int integer, boolean update, boolean updateNow, Register register) {
             this.integer = integer;

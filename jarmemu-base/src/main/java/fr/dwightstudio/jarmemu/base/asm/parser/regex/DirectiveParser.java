@@ -55,7 +55,7 @@ public class DirectiveParser {
     );
 
     /**
-     * Lecture d'une ligne avec Directive
+     * Read a line which contains directives.
      *
      * @param parser l'instance de l'analyser
      * @param sourceScanner le scanneur de fichier
@@ -76,7 +76,7 @@ public class DirectiveParser {
 
             if (ssectionString != null && !ssectionString.isEmpty()) {
                 rtn = true;
-                // Rien à faire, on ignore cette directive
+                // Nothing to do, we ignore this directive
             } else if (sectionString != null && !sectionString.isEmpty()) {
                 rtn = true;
                 try {

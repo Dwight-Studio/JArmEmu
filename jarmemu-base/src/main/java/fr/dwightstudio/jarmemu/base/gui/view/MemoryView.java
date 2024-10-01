@@ -21,30 +21,7 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package fr.dwightstudio.jarmemu.base.asm.instruction;
+package fr.dwightstudio.jarmemu.base.gui.view;
 
-import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
-import fr.dwightstudio.jarmemu.base.sim.entity.Register;
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-class CLZInstructionTest extends InstructionTest<Register, Register, Object, Object> {
-
-    protected CLZInstructionTest() {
-        super(CLZInstruction.class);
-    }
-
-    @Test
-    public void testExecute() throws ASMException {
-        Register r0 = stateContainer.getRegister(0);
-        Register r1 = stateContainer.getRegister(1);
-        r0.setData(0);
-        r1.setData(-1);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1, null, null);
-        assertEquals(0, r0.getData());
-        r1.setData(16);
-        legacyExecute(stateContainer, false, false, null, null, r0, r1, null, null);
-        assertEquals(27, r0.getData());
-    }
+public interface MemoryView {
 }

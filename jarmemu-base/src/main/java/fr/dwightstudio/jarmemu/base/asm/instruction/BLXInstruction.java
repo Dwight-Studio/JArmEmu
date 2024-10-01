@@ -23,7 +23,6 @@
 
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
-import fr.dwightstudio.jarmemu.base.asm.argument.LabelArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.LabelOrRegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;

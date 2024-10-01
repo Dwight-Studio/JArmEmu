@@ -180,24 +180,15 @@ public class StateContainer {
         }
     }
 
+    /**
+     * Evaluate math expression using the context of this state container restricted to accessible variables (in the current file) offset by current memory pos
+     *
+     * @param expString the math expression
+     * @return the computed value
+     * @throws SyntaxASMException when the math expression is malformed
+     */
     public int evalBranch(String expString) throws SyntaxASMException {
-        try {
-            ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
-
-            getAccessibleConsts().forEach((key, val) -> builder.variables(key));
-            getAccessibleData().forEach((key, val) -> builder.variables(key));
-            getAccessibleLabels().forEach((key, val) -> builder.variables(key));
-
-            Expression exp = builder.build();
-
-            getAccessibleConsts().forEach((key, val) -> exp.setVariable(key, (double) val));
-            getAccessibleData().forEach((key, val) -> exp.setVariable(key, (double) val));;
-            getAccessibleLabels().forEach(exp::setVariable);
-
-            return ((int) exp.evaluate()) - this.memoryPos.getPos();
-        } catch (IllegalArgumentException exception) {
-            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.unknownLabel", expString, exception.getMessage()));
-        }
+        return evalWithAccessible(expString) - this.memoryPos.getPos();
     }
 
     /**
@@ -211,20 +202,16 @@ public class StateContainer {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
-            consts.forEach(map -> builder.variables(map.keySet()));
-            data.forEach(map -> builder.variables(map.keySet()));
+
+            consts.forEach(c -> c.forEach((key, val) -> builder.variables(key)));
+            data.forEach(d -> d.forEach((key, val) -> builder.variables(key)));
+            labels.forEach(l -> l.forEach((key, val) -> builder.variables(key)));
 
             Expression exp = builder.build();
 
-            for (int i = 0 ; i < consts.size() ; i++) {
-                for (Map.Entry<String, Integer> entry : consts.get(i).entrySet()) {
-                    exp.setVariable(entry.getKey(), (double) entry.getValue());
-                }
-
-                for (Map.Entry<String, Integer> entry : data.get(i).entrySet()) {
-                    exp.setVariable(entry.getKey(), (double) entry.getValue());
-                }
-            }
+            consts.forEach(c -> c.forEach((key, val) -> exp.setVariable(key, (double) val)));
+            data.forEach(d -> d.forEach((key, val) -> exp.setVariable(key, (double) val)));
+            labels.forEach(l -> l.forEach(exp::setVariable));
 
             return (int) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
@@ -251,7 +238,7 @@ public class StateContainer {
 
             getAccessibleConsts().forEach((key, val) -> exp.setVariable(key, (double) val));
             getAccessibleData().forEach((key, val) -> exp.setVariable(key, (double) val));;
-            getAccessibleLabels().forEach((key, val) -> exp.setVariable(key, val - this.memoryPos.getPos()));
+            getAccessibleLabels().forEach(exp::setVariable);
 
             return (int) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
