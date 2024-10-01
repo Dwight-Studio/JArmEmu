@@ -25,7 +25,7 @@ jobs:
           zip -r JArmEmu-${{ steps.parse-tag.outputs.version }}.zip ./jarmemu/
       - name: Compute SHA256 checksum
         id: sha256
-        run: echo "sum=$(sha256sum JArmEmu-${{ steps.parse-tag.outputs.version }}.zip | awk '{print $1}')"
+        run: echo "sum=$(sha256sum JArmEmu-${{ steps.parse-tag.outputs.version }}.zip | awk '{print $1}')" >> "$GITHUB_OUTPUT"
       - name: Upload to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
