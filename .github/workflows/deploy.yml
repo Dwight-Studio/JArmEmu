@@ -82,6 +82,7 @@ jobs:
       - name: Build package
         run: |
           cd JArmEmu-Packages/deb/jarmemu || exit 1
+          sudo apt install -y desktop-file-install
           dpkg-buildpackage -b -kcontact@dwightstudio.fr
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.9.0
