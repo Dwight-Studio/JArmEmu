@@ -3,6 +3,9 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.Popover;
 import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.Event;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -14,6 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.material2.Material2RoundAL;
 
@@ -64,6 +68,8 @@ public class PopupController implements Initializable {
         popover.setArrowLocation(arrowLocation);
         popover.setDetachable(false);
         popover.setAutoHide(false);
+        popover.setHideOnEscape(false);
+        popover.setOnAutoHide(Event::consume);
         popovers.add(new Popup(popover, location, text, prev, next, before, after));
     }
 
@@ -113,6 +119,14 @@ public class PopupController implements Initializable {
                 setOpenNext(next, i);
             }
         }
+
+        JArmEmuApplication.getInstance().maximizedProperty().addListener((observable, oldValue, newValue) -> {
+           for (Popup popup : popovers) {
+               if (popup.popover.isShowing()) {
+                   new Timeline(new KeyFrame(Duration.millis(500), event -> show(popup.popover, popup.location.get()))).playFromStart();
+               }
+           }
+        });
     }
 
     private static void setOpenPrev(Button prev, int i) {
@@ -124,7 +138,8 @@ public class PopupController implements Initializable {
                 try {
                     popup = popovers.get(j);
                     popup.before.run();
-                    popup.popover.show(popovers.get(j).location.get());
+
+                    show(popup.popover, popup.location.get());
                     break;
                 } catch (Exception exception) {
                     logger.warning("Cannot open Popup: " + exception.getMessage());
@@ -143,7 +158,7 @@ public class PopupController implements Initializable {
                 try {
                     popup = popovers.get(j);
                     popup.before.run();
-                    popup.popover.show(popovers.get(j).location.get());
+                    show(popup.popover, popup.location.get());
                     break;
                 } catch (Exception exception) {
                     logger.warning("Cannot open Popup: " + exception.getMessage());
@@ -159,6 +174,20 @@ public class PopupController implements Initializable {
             popup.popover.hide();
             popup.after.run();
         });
+    }
+
+    private static void show(Popover popover, Node owner) {
+        if (owner == null) {
+            popover.show(getMenu());
+        } else {
+            popover.show(owner);
+        }
+    }
+
+    public static void begin() {
+        Popup popup = popovers.getFirst();
+        popup.before().run();
+        show(popup.popover, popup.location.get());
     }
 
     public static Node getMainPane() {

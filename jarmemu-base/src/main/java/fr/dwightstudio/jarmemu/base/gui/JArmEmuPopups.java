@@ -12,7 +12,7 @@ public class JArmEmuPopups {
 
     public static void build() {
         // 0
-        popoverMaker(PopupController::getMainPane, Popover.ArrowLocation.TOP_CENTER);
+        popoverMaker(() -> null, Popover.ArrowLocation.TOP_CENTER);
 
         // 1
         popoverMaker(PopupController::getMainPane, Popover.ArrowLocation.TOP_CENTER);
@@ -89,6 +89,10 @@ public class JArmEmuPopups {
         popoverMaker(PopupController::getRightTabPaneHeader, Popover.ArrowLocation.BOTTOM_CENTER);
 
         addLinks();
+
+        if (JArmEmuApplication.getSettingsController().getTour()) {
+            JArmEmuApplication.getPopUps().tour();
+        }
     }
 
     public void tour() {
@@ -118,8 +122,6 @@ public class JArmEmuPopups {
                 "_end:\n" +
                 "\tbal _end");
 
-        Popup popup = getPopovers().getFirst();
-        popup.before().run();
-        popup.popover().show(getPopovers().getFirst().location().get());
+        begin();
     }
 }

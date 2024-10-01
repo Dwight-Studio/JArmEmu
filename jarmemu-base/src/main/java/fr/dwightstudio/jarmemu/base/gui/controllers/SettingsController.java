@@ -212,6 +212,7 @@ public class SettingsController implements Initializable {
 
         if (preferences.get("version", "").isEmpty()) {
             setToDefaults();
+            setTour(true);
         }
 
         updateGUI();
