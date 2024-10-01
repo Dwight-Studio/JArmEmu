@@ -77,6 +77,24 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-10-01" version="1.0.1">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.0.1</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Improved memory views logic (resolved #11)</li>
+                    <li>Improved icons (now only use Material 2 Round)</li>
+                    <li>Improved ExecutionWorker readability</li>
+                    <li>Added quick access to symbol address in memory (resolved #9)</li>
+                    <li>Added option to only simulate current file (resolved #13)</li>
+                    <li>Added onboarding tour (resolved #8)</li>
+                    <li>Fixed preloader centering (resolved #7)</li>
+                    <li>Fixed program being editable during simulation (resolved #12)</li>
+                    <li>Fixed smart highlighter confusion between B/BL with condition LE (resolved #10)</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-09-17" version="1.0.0">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.0.0</url>
             <description>
