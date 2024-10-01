@@ -98,8 +98,8 @@ jobs:
           USERNAME: ${{ secrets.VPS_USERNAME }}
           PORT: ${{ secrets.VPS_PORT }}
         run: |
-          scp -P $PORT JArmEmu-Packages/deb/jarmemu_${VERSION}-1_all.deb ${USERNAME}@${HOST}:/home/$USERNAME/jarmemu_${VERSION}-1_all.deb
-          ssh ${USERNAME}@${HOST} -p $PORT <<-ENDSSH
+          scp -o StrictHostKeyChecking=no -P $PORT JArmEmu-Packages/deb/jarmemu_${VERSION}-1_all.deb ${USERNAME}@${HOST}:/home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+          ssh ${USERNAME}@${HOST} -o StrictHostKeyChecking=no -p $PORT <<-ENDSSH
             sudo reprepro -b /var/deb includedeb all /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
             rm /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
           ENDSSH
@@ -164,7 +164,7 @@ jobs:
       - name: Sign in Chocolatey
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
-          args: choco apikey add -k ${{ secrets.CHOCOLATEY_API_KEY }} -s https://push.chocolatey.org/
+          args: apikey add -k ${{ secrets.CHOCOLATEY_API_KEY }} -s https://push.chocolatey.org/
       - name: Build package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
