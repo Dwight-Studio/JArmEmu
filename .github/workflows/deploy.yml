@@ -85,7 +85,7 @@ jobs:
       - name: Build package
         run: |
           cd JArmEmu-Packages/deb/jarmemu || exit 1
-          sudo apt install -y desktop-file-utils
+          sudo apt install -y desktop-file-utils debhelper
           dpkg-buildpackage -b -kcontact@dwightstudio.fr
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -122,6 +122,8 @@ jobs:
           for file in $FILES; do
             VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} envsubst '${VERSION} ${SUM}' < innosetup_template/$file > innosetup/$file
           done
+          chmod -R a+w innosetup
+          umask a+w
       - name: Download portable archive
         env:
           VERSION: ${{ needs.generate-portable-archive.outputs.version }}
@@ -173,6 +175,7 @@ jobs:
           args: push .\jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/
 
   deploy-to-copr:
+    if: false
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive ]
     steps:
