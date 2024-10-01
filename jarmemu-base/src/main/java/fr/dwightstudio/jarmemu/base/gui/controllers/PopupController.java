@@ -14,6 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import org.kordamp.ikonli.javafx.FontIcon;
+import org.kordamp.ikonli.material2.Material2RoundAL;
+import org.kordamp.ikonli.material2.Material2RoundMZ;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -36,7 +39,7 @@ public class PopupController implements Initializable {
         ((TextFlow) firstRow.getChildren().getFirst()).setMaxWidth(250);
         ((TextFlow) firstRow.getChildren().getFirst()).setTextAlignment(TextAlignment.JUSTIFY);
         HBox secondRow = new HBox(new Button(), new Button());
-        secondRow.setSpacing(10);
+        secondRow.setSpacing(30);
         secondRow.setAlignment(Pos.CENTER);
         vbox.getChildren().addAll(
                 firstRow,
@@ -58,10 +61,10 @@ public class PopupController implements Initializable {
     public static void addLinks() {
         for (int i = 0; i < popovers.size(); i++) {
             Button prev = ((Button) ((HBox) ((VBox) popovers.get(i).popover.getContentNode()).getChildren().getLast()).getChildren().getFirst());
-            prev.setText("prev");
+            prev.setGraphic(new FontIcon(Material2RoundAL.ARROW_BACK));
             prev.getStyleClass().add(Styles.ACCENT);
             Button next = ((Button) ((HBox) ((VBox) popovers.get(i).popover.getContentNode()).getChildren().getLast()).getChildren().getLast());
-            next.setText("next");
+            next.setGraphic(new FontIcon(Material2RoundAL.ARROW_FORWARD));
             next.getStyleClass().add(Styles.ACCENT);
             if (i == 0) {
                 prev.setDisable(true);
