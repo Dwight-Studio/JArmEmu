@@ -61,6 +61,7 @@ jobs:
           commit_message: Update to v${{needs.generate-portable-archive.outputs.version}}
 
   build-deb:
+    if: false
     runs-on: ubuntu-latest
     needs: generate-portable-archive
     steps:
@@ -161,10 +162,6 @@ jobs:
           for file in $FILES; do
             VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM="5be7c12b8a5d4f88c09eca63e77fb3f559e6edffe8a6399932f7da2e6a76a23b" envsubst '${VERSION} ${SUM}' < chocolatey_template/$file > chocolatey/$file
           done
-      - name: Sign in Chocolatey
-        uses: crazy-max/ghaction-chocolatey@v3.0.0
-        with:
-          args: apikey add -k ${{ secrets.CHOCOLATEY_API_KEY }} -s https://push.chocolatey.org/
       - name: Build package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
@@ -172,7 +169,7 @@ jobs:
       - name: Push package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
-          args: push .\jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/
+          args: push .\jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
 
   deploy-to-copr:
     if: false
@@ -183,7 +180,6 @@ jobs:
         run: curl -X POST --data "${{ needs.generate-portable-archive.outputs.version }}" ${{ secrets.COPR_WEBHOOK_URL }}
 
   deploy-to-flathub:
-    if: false
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive ]
     steps:
