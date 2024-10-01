@@ -108,6 +108,7 @@ jobs:
           ENDSSH
 
   build-win:
+    if: false
     runs-on: ubuntu-latest
     needs: generate-portable-archive
     steps:
@@ -147,6 +148,7 @@ jobs:
           file: 'JArmEmu-Packages/win/innosetup/JArmEmu-${{ needs.generate-portable-archive.outputs.version }}-1.exe'
 
   deploy-to-chocolatey:
+    if: false
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive, build-win ]
     steps:
@@ -182,7 +184,6 @@ jobs:
         run: curl -X POST --data "${{ needs.generate-portable-archive.outputs.version }}" ${{ secrets.COPR_WEBHOOK_URL }}
 
   deploy-to-flathub:
-    if: false
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive ]
     steps:
