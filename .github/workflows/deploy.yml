@@ -133,7 +133,7 @@ jobs:
         with:
           image: 'amake/innosetup'
           name: 'inno'
-          options: --rm -i -v "JArmEmu-Packages/win/innosetup:/jarmemu"
+          options: --rm -i -v "${{ github.workspace }}/JArmEmu-Packages/win/innosetup:/jarmemu"
           args: /V Z:/jarmemu/jarmemu.iss
       - name: Upload to release
         uses: svenstaro/upload-release-action@2.9.0
