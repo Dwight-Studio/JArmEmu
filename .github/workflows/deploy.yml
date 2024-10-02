@@ -1,7 +1,9 @@
 name: Deployment
+
 on:
   release:
     types: [ published ]
+
 jobs:
   generate-portable-archive:
     runs-on: ubuntu-latest
@@ -25,7 +27,9 @@ jobs:
           zip -r JArmEmu-${{ steps.parse-tag.outputs.version }}.zip ./jarmemu/
       - name: Compute SHA256 checksum
         id: sha256
-        run: echo "sum=$(sha256sum JArmEmu-${{ steps.parse-tag.outputs.version }}.zip | awk '{print $1}')"
+        run: |
+          cd jarmemu-distribution/target || exit 1
+          echo "sum=$(sha256sum JArmEmu-${{ steps.parse-tag.outputs.version }}.zip | awk '{print $1}')" >> "$GITHUB_OUTPUT"
       - name: Upload to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
@@ -82,6 +86,7 @@ jobs:
       - name: Build package
         run: |
           cd JArmEmu-Packages/deb/jarmemu || exit 1
+          sudo apt install -y desktop-file-utils debhelper
           dpkg-buildpackage -b -kcontact@dwightstudio.fr
       - name: Configure SSH
         uses: webfactory/ssh-agent@v0.9.0
@@ -94,8 +99,8 @@ jobs:
           USERNAME: ${{ secrets.VPS_USERNAME }}
           PORT: ${{ secrets.VPS_PORT }}
         run: |
-          scp -P $PORT JArmEmu-Packages/deb/jarmemu_${VERSION}-1_all.deb ${USERNAME}@${HOST}:/home/$USERNAME/jarmemu_${VERSION}-1_all.deb
-          ssh ${USERNAME}@${HOST} -p $PORT <<-ENDSSH
+          scp -o StrictHostKeyChecking=no -P $PORT JArmEmu-Packages/deb/jarmemu_${VERSION}-1_all.deb ${USERNAME}@${HOST}:/home/$USERNAME/jarmemu_${VERSION}-1_all.deb
+          ssh ${USERNAME}@${HOST} -o StrictHostKeyChecking=no -p $PORT <<-ENDSSH
             sudo reprepro -b /var/deb includedeb all /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
             rm /home/$USERNAME/jarmemu_${VERSION}-1_all.deb
           ENDSSH
@@ -118,6 +123,8 @@ jobs:
           for file in $FILES; do
             VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM=${{ needs.generate-portable-archive.outputs.sum }} envsubst '${VERSION} ${SUM}' < innosetup_template/$file > innosetup/$file
           done
+          chmod -R a+w innosetup
+          umask a+w
       - name: Download portable archive
         env:
           VERSION: ${{ needs.generate-portable-archive.outputs.version }}
@@ -130,7 +137,7 @@ jobs:
         with:
           image: 'amake/innosetup'
           name: 'inno'
-          options: --rm -i -v "JArmEmu-Packages/win/innosetup:/jarmemu"
+          options: --rm -i -v "${{ github.workspace }}/JArmEmu-Packages/win/innosetup:/jarmemu"
           args: /V Z:/jarmemu/jarmemu.iss
       - name: Upload to release
         uses: svenstaro/upload-release-action@2.9.0
@@ -155,18 +162,14 @@ jobs:
           for file in $FILES; do
             VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM="5be7c12b8a5d4f88c09eca63e77fb3f559e6edffe8a6399932f7da2e6a76a23b" envsubst '${VERSION} ${SUM}' < chocolatey_template/$file > chocolatey/$file
           done
-      - name: Sign in Chocolatey
-        uses: crazy-max/ghaction-chocolatey@v3.0.0
-        with:
-          args: choco apikey add -k ${{ secrets.CHOCOLATEY_API_KEY }} -s https://push.chocolatey.org/
       - name: Build package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
-          args: pack JArmEmu-Packages/win/chocolatey/jarmemu.nuspec
+          args: pack JArmEmu-Packages/win/chocolatey/jarmemu.nuspec --out .
       - name: Push package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
-          args: push .\jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/
+          args: push jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
 
   deploy-to-copr:
     runs-on: ubuntu-latest
