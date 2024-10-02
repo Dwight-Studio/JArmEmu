@@ -1,4 +1,6 @@
 name: Validation
+run-name: Validation for PR ${{ github.event.number }}
+
 on:
   pull_request:
     types: [ opened, synchronize, reopened ]
