@@ -177,7 +177,7 @@ jobs:
       - name: Push package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
         with:
-          args: push jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
+          args: push jarmemu.${{ needs.build-win.outputs.version }}.nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
 
   deploy-to-copr:
     runs-on: ubuntu-latest
