@@ -1,4 +1,4 @@
-1.0.0 -> 1.0.1
+1.0.0 -> 1.1.0
 
 - Improved memory views logic (resolved #11)
 - Improved icons (now only use Material 2 Round)
