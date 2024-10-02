@@ -39,6 +39,7 @@ jobs:
       sum: ${{ steps.sha256.outputs.sum }}
 
   deploy-to-aur:
+    if: false
     runs-on: ubuntu-latest
     needs: generate-portable-archive
     steps:
@@ -62,6 +63,7 @@ jobs:
           commit_message: Update to v${{needs.generate-portable-archive.outputs.version}}
 
   build-deb:
+    if: false
     runs-on: ubuntu-latest
     needs: generate-portable-archive
     steps:
@@ -139,14 +141,23 @@ jobs:
           name: 'inno'
           options: --rm -i -v "${{ github.workspace }}/JArmEmu-Packages/win/innosetup:/jarmemu"
           args: /V Z:/jarmemu/jarmemu.iss
+      - name: Compute SHA256 checksum
+        id: sha256
+        run: |
+          cd JArmEmu-Packages/win/innosetup || exit 1
+          echo "sum=$(sha256sum JArmEmu-${{ needs.generate-portable-archive.outputs.version }}-1.exe | awk '{print $1}')" >> "$GITHUB_OUTPUT"
       - name: Upload to release
         uses: svenstaro/upload-release-action@2.9.0
         with:
           file: 'JArmEmu-Packages/win/innosetup/JArmEmu-${{ needs.generate-portable-archive.outputs.version }}-1.exe'
+    outputs:
+      version: ${{ needs.generate-portable-archive.outputs.version }}
+      sum: ${{ steps.sha256.outputs.sum }}
 
   deploy-to-chocolatey:
+    if: false
     runs-on: ubuntu-latest
-    needs: [ generate-portable-archive, build-win ]
+    needs: [ build-win ]
     steps:
       - name: Clone packaging repository
         uses: GuillaumeFalourd/clone-github-repo-action@main
@@ -160,7 +171,7 @@ jobs:
           cd .. || exit 1
           mkdir -p chocolatey/tools
           for file in $FILES; do
-            VERSION=${{ needs.generate-portable-archive.outputs.version }} SUM="5be7c12b8a5d4f88c09eca63e77fb3f559e6edffe8a6399932f7da2e6a76a23b" envsubst '${VERSION} ${SUM}' < chocolatey_template/$file > chocolatey/$file
+            VERSION=${{ needs.build-win.outputs.version }} SUM="${{ needs.build-win.outputs.sum }}" envsubst '${VERSION} ${SUM}' < chocolatey_template/$file > chocolatey/$file
           done
       - name: Build package
         uses: crazy-max/ghaction-chocolatey@v3.0.0
@@ -172,6 +183,7 @@ jobs:
           args: push jarmemu.${{ needs.generate-portable-archive.outputs.version }}.nupkg --source https://push.chocolatey.org/ --api-key ${{ secrets.CHOCOLATEY_API_KEY }}
 
   deploy-to-copr:
+    if: false
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive ]
     steps:
@@ -179,6 +191,7 @@ jobs:
         run: curl -X POST --data "${{ needs.generate-portable-archive.outputs.version }}" ${{ secrets.COPR_WEBHOOK_URL }}
 
   deploy-to-flathub:
+    if: false
     runs-on: ubuntu-latest
     needs: [ generate-portable-archive ]
     steps:
