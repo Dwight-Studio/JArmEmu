@@ -13,6 +13,7 @@
   - [Fedora/Nobara](#fedora)
   - [Arch Linux/Manjaro](#arch-linux)
   - [Debian/Ubuntu/Pop! OS/Linux Mint/Kali Linux](#debian)
+  - [Nix](#nix)
 - [Licence](#licence)
 
 # Features
@@ -138,6 +139,18 @@ You can install it by running:
 sudo wget -O - https://deb.dwightstudio.fr/install-repository.sh | sudo bash
 sudo apt update && sudo apt install jarmemu
 ```
+
+## Nix
+
+<img src="https://static.dwightstudio.fr/jarmemu/LOGO_MONO.svg" alt="drawing" width="15"/> JArmEmu is available with the [Nix](https://nixos.org/) package manager through this repository flake.
+You can build/run it imperatively bu running (with flake enabled):
+
+```bash
+nix build github:Dwight-Studio/jArmEmu
+nix run github:Dwight-Studio/jArmEmu
+```
+
+Otherwise, use your preferred way to declaratively install the package `jarmemu` from the `github:Dwight-Studio/jArmEmu` flake as input.
 
 ## Licence
 
