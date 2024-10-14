@@ -367,6 +367,7 @@ public class FileEditor {
         codeArea.caretPositionProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue == null || JArmEmuApplication.getStatus() != Status.EDITING) return;
 
+            realTimeParser.preventAutocomplete(getCurrentLine());
             JArmEmuApplication.getAutocompletionController().caretMoved();
         });
 
@@ -452,7 +453,7 @@ public class FileEditor {
     }
 
     /**
-     * @return le numéro de la ligne au-dessus de laquelle se trouve la souris
+     * @return the line number over which is the mouse
      */
     public int getMouseLine() {
         int lineNum = codeArea.getParagraphs().size();
@@ -470,6 +471,13 @@ public class FileEditor {
         }
 
         return -1;
+    }
+
+    /**
+     * @return current line number
+     */
+    public int getCurrentLine() {
+        return codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor();
     }
 
     /**
@@ -781,12 +789,13 @@ public class FileEditor {
         if (!codeArea.isEditable()) return;
 
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            String add = getRealTimeParser().lineDefinesLabel(codeArea.getCurrentParagraph() - 1) ? "\t" : "";
+            String add = getRealTimeParser().lineDefinesLabel(getCurrentLine() - 1) ? "\t" : "";
 
-            Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph() - 1).getSegments().getFirst());
+            Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(getCurrentLine() - 1).getSegments().getFirst());
             if (matcher.find())
                 Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + add));
             else if (!add.isEmpty()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), add));
+            getRealTimeParser().preventAutocomplete(getCurrentLine());
         } else if (keyEvent.getCode() == KeyCode.TAB) {
             int selStart = codeArea.getCaretSelectionBind().getStartPosition();
             int selEnd = codeArea.getCaretSelectionBind().getEndPosition();
@@ -795,7 +804,7 @@ public class FileEditor {
 
             if (selStart == selEnd) {
                 if (shift) {
-                    int parN = codeArea.getCurrentParagraph();
+                    int parN = getCurrentLine();
                     Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                     if (par.charAt(0) == '\t' || par.charAt(0) == '\t') {
                         getRealTimeParser().preventAutocomplete(parN);
@@ -809,7 +818,7 @@ public class FileEditor {
                     }
                     codeArea.moveTo(parN, nPos);
                 } else {
-                    getRealTimeParser().preventAutocomplete(codeArea.getCurrentParagraph());
+                    getRealTimeParser().preventAutocomplete(getCurrentLine());
                     codeArea.insertText(codeArea.getCaretPosition(), "\t");
                 }
             } else {

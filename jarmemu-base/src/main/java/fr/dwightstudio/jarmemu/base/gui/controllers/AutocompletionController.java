@@ -130,11 +130,6 @@ public class AutocompletionController implements Initializable {
         synchronized (LOCK) {
             list.clear();
 
-            if (sc.editor().getCodeArea().getParagraph(sc.editor().getCodeArea().getCurrentParagraph()).getText().isBlank()) {
-                close();
-                return;
-            }
-
             if (sc.section() == Section.TEXT) {
                 switch (sc.context()) {
                     case NONE, INSTRUCTION, LABEL -> {
@@ -498,6 +493,8 @@ public class AutocompletionController implements Initializable {
      * Applies autocompletion according to selected item
      */
     private void applyAutocomplete() {
+        if (!popup.isShowing()) return;
+
         String selected = listView.getSelectionModel().getSelectedItem();
 
         if (selected != null) {
