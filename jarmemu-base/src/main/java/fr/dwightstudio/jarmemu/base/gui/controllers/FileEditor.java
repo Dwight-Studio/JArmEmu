@@ -489,6 +489,13 @@ public class FileEditor {
     }
 
     /**
+     * @return the number of lines in the editor
+     */
+    public int getTotalLineNumber() {
+        return codeArea.getParagraphs().size();
+    }
+
+    /**
      * @return le numéro du caractère au-dessus duquel se trouve la souris
      */
     public int getMousePosition() {
@@ -570,7 +577,7 @@ public class FileEditor {
      * Prépare la simulation (pré-géneration des lignes)
      */
     public void prepareSimulation() {
-        int lineNum = codeArea.getParagraphs().size();
+        int lineNum = getTotalLineNumber();
         logger.info("Pre-generate " + lineNum + " lines in " + getFileName());
         lineFactory.pregen(codeArea.getParagraphs().size());
         Platform.runLater(this::clearLineMarkings);
@@ -733,7 +740,7 @@ public class FileEditor {
         if (!realTimeParser.isAlive() && !realTimeParser.isInterrupted()) {
             realTimeParser.start();
         }
-        realTimeParser.markDirty(0, codeArea.getParagraphs().size());
+        realTimeParser.markDirty(0, getTotalLineNumber());
     }
 
     public RealTimeParser getRealTimeParser() {
@@ -812,7 +819,7 @@ public class FileEditor {
 
             if (selStart == selEnd) {
                 if (shift) {
-                    int parN = getCurrentLine();
+                    int parN = getCurrentLine() - 1;
                     Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                     if (par.charAt(0) == '\t' || par.charAt(0) == '\t') {
                         getRealTimeParser().preventAutocomplete(parN);

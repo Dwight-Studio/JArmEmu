@@ -37,7 +37,6 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
 
 import java.util.*;
@@ -141,7 +140,7 @@ public class SmartHighlighter extends RealTimeParser {
 
                 int stop;
                 if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                    stop = editor.getCodeArea().getParagraphs().size();
+                    stop = editor.getTotalLineNumber();
                 } else {
                     stop = editor.getLineFromPos(end) + 1;
                 }
@@ -164,7 +163,7 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private void setup() {
-        text = editor.getCodeArea().getParagraph(line).getText();
+        text = editor.getCodeArea().getParagraph(line - 1).getText();
         cursorPos = editor.getCurrentLine() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
 
         currentSection = getCurrentSection();
@@ -199,7 +198,7 @@ public class SmartHighlighter extends RealTimeParser {
                 try {
                     line = queue.take();
 
-                    if (line < 0 || line >= editor.getCodeArea().getParagraphs().size()) continue;
+                    if (line <= 0 || line > editor.getTotalLineNumber()) continue;
 
                     setup();
 
@@ -349,7 +348,7 @@ public class SmartHighlighter extends RealTimeParser {
                             if (addSection != Section.END) {
                                 markDirty(line + 1, getNextSectionLine());
                             } else {
-                                markDirty(line + 1, editor.getCodeArea().getParagraphs().size());
+                                markDirty(line + 1, editor.getTotalLineNumber());
                             }
                         }
 
@@ -386,13 +385,13 @@ public class SmartHighlighter extends RealTimeParser {
                     }
 
                     try {
-                        final int finalLine = line;
+                        final int paragraph = line - 1;
                         StyleSpans<Collection<String>> spans = spansBuilder.create();
                         Platform.runLater(() -> {
                             try {
-                                editor.getCodeArea().setStyleSpans(finalLine, 0, spans);
+                                editor.getCodeArea().setStyleSpans(paragraph, 0, spans);
                             } catch (IndexOutOfBoundsException e) {
-                                logger.warning("Wrong StyleSpans length for line " + finalLine);
+                                logger.warning("Wrong StyleSpans length for line " + paragraph + 1);
                             }
                         });
                     } catch (IllegalStateException ignored) {
@@ -1128,7 +1127,7 @@ public class SmartHighlighter extends RealTimeParser {
             }
         }
 
-        return editor.getCodeArea().getParagraphs().size();
+        return editor.getTotalLineNumber();
     }
 
     @Override
@@ -1140,7 +1139,6 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int line) {
-        System.out.println(line);
         if (!queue.contains(line)) queue.add(line);
     }
 
@@ -1168,7 +1166,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        int max = editor.getCodeArea().getParagraphs().size();
+        int max = editor.getTotalLineNumber();
         for (int i = startLine; i <= stopLine && i < max; i++) {
             markDirty(i);
         }

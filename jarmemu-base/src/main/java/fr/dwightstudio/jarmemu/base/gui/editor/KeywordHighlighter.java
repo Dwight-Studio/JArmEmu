@@ -103,7 +103,7 @@ public class KeywordHighlighter extends RealTimeParser {
 
             int stop;
             if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                stop = editor.getCodeArea().getParagraphs().size();
+                stop = editor.getTotalLineNumber();
             } else {
                 stop = editor.getLineFromPos(end) + 1;
             }
@@ -120,10 +120,12 @@ public class KeywordHighlighter extends RealTimeParser {
             try {
                 int line = queue.take();
 
+                if (line <= 0 || line > editor.getTotalLineNumber()) continue;
+
                 int lastKwEnd = 0;
                 StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
 
-                String text = editor.getCodeArea().getParagraph(line).getText();
+                String text = editor.getCodeArea().getParagraph(line - 1).getText();
                 Matcher matcher = PATTERN.matcher(text);
 
                 while (matcher.find() && cancelLine != line && !this.isInterrupted()) {
@@ -146,7 +148,7 @@ public class KeywordHighlighter extends RealTimeParser {
 
                 cancelLine = -1;
 
-                if (lastKwEnd != 0) Platform.runLater(() -> editor.getCodeArea().setStyleSpans(line, 0, spansBuilder.create()));
+                if (lastKwEnd != 0) Platform.runLater(() -> editor.getCodeArea().setStyleSpans(line - 1, 0, spansBuilder.create()));
             } catch (InterruptedException e) {
                 this.interrupt();
             }
@@ -188,7 +190,7 @@ public class KeywordHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        int max = editor.getCodeArea().getParagraphs().size();
+        int max = editor.getTotalLineNumber();
         for (int i = startLine; i <= stopLine && i < max; i++) {
             markDirty(i);
         }
