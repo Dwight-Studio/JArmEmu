@@ -449,7 +449,7 @@ public class AutocompletionController implements Initializable {
             CodeArea codeArea = sc.editor().getCodeArea();
 
             try {
-                if (codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() != sc.line())
+                if (sc.editor().getCurrentLine() != sc.line())
                     close();
             } catch (IndexOutOfBoundsException ignored) {
                 close();

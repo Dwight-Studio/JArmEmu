@@ -136,14 +136,14 @@ public class SmartHighlighter extends RealTimeParser {
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             try {
                 editor.updateSaveState();
-                int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
+                int start = editor.getLineFromPos(change.getPosition());
                 int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
                 int stop;
                 if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
                     stop = editor.getCodeArea().getParagraphs().size();
                 } else {
-                    stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+                    stop = editor.getLineFromPos(end) + 1;
                 }
 
                 markDirty(start, stop);
@@ -165,7 +165,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     private void setup() {
         text = editor.getCodeArea().getParagraph(line).getText();
-        cursorPos = editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
+        cursorPos = editor.getCurrentLine() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
 
         currentSection = getCurrentSection();
         addGlobals = "";
@@ -1140,6 +1140,7 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int line) {
+        System.out.println(line);
         if (!queue.contains(line)) queue.add(line);
     }
 

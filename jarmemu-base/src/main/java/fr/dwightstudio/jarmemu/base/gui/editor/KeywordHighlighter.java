@@ -98,14 +98,14 @@ public class KeywordHighlighter extends RealTimeParser {
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             editor.updateSaveState();
-            int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
+            int start = editor.getLineFromPos(change.getPosition());
             int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
             int stop;
             if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
                 stop = editor.getCodeArea().getParagraphs().size();
             } else {
-                stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+                stop = editor.getLineFromPos(end) + 1;
             }
 
             markDirty(start, stop);

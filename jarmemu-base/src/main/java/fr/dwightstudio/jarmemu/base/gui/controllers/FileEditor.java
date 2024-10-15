@@ -281,10 +281,10 @@ public class FileEditor {
             if (previousFind != null) finds.addAll(previousFind);
 
             for (Find find : finds) {
-                this.realTimeParser.preventAutocomplete(codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor());
+                this.realTimeParser.preventAutocomplete(getCurrentLine());
                 this.realTimeParser.markDirty(
-                        codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
-                        codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
+                        getLineFromPos(find.start()),
+                        getLineFromPos(find.end())
                 );
             }
 
@@ -338,7 +338,7 @@ public class FileEditor {
             }
 
             Find f = previousFind.get(selectedFind);
-            realTimeParser.preventAutocomplete(codeArea.offsetToPosition(f.start(), TwoDimensional.Bias.Forward).getMajor());
+            realTimeParser.preventAutocomplete(getLineFromPos(f.start()));
             codeArea.moveTo(f.start());
             codeArea.requestFollowCaret();
             codeArea.selectRange(f.start(), f.end());
@@ -353,7 +353,7 @@ public class FileEditor {
 
             int offset = 0;
             for (Find f : previousFind) {
-                realTimeParser.preventAutocomplete(codeArea.offsetToPosition(f.start(), TwoDimensional.Bias.Forward).getMajor());
+                realTimeParser.preventAutocomplete(getLineFromPos(f.start()));
                 codeArea.moveTo(offset + f.start());
                 codeArea.requestFollowCaret();
                 codeArea.selectRange(offset + f.start(), offset + f.end());
@@ -478,6 +478,14 @@ public class FileEditor {
      */
     public int getCurrentLine() {
         return codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor();
+    }
+
+    /**
+     * @param pos the position in the text
+     * @return line number from pos
+     */
+    public int getLineFromPos(int pos) {
+        return codeArea.offsetToPosition(pos, TwoDimensional.Bias.Forward).getMajor();
     }
 
     /**
@@ -775,10 +783,10 @@ public class FileEditor {
         if (previousFind != null) finds.addAll(previousFind);
 
         for (Find find : finds) {
-            this.realTimeParser.preventAutocomplete(codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor());
+            this.realTimeParser.preventAutocomplete(getLineFromPos(codeArea.getCaretPosition()));
             this.realTimeParser.markDirty(
-                    codeArea.offsetToPosition(find.start(), TwoDimensional.Bias.Forward).getMajor(),
-                    codeArea.offsetToPosition(find.end(), TwoDimensional.Bias.Forward).getMajor()
+                    getLineFromPos(find.start()),
+                    getLineFromPos(find.end())
             );
         }
 
