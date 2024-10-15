@@ -135,17 +135,19 @@ public class SmartHighlighter extends RealTimeParser {
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             try {
                 editor.updateSaveState();
-                int start = editor.getLineFromPos(change.getPosition());
+                int startLine = editor.getLineFromPos(change.getPosition()) + 1;
                 int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
-                int stop;
+                int endLine;
                 if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                    stop = editor.getTotalLineNumber();
+                    endLine = editor.getTotalLineNumber() + 1;
                 } else {
-                    stop = editor.getLineFromPos(end) + 1;
+                    endLine = editor.getLineFromPos(end) + 2;
                 }
 
-                markDirty(start, stop);
+                System.out.println(startLine + "<-->" + endLine);
+
+                markDirty(startLine, endLine);
             } catch (Exception e) {
                 logger.warning(ExceptionUtils.getStackTrace(e));
             }
@@ -198,13 +200,15 @@ public class SmartHighlighter extends RealTimeParser {
                 try {
                     line = queue.take();
 
+                    System.out.println("-->" + line);
+
                     if (line <= 0 || line > editor.getTotalLineNumber()) continue;
 
                     setup();
 
                     int iter;
                     for (iter = 0; cancelLine != line && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        //System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
@@ -1166,8 +1170,8 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        int max = editor.getTotalLineNumber();
-        for (int i = startLine; i <= stopLine && i < max; i++) {
+        int max = editor.getTotalLineNumber() + 1;
+        for (int i = Math.max(1, startLine); i < stopLine && i < max; i++) {
             markDirty(i);
         }
     }

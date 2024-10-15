@@ -38,7 +38,6 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
 
 import java.util.Collection;
@@ -103,7 +102,7 @@ public class KeywordHighlighter extends RealTimeParser {
 
             int stop;
             if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                stop = editor.getTotalLineNumber();
+                stop = editor.getTotalLineNumber() + 1;
             } else {
                 stop = editor.getLineFromPos(end) + 1;
             }
@@ -190,8 +189,8 @@ public class KeywordHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        int max = editor.getTotalLineNumber();
-        for (int i = startLine; i <= stopLine && i < max; i++) {
+        int max = editor.getTotalLineNumber() + 1;
+        for (int i = Math.max(1, startLine); i < stopLine && i < max; i++) {
             markDirty(i);
         }
     }

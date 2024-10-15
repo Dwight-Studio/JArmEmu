@@ -740,7 +740,7 @@ public class FileEditor {
         if (!realTimeParser.isAlive() && !realTimeParser.isInterrupted()) {
             realTimeParser.start();
         }
-        realTimeParser.markDirty(0, getTotalLineNumber());
+        realTimeParser.markDirty(1, getTotalLineNumber() + 1);
     }
 
     public RealTimeParser getRealTimeParser() {
@@ -804,7 +804,7 @@ public class FileEditor {
         if (!codeArea.isEditable()) return;
 
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            String add = getRealTimeParser().lineDefinesLabel(getCurrentLine() - 1) ? "\t" : "";
+            String add = getRealTimeParser().lineDefinesLabel(getCurrentLine()) ? "\t" : "";
 
             Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(getCurrentLine() - 1).getSegments().getFirst());
             if (matcher.find())
@@ -822,7 +822,7 @@ public class FileEditor {
                     int parN = getCurrentLine() - 1;
                     Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                     if (par.charAt(0) == '\t' || par.charAt(0) == '\t') {
-                        getRealTimeParser().preventAutocomplete(parN);
+                        getRealTimeParser().preventAutocomplete(parN + 1);
                         codeArea.deleteText(parN, 0, parN, 1);
                     }
 
@@ -854,7 +854,7 @@ public class FileEditor {
                 }
 
                 codeArea.selectRange(start, 0, end, codeArea.getParagraph(end).length());
-                this.realTimeParser.markDirty(start, end + 1);
+                this.realTimeParser.markDirty(start + 1, end + 2);
             }
         }
     }
