@@ -97,17 +97,17 @@ public class KeywordHighlighter extends RealTimeParser {
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             editor.updateSaveState();
-            int start = editor.getLineFromPos(change.getPosition());
+            int startLine = editor.getLineFromPos(change.getPosition()) + 1;
             int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
-            int stop;
+            int endLine;
             if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                stop = editor.getTotalLineNumber() + 1;
+                endLine = editor.getTotalLineNumber() + 1;
             } else {
-                stop = editor.getLineFromPos(end) + 1;
+                endLine = editor.getLineFromPos(end) + 2;
             }
 
-            markDirty(start, stop);
+            markDirty(startLine, endLine);
         });
 
         cancelLine = -1;
@@ -182,7 +182,7 @@ public class KeywordHighlighter extends RealTimeParser {
     }
 
     @Override
-    public boolean lineDefinesLabel(int currentParagraph) {
+    public boolean lineDefinesLabel(int line) {
         CodeArea codeArea = JArmEmuApplication.getEditorController().currentFileEditor().getCodeArea();
         return LABEL_COMPILED_PATTERN.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph()).getText()).find();
     }
@@ -202,7 +202,7 @@ public class KeywordHighlighter extends RealTimeParser {
     }
 
     @Override
-    public void preventAutocomplete(int line) {
-
+    public Object getLock() {
+        return new Object();
     }
 }

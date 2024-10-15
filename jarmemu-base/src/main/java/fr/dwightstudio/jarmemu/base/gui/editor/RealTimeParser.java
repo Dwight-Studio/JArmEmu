@@ -69,7 +69,7 @@ public abstract class RealTimeParser extends Thread {
     /**
      * @return true if the line defines a label
      */
-    public abstract boolean lineDefinesLabel(int currentParagraph);
+    public abstract boolean lineDefinesLabel(int line);
 
     /**
      * Cancels line analysis if in progress.
@@ -79,9 +79,7 @@ public abstract class RealTimeParser extends Thread {
     public abstract void cancelLine(int cancelLine);
 
     /**
-     * Prevents autocomplete when processing line.
-     *
-     * @param line the line to prevents
+     * @return the monitor of the real time parser
      */
-    public abstract void preventAutocomplete(int line);
+    public abstract Object getLock();
 }

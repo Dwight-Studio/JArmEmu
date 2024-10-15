@@ -90,11 +90,9 @@ public class SmartHighlighter extends RealTimeParser {
 
     private int line;
     private int cancelLine;
-    private final HashSet<Integer> preventLine;
-
-    private static final Object LOCK = new Object();
-    private static HashSet<CaseIndependentEntry> caseTranslationTable;
-    private static HashMap<FilePos, String> globals;
+    private final Object LOCK = new Object();
+    private HashSet<CaseIndependentEntry> caseTranslationTable;
+    private HashMap<FilePos, String> globals;
     private final TreeMap<Integer, Section> sections;
     private final HashMap<Integer, String> labels;
     private final HashMap<Integer, String> symbols;
@@ -130,7 +128,6 @@ public class SmartHighlighter extends RealTimeParser {
         super("RealTimeParser" + editor.getRealIndex());
         this.editor = editor;
         this.queue = new LinkedBlockingQueue<>();
-        this.preventLine = new HashSet<>();
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             try {
@@ -144,8 +141,6 @@ public class SmartHighlighter extends RealTimeParser {
                 } else {
                     endLine = editor.getLineFromPos(end) + 2;
                 }
-
-                System.out.println(startLine + "<-->" + endLine);
 
                 markDirty(startLine, endLine);
             } catch (Exception e) {
@@ -200,24 +195,20 @@ public class SmartHighlighter extends RealTimeParser {
                 try {
                     line = queue.take();
 
-                    System.out.println("-->" + line);
-
                     if (line <= 0 || line > editor.getTotalLineNumber()) continue;
 
                     setup();
 
                     int iter;
                     for (iter = 0; cancelLine != line && !this.isInterrupted() && iter < MAXIMUM_ITER_NUM; iter++) {
-                        System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
+                        //System.out.println(currentSection + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + text);
 
                         errorOnLastIter = error;
                         error = false;
 
                         if (cursorPos <= 0) {
-                            if (!preventLine.remove(line)) {
-                                SmartContext sc = new SmartContext(editor, line, currentSection, context, subContext, cursorPos, contextLength, command, argType, bracket, brace, rrx);
-                                JArmEmuApplication.getAutocompletionController().update(sc);
-                            }
+                            SmartContext sc = new SmartContext(editor, line, currentSection, context, subContext, cursorPos, contextLength, command, argType, bracket, brace, rrx);
+                            JArmEmuApplication.getAutocompletionController().update(sc);
                             cursorPos = Integer.MAX_VALUE;
                         }
 
@@ -1183,8 +1174,7 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     @Override
-    public void preventAutocomplete(int preventLine) {
-        cancelLine(preventLine);
-        this.preventLine.add(preventLine);
+    public Object getLock() {
+        return LOCK;
     }
 }

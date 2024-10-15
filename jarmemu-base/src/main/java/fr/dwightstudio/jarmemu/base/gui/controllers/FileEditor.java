@@ -170,8 +170,7 @@ public class FileEditor {
 
         // Ajout automatique du caractère fermant
         codeArea.setOnKeyTyped(keyEvent -> {
-            int caretPosition = codeArea.getCaretPosition();
-            Platform.runLater(() -> JArmEmuApplication.getAutocompletionController().autocompleteChar(keyEvent.getCharacter(), caretPosition));
+            JArmEmuApplication.getAutocompletionController().onKeyTyped(keyEvent.getCharacter(), codeArea.getCaretPosition());
         });
 
         // Find & Replace
@@ -281,7 +280,6 @@ public class FileEditor {
             if (previousFind != null) finds.addAll(previousFind);
 
             for (Find find : finds) {
-                this.realTimeParser.preventAutocomplete(getCurrentLine());
                 this.realTimeParser.markDirty(
                         getLineFromPos(find.start()),
                         getLineFromPos(find.end())
@@ -338,7 +336,6 @@ public class FileEditor {
             }
 
             Find f = previousFind.get(selectedFind);
-            realTimeParser.preventAutocomplete(getLineFromPos(f.start()));
             codeArea.moveTo(f.start());
             codeArea.requestFollowCaret();
             codeArea.selectRange(f.start(), f.end());
@@ -353,7 +350,6 @@ public class FileEditor {
 
             int offset = 0;
             for (Find f : previousFind) {
-                realTimeParser.preventAutocomplete(getLineFromPos(f.start()));
                 codeArea.moveTo(offset + f.start());
                 codeArea.requestFollowCaret();
                 codeArea.selectRange(offset + f.start(), offset + f.end());
@@ -367,7 +363,6 @@ public class FileEditor {
         codeArea.caretPositionProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue == null || JArmEmuApplication.getStatus() != Status.EDITING) return;
 
-            realTimeParser.preventAutocomplete(getCurrentLine());
             JArmEmuApplication.getAutocompletionController().caretMoved();
         });
 
@@ -474,14 +469,14 @@ public class FileEditor {
     }
 
     /**
-     * @return current line number
+     * @return current line number (starting from 1, same as visually)
      */
     public int getCurrentLine() {
-        return codeArea.offsetToPosition(codeArea.getCaretPosition(), TwoDimensional.Bias.Forward).getMajor();
+        return codeArea.getCurrentParagraph() + 1;
     }
 
     /**
-     * @param pos the position in the text
+     * @param pos the position in the text (starting from 1, same as visually)
      * @return line number from pos
      */
     public int getLineFromPos(int pos) {
@@ -790,7 +785,6 @@ public class FileEditor {
         if (previousFind != null) finds.addAll(previousFind);
 
         for (Find find : finds) {
-            this.realTimeParser.preventAutocomplete(getLineFromPos(codeArea.getCaretPosition()));
             this.realTimeParser.markDirty(
                     getLineFromPos(find.start()),
                     getLineFromPos(find.end())
@@ -804,13 +798,22 @@ public class FileEditor {
         if (!codeArea.isEditable()) return;
 
         if (keyEvent.getCode() == KeyCode.ENTER) {
-            String add = getRealTimeParser().lineDefinesLabel(getCurrentLine()) ? "\t" : "";
+            String add = "";
+            synchronized (realTimeParser.getLock()) {
+                if (getRealTimeParser().lineDefinesLabel(getCurrentLine() - 1)) {
+                    add = "\t";
+                }
+            }
 
-            Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(getCurrentLine() - 1).getSegments().getFirst());
-            if (matcher.find())
-                Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + add));
-            else if (!add.isEmpty()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), add));
-            getRealTimeParser().preventAutocomplete(getCurrentLine());
+            Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(getCurrentLine() - 2).getSegments().getFirst());
+            if (matcher.find()) {
+                String finalAdd = add;
+                Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group() + finalAdd));
+            }
+            else if (!add.isEmpty()) {
+                String finalAdd = add;
+                Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), finalAdd));
+            }
         } else if (keyEvent.getCode() == KeyCode.TAB) {
             int selStart = codeArea.getCaretSelectionBind().getStartPosition();
             int selEnd = codeArea.getCaretSelectionBind().getEndPosition();
@@ -822,7 +825,6 @@ public class FileEditor {
                     int parN = getCurrentLine() - 1;
                     Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                     if (par.charAt(0) == '\t' || par.charAt(0) == '\t') {
-                        getRealTimeParser().preventAutocomplete(parN + 1);
                         codeArea.deleteText(parN, 0, parN, 1);
                     }
 
@@ -833,7 +835,6 @@ public class FileEditor {
                     }
                     codeArea.moveTo(parN, nPos);
                 } else {
-                    getRealTimeParser().preventAutocomplete(getCurrentLine());
                     codeArea.insertText(codeArea.getCaretPosition(), "\t");
                 }
             } else {
@@ -844,11 +845,9 @@ public class FileEditor {
                     if (shift) {
                         Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
                         if (par.charAt(0) == '\t' || par.charAt(0) == '\t') {
-                            getRealTimeParser().preventAutocomplete(parN);
                             codeArea.deleteText(parN, 0, parN, 1);
                         }
                     } else {
-                        getRealTimeParser().preventAutocomplete(parN);
                         codeArea.insertText(parN, 0, "\t");
                     }
                 }

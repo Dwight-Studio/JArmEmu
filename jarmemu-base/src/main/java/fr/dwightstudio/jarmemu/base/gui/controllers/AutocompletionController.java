@@ -41,8 +41,6 @@ import javafx.scene.control.PopupControl;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.Pane;
 import javafx.stage.PopupWindow;
-import org.fxmisc.richtext.CodeArea;
-import org.fxmisc.richtext.model.TwoDimensional;
 
 import java.net.URL;
 import java.util.*;
@@ -61,7 +59,6 @@ public class AutocompletionController implements Initializable {
     private ObservableListWrapper<String> wrappedList;
     private ListView<String> listView;
     private PopupControl popup;
-    private boolean reopened;
     private String currentWord;
     private boolean considerWord;
 
@@ -118,7 +115,6 @@ public class AutocompletionController implements Initializable {
 
     public void update(SmartContext smartContext) {
         this.considerWord = false;
-
         this.sc = smartContext;
 
         if (JArmEmuApplication.getStatus() == Status.EDITING && JArmEmuApplication.getSettingsController().getAutoCompletion()) {
@@ -351,9 +347,6 @@ public class AutocompletionController implements Initializable {
             list.sort(Comparator.comparingInt(String::length));
 
             sc.editor().getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
-
-            if (!list.isEmpty()) Platform.runLater(this::show);
-            else close();
         }
     }
 
@@ -384,7 +377,6 @@ public class AutocompletionController implements Initializable {
                 listView.requestFocus();
                 listView.getSelectionModel().selectFirst();
                 listView.scrollTo(0);
-                reopened = true;
             });
         } else if (popup.isShowing()) popup.hide();
     }
@@ -406,7 +398,7 @@ public class AutocompletionController implements Initializable {
         if (start < 0) {
             return sc.editor().getCodeArea().getCaretPosition();
         } else {
-            return sc.editor().getCodeArea().getAbsolutePosition(sc.line(), start);
+            return sc.editor().getCodeArea().getAbsolutePosition(sc.line() - 1, start);
         }
     }
 
@@ -414,7 +406,7 @@ public class AutocompletionController implements Initializable {
      * @return current context ending pos.
      */
     private int getCurrentContextEnd() {
-        return sc.editor().getCodeArea().getAbsolutePosition(sc.line(), sc.editor().getCodeArea().getCaretColumn());
+        return sc.editor().getCodeArea().getAbsolutePosition(sc.line() - 1, sc.editor().getCodeArea().getCaretColumn());
     }
 
     /**
@@ -435,9 +427,13 @@ public class AutocompletionController implements Initializable {
      * Closes autocompletion popover
      */
     public void close() {
-        Platform.runLater(() -> {
+        if (Platform.isFxApplicationThread()){
             if (popup.isShowing()) popup.hide();
-        });
+        } else {
+            Platform.runLater(() -> {
+                if (popup.isShowing()) popup.hide();
+            });
+        }
     }
 
     /**
@@ -446,27 +442,25 @@ public class AutocompletionController implements Initializable {
     public void caretMoved() {
         synchronized (LOCK) {
             if (sc.editor() == null) return;
-            CodeArea codeArea = sc.editor().getCodeArea();
 
             try {
-                if (sc.editor().getCurrentLine() != sc.line())
+                if (sc.editor().getCurrentLine() != sc.line()) {
                     close();
+                }
             } catch (IndexOutOfBoundsException ignored) {
                 close();
             }
-
-            if (!reopened) close();
-            else reopened = false;
         }
     }
 
     /**
-     * Autocompletes braces/brackets/parenthesis...
+     * Check authorization on type
      *
-     * @param character the character to autocomplete
+     * @param character the character typed
      * @param pos       the caret position
      */
-    public void autocompleteChar(String character, int pos) {
+    public void onKeyTyped(String character, int pos) {
+        final String oldChar = character.equals("\b") ? JArmEmuApplication.getEditorController().currentFileEditor().getCodeArea().getText(pos - 1, pos) : "";
         final String newChar = switch (character) {
             case "[" -> "]";
 
@@ -479,13 +473,20 @@ public class AutocompletionController implements Initializable {
             default -> "";
         };
 
+        if (character.equals("\b")) System.out.println((int) oldChar.charAt(0));
+
         if (!newChar.isEmpty()) {
             synchronized (LOCK) {
                 sc.editor().getRealTimeParser().cancelLine(sc.line());
                 sc.editor().getCodeArea().insertText(pos, newChar);
                 sc.editor().getCodeArea().moveTo(pos);
-                reopened = true;
             }
+            Platform.runLater(this::authorizeAutocomplete);
+        } else if (!character.equals("\n") && !character.equals("\r")) {
+            if (!oldChar.equals("\n") && !oldChar.equals("\r") && !oldChar.equals("\t")) Platform.runLater(this::authorizeAutocomplete);
+            else close();
+        } else {
+            close();
         }
     }
 
@@ -494,7 +495,6 @@ public class AutocompletionController implements Initializable {
      */
     private void applyAutocomplete() {
         if (!popup.isShowing()) return;
-
         String selected = listView.getSelectionModel().getSelectedItem();
 
         if (selected != null) {
@@ -508,8 +508,20 @@ public class AutocompletionController implements Initializable {
             sc.editor().getCodeArea().replaceSelection(selected);
 
             if (selected.length() == 1) {
-                autocompleteChar(selected, pos + 1);
+                onKeyTyped(selected, pos + 1);
             }
+        }
+
+        close();
+    }
+
+    public void authorizeAutocomplete() {
+        if (Platform.isFxApplicationThread()) {
+            if (sc.editor().getCurrentLine() == sc.line()) show();
+        } else {
+            Platform.runLater(() -> {
+                if (sc.editor().getCurrentLine() == sc.line()) show();
+            });
         }
     }
 }
