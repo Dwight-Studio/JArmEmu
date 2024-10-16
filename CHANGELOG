@@ -1,3 +1,8 @@
+1.0.0 -> 1.1.1
+
+- Fixed autocompletion being triggered at inappropriate times (resolved #18)
+
+
 1.0.0 -> 1.1.0
 
 - Improved memory views logic (resolved #11)

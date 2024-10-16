@@ -37,7 +37,6 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
 
 import java.util.*;
@@ -91,11 +90,9 @@ public class SmartHighlighter extends RealTimeParser {
 
     private int line;
     private int cancelLine;
-    private int preventLine;
-
-    private static final Object LOCK = new Object();
-    private static HashSet<CaseIndependentEntry> caseTranslationTable;
-    private static HashMap<FilePos, String> globals;
+    private final Object LOCK = new Object();
+    private HashSet<CaseIndependentEntry> caseTranslationTable;
+    private HashMap<FilePos, String> globals;
     private final TreeMap<Integer, Section> sections;
     private final HashMap<Integer, String> labels;
     private final HashMap<Integer, String> symbols;
@@ -135,17 +132,17 @@ public class SmartHighlighter extends RealTimeParser {
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             try {
                 editor.updateSaveState();
-                int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
+                int startLine = editor.getLineFromPos(change.getPosition()) + 1;
                 int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
-                int stop;
+                int endLine;
                 if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                    stop = editor.getCodeArea().getParagraphs().size();
+                    endLine = editor.getTotalLineNumber() + 1;
                 } else {
-                    stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+                    endLine = editor.getLineFromPos(end) + 2;
                 }
 
-                markDirty(start, stop);
+                markDirty(startLine, endLine);
             } catch (Exception e) {
                 logger.warning(ExceptionUtils.getStackTrace(e));
             }
@@ -163,8 +160,8 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     private void setup() {
-        text = editor.getCodeArea().getParagraph(line).getText();
-        cursorPos = editor.getCodeArea().offsetToPosition(editor.getCodeArea().getCaretPosition(), TwoDimensional.Bias.Forward).getMajor() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
+        text = editor.getCodeArea().getParagraph(line - 1).getText();
+        cursorPos = editor.getCurrentLine() == line ? editor.getCodeArea().getCaretColumn() : Integer.MAX_VALUE;
 
         currentSection = getCurrentSection();
         addGlobals = "";
@@ -198,7 +195,7 @@ public class SmartHighlighter extends RealTimeParser {
                 try {
                     line = queue.take();
 
-                    if (line < 0 || line >= editor.getCodeArea().getParagraphs().size()) continue;
+                    if (line <= 0 || line > editor.getTotalLineNumber()) continue;
 
                     setup();
 
@@ -210,12 +207,8 @@ public class SmartHighlighter extends RealTimeParser {
                         error = false;
 
                         if (cursorPos <= 0) {
-                            if (line != preventLine) {
-                                SmartContext sc = new SmartContext(editor, line, currentSection, context, subContext, cursorPos, contextLength, command, argType, bracket, brace, rrx);
-                                JArmEmuApplication.getAutocompletionController().update(sc);
-                            } else {
-                                preventLine = -1;
-                            }
+                            SmartContext sc = new SmartContext(editor, line, currentSection, context, subContext, cursorPos, contextLength, command, argType, bracket, brace, rrx);
+                            JArmEmuApplication.getAutocompletionController().update(sc);
                             cursorPos = Integer.MAX_VALUE;
                         }
 
@@ -350,7 +343,7 @@ public class SmartHighlighter extends RealTimeParser {
                             if (addSection != Section.END) {
                                 markDirty(line + 1, getNextSectionLine());
                             } else {
-                                markDirty(line + 1, editor.getCodeArea().getParagraphs().size());
+                                markDirty(line + 1, editor.getTotalLineNumber());
                             }
                         }
 
@@ -387,13 +380,13 @@ public class SmartHighlighter extends RealTimeParser {
                     }
 
                     try {
-                        final int finalLine = line;
+                        final int paragraph = line - 1;
                         StyleSpans<Collection<String>> spans = spansBuilder.create();
                         Platform.runLater(() -> {
                             try {
-                                editor.getCodeArea().setStyleSpans(finalLine, 0, spans);
+                                editor.getCodeArea().setStyleSpans(paragraph, 0, spans);
                             } catch (IndexOutOfBoundsException e) {
-                                logger.warning("Wrong StyleSpans length for line " + finalLine);
+                                logger.warning("Wrong StyleSpans length for line " + paragraph + 1);
                             }
                         });
                     } catch (IllegalStateException ignored) {
@@ -1129,7 +1122,7 @@ public class SmartHighlighter extends RealTimeParser {
             }
         }
 
-        return editor.getCodeArea().getParagraphs().size();
+        return editor.getTotalLineNumber();
     }
 
     @Override
@@ -1168,8 +1161,8 @@ public class SmartHighlighter extends RealTimeParser {
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        int max = editor.getCodeArea().getParagraphs().size();
-        for (int i = startLine; i <= stopLine && i < max; i++) {
+        int max = editor.getTotalLineNumber() + 1;
+        for (int i = Math.max(1, startLine); i < stopLine && i < max; i++) {
             markDirty(i);
         }
     }
@@ -1181,8 +1174,7 @@ public class SmartHighlighter extends RealTimeParser {
     }
 
     @Override
-    public void preventAutocomplete(int preventLine) {
-        cancelLine(preventLine);
-        this.preventLine = preventLine;
+    public Object getLock() {
+        return LOCK;
     }
 }

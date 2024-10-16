@@ -38,7 +38,6 @@ import javafx.application.Platform;
 import org.apache.commons.lang3.ArrayUtils;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
-import org.fxmisc.richtext.model.TwoDimensional;
 import org.reactfx.Subscription;
 
 import java.util.Collection;
@@ -98,17 +97,17 @@ public class KeywordHighlighter extends RealTimeParser {
 
         subscription = editor.getCodeArea().plainTextChanges().subscribe(change -> {
             editor.updateSaveState();
-            int start = editor.getCodeArea().offsetToPosition(change.getPosition(), TwoDimensional.Bias.Forward).getMajor();
+            int startLine = editor.getLineFromPos(change.getPosition()) + 1;
             int end = Math.max(change.getInsertionEnd(), change.getRemovalEnd());
 
-            int stop;
+            int endLine;
             if (end >= editor.getCodeArea().getLength() || change.getInserted().contains("\n") || change.getRemoved().contains("\n")) {
-                stop = editor.getCodeArea().getParagraphs().size();
+                endLine = editor.getTotalLineNumber() + 1;
             } else {
-                stop = editor.getCodeArea().offsetToPosition(end, TwoDimensional.Bias.Forward).getMajor() + 1;
+                endLine = editor.getLineFromPos(end) + 2;
             }
 
-            markDirty(start, stop);
+            markDirty(startLine, endLine);
         });
 
         cancelLine = -1;
@@ -120,10 +119,12 @@ public class KeywordHighlighter extends RealTimeParser {
             try {
                 int line = queue.take();
 
+                if (line <= 0 || line > editor.getTotalLineNumber()) continue;
+
                 int lastKwEnd = 0;
                 StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
 
-                String text = editor.getCodeArea().getParagraph(line).getText();
+                String text = editor.getCodeArea().getParagraph(line - 1).getText();
                 Matcher matcher = PATTERN.matcher(text);
 
                 while (matcher.find() && cancelLine != line && !this.isInterrupted()) {
@@ -146,7 +147,7 @@ public class KeywordHighlighter extends RealTimeParser {
 
                 cancelLine = -1;
 
-                if (lastKwEnd != 0) Platform.runLater(() -> editor.getCodeArea().setStyleSpans(line, 0, spansBuilder.create()));
+                if (lastKwEnd != 0) Platform.runLater(() -> editor.getCodeArea().setStyleSpans(line - 1, 0, spansBuilder.create()));
             } catch (InterruptedException e) {
                 this.interrupt();
             }
@@ -181,15 +182,15 @@ public class KeywordHighlighter extends RealTimeParser {
     }
 
     @Override
-    public boolean lineDefinesLabel(int currentParagraph) {
+    public boolean lineDefinesLabel(int line) {
         CodeArea codeArea = JArmEmuApplication.getEditorController().currentFileEditor().getCodeArea();
         return LABEL_COMPILED_PATTERN.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph()).getText()).find();
     }
 
     @Override
     public void markDirty(int startLine, int stopLine) {
-        int max = editor.getCodeArea().getParagraphs().size();
-        for (int i = startLine; i <= stopLine && i < max; i++) {
+        int max = editor.getTotalLineNumber() + 1;
+        for (int i = Math.max(1, startLine); i < stopLine && i < max; i++) {
             markDirty(i);
         }
     }
@@ -201,7 +202,7 @@ public class KeywordHighlighter extends RealTimeParser {
     }
 
     @Override
-    public void preventAutocomplete(int line) {
-
+    public Object getLock() {
+        return new Object();
     }
 }

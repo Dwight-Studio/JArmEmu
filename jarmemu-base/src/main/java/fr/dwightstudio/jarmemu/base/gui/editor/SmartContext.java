@@ -30,4 +30,19 @@ public record SmartContext(FileEditor editor, int line, Section section, Context
     public SmartContext() {
         this(null, 0, null, null, null, 0, 0, null, null, false, false, false);
     }
+
+    @Override
+    public String toString() {
+        return "SmartContext{line=" + line +
+                ", section=" + section +
+                ", context=" + context +
+                ", subContext=" + subContext +
+                ", cursorPos=" + cursorPos +
+                ", contextLength=" + contextLength +
+                ", command='" + command + '\'' +
+                ", argType='" + argType + '\'' +
+                ", bracket=" + bracket +
+                ", brace=" + brace +
+                ", rrx=" + rrx + '}';
+    }
 }
