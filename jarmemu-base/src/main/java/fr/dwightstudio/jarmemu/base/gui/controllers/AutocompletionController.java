@@ -346,6 +346,10 @@ public class AutocompletionController implements Initializable {
             list.replaceAll(String::toLowerCase);
             list.sort(Comparator.comparingInt(String::length));
 
+            if (list.isEmpty()) {
+                close();
+            }
+
             sc.editor().getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
         }
     }
@@ -473,8 +477,6 @@ public class AutocompletionController implements Initializable {
             default -> "";
         };
 
-        if (character.equals("\b")) System.out.println((int) oldChar.charAt(0));
-
         if (!newChar.isEmpty()) {
             synchronized (LOCK) {
                 sc.editor().getRealTimeParser().cancelLine(sc.line());
@@ -482,7 +484,7 @@ public class AutocompletionController implements Initializable {
                 sc.editor().getCodeArea().moveTo(pos);
             }
             Platform.runLater(this::authorizeAutocomplete);
-        } else if (!character.equals("\n") && !character.equals("\r")) {
+        } else if (!character.equals("\n") && !character.equals("\r") && !character.equals("\t")) {
             if (!oldChar.equals("\n") && !oldChar.equals("\r") && !oldChar.equals("\t")) Platform.runLater(this::authorizeAutocomplete);
             else close();
         } else {
