@@ -484,7 +484,7 @@ public class AutocompletionController implements Initializable {
                 sc.editor().getCodeArea().moveTo(pos);
             }
             Platform.runLater(this::authorizeAutocomplete);
-        } else if (!character.equals("\n") && !character.equals("\r") && !character.equals("\t")) {
+        } else if (!character.equals("\n") && !character.equals("\r") && !character.equals("\t") && !character.equals("\u001b")) {
             if (!oldChar.equals("\n") && !oldChar.equals("\r") && !oldChar.equals("\t")) Platform.runLater(this::authorizeAutocomplete);
             else close();
         } else {
