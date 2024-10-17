@@ -39,15 +39,7 @@ public class SpaceDirective extends ParsedDirective {
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        try {
-            if (args.isBlank()) {
-                value = 1;
-            } else {
-                value = stateContainer.evalWithAccessible(args);
-            }
-        } catch (Exception e) {
-            throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Space"));
-        }
+
     }
 
     @Override
@@ -57,9 +49,19 @@ public class SpaceDirective extends ParsedDirective {
 
     @Override
     public void offsetMemory(StateContainer stateContainer) throws ASMException {
-        try {
-            stateContainer.getCurrentMemoryPos().incrementPos(value);
-        } catch (Exception ignored) {}
+        if (value == 0) {
+            try {
+                if (args.isBlank()) {
+                    value = 1;
+                } else {
+                    value = stateContainer.evalWithAccessible(args);
+                }
+            } catch (Exception e) {
+                throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Space"));
+            }
+        }
+
+        stateContainer.getCurrentMemoryPos().incrementPos(value);
     }
 
     @Override

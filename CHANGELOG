@@ -1,6 +1,7 @@
 1.1.1 -> 1.1.2
 
 - Fixed typos in onboarding tour (resolved #21)
+- Fixed space directive being unusable (resolved #22)
 
 
 1.1.0 -> 1.1.1
