@@ -77,6 +77,20 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-10-17" version="1.1.2">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.1.2</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Improved data length checking</li>
+                    <li>Fixed typos in onboarding tour (resolved #21)</li>
+                    <li>Fixed space directive being unusable (resolved #22)</li>
+                    <li>Fixed LDR instruction not behaving as intended with S flag (resolved #23)</li>
+                    <li>Fixed incorrect data parsing (for large words)</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-10-16" version="1.1.1">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.1.1</url>
             <description>

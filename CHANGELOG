@@ -1,4 +1,13 @@
-1.0.0 -> 1.1.1
+1.1.1 -> 1.1.2
+
+- Improved data length checking
+- Fixed typos in onboarding tour (resolved #21)
+- Fixed space directive being unusable (resolved #22)
+- Fixed LDR instruction not behaving as intended with S flag (resolved #23)
+- Fixed incorrect data parsing (for large words)
+
+
+1.1.0 -> 1.1.1
 
 - Fixed autocompletion being triggered at inappropriate times (resolved #18)
 

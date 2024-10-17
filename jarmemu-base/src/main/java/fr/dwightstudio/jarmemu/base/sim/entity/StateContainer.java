@@ -162,7 +162,7 @@ public class StateContainer {
      * @return the computed value
      * @throws SyntaxASMException when the math expression is malformed
      */
-    public int evalWithAccessibleConsts(String expString) throws SyntaxASMException {
+    public long evalWithAccessibleConsts(String expString) throws SyntaxASMException {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
@@ -174,7 +174,7 @@ public class StateContainer {
                 exp.setVariable(entry.getKey(), (double) entry.getValue());
             }
 
-            return (int) exp.evaluate();
+            return (long) exp.evaluate();
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.math.malformed", expString, exception.getMessage()));
         }
@@ -187,7 +187,7 @@ public class StateContainer {
      * @return the computed value
      * @throws SyntaxASMException when the math expression is malformed
      */
-    public int evalBranch(String expString) throws SyntaxASMException {
+    public long evalBranch(String expString) throws SyntaxASMException {
         return evalWithAccessible(expString) - this.memoryPos.getPos();
     }
 
@@ -198,7 +198,7 @@ public class StateContainer {
      * @return the computed value
      * @throws SyntaxASMException when the math expression is malformed
      */
-    public int evalWithAll(String expString) throws SyntaxASMException {
+    public long evalWithAll(String expString) throws SyntaxASMException {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
@@ -213,7 +213,7 @@ public class StateContainer {
             data.forEach(d -> d.forEach((key, val) -> exp.setVariable(key, (double) val)));
             labels.forEach(l -> l.forEach(exp::setVariable));
 
-            return (int) Math.floor(exp.evaluate());
+            return (long) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.math.malformed", expString, exception.getMessage()));
         }
@@ -226,7 +226,7 @@ public class StateContainer {
      * @return the computed value
      * @throws SyntaxASMException when the math expression is malformed
      */
-    public int evalWithAccessible(String expString) throws SyntaxASMException {
+    public long evalWithAccessible(String expString) throws SyntaxASMException {
         try {
             ExpressionBuilder builder = new ExpressionBuilder(preEvaluationFormat(expString));
 
@@ -240,7 +240,7 @@ public class StateContainer {
             getAccessibleData().forEach((key, val) -> exp.setVariable(key, (double) val));;
             getAccessibleLabels().forEach(exp::setVariable);
 
-            return (int) Math.floor(exp.evaluate());
+            return (long) Math.floor(exp.evaluate());
         } catch (IllegalArgumentException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.math.malformed", expString, exception.getMessage()));
         }

@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 
 import java.util.function.Supplier;
 
@@ -84,7 +85,7 @@ public class PostOffsetArgument extends ParsedArgument<RegisterOrImmediate> {
 
                 int value = immediateArgument.getValue(stateSupplier.get());
 
-                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21 && value != -2048) {
+                if (WordUtils.overflows(value, 12)) {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
                 }
             } else {

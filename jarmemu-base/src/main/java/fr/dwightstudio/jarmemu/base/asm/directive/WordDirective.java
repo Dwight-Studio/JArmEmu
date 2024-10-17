@@ -58,7 +58,7 @@ public class WordDirective extends ParsedDirective {
     public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
             for (int i = 0; i < arg.length; i++) {
-                intArray[i] = stateContainer.evalWithAccessible(arg[i].strip());
+                intArray[i] = (int) stateContainer.evalWithAccessible(arg[i].strip());
             }
         } catch (NumberFormatException exception) {
             throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Word"));

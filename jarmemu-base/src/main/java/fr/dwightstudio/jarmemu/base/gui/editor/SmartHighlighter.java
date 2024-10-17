@@ -705,7 +705,7 @@ public class SmartHighlighter extends RealTimeParser {
                     if (matchOffset()) {
                         subContext = subContext == SubContext.IMMEDIATE ? subContext : SubContext.SECONDARY;
                         return true;
-                    }
+                    } else return false;
                 }
 
                 case SECONDARY -> {
@@ -726,7 +726,7 @@ public class SmartHighlighter extends RealTimeParser {
                         subContext = SubContext.ADDRESS;
                         return true;
                     } else {
-                        if (!matchImmediate()) return false;
+                        return matchImmediate();
                     }
                 }
 

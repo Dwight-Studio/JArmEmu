@@ -126,20 +126,16 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
             case null -> arg1.setData(stateContainer.getMemory().getWord(address));
             case H -> {
                 if (this.modifier.doUpdateFlags()) {
-                    short value = stateContainer.getMemory().getHalf(address);
-                    if (value < 0) arg1.setData((0xFFFF << 16) + value);
-                    else arg1.setData(value);
-                } else {
                     arg1.setData(stateContainer.getMemory().getHalf(address));
+                } else {
+                    arg1.setData(Short.toUnsignedInt(stateContainer.getMemory().getHalf(address)));
                 }
             }
             case B -> {
                 if (this.modifier.doUpdateFlags()) {
-                    byte value = stateContainer.getMemory().getByte(address);
-                    if (value < 0) arg1.setData((0xFFFFFF << 8) + value);
-                    else arg1.setData(value);
-                } else {
                     arg1.setData(stateContainer.getMemory().getByte(address));
+                } else {
+                    arg1.setData(Byte.toUnsignedInt(stateContainer.getMemory().getByte(address)));
                 }
             }
         }
@@ -175,8 +171,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     public ParsedObject generate(StateContainer container) throws ASMException {
         Matcher matcher = PSEUDO_INS_PATTERN.matcher(arg2.getOriginalString());
         if (!matcher.find()) throw new IllegalStateException("Can't find Pseudo-Instruction");
-        int value = container.evalWithAccessible(matcher.group("VALUE"));
-        dir = new WordDirective(Section.RODATA, Integer.toString(value));
+        long value = container.evalWithAccessible(matcher.group("VALUE"));
+        dir = new WordDirective(Section.RODATA, Long.toString(value));
         dir.setGenerated();
         dir.setLineNumber(this.getLineNumber());
         return dir;

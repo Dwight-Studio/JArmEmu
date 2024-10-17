@@ -43,7 +43,7 @@ class HalfDirectiveTest extends DirectiveTest {
 
         for (int i = 0 ; i < 32 ; i++) {
             int r = random.nextInt();
-            execute(container, Section.DATA, "" + (r & 0xFFFF));
+            execute(container, Section.DATA, "" + (short) (r & 0xFFFF));
             assertEquals((short) (r & 0xFFFF), container.getMemory().getHalf(i*2));
         }
     }

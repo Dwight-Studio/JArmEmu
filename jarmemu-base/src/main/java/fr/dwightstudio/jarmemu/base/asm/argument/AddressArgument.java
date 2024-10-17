@@ -30,6 +30,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -192,7 +193,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
                 int value = offsetImmediateArgument.getValue(stateSupplier.get());
 
-                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 21 && value != -2048) {
+                if (WordUtils.overflows(value, 12)) {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
                 }
             }

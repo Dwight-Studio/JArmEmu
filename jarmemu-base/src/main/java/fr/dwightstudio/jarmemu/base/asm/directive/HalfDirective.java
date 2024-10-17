@@ -29,6 +29,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class HalfDirective extends ParsedDirective {
@@ -56,8 +57,8 @@ public class HalfDirective extends ParsedDirective {
     public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
             for (int i = 0; i < arg.length; i++) {
-                int data = stateContainer.evalWithAccessible(arg[i].strip());
-                if (Integer.numberOfLeadingZeros(data) >= 16) {
+                long data = stateContainer.evalWithAccessible(arg[i].strip());
+                if (!WordUtils.overflows(data, 16)) {
                     shortArray[i] = (short) data;
                 } else {
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.overflowingHalfValue", args));

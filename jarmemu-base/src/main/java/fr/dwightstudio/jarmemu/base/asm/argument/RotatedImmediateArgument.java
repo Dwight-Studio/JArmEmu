@@ -48,7 +48,7 @@ public class RotatedImmediateArgument extends ParsedArgument<Integer> {
             if (originalString.startsWith("#")) {
                 String valueString = originalString.substring(1).strip();
 
-                value = stateContainer.evalWithAccessible(valueString);
+                value = (int) stateContainer.evalWithAccessible(valueString);
                 checkOverflow(value, originalString);
 
             } else if (originalString.startsWith("=")) {

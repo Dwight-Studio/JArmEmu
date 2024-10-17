@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 
 public class LongImmediateArgument extends ParsedArgument<Integer> {
 
@@ -45,9 +46,9 @@ public class LongImmediateArgument extends ParsedArgument<Integer> {
             if (originalString.startsWith("#")) {
                 String valueString = originalString.substring(1).strip();
 
-                value = stateContainer.evalWithAccessible(valueString);
+                value = WordUtils.toUnsignedInt(stateContainer.evalWithAccessible(valueString));
 
-                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 17 && value != -32768)
+                if (WordUtils.overflows(value, 16))
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
 
             } else if (originalString.startsWith("=") || originalString.startsWith("*")) {
