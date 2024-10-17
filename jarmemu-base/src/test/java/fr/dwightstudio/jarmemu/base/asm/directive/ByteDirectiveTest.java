@@ -58,7 +58,9 @@ class ByteDirectiveTest extends DirectiveTest {
         assertDoesNotThrow(() -> execute(container, Section.DATA, "127"));
         assertDoesNotThrow(() -> execute(container, Section.DATA, "0b101"));
         assertDoesNotThrow(() -> execute(container, Section.BSS, ""));
+        assertDoesNotThrow(() -> execute(container, Section.DATA, "-128"));
         assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "256"));
+        assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "-256"));
         assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "dq"));
         assertThrows(SyntaxASMException.class, () -> execute(container, Section.DATA, "0xFFF"));
         assertThrows(SyntaxASMException.class, () -> execute(container, Section.BSS, "0xFFF"));

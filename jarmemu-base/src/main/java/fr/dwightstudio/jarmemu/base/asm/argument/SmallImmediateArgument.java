@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 
 public class SmallImmediateArgument extends ParsedArgument<Integer> {
 
@@ -47,7 +48,7 @@ public class SmallImmediateArgument extends ParsedArgument<Integer> {
 
                 value = stateContainer.evalWithAccessible(valueString);
 
-                if (Integer.numberOfLeadingZeros(Math.abs(value)) < 26)
+                if (WordUtils.overflows(value, 8))
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));
 
             } else if (originalString.startsWith("=") || originalString.startsWith("*")) {

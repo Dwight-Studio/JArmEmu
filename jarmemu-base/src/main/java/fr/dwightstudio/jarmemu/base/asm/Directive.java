@@ -36,7 +36,7 @@ public enum Directive {
 
     // Data
     WORD(WordDirective.class), // Donnée sur 32bits
-    HALF(HalfDirective.class), // Donnée sur 16bits
+    HWORD(HalfDirective.class), HALF(HalfDirective.class), // Donnée sur 16bits
     BYTE(ByteDirective.class), // Donnée sur 8bits
     SPACE(SpaceDirective.class), SKIP(SpaceDirective.class), // Vide sur nbits
     ASCII(ASCIIDirective.class), // Chaîne de caractères

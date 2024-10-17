@@ -36,6 +36,7 @@ public class ImmediateArgumentTest extends ArgumentTest<Integer> {
     @Test
     public void normalTest() throws ASMException {
         Assertions.assertEquals(2047, parse("#2047"));
+        Assertions.assertEquals(4095, parse("#4095"));
         Assertions.assertEquals(256, parse("#256"));
         Assertions.assertEquals(-2048, parse("#-2048"));
         Assertions.assertEquals(0, parse("#00000"));
@@ -45,7 +46,6 @@ public class ImmediateArgumentTest extends ArgumentTest<Integer> {
     public void overflowTest() {
         Assertions.assertThrows(SyntaxASMException.class, () -> parse("#-2049"));
         Assertions.assertThrows(SyntaxASMException.class, () -> parse("#4096"));
-        Assertions.assertThrows(SyntaxASMException.class, () -> parse("#2048"));
         Assertions.assertThrows(SyntaxASMException.class, () -> parse("#4096"));
     }
 }
