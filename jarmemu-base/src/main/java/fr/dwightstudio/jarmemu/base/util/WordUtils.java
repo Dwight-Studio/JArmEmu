@@ -24,7 +24,11 @@
 package fr.dwightstudio.jarmemu.base.util;
 
 public class WordUtils {
-    public static boolean overflows(int number, int bitNumber) {
+    public static int toUnsignedInt(long number) {
+        return (int) (number & 0xFFFFFFFFL);
+    }
+
+    public static boolean overflows(long number, int bitNumber) {
         int min = -(1 << (bitNumber - 1));
         int max = (1 << bitNumber) - 1; // We want to allow signed and unsigned
 

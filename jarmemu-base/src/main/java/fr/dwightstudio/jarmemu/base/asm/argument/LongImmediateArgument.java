@@ -46,7 +46,7 @@ public class LongImmediateArgument extends ParsedArgument<Integer> {
             if (originalString.startsWith("#")) {
                 String valueString = originalString.substring(1).strip();
 
-                value = stateContainer.evalWithAccessible(valueString);
+                value = WordUtils.toUnsignedInt(stateContainer.evalWithAccessible(valueString));
 
                 if (WordUtils.overflows(value, 16))
                     throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.overflowingValue", originalString));

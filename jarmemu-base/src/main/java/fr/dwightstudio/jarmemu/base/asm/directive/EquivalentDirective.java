@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class EquivalentDirective extends ParsedDirective {
@@ -55,7 +56,7 @@ public class EquivalentDirective extends ParsedDirective {
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        stateContainer.getAccessibleConsts().put(symbol, stateContainer.evalWithAccessibleConsts(argument));
+        stateContainer.getAccessibleConsts().put(symbol, WordUtils.toUnsignedInt(stateContainer.evalWithAccessibleConsts(argument)));
     }
 
     @Override

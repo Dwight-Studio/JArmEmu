@@ -29,6 +29,7 @@ import atlantafx.base.theme.Styles;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.gui.view.MemoryView;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -77,7 +78,7 @@ public abstract class MemoryController<T extends MemoryView> implements Initiali
                 if (doSearchQuery) return;
                 try {
                     StateContainer container = JArmEmuApplication.getCodeInterpreter().getStateContainer();
-                    goTo(container.evalWithAll(getTextField().getText().strip().toUpperCase()));
+                    goTo(WordUtils.toUnsignedInt(container.evalWithAll(getTextField().getText().strip().toUpperCase())));
                     getTextField().pseudoClassStateChanged(Styles.STATE_DANGER, false);
                 } catch (Exception e) {
                     logger.severe(e.getMessage());

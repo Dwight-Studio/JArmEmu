@@ -171,8 +171,8 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
     public ParsedObject generate(StateContainer container) throws ASMException {
         Matcher matcher = PSEUDO_INS_PATTERN.matcher(arg2.getOriginalString());
         if (!matcher.find()) throw new IllegalStateException("Can't find Pseudo-Instruction");
-        int value = container.evalWithAccessible(matcher.group("VALUE"));
-        dir = new WordDirective(Section.RODATA, Integer.toString(value));
+        long value = container.evalWithAccessible(matcher.group("VALUE"));
+        dir = new WordDirective(Section.RODATA, Long.toString(value));
         dir.setGenerated();
         dir.setLineNumber(this.getLineNumber());
         return dir;

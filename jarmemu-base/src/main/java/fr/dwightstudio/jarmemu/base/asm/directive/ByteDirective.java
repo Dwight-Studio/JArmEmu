@@ -57,7 +57,7 @@ public class ByteDirective extends ParsedDirective {
     public void contextualize(StateContainer stateContainer) throws ASMException {
         try {
             for (int i = 0; i < arg.length; i++) {
-                int data = stateContainer.evalWithAccessible(arg[i].strip());
+                long data = stateContainer.evalWithAccessible(arg[i].strip());
                 if (!WordUtils.overflows(data, 8)) {
                         byteArray[i] = (byte) data;
                 } else {

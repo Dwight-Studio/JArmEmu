@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.nio.ByteBuffer;
@@ -53,17 +54,17 @@ public class FillDirective extends ParsedDirective {
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
         switch (arg.length) {
-            case 1 -> totalNum = stateContainer.evalWithAccessibleConsts(arg[0]);
+            case 1 -> totalNum = WordUtils.toUnsignedInt(stateContainer.evalWithAccessibleConsts(arg[0]));
 
             case 2 -> {
-                totalNum = stateContainer.evalWithAccessibleConsts(arg[0]);
-                value = stateContainer.evalWithAccessibleConsts(arg[1]);
+                totalNum = WordUtils.toUnsignedInt(stateContainer.evalWithAccessibleConsts(arg[0]));
+                value = (int) stateContainer.evalWithAccessibleConsts(arg[1]);
             }
 
             case 3 -> {
-                totalNum = stateContainer.evalWithAccessibleConsts(arg[0]);
-                value = stateContainer.evalWithAccessibleConsts(arg[1]);
-                valueSize = stateContainer.evalWithAccessibleConsts(arg[2]);
+                totalNum = WordUtils.toUnsignedInt(stateContainer.evalWithAccessibleConsts(arg[0]));
+                value = (int) stateContainer.evalWithAccessibleConsts(arg[1]);
+                valueSize = WordUtils.toUnsignedInt(stateContainer.evalWithAccessibleConsts(arg[2]));
             }
 
             default -> throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Fill"));

@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.asm.directive;
 import fr.dwightstudio.jarmemu.base.asm.Section;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class AlignDirective extends ParsedDirective {
@@ -41,7 +42,7 @@ public class AlignDirective extends ParsedDirective {
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
         if (!args.isEmpty()) {
-            offset = stateContainer.evalWithAccessibleConsts(args);
+            offset = WordUtils.toUnsignedInt(stateContainer.evalWithAccessibleConsts(args));
         }
     }
 

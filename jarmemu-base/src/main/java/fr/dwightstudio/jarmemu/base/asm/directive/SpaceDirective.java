@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class SpaceDirective extends ParsedDirective {
@@ -54,7 +55,7 @@ public class SpaceDirective extends ParsedDirective {
                 if (args.isBlank()) {
                     value = 1;
                 } else {
-                    value = stateContainer.evalWithAccessible(args);
+                    value = WordUtils.toUnsignedInt(stateContainer.evalWithAccessible(args));
                 }
             } catch (Exception e) {
                 throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.directive.invalidArgument", args, "Space"));

@@ -28,6 +28,7 @@ import fr.dwightstudio.jarmemu.base.asm.exception.BadArgumentASMException;
 import fr.dwightstudio.jarmemu.base.asm.exception.ExecutionASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.WordUtils;
 
 import java.util.function.Supplier;
 
@@ -46,7 +47,7 @@ public class LabelArgument extends ParsedArgument<Integer> {
 
     @Override
     public void contextualize(StateContainer stateContainer) throws ASMException {
-        value = stateContainer.evalBranch(originalString);
+        value = WordUtils.toUnsignedInt(stateContainer.evalBranch(originalString));
     }
 
     @Override
