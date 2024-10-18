@@ -1,5 +1,6 @@
 1.1.2 -> 1.1.3
 
+- Improved autocompletion of braces and brackets (resolved #27)
 - Fixed autocompletion behaviour when declaring label with space (resolved #26)
 
 

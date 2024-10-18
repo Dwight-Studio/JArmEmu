@@ -170,7 +170,7 @@ public class FileEditor {
 
         // Ajout automatique du caractère fermant
         codeArea.setOnKeyTyped(keyEvent -> {
-            JArmEmuApplication.getAutocompletionController().onKeyTyped(keyEvent.getCharacter(), codeArea.getCaretPosition());
+            JArmEmuApplication.getAutocompletionController().onKeyTyped(this, keyEvent.getCharacter(), codeArea.getCaretPosition());
         });
 
         // Find & Replace

@@ -462,8 +462,8 @@ public class AutocompletionController implements Initializable {
      * @param character the character typed
      * @param pos       the caret position
      */
-    public void onKeyTyped(String character, int pos) {
-        final String oldChar = character.equals("\b") ? JArmEmuApplication.getEditorController().currentFileEditor().getCodeArea().getText(pos - 1, pos) : "";
+    public void onKeyTyped(FileEditor editor, String character, int pos) {
+        final String oldChar = character.equals("\b") ? editor.getCodeArea().getText(pos - 1, pos) : "";
         final String newChar = switch (character) {
             case "[" -> "]";
 
@@ -476,11 +476,18 @@ public class AutocompletionController implements Initializable {
             default -> "";
         };
 
+        if (character.equals("]") || character.equals("}") || character.equals(")")) {
+            String nextChar = editor.getCodeArea().getText(pos, pos + 1);
+            if (nextChar.equals(character)) {
+                editor.getCodeArea().deleteNextChar();
+            }
+        }
+
         if (!newChar.isEmpty()) {
             synchronized (this) {
-                sc.editor().getRealTimeParser().cancelLine(sc.line());
-                sc.editor().getCodeArea().insertText(pos, newChar);
-                sc.editor().getCodeArea().moveTo(pos);
+                editor.getRealTimeParser().cancelLine(sc.line());
+                editor.getCodeArea().insertText(pos, newChar);
+                editor.getCodeArea().moveTo(pos);
             }
             Platform.runLater(this::authorizeAutocomplete);
         } else if (!character.equals("\n") && !character.equals("\r") && !character.equals("\t") && !character.equals("\u001b") && !character.equals(":")) {
@@ -510,7 +517,7 @@ public class AutocompletionController implements Initializable {
             sc.editor().getCodeArea().replaceSelection(selected);
 
             if (selected.length() == 1) {
-                onKeyTyped(selected, pos + 1);
+                onKeyTyped(sc.editor(), selected, pos + 1);
             }
         }
 
