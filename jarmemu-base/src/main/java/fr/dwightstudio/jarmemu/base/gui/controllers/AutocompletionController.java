@@ -39,6 +39,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PopupControl;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.PopupWindow;
 
@@ -51,10 +52,8 @@ public class AutocompletionController implements Initializable {
 
     private static final Pattern LAST_WORD_PATTERN = Pattern.compile("\\b[^ #=+\\-/()\\[\\]{}]+$");
 
-    private final Object LOCK = new Object();
-
     private SmartContext sc;
-    
+
     private ArrayList<String> list;
     private ObservableListWrapper<String> wrappedList;
     private ListView<String> listView;
@@ -80,6 +79,7 @@ public class AutocompletionController implements Initializable {
         listView.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case ENTER, TAB -> applyAutocomplete();
+
                 case LEFT -> {
                     sc.editor().getCodeArea().moveTo(sc.editor().getCodeArea().getCaretPosition() - 1);
                     close();
@@ -122,94 +122,128 @@ public class AutocompletionController implements Initializable {
         }
     }
 
-    private void update() {
-        synchronized (LOCK) {
-            list.clear();
+    private synchronized void update() {
+        list.clear();
 
-            if (sc.section() == Section.TEXT) {
-                switch (sc.context()) {
-                    case NONE, INSTRUCTION, LABEL -> {
-                        list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
-                        considerWord = true;
-                    }
+        if (sc.section() == Section.TEXT) {
+            switch (sc.context()) {
+                case NONE, INSTRUCTION, LABEL -> {
+                    list.addAll(Arrays.asList(ASMParser.INSTRUCTIONS));
+                    considerWord = true;
+                }
 
-                    case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
-                         INSTRUCTION_ARGUMENT_4 -> {
-                        switch (sc.argType()) {
-                            case "RegisterArgument" -> {
-                                if (sc.subContext() != SubContext.REGISTER) {
-                                    for (RegisterUtils value : RegisterUtils.values()) {
-                                        if (!value.isSpecial()) list.add(value.name());
+                case INSTRUCTION_ARGUMENT_1, INSTRUCTION_ARGUMENT_2, INSTRUCTION_ARGUMENT_3,
+                     INSTRUCTION_ARGUMENT_4 -> {
+                    switch (sc.argType()) {
+                        case "RegisterArgument" -> {
+                            if (sc.subContext() != SubContext.REGISTER) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    if (!value.isSpecial()) list.add(value.name());
+                                }
+                            }
+                        }
+
+                        case "RegisterWithUpdateArgument" -> {
+                            if (sc.subContext() != SubContext.REGISTER) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    if (!value.isSpecial()) {
+                                        list.add(value.name());
+                                        list.add(value.name() + "!");
                                     }
                                 }
                             }
+                        }
 
-                            case "RegisterWithUpdateArgument" -> {
-                                if (sc.subContext() != SubContext.REGISTER) {
-                                    for (RegisterUtils value : RegisterUtils.values()) {
-                                        if (!value.isSpecial()) {
-                                            list.add(value.name());
-                                            list.add(value.name() + "!");
+                        case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument",
+                             "RotatedImmediateArgument" -> {
+                            if (sc.subContext() != SubContext.IMMEDIATE) list.add("#");
+                            else {
+                                list.addAll(sc.editor().getRealTimeParser().getSymbols());
+                                considerWord = true;
+                            }
+                        }
+
+                        case "ImmediateOrRegisterArgument", "LongImmediateOrRegisterArgument",
+                             "RotatedImmediateOrRegisterArgument", "PostOffsetArgument" -> {
+                            if (sc.subContext() != SubContext.REGISTER && sc.subContext() != SubContext.IMMEDIATE) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    if (!value.isSpecial()) list.add(value.name());
+                                }
+
+                                list.add("#");
+                            } else if (sc.subContext() == SubContext.IMMEDIATE) {
+                                list.addAll(sc.editor().getRealTimeParser().getSymbols());
+                                considerWord = true;
+                            }
+                        }
+
+                        case "ShiftArgument" -> {
+                            if (sc.rrx()) return;
+                            if (sc.subContext() == SubContext.SHIFT) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    if (!value.isSpecial()) list.add(value.name());
+                                }
+
+                                list.add("#");
+                            } else if (sc.subContext() != SubContext.IMMEDIATE && sc.subContext() != SubContext.REGISTER) {
+                                list.add("LSL");
+                                list.add("LSR");
+                                list.add("ASR");
+                                list.add("ROR");
+                                list.add("RRX");
+                            }
+                        }
+
+                        case "RegisterAddressArgument" -> {
+                            if (sc.subContext() != SubContext.ADDRESS) {
+                                for (RegisterUtils value : RegisterUtils.values()) {
+                                    if (!value.isSpecial()) list.add("[" + value.name() + "]");
+                                }
+                            }
+                        }
+
+                        case "RegisterArrayArgument" -> {
+                            if (sc.brace()) {
+                                switch (sc.subContext()) {
+                                    case NONE -> {
+                                        for (RegisterUtils value : RegisterUtils.values()) {
+                                            if (!value.isSpecial()) {
+                                                list.add(value.name());
+                                                list.add(value.name() + "-");
+                                            }
+                                        }
+                                    }
+
+                                    case PRIMARY -> {
+                                        for (RegisterUtils value : RegisterUtils.values()) {
+                                            if (!value.isSpecial()) list.add(value.name());
                                         }
                                     }
                                 }
+                            } else {
+                                list.add("{");
                             }
+                        }
 
-                            case "ImmediateArgument", "SmallImmediateArgument", "LongImmediateArgument", "RotatedImmediateArgument" -> {
-                                if (sc.subContext() != SubContext.IMMEDIATE) list.add("#");
-                                else {
-                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
-                                    considerWord = true;
-                                }
+                        case "LabelArgument" -> {
+                            if (sc.subContext() != SubContext.LABEL_REF)
+                                list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
+                        }
+
+                        case "LabelOrRegisterArgument" -> {
+                            list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
+                            for (RegisterUtils value : RegisterUtils.values()) {
+                                if (!value.isSpecial()) list.add(value.name());
                             }
+                        }
 
-                            case "ImmediateOrRegisterArgument", "LongImmediateOrRegisterArgument", "RotatedImmediateOrRegisterArgument", "PostOffsetArgument" -> {
-                                if (sc.subContext() != SubContext.REGISTER && sc.subContext() != SubContext.IMMEDIATE) {
-                                    for (RegisterUtils value : RegisterUtils.values()) {
-                                        if (!value.isSpecial()) list.add(value.name());
-                                    }
-
-                                    list.add("#");
-                                } else if (sc.subContext() == SubContext.IMMEDIATE) {
-                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
-                                    considerWord = true;
-                                }
-                            }
-
-                            case "ShiftArgument" -> {
-                                if (sc.rrx()) return;
-                                if (sc.subContext() == SubContext.SHIFT) {
-                                    for (RegisterUtils value : RegisterUtils.values()) {
-                                        if (!value.isSpecial()) list.add(value.name());
-                                    }
-
-                                    list.add("#");
-                                } else if (sc.subContext() != SubContext.IMMEDIATE && sc.subContext() != SubContext.REGISTER) {
-                                    list.add("LSL");
-                                    list.add("LSR");
-                                    list.add("ASR");
-                                    list.add("ROR");
-                                    list.add("RRX");
-                                }
-                            }
-
-                            case "RegisterAddressArgument" -> {
-                                if (sc.subContext() != SubContext.ADDRESS) {
-                                    for (RegisterUtils value : RegisterUtils.values()) {
-                                        if (!value.isSpecial()) list.add("[" + value.name() + "]");
-                                    }
-                                }
-                            }
-
-                            case "RegisterArrayArgument" -> {
-                                if (sc.brace()) {
+                        case "AddressArgument" -> {
+                            if (sc.subContext() != SubContext.ADDRESS && sc.subContext() != SubContext.PSEUDO) {
+                                if (sc.bracket()) {
                                     switch (sc.subContext()) {
                                         case NONE -> {
                                             for (RegisterUtils value : RegisterUtils.values()) {
-                                                if (!value.isSpecial()) {
-                                                    list.add(value.name());
-                                                    list.add(value.name() + "-");
-                                                }
+                                                if (!value.isSpecial()) list.add(value.name());
                                             }
                                         }
 
@@ -217,144 +251,111 @@ public class AutocompletionController implements Initializable {
                                             for (RegisterUtils value : RegisterUtils.values()) {
                                                 if (!value.isSpecial()) list.add(value.name());
                                             }
+
+                                            list.add("#");
+                                        }
+
+                                        case TERTIARY -> {
+                                            list.add("LSL");
+                                            list.add("LSR");
+                                            list.add("ASR");
+                                            list.add("ROR");
+                                            list.add("RRX");
+                                        }
+
+                                        case SHIFT -> {
+                                            if (!sc.rrx()) list.add("#");
+                                        }
+
+                                        case IMMEDIATE -> {
+                                            list.addAll(sc.editor().getRealTimeParser().getSymbols());
+                                            considerWord = true;
                                         }
                                     }
                                 } else {
-                                    list.add("{");
+                                    list.add("[");
+                                    list.add("=");
                                 }
-                            }
-
-                            case "LabelArgument" -> {
-                                if (sc.subContext() != SubContext.LABEL_REF)
-                                    list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
-                            }
-
-                            case "LabelOrRegisterArgument" -> {
-                                list.addAll(sc.editor().getRealTimeParser().getAccessibleLabels());
-                                for (RegisterUtils value : RegisterUtils.values()) {
-                                    if (!value.isSpecial()) list.add(value.name());
-                                }
-                            }
-
-                            case "AddressArgument" -> {
-                                if (sc.subContext() != SubContext.ADDRESS && sc.subContext() != SubContext.PSEUDO) {
-                                    if (sc.bracket()) {
-                                        switch (sc.subContext()) {
-                                            case NONE -> {
-                                                for (RegisterUtils value : RegisterUtils.values()) {
-                                                    if (!value.isSpecial()) list.add(value.name());
-                                                }
-                                            }
-
-                                            case PRIMARY -> {
-                                                for (RegisterUtils value : RegisterUtils.values()) {
-                                                    if (!value.isSpecial()) list.add(value.name());
-                                                }
-
-                                                list.add("#");
-                                            }
-
-                                            case TERTIARY -> {
-                                                list.add("LSL");
-                                                list.add("LSR");
-                                                list.add("ASR");
-                                                list.add("ROR");
-                                                list.add("RRX");
-                                            }
-
-                                            case SHIFT -> {
-                                                if (!sc.rrx()) list.add("#");
-                                            }
-
-                                            case IMMEDIATE -> {
-                                                list.addAll(sc.editor().getRealTimeParser().getSymbols());
-                                                considerWord = true;
-                                            }
-                                        }
-                                    } else {
-                                        list.add("[");
-                                        list.add("=");
-                                    }
-                                } else if (sc.subContext() == SubContext.PSEUDO) {
-                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
-                                    considerWord = true;
-                                }
+                            } else if (sc.subContext() == SubContext.PSEUDO) {
+                                list.addAll(sc.editor().getRealTimeParser().getSymbols());
+                                considerWord = true;
                             }
                         }
                     }
                 }
             }
+        }
 
-            if (sc.section().isDataRelatedSection() || sc.section() == Section.TEXT || sc.section() == Section.NONE) {
-                switch (sc.context()) {
-                    case NONE, LABEL -> {
-                        for (Directive directive : Directive.values()) {
-                            list.add("." + directive.name());
-                        }
-
-                        for (Section sec : Section.values()) {
-                            if (sec != Section.NONE) list.add("." + sec.name());
-                        }
+        if (sc.section().isDataRelatedSection() || sc.section() == Section.TEXT || sc.section() == Section.NONE) {
+            switch (sc.context()) {
+                case NONE, LABEL -> {
+                    for (Directive directive : Directive.values()) {
+                        list.add("." + directive.name());
                     }
 
-                    case DIRECTIVE_ARGUMENTS -> {
-                        switch (sc.command().toUpperCase()) {
-                            case "SET", "EQU", "EQUIV", "EQV" -> {
-                                if (Objects.requireNonNull(sc.subContext()) == SubContext.SECONDARY) {
-                                    list.addAll(sc.editor().getRealTimeParser().getSymbols());
-                                    considerWord = true;
-                                }
+                    for (Section sec : Section.values()) {
+                        if (sec != Section.NONE) list.add("." + sec.name());
+                    }
+                }
+
+                case DIRECTIVE_ARGUMENTS -> {
+                    switch (sc.command().toUpperCase()) {
+                        case "SET", "EQU", "EQUIV", "EQV" -> {
+                            if (Objects.requireNonNull(sc.subContext()) == SubContext.SECONDARY) {
+                                list.addAll(sc.editor().getRealTimeParser().getSymbols());
+                                considerWord = true;
                             }
                         }
                     }
                 }
             }
+        }
 
-            try {
-                currentWord = getCurrentContext();
-            } catch (IndexOutOfBoundsException exception) {
+        try {
+            currentWord = getCurrentContext();
+        } catch (IndexOutOfBoundsException exception) {
+            currentWord = "";
+        }
+
+        if (considerWord) {
+            Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
+            if (matcher.find()) {
+                currentWord = matcher.group();
+            } else {
                 currentWord = "";
             }
 
-            if (considerWord) {
-                Matcher matcher = LAST_WORD_PATTERN.matcher(currentWord);
-                if (matcher.find()) {
-                    currentWord = matcher.group();
-                } else {
-                    currentWord = "";
-                }
-
-                considerWord = false;
-            }
-
-            currentWord = currentWord.strip();
-
-            //System.out.println("\"" + currentWord + "\"");
-            //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
-            //System.out.println(list);
-
-            switch (currentWord) {
-                case "" -> {}
-                case "{", "[" -> currentWord = "";
-                default -> {
-                    final String finalCurrentWord = currentWord;
-                    list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()) || s.isBlank());
-                    list.removeIf(s -> s.equalsIgnoreCase(finalCurrentWord));
-                }
-            }
-
-            list.replaceAll(String::toLowerCase);
-            list.sort(Comparator.comparingInt(String::length));
-
-            if (list.isEmpty()) {
-                close();
-            }
-
-            sc.editor().getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
+            considerWord = false;
         }
+
+        currentWord = currentWord.strip();
+
+        //System.out.println("\"" + currentWord + "\"");
+        //System.out.println(section + " " + context + ":" + subContext + ";" + command + ";" + argType + "{" + currentWord + "}");
+        //System.out.println(list);
+
+        switch (currentWord) {
+            case "" -> {
+            }
+            case "{", "[" -> currentWord = "";
+            default -> {
+                final String finalCurrentWord = currentWord;
+                list.removeIf(s -> !s.toLowerCase().startsWith(finalCurrentWord.toLowerCase()) || s.isBlank());
+                list.removeIf(s -> s.equalsIgnoreCase(finalCurrentWord));
+            }
+        }
+
+        list.replaceAll(String::toLowerCase);
+        list.sort(Comparator.comparingInt(String::length));
+
+        if (list.isEmpty()) {
+            close();
+        }
+
+        sc.editor().getRealTimeParser().getCaseTranslationTable().forEach(s -> list.replaceAll(p -> s.equals(p) ? s.string() : p));
     }
 
-    private void show() {
+    private synchronized void show() {
         if (!list.isEmpty()) {
             int start = getCurrentContextStart();
             int end = getCurrentContextEnd();
@@ -431,7 +432,7 @@ public class AutocompletionController implements Initializable {
      * Closes autocompletion popover
      */
     public void close() {
-        if (Platform.isFxApplicationThread()){
+        if (Platform.isFxApplicationThread()) {
             if (popup.isShowing()) popup.hide();
         } else {
             Platform.runLater(() -> {
@@ -443,17 +444,15 @@ public class AutocompletionController implements Initializable {
     /**
      * Updates autocompletion popover when moving caret
      */
-    public void caretMoved() {
-        synchronized (LOCK) {
-            if (sc.editor() == null) return;
+    public synchronized void caretMoved() {
+        if (sc.editor() == null) return;
 
-            try {
-                if (sc.editor().getCurrentLine() != sc.line()) {
-                    close();
-                }
-            } catch (IndexOutOfBoundsException ignored) {
+        try {
+            if (sc.editor().getCurrentLine() != sc.line()) {
                 close();
             }
+        } catch (IndexOutOfBoundsException ignored) {
+            close();
         }
     }
 
@@ -478,14 +477,15 @@ public class AutocompletionController implements Initializable {
         };
 
         if (!newChar.isEmpty()) {
-            synchronized (LOCK) {
+            synchronized (this) {
                 sc.editor().getRealTimeParser().cancelLine(sc.line());
                 sc.editor().getCodeArea().insertText(pos, newChar);
                 sc.editor().getCodeArea().moveTo(pos);
             }
             Platform.runLater(this::authorizeAutocomplete);
-        } else if (!character.equals("\n") && !character.equals("\r") && !character.equals("\t") && !character.equals("\u001b")) {
-            if (!oldChar.equals("\n") && !oldChar.equals("\r") && !oldChar.equals("\t")) Platform.runLater(this::authorizeAutocomplete);
+        } else if (!character.equals("\n") && !character.equals("\r") && !character.equals("\t") && !character.equals("\u001b") && !character.equals(":")) {
+            if (!oldChar.equals("\n") && !oldChar.equals("\r") && !oldChar.equals("\t") && !oldChar.equals(":"))
+                Platform.runLater(this::authorizeAutocomplete);
             else close();
         } else {
             close();

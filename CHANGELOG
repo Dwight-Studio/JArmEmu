@@ -1,3 +1,8 @@
+1.1.2 -> 1.1.3
+
+- Fixed autocompletion behaviour when declaring label with space (resolved #26)
+
+
 1.1.1 -> 1.1.2
 
 - Improved data length checking
