@@ -26,6 +26,7 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
+import fr.dwightstudio.jarmemu.base.Status;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
@@ -360,20 +361,22 @@ public class EditorController implements Initializable {
      * Checks if there is still opened files to allow simulation.
      */
     public void updateSimulationButtons() {
-        for (FileEditor fileEditor : fileEditors) {
-            if (!fileEditor.isClosed()) {
-                JArmEmuApplication.getController().menuSimulate.setDisable(false);
-                JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
-                JArmEmuApplication.getController().toolSimulate.setDisable(false);
-                JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
-                return;
+        if (JArmEmuApplication.getStatus() == Status.EDITING) {
+            for (FileEditor fileEditor : fileEditors) {
+                if (!fileEditor.isClosed()) {
+                    JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                    JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
+                    JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                    JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
+                    return;
+                }
             }
-        }
 
-        JArmEmuApplication.getController().menuSimulate.setDisable(true);
-        JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
-        JArmEmuApplication.getController().toolSimulate.setDisable(true);
-        JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
+            JArmEmuApplication.getController().menuSimulate.setDisable(true);
+            JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
+            JArmEmuApplication.getController().toolSimulate.setDisable(true);
+            JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
+        }
     }
 
     /**
