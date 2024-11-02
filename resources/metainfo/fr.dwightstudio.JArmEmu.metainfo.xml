@@ -77,6 +77,21 @@
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2024-11-02" version="1.1.3">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.1.3</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Improved autocompletion of braces and brackets (resolved #27)</li>
+                    <li>Added shortcut to comment all selected lines (resolved #29)</li>
+                    <li>Fixed autocompletion behaviour when declaring label with space (resolved #26)</li>
+                    <li>Fixed simulation button being re-enabled when you save while simulating (resolved #28)</li>
+                    <li>Fixed double EOF notification when the last instruction is forced</li>
+                    <li>Fixed double indexing on LDR/STR instructions when forced (resolved #32)</li>
+                </ul>
+            </description>
+        </release>
         <release date="2024-10-17" version="1.1.2">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.1.2</url>
             <description>
