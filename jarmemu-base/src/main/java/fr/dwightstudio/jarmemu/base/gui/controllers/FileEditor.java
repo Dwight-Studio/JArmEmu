@@ -410,6 +410,38 @@ public class FileEditor {
         lineFactory.onToggleBreakpoint(line);
     }
 
+    public void toggleCommentSelection() {
+        if (!codeArea.isEditable()) return;
+
+        int selStart = codeArea.getCaretSelectionBind().getStartPosition();
+        int selEnd = codeArea.getCaretSelectionBind().getEndPosition();
+
+        if (selStart == selEnd) {
+            int parN = getCurrentLine() - 1;
+            Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
+            if (par.charAt(0) == '@') {
+                codeArea.deleteText(parN, 0, parN, 1);
+            } else {
+                codeArea.insertText(parN, 0, "@");
+            }
+        } else {
+            int start = codeArea.getCaretSelectionBind().getStartParagraphIndex();
+            int end = codeArea.getCaretSelectionBind().getEndParagraphIndex();
+
+            for (int parN = start; parN <= end; parN++) {
+                Paragraph<?, ?, ?> par = codeArea.getParagraph(parN);
+                if (par.charAt(0) == '@') {
+                    codeArea.deleteText(parN, 0, parN, 1);
+                } else {
+                    codeArea.insertText(parN, 0, "@");
+                }
+            }
+
+            codeArea.selectRange(start, 0, end, codeArea.getParagraph(end).length());
+            this.realTimeParser.markDirty(start + 1, end + 2);
+        }
+    }
+
     public void clearLineMarkings() {
         this.lineFactory.clearMarkings();
     }

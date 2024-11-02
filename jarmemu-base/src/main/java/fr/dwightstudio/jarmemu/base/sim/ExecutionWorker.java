@@ -180,6 +180,7 @@ public class ExecutionWorker {
         if (!this.daemon.isAlive()) logger.warning("Adding task to a dead Worker");
         Task task = this.daemon.nextTask.get();
         if (task != Task.IDLE) logger.warning("Overriding next task (" + task.name() + " with " + nTask.name() + ")");
+        else logger.info("Setting next task to " + nTask.name());
 
         this.daemon.nextTask.set(nTask);
         synchronized (LOCK) {

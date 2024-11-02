@@ -91,6 +91,7 @@ public class JArmEmuController implements Initializable {
     @FXML protected MenuItem menuPaste;
     @FXML protected MenuItem menuDelete;
     @FXML protected MenuItem menuFindAndReplace;
+    @FXML protected MenuItem menuToggleComment;
 
     @FXML protected MenuItem menuSimulate;
     @FXML protected MenuItem menuSimulateAll;
@@ -508,6 +509,10 @@ public class JArmEmuController implements Initializable {
 
     @FXML void onToggleBreakpoint() {
         JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onToggleBreakpoint(new ActionEvent());
+    }
+
+    @FXML void onToggleComment() {
+        JArmEmuApplication.getEditorController().currentFileEditor().getContextMenu().onToggleComment(new ActionEvent());
     }
 
     @FXML void onFindAndReplace() {

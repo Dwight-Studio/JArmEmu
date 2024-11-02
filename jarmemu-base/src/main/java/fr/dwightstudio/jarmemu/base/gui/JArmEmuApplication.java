@@ -298,6 +298,7 @@ public class JArmEmuApplication extends Application {
 
                 new KeyFrame(Duration.seconds(2), actionEvent -> {
                     JArmEmuApplication.closePreloader();
+                    JArmEmuApplication.getEditorController().updateSimulationButtons();
                     controller.registerLayoutChangeListener();
 
                     if (downloadURL != null) {

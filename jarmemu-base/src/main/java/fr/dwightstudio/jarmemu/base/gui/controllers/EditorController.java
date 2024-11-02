@@ -33,6 +33,7 @@ import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.util.FileUtils;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.util.Duration;
@@ -183,8 +184,9 @@ public class EditorController implements Initializable {
      */
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(fileName, content));
-        JArmEmuApplication.getEditorController().updateSimulationButtons();
         JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
+
+        Platform.runLater(() -> JArmEmuApplication.getEditorController().updateSimulationButtons());
     }
 
     /**
@@ -195,8 +197,9 @@ public class EditorController implements Initializable {
     public void open(File path) {
         FileEditor editor = new FileEditor(path);
         fileEditors.add(editor);
-        JArmEmuApplication.getEditorController().updateSimulationButtons();
         JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
+
+        Platform.runLater(() -> JArmEmuApplication.getEditorController().updateSimulationButtons());
     }
 
     public void clearAllLineMarkings() {

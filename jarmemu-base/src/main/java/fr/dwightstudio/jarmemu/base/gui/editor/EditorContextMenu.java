@@ -41,6 +41,7 @@ public class EditorContextMenu extends ContextMenu {
     MenuItem paste;
     MenuItem delete;
     MenuItem breakpoint;
+    MenuItem comment;
 
     public EditorContextMenu(FileEditor editor) {
         this.editor = editor;
@@ -50,30 +51,33 @@ public class EditorContextMenu extends ContextMenu {
         paste = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.paste"), new FontIcon(Material2RoundAL.CONTENT_PASTE));
         delete = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.delete"), new FontIcon(Material2RoundAL.DELETE));
         breakpoint = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.breakpoint"), new FontIcon(Material2RoundMZ.STOP_CIRCLE));
+        comment = new MenuItem(JArmEmuApplication.formatMessage("%menu.edit.comment"), new FontIcon(Material2RoundAL.ALTERNATE_EMAIL));
 
         copy.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN));
         cut.setAccelerator(new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN));
         paste.setAccelerator(new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN));
         breakpoint.setAccelerator(new KeyCodeCombination(KeyCode.B, KeyCombination.SHORTCUT_DOWN));
+        comment.setAccelerator(new KeyCodeCombination(KeyCode.COLON, KeyCombination.SHORTCUT_DOWN));
 
         copy.setOnAction(this::onCopy);
         cut.setOnAction(this::onCut);
         paste.setOnAction(this::onPaste);
         delete.setOnAction(this::onDelete);
         breakpoint.setOnAction(this::onToggleBreakpoint);
+        comment.setOnAction(this::onToggleComment);
 
-        if (!editor.getCodeArea().isEditable()) {
-            copy.setDisable(true);
-            cut.setDisable(true);
-            paste.setDisable(true);
-            delete.setDisable(true);
-        }
+        copy.disableProperty().bind(editor.getCodeArea().editableProperty().not());
+        cut.disableProperty().bind(editor.getCodeArea().editableProperty().not());
+        paste.disableProperty().bind(editor.getCodeArea().editableProperty().not());
+        delete.disableProperty().bind(editor.getCodeArea().editableProperty().not());
+        comment.disableProperty().bind(editor.getCodeArea().editableProperty().not());
 
         getItems().add(copy);
         getItems().add(cut);
         getItems().add(paste);
         getItems().add(delete);
         getItems().add(breakpoint);
+        getItems().add(comment);
     }
 
     @Override
@@ -127,5 +131,11 @@ public class EditorContextMenu extends ContextMenu {
 
     public void onToggleBreakpoint(ActionEvent actionEvent) {
         editor.toggleBreakpoint(editor.getCodeArea().getCurrentParagraph());
+    }
+
+    public void onToggleComment(ActionEvent actionEvent) {
+        if (!editor.getCodeArea().isEditable()) return;
+
+        editor.toggleCommentSelection();
     }
 }
