@@ -63,7 +63,10 @@ public class SimulationMenuController {
      */
     public void onSimulate() {
         logger.info("Triggered simulation");
-        if (preSimulation()) return;
+        if (preSimulation()) {
+            logger.info("Simulation aborted");
+            return;
+        }
         JArmEmuApplication.getExecutionWorker().prepare();
     }
 
@@ -212,6 +215,7 @@ public class SimulationMenuController {
         JArmEmuApplication.getController().menuPaste.setDisable(false);
         JArmEmuApplication.getController().menuDelete.setDisable(false);
         JArmEmuApplication.getController().menuFindAndReplace.setDisable(false);
+        JArmEmuApplication.getController().menuToggleComment.setDisable(false);
 
         JArmEmuApplication.setStatus(Status.EDITING);
         JArmEmuApplication.getExecutionWorker().updateGUI();
@@ -260,6 +264,7 @@ public class SimulationMenuController {
         JArmEmuApplication.getController().settingsProgramAddress.setDisable(true);
         JArmEmuApplication.getController().settingsSimInterval.setDisable(true);
         JArmEmuApplication.getController().menuFindAndReplace.setDisable(true);
+        JArmEmuApplication.getController().menuToggleComment.setDisable(true);
 
         JArmEmuApplication.getController().memoryDetailsAddressField.setDisable(false);
         JArmEmuApplication.getController().memoryOverviewAddressField.setDisable(false);

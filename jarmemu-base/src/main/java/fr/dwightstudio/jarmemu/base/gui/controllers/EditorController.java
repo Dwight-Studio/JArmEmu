@@ -26,12 +26,14 @@ package fr.dwightstudio.jarmemu.base.gui.controllers;
 import atlantafx.base.controls.Notification;
 import atlantafx.base.theme.Styles;
 import atlantafx.base.util.Animations;
+import fr.dwightstudio.jarmemu.base.Status;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.SourceScanner;
 import fr.dwightstudio.jarmemu.base.sim.entity.FilePos;
 import fr.dwightstudio.jarmemu.base.util.FileUtils;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.util.Duration;
@@ -182,8 +184,9 @@ public class EditorController implements Initializable {
      */
     public void open(String fileName, String content) {
         fileEditors.add(new FileEditor(fileName, content));
-        JArmEmuApplication.getEditorController().updateSimulationButtons();
         JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
+
+        Platform.runLater(() -> JArmEmuApplication.getEditorController().updateSimulationButtons());
     }
 
     /**
@@ -194,8 +197,9 @@ public class EditorController implements Initializable {
     public void open(File path) {
         FileEditor editor = new FileEditor(path);
         fileEditors.add(editor);
-        JArmEmuApplication.getEditorController().updateSimulationButtons();
         JArmEmuApplication.getController().filesTabPane.getSelectionModel().selectLast();
+
+        Platform.runLater(() -> JArmEmuApplication.getEditorController().updateSimulationButtons());
     }
 
     public void clearAllLineMarkings() {
@@ -360,20 +364,22 @@ public class EditorController implements Initializable {
      * Checks if there is still opened files to allow simulation.
      */
     public void updateSimulationButtons() {
-        for (FileEditor fileEditor : fileEditors) {
-            if (!fileEditor.isClosed()) {
-                JArmEmuApplication.getController().menuSimulate.setDisable(false);
-                JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
-                JArmEmuApplication.getController().toolSimulate.setDisable(false);
-                JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
-                return;
+        if (JArmEmuApplication.getStatus() == Status.EDITING) {
+            for (FileEditor fileEditor : fileEditors) {
+                if (!fileEditor.isClosed()) {
+                    JArmEmuApplication.getController().menuSimulate.setDisable(false);
+                    JArmEmuApplication.getController().menuSimulateAll.setDisable(false);
+                    JArmEmuApplication.getController().toolSimulate.setDisable(false);
+                    JArmEmuApplication.getController().toolSimulateAll.setDisable(false);
+                    return;
+                }
             }
-        }
 
-        JArmEmuApplication.getController().menuSimulate.setDisable(true);
-        JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
-        JArmEmuApplication.getController().toolSimulate.setDisable(true);
-        JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
+            JArmEmuApplication.getController().menuSimulate.setDisable(true);
+            JArmEmuApplication.getController().menuSimulateAll.setDisable(true);
+            JArmEmuApplication.getController().toolSimulate.setDisable(true);
+            JArmEmuApplication.getController().toolSimulateAll.setDisable(true);
+        }
     }
 
     /**

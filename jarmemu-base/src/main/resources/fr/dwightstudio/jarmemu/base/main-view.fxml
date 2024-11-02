@@ -139,6 +139,12 @@
                         <FontIcon iconLiteral="mdrmz-stop_circle"/>
                     </graphic>
                 </MenuItem>
+                <MenuItem fx:id="menuToggleComment" mnemonicParsing="false" onAction="#onToggleComment"
+                          text="%menu.edit.comment" accelerator="Shortcut+:">
+                    <graphic>
+                        <FontIcon iconLiteral="mdal-alternate_email"/>
+                    </graphic>
+                </MenuItem>
             </Menu>
             <Menu mnemonicParsing="false" styleClass="split-menu-btn-default" text="%menu.simulation.title">
                 <MenuItem fx:id="menuSimulate" disable="true" mnemonicParsing="false" onAction="#onSimulate"

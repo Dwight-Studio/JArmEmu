@@ -216,6 +216,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
     public static final class UpdatableInteger {
 
         private final int integer;
+        private final int originalValue;
         private final Register register;
         private boolean update;
 
@@ -230,6 +231,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             this.register = register;
             this.update = update;
 
+            originalValue = register != null ? register.getData() : 0;
             if (updateNow) register.setData(integer);
         }
 
@@ -245,6 +247,10 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
 
         public boolean canUpdate() {
             return update;
+        }
+
+        public void cancelUpdate() {
+            register.setData(originalValue);
         }
     }
 
