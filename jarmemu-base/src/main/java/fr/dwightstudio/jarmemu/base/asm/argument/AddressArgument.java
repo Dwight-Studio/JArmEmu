@@ -231,7 +231,7 @@ public class AddressArgument extends ParsedArgument<AddressArgument.UpdatableInt
             this.register = register;
             this.update = update;
 
-            originalValue = register.getData();
+            originalValue = register != null ? register.getData() : 0;
             if (updateNow) register.setData(integer);
         }
 
