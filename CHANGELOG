@@ -3,6 +3,8 @@
 - Improved autocompletion of braces and brackets (resolved #27)
 - Fixed autocompletion behaviour when declaring label with space (resolved #26)
 - Fixed simulation button being re-enabled when you save while simulating (resolved #28)
+- Fixed double EOF notification when the last instruction is forced
+- Fixed double indexing on LDR/STR instructions when forced (resolved #32)
 
 
 1.1.1 -> 1.1.2

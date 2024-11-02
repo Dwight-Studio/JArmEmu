@@ -119,7 +119,10 @@ public class LDRInstruction extends ParsedInstruction<Register, AddressArgument.
                 case null, default -> dataLength = 4;
             }
 
-            if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
+            if (address % dataLength != 0) {
+                arg2.cancelUpdate();
+                throw new MemoryAccessMisalignedASMException();
+            }
         }
 
         switch (modifier.dataMode()) {

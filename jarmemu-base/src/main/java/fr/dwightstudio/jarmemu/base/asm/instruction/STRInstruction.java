@@ -109,8 +109,14 @@ public class STRInstruction extends ParsedInstruction<Register, AddressArgument.
                 case null, default -> dataLength = 4;
             }
 
-            if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
-            if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) throw new IllegalDataWritingASMException();
+            if (address % dataLength != 0) {
+                arg2.cancelUpdate();
+                throw new MemoryAccessMisalignedASMException();
+            }
+            if (address < stateContainer.getWritableDataAddress() && address >= stateContainer.getProgramAddress()) {
+                arg2.cancelUpdate();
+                throw new IllegalDataWritingASMException();
+            }
         }
 
         switch (modifier.dataMode()){

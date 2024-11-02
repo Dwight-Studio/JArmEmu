@@ -280,6 +280,7 @@ public class ExecutionWorker {
                     doContinue = false;
                 } else {
                     step(true);
+                    return;
                 }
             } catch (IllegalDataWritingASMException exception) {
                 if (JArmEmuApplication.getSettingsController().getAutoBreak() && JArmEmuApplication.getSettingsController().getReadOnlyWritingBreak()) {
@@ -299,6 +300,7 @@ public class ExecutionWorker {
                     doContinue = false;
                 } else {
                     step(true);
+                    return;
                 }
             } catch (BreakpointASMException exception) {
                 if (JArmEmuApplication.getSettingsController().getCodeBreak()) {
@@ -311,6 +313,7 @@ public class ExecutionWorker {
                         JArmEmuApplication.getSimulationMenuController().onPause();
                     });
                     step(true);
+                    return;
                 } else {
                     Platform.runLater(() -> JArmEmuApplication.getEditorController().addNotification(
                             JArmEmuApplication.formatMessage("%notification.ignoredCodeBreakpoint.title"),
@@ -318,6 +321,7 @@ public class ExecutionWorker {
                             Styles.WARNING
                     ));
                     step(true);
+                    return;
                 }
             } catch (SoftwareInterruptionASMException exception) {
                 Platform.runLater(() -> {
@@ -329,6 +333,7 @@ public class ExecutionWorker {
                     JArmEmuApplication.getSimulationMenuController().onPause();
                 });
                 step(true);
+                return;
             } catch (ExecutionASMException exception) {
                 executionException = exception;
             }
