@@ -33,7 +33,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.UpdatableRegister;
 
 import java.util.function.Supplier;
 
-public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister> {
+public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister> implements OptionalRegister {
 
     boolean update;
     RegisterArgument argument;
