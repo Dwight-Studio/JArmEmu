@@ -40,7 +40,7 @@ public enum Directive {
     BYTE(ByteDirective.class), // Donnée sur 8bits
     SPACE(SpaceDirective.class), SKIP(SpaceDirective.class), // Vide sur nbits
     ASCII(ASCIIDirective.class), // Chaîne de caractères
-    ASCIZ(ASCIIDirective.class), // Chaîne de caractère finissant par '\0'
+    ASCIZ(ASCIZDirective.class), // Chaîne de caractère finissant par '\0'
     FILL(FillDirective.class), // Remplir n fois, un nombre de taille x, de valeur y
 
     // Other
