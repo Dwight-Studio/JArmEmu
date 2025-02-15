@@ -1,6 +1,6 @@
 1.1.3 -> 1.1.4
 
-- Nothing (yet!)
+- Fixed pc behaviour when pc is the register destination (resolved #34)
 
 1.1.2 -> 1.1.3
 

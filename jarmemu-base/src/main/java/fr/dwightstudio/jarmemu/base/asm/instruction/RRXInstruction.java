@@ -24,6 +24,7 @@
 package fr.dwightstudio.jarmemu.base.asm.instruction;
 
 import fr.dwightstudio.jarmemu.base.asm.argument.NullArgument;
+import fr.dwightstudio.jarmemu.base.asm.argument.OptionalRegister;
 import fr.dwightstudio.jarmemu.base.asm.argument.ParsedArgument;
 import fr.dwightstudio.jarmemu.base.asm.argument.RegisterArgument;
 import fr.dwightstudio.jarmemu.base.asm.exception.ASMException;
@@ -34,6 +35,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateFlags;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -78,7 +80,7 @@ public class RRXInstruction extends ParsedInstruction<Register, Register, Object
 
     @Override
     public boolean doModifyPC() {
-        return false;
+        return !modifier.doUpdateFlags() && (((OptionalRegister) arg1).getRegisterNumber() == RegisterUtils.PC.getN());
     }
 
     @Override
