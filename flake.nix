@@ -35,7 +35,7 @@
           in
           maven.buildMavenPackage {
             pname = "jArmEmu";
-            version = "1.1.3";
+            version = "1.1.4";
 
             src = self;
 
