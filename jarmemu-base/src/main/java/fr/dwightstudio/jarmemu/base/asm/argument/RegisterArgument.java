@@ -33,7 +33,7 @@ import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 
 import java.util.function.Supplier;
 
-public class RegisterArgument extends ParsedArgument<Register> {
+public class RegisterArgument extends ParsedArgument<Register> implements OptionalRegister {
     
     private final RegisterUtils register;
 

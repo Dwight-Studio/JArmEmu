@@ -38,6 +38,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.sim.entity.UpdatableRegister;
+import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -82,7 +83,7 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
 
     @Override
     public boolean doModifyPC() {
-        return false;
+        return (((RegisterArrayArgument) arg2).getArguments()).stream().anyMatch(arg -> arg.getRegisterNumber() == RegisterUtils.PC.getN());
     }
 
     @Override
@@ -105,13 +106,12 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
             int dataLength = 4;
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
         }
-
         switch (modifier.updateMode()) {
             case FA, DA -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * i));
                 }
-                value = - 4 * length;
+                value = -4 * length;
             }
             case ED, IB -> {
                 for (int i = 0; i < length; i++) {
@@ -123,9 +123,9 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * (i + 1)));
                 }
-                value = - 4 * length;
+                value = -4 * length;
             }
-            default -> {
+            case null, default -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() + 4 * i));
                 }

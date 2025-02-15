@@ -30,7 +30,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 
 import java.util.function.Supplier;
 
-public class LabelOrRegisterArgument extends ParsedArgument<Integer> {
+public class LabelOrRegisterArgument extends ParsedArgument<Integer> implements OptionalRegister {
 
     private RegisterArgument register;
     private LabelArgument label;

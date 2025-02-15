@@ -35,6 +35,7 @@ import fr.dwightstudio.jarmemu.base.asm.modifier.ModifierParameter;
 import fr.dwightstudio.jarmemu.base.asm.modifier.UpdateMode;
 import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -90,7 +91,7 @@ public class POPInstruction extends ParsedInstruction<Register[], Object, Object
 
     @Override
     public boolean doModifyPC() {
-        return false;
+        return (((RegisterArrayArgument) arg1).getArguments()).stream().anyMatch(arg -> arg.getRegisterNumber() == RegisterUtils.PC.getN());
     }
 
     @Override

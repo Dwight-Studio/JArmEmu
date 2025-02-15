@@ -30,10 +30,11 @@ import fr.dwightstudio.jarmemu.base.asm.exception.SyntaxASMException;
 import fr.dwightstudio.jarmemu.base.gui.JArmEmuApplication;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
 import fr.dwightstudio.jarmemu.base.sim.entity.UpdatableRegister;
+import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 
 import java.util.function.Supplier;
 
-public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister> {
+public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister> implements OptionalRegister {
 
     boolean update;
     RegisterArgument argument;
@@ -68,6 +69,8 @@ public class RegisterWithUpdateArgument extends ParsedArgument<UpdatableRegister
     @Override
     public void verify(Supplier<StateContainer> stateSupplier) throws ASMException {
         argument.verify(stateSupplier);
+
+        if (argument.getRegisterNumber() == RegisterUtils.PC.getN()) throw new SyntaxASMException(JArmEmuApplication.formatMessage("%exception.argument.invalidRegister", "PC"));
 
         super.verify(stateSupplier);
     }

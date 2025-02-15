@@ -37,6 +37,7 @@ import fr.dwightstudio.jarmemu.base.sim.entity.Register;
 import fr.dwightstudio.jarmemu.base.sim.entity.RegisterOrImmediate;
 import fr.dwightstudio.jarmemu.base.sim.entity.ShiftFunction;
 import fr.dwightstudio.jarmemu.base.sim.entity.StateContainer;
+import fr.dwightstudio.jarmemu.base.util.RegisterUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -85,7 +86,7 @@ public class MOVInstruction extends ParsedInstruction<Register, RegisterOrImmedi
 
     @Override
     public boolean doModifyPC() {
-        return false;
+        return !modifier.doUpdateFlags() && (((OptionalRegister) arg1).getRegisterNumber() == RegisterUtils.PC.getN());
     }
 
     @Override
