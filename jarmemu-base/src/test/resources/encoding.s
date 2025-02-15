@@ -157,7 +157,7 @@ _start:
 	stmgtfd r2!, {r3}
 	stmeqib sp!, {r0-r10}
 	stmda sp, {r5, r7-r8}
-	stmea sp!, {r0, r1}
+	stm sp!, {r0, r1}
 	swp r0, r1, [r2]
 	swp r1, r2, [r3]
 	swp r2, r3, [r4]

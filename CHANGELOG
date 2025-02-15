@@ -1,6 +1,6 @@
 1.1.3 -> 1.1.4
 
-- Nothing (yet!)
+- Fixed LDM/STM throwing exception when update mode is not specified (resolved #35)
 
 1.1.2 -> 1.1.3
 

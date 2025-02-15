@@ -128,7 +128,7 @@ public class STMInstruction extends ParsedInstruction<UpdatableRegister, Registe
                 }
                 value = - 4 * length;
             }
-            default -> {
+            case null, default -> {
                 for (int i = 0; i < length; i++) {
                     address = arg1.getData() + 4 * i;
                     stateContainer.getMemory().checkedPutWord(address, arg2[length - i - 1].getData());
