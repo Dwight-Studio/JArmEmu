@@ -115,7 +115,7 @@ Produit:
 			bal boucle1
 	fin:
 		@restauration des registres temporaires
-		ldmfd sp!, {r0-r8}
+		ldm sp!, {r0-r8}
 		@ depiler les variables locales
 		add sp, sp, #12
 		@ restauration de fp

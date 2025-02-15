@@ -106,13 +106,12 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
             int dataLength = 4;
             if (address % dataLength != 0) throw new MemoryAccessMisalignedASMException();
         }
-
         switch (modifier.updateMode()) {
             case FA, DA -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * i));
                 }
-                value = - 4 * length;
+                value = -4 * length;
             }
             case ED, IB -> {
                 for (int i = 0; i < length; i++) {
@@ -124,9 +123,9 @@ public class LDMInstruction extends ParsedInstruction<UpdatableRegister, Registe
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() - 4 * (i + 1)));
                 }
-                value = - 4 * length;
+                value = -4 * length;
             }
-            default -> {
+            case null, default -> {
                 for (int i = 0; i < length; i++) {
                     arg2[i].setData(stateContainer.getMemory().getWord(arg1.getData() + 4 * i));
                 }
