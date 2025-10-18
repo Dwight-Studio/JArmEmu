@@ -35,11 +35,11 @@
           in
           maven.buildMavenPackage {
             pname = "jArmEmu";
-            version = "1.1.4";
+            version = "1.1.5";
 
             src = self;
 
-            mvnHash = "sha256-0AU6XTsTpalWlfWpOdcn6D+fDfC6GlliCoYXVqnOH9M=";
+            mvnHash = "sha256-sXvKm/1h2YlTo3eSyz+mj36Po6nQQuMUkrwNUI6RIkI=";
 
             nativeBuildInputs = [
               makeWrapper

@@ -53,30 +53,43 @@
     <screenshots>
         <screenshot type="default">
             <caption>Editor: Primer Dark theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/PRIMER_DARK.png</image>
+            <image type="source">https://static.dwightstudio.fr/v1/jarmemu/showcase/primer_dark.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Primer Light theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/PRIMER_LIGHT.png</image>
+            <image type="source">https://static.dwightstudio.fr/v1/jarmemu/showcase/primer_light.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Nord Dark theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/NORD_DARK.png</image>
+            <image type="source">https://static.dwightstudio.fr/v1/jarmemu/showcase/nord_dark.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Nord Light theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/NORD_LIGHT.png</image>
+            <image type="source">https://static.dwightstudio.fr/v1/jarmemu/showcase/nord_light.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Cupertino Dark theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_DARK.png</image>
+            <image type="source">https://static.dwightstudio.fr/v1/jarmemu/showcase/cupertino_dark.png</image>
         </screenshot>
         <screenshot type="extra">
             <caption>Editor: Cupertino Light theme</caption>
-            <image type="source">https://static.dwightstudio.fr/jarmemu/PNG/SHOWCASE/CUPERTINO_LIGHT.png</image>
+            <image type="source">https://static.dwightstudio.fr/v1/jarmemu/showcase/cupertino_light.png</image>
         </screenshot>
     </screenshots>
     <releases>
+        <release date="2025-10-18" version="1.1.5">
+            <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.1.5</url>
+            <description>
+                <p>Stable release of JArmEmu</p>
+                <p>Changelog:</p>
+                <ul>
+                    <li>Fixed vulnerability to CVE-2025-48924 (commons-lang3)</li>
+                    <li>Fixed vulnerability to CVE-2024-47554 (github-api/commons-io)</li>
+                    <li>Fixed vulnerability to CVE-2024-20925 (javafx-graphics)</li>
+                    <li>Fixed static assets URLs (resolved #40)</li>
+                </ul>
+            </description>
+        </release>
         <release date="2025-02-15" version="1.1.4">
             <url type="details">https://github.com/Dwight-Studio/JArmEmu/releases/tag/v1.1.4</url>
             <description>

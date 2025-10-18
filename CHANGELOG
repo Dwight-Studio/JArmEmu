@@ -1,3 +1,11 @@
+1.1.4 -> 1.1.5
+
+- Fixed vulnerability to CVE-2025-48924 (commons-lang3)
+- Fixed vulnerability to CVE-2024-47554 (github-api/commons-io)
+- Fixed vulnerability to CVE-2024-20925 (javafx-graphics)
+- Fixed static assets URLs (resolved #40)
+
+
 1.1.3 -> 1.1.4
 
 - Fixed pc behaviour when pc is the register destination (resolved #34)

@@ -29,7 +29,7 @@
     <parent>
         <groupId>fr.dwightstudio.jarmemu</groupId>
         <artifactId>jarmemu</artifactId>
-        <version>1.1.4</version>
+        <version>1.1.5</version>
     </parent>
 
     <name>Medias</name>
