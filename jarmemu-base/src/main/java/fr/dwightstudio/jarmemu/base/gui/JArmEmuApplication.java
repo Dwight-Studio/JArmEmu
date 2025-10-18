@@ -136,6 +136,9 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
+    // Urgent
+    // TODO: Move the SHOWCASE in static
+
     // Soon:
     // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
 
