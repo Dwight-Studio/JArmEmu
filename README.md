@@ -136,10 +136,8 @@ yay -S jarmemu
 You can install it by running:
 
 ```bash
-curl -sS https://deb.dwightstudio.fr/repo/gpgkeys/deb.dwightstudio.fr.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/deb.dwightstudio.fr.gpg
-cat << EOF > /etc/apt/sources.list.d/repomanager-dwightstudio-stable-any-main.list
-deb https://deb.dwightstudio.fr/repo/deb/dwightstudio-stable/any/main/prod any main
-EOF
+sudo sh -c "curl -sS https://deb.dwightstudio.fr/repo/gpgkeys/deb.dwightstudio.fr.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/deb.dwightstudio.fr.gpg"
+sudo sh -c "echo 'deb https://deb.dwightstudio.fr/repo/deb/dwightstudio-stable/any/main/prod any main' > /etc/apt/sources.list.d/repomanager-dwightstudio-stable-any-main.list"
 sudo apt update && sudo apt install jarmemu
 ```
 
