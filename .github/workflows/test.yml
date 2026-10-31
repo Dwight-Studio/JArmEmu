@@ -11,31 +11,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Check root project version
-      uses: avides/actions-project-version-check@v1.4.0
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        file-to-check: pom.xml
-    - name: Check base version
-      uses: avides/actions-project-version-check@v1.4.0
+        fetch-depth: 0
+        fetch-tags: true
+    - uses: actions/setup-java@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        file-to-check: jarmemu-base/pom.xml
-    - name: Check distribution version
-      uses: avides/actions-project-version-check@v1.4.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        file-to-check: jarmemu-distribution/pom.xml
-    - name: Check launcher version
-      uses: avides/actions-project-version-check@v1.4.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        file-to-check: jarmemu-launcher/pom.xml
-    - name: Check medias version
-      uses: avides/actions-project-version-check@v1.4.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        file-to-check: jarmemu-medias/pom.xml
+        java-version: '21'
+        distribution: 'oracle'
+        cache: maven
+    - name: Check project version has not been released yet
+      run: |
+        version=$(mvn -q -N help:evaluate -Dexpression=project.version -DforceStdout)
+        echo "Project version: $version"
+        if git rev-parse -q --verify "refs/tags/v$version" > /dev/null; then
+          echo "::error::Version $version has already been released (tag v$version exists). Bump <revision> in pom.xml."
+          exit 1
+        fi
 
   build-and-test:
     runs-on: ubuntu-latest

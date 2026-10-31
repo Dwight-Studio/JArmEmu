@@ -44,3 +44,6 @@ build/
 ### Nix ###
 result
 result-*
+
+### Maven flatten ###
+.flattened-pom.xml

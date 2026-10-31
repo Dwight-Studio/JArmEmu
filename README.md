@@ -16,6 +16,10 @@
   - [Nix](#nix)
 - [Licence](#licence)
 
+> [!IMPORTANT]
+> JArmEmu is in **maintenance mode**: only bug fixes and security fixes are accepted. No new features will be added.
+> See [SECURITY.md](SECURITY.md) to report a vulnerability.
+
 # Features
 
 ![JArmEmu Editor](https://static.dwightstudio.fr/v1/jarmemu/showcase/cupertino_light.png)
