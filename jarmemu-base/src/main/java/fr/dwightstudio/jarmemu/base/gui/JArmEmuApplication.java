@@ -136,16 +136,6 @@ public class JArmEmuApplication extends Application {
         launch(args);
     }
 
-    // Urgent
-    // TODO: Move the SHOWCASE in static
-
-    // Soon:
-    // TODO: Add newbies hints (for the breakpoints, stack, double click on symbols...)
-
-    // Maybe:
-    // TODO: Ajouter le support de plus de directives pour l'autocomplétion
-    // TODO: Ajouter un enregistrement du layout des tableaux
-
     @Override
     public void init() {
         instance = this;

@@ -23,7 +23,7 @@
             maven,
             jre,
             makeWrapper,
-            wrapGAppsHook,
+            wrapGAppsHook3,
             extraJavaOpts ? [ ],
           }:
           let
@@ -35,15 +35,15 @@
           in
           maven.buildMavenPackage {
             pname = "jArmEmu";
-            version = "1.1.5";
+            version = "1.1.6";
 
             src = self;
 
-            mvnHash = "sha256-sXvKm/1h2YlTo3eSyz+mj36Po6nQQuMUkrwNUI6RIkI=";
+            mvnHash = "sha256-L/uTDuO4qMR9QCRDzrZ4ay+hQEID5E4sGZh8n5hw0LQ=";
 
             nativeBuildInputs = [
               makeWrapper
-              wrapGAppsHook
+              wrapGAppsHook3
             ];
 
             installPhase = ''

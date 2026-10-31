@@ -1,3 +1,18 @@
+1.1.5 -> 1.1.6
+
+- Updated javafx (21.0.2 -> 21.0.13)
+- Updated commons-lang3 (3.18.0 -> 3.21.0)
+- Updated json (20231013 -> 20260814)
+- Updated richtextfx (0.11.2 -> 0.11.7)
+- Updated controlsfx (11.1.2 -> 11.2.6)
+- Updated atlantafx-base (2.0.1 -> 2.1.0)
+- Updated ikonli (12.3.1 -> 12.4.0)
+- Updated commons-collections4 (4.4 -> 4.6.0)
+- Updated jetbrains annotations (24.1.0 -> 26.1.0)
+- Updated junit (5.9.2 -> 5.14.4)
+- Fixed startup crash with atlantafx-base 2.1.0 (Tab class conflicting with javafx.scene.control.Tab)
+
+
 1.1.4 -> 1.1.5
 
 - Fixed vulnerability to CVE-2025-48924 (commons-lang3)
