@@ -1,0 +1,44 @@
+name: Draft release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - resources/metainfo/fr.dwightstudio.JArmEmu.metainfo.xml
+
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read latest release from metainfo
+        id: metainfo
+        run: |
+          version=$(python3 .github/scripts/release_notes.py resources/metainfo/fr.dwightstudio.JArmEmu.metainfo.xml "$RUNNER_TEMP/notes.md")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "notes=$RUNNER_TEMP/notes.md" >> "$GITHUB_OUTPUT"
+      - name: Check the version has not been released yet
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.metainfo.outputs.version }}
+        run: |
+          if gh release view "v$VERSION" > /dev/null 2>&1 || git ls-remote --exit-code --tags origin "refs/tags/v$VERSION" > /dev/null 2>&1; then
+            echo "Version $VERSION already has a tag or a release, nothing to do."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Create draft release
+        if: steps.check.outputs.skip != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.metainfo.outputs.version }}
+        run: |
+          gh release create "v$VERSION" \
+            --draft \
+            --target "$GITHUB_SHA" \
+            --title "JArmEmu v$VERSION" \
+            --notes-file "${{ steps.metainfo.outputs.notes }}"

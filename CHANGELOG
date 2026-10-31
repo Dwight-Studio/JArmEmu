@@ -1,3 +1,7 @@
+1.1.6 -> 1.1.7
+
+- Fixed startup crash with atlantafx-base 2.1.0 (Tab class conflicting with javafx.scene.control.Tab)
+
 1.1.5 -> 1.1.6
 
 - Updated javafx (21.0.2 -> 21.0.13)
@@ -10,7 +14,6 @@
 - Updated commons-collections4 (4.4 -> 4.6.0)
 - Updated jetbrains annotations (24.1.0 -> 26.1.0)
 - Updated junit (5.9.2 -> 5.14.4)
-- Fixed startup crash with atlantafx-base 2.1.0 (Tab class conflicting with javafx.scene.control.Tab)
 
 
 1.1.4 -> 1.1.5
