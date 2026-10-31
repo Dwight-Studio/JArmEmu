@@ -62,7 +62,7 @@ the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest). It
 [![Windows](https://img.shields.io/badge/Windows-0079D6?style=for-the-badge&logo=windows&logoColor=white)](#Windows)
 [![Chocolatey](https://img.shields.io/badge/Chocolatey-000000?style=for-the-badge&logo=chocolatey&logoColor=white)](#Windows)
 
-[![Chocolatey downloads](https://img.shields.io/chocolatey/dt/fr.dwightstudio.JArmEmu)](https://community.chocolatey.org/packages/fr.dwightstudio.JArmEmu/)
+[![Chocolatey downloads](https://img.shields.io/chocolatey/dt/JArmEmu)](https://community.chocolatey.org/packages/JArmEmu)
 
 You can download an installer for <img src="https://static.dwightstudio.fr/v1/jarmemu/base/svg/logo.svg" alt="drawing" width="15"/> JArmEmu (or the portable version) from
 the [release page](https://github.com/Dwight-Studio/JArmEmu/releases/latest).
